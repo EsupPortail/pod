@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+{% load staticfiles %}
+{% load formset_tags %}
+{% load list %}
+{% load bootstrap3 %}
+
+{% block bootstrap3_title %}
+    {% trans 'Enrichment video' %} {{ enrichformset.instance.title }}
+{% endblock bootstrap3_title %}
+
+{% block bootstrap3_extra_head %}
+    <!-- media -->
+    <script>window.__admin_media_prefix__ = '/static/admin/';</script>
+    <script src="/admin/jsi18n/"></script>
+    <script src="{% static 'admin/js/core.js' %}"></script>
+    <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+    <script src="{% static 'admin/js/actions.js' %}"></script>
+
+    <!-- form.media -->
+    <script src="{% static 'filer/js/popup_handling.js' %}"></script>
+    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+
+    <!-- VideoJS -->
+    <script src="{% static 'video-js/video.4.5.min.js' %}"></script>
+    {% include 'videos/enrich/extraheadplayer.html' with video=enrichformset.instance %}
+
+    <!--RangeSlider Plugin -->
+    <link href="{% static 'rangeslider-videojs/build/rangeslider.min.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'rangeslider-videojs/build/rangeslider.min.js' %}" ></script>
+
+    <script>
+        var preventUnloadPrompt;
+        var messageBeforeUnload = '{% trans 'Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost.' %}';
+        var num = 0;
+        var name = '';
+        var is_chaptering = true;
+        /*** For the form ***/
+        jQuery(function($) {
+            $('#enrichformset').formset({
+                form: '[data-formset-form-enrich]',
+                emptyForm: 'script[type=form-template][data-formset-empty-form-enrich]',
+                body: '[data-formset-body-enrich]',
+                add: '[data-formset-add-enrich]',
+                deleteButton: '[data-formset-delete-button-enrich]',
+                animateForms: true
+            });
+        });
+        /************************ VAR **********************************/
+        var richtab = [];
+        {% for form in enrichformset %}
+            {% for field_hidden in form.hidden_fields %}
+                {% if '-id' in field_hidden.id_for_label %}
+                    richtab['{{ field_hidden.value }}'] = '{{ field_hidden.id_for_label }}'.replace('-id', '');
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        var currentchap = '';
+        var currentchapsel = '';
+        /************************ EVTS **********************************/
+        $(document).ready(function() {
+            hideFormContainer();
+            $('[data-formset-form-enrich]').hide();
+        });
+
+        $(document).on('change', 'select[id$="-type"]', function() {
+            $(this).parents('div.form-container').find("[id$='-image']").parent('div.form-group').hide();
+            $(this).parents('div.form-container').find("[id$='-richtext']").parents('div.form-group:first').hide();
+            $(this).parents('div.form-container').find("[id$='-weblink']").parent('div.form-group').hide();
+            $(this).parents('div.form-container').find("[id$='-document']").parent('div.form-group').hide();
+            $(this).parents('div.form-container').find("[id$='-embed']").parent('div.form-group').hide();
+
+            var val = $(this).val();
+            if (val != '') {
+                $(this).parents('div.form-container').find('[id$="-' + val + '"]').parents('div.form-group:first').show();
+            }
+        });
+
+        /************************ FUNCTIONS **********************************/
+        function addRangeSlider() {
+            var options = { hidden: true} ;
+            myPlayer.rangeslider(options);
+
+            myPlayer.on('sliderchange', function() {
+                if (currentchap != '') {
+                    var values = myPlayer.getValueSlider();
+                    $('#' + currentchap + '-end').val(parseInt(values.end));
+                    $('#' + currentchap + '-start').val(parseInt(values.start));
+                    if (currentchapsel != '') {
+                        var sel = $('div.vjs-chapbar-chap[data-id="' + currentchapsel + '"]');
+                    } else {
+                        var sel = $('div.vjs-chapbar-chap[data-id="' + currentchap + '"]');
+                    }
+                    sel.attr('style', $('.vjs-selectionbar-RS').attr('style'));
+                }
+            });
+
+            myPlayer.on('loadedRangeSlider', function() {
+                myPlayer.hideSlider();
+                myPlayer.pause();
+            });
+        }
+
+        $(document).on('formAdded', '[data-formset-form-enrich]', function() {
+            if (!(typeof myPlayer === 'undefined')) {
+                hideFormContainer();
+                myPlayer.showSlider();
+                if ($(this).find('input[name$="-id"]').val() == '') {
+                    $('[data-formset-form-enrich]').hide();
+                    $(this).show();
+                    myPlayer.play();
+                    myPlayer.pause();
+                    currentchap = $(this).find('input[name$="-id"]').attr('id').replace('-id', '');
+                    currentchapsel="";
+                    if ($('.vjs-chapbar-holder').length == 0) {
+                        if ($('div.vjs-progress-holder').length == 0) {
+                            $('#player_video').append('<div class="vjs-chapbar"><div class="vjs-chapbar-holder"></div></div>');
+                        } else {
+                            $('div.vjs-progress-holder').append('<div class="vjs-chapbar"><div class="vjs-chapbar-holder"></div></div>');
+                        }
+                    }
+                    $('.vjs-chapbar-chap').removeClass('current');
+                    $('.vjs-chapbar-holder').append(
+                        '<div class="vjs-chapbar-chap current" style="left:0%;width:100%;" data-id="' + currentchap + '"></div>'
+                    );
+                    $('.vjs-chapbar-chap').on('click', function() {
+                        chapbar($(this));
+                    });
+                    myPlayer.setValueSlider(0, myPlayer.duration());
+                }
+            }
+        });
+
+        $(document).on('formDeleted', '[data-formset-form-enrich]', function() {
+            var idChap = '';
+            if ($(this).find('input[name$="-id"]').val() == '') {
+                idChap = $(this).find('input[name$="-id"]').attr('id').replace('-id', '');
+            } else {
+                idChap = $(this).find('input[name$="-id"]').val();
+            }
+            $('div.vjs-chapbar-chap[data-id="'+idChap+'"]').hide();
+            myPlayer.hideSlider();
+            $('.vjs-chapbar-chap').removeClass('current');
+        });
+
+        function chapbar(chapsel) {
+            if (richtab['' + chapsel.data('id')]) {
+                currentchap = richtab[chapsel.data('id')];
+                currentchapsel = chapsel.data('id');
+            } else {
+                currentchap = chapsel.data('id');
+                currentchapsel = '';
+            }
+
+            var values = myPlayer.getValueSlider();
+            myPlayer.setValueSlider(
+                $('#' + currentchap + '-start').val(),
+                $('#' + currentchap + '-end').val()
+            );
+            myPlayer.showSlider();
+            $('[data-formset-form-enrich]').hide();
+            $('#' + currentchap + '-start').parents('div.form-container').show();
+            $('.vjs-chapbar-chap').removeClass('current');
+            $('div.vjs-chapbar-chap[data-id="' + currentchapsel + '"]').addClass('current');
+        }
+
+        function hideFormContainer() {
+            $('div.form-container').each(function () {
+                $(this).find('[id$="-image"]').parent('div.form-group').hide();
+                $(this).find('[id$="-richtext"]').parents('div.form-group:first').hide();
+                $(this).find('[id$="-weblink"]').parent('div.form-group').hide();
+                $(this).find('[id$="-document"]').parent('div.form-group').hide();
+                $(this).find('[id$="-embed"]').parent('div.form-group').hide();
+
+                var val = $(this).find('select[name$="-type"]').val();
+                if (val != '') {
+                    $(this).find('[id$="-' + val + '"]').parents('div.form-group:first').show();
+                }
+            });
+        }
+    </script>
+{% endblock bootstrap3_extra_head %}
+
+{% block article_title %}{% trans 'Enrichment video' %} {{ enrichformset.instance.title }}{% endblock %}
+
+{% block mainToolbar %}{% endblock mainToolbar %}
+
+{% block bootstrap3_content %}
+    <article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+        <ol class="breadcrumb">
+            {% block breadcrumbs %}
+                {{ block.super }}
+                <li><a href="{% url 'owner_videos_list' %}">{% trans 'My videos' %}</a></li>
+                <li class="active">{% trans 'Enrichment video' %} {{ enrichformset.instance.title }}</li>
+            {% endblock breadcrumbs %}
+        </ol>
+
+        {% include 'videos/video_player.html' with video=enrichformset.instance %}
+
+        {% if enrichformset.total_error_count %}
+            <p class="error">{% trans 'Errors have been found in the form.' %}</p>
+            <p class="error">{% trans 'Please ensure that each enrich contains a title, timecode start, end, and the end timecode is higher than at the beginning.' %}</p>
+            <a href="#" onClick="javascript:$('ul.errorList').toggle();return false;">+ info</a>
+            <ul class="error errorList">
+                {% for dict in enrichformset.errors %}
+                    {% if dict %}
+                        <li>{% trans 'Error in enrich' %} {{ forloop.counter }} : {{ dict }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <script>$('ul.errorList').toggle();</script>
+        {% endif %}
+
+        <div class="row" id="info_video">
+            <div class="col-sm-9">
+                <form method="post" action="{% url 'video_enrich' slug=enrichformset.instance.slug %}" novalidate>
+                    {% csrf_token %}
+                    <fieldset id="enrichments">
+                        <legend>{% trans 'Enrichment video' %}</legend>
+
+                        <div id="enrichformset" data-formset-prefix="{{ enrichformset.prefix }}">
+                            {{ enrichformset.management_form }}
+                            <div data-formset-body-enrich>
+                                <!-- New forms will be inserted in here -->
+                                {% for form in enrichformset %}
+                                    <div data-formset-form-enrich class="form-container">
+                                        {% for field_hidden in form.hidden_fields %}
+                                            {{ field_hidden }}
+                                        {% endfor %}
+                                        {% for field in form.visible_fields %}
+                                            {% if 'DELETE' in field.id_for_label %}
+                                                <div class="form-group hide">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            {{ field.label_tag }} {{ field }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                {% bootstrap_field field %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        <button type="button" data-formset-delete-button-enrich class="btn btn-danger">{% trans 'Delete' %}</button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- The empty form template. By wrapping this in a <script> tag, the
+                            __prefix__ placeholder can easily be replaced in both attributes and
+                            any scripts -->
+                            <script type="form-template" data-formset-empty-form-enrich>
+                                {% escapescript %}
+                                    <div data-formset-form-enrich class="form-container">
+                                        {% for field_hidden in enrichformset.empty_form.hidden_fields %}
+                                            {{ field_hidden }}
+                                        {% endfor %}
+                                        {% for field in enrichformset.empty_form.visible_fields %}
+                                            {% if 'DELETE' in field.id_for_label %}
+                                                <div class="form-group hide">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            {{ field.label_tag }} {{ field }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                {% bootstrap_field field %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        <button type="button" data-formset-delete-button-enrich class="btn btn-danger">{% trans 'Delete' %}</button>
+                                    </div>
+                                {% endescapescript %}
+                            </script>
+
+                            <!-- This button will add a new form when clicked -->
+                            <p>&nbsp;</p>
+                            <button type="button" data-formset-add-enrich class="btn btn-info">{% trans 'Add' %}</button>
+                            <p>&nbsp;</p>
+                        </div>
+                        {% buttons %}
+                            <button type="submit" class="btn btn-success" value="{% trans 'Save' %}" name="action1">
+                                {% bootstrap_icon 'save' %} {% trans 'Save' %}
+                            </button>
+                            {% if request.META.HTTP_REFERER %}
+                                <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-info">
+                                    {% bootstrap_icon 'arrow-left' %} {% trans 'Back' %}
+                                </a>
+                            {% else %}
+                                <a href="/" class="btn btn-info">{% bootstrap_icon 'arrow-left' %} {% trans 'Home' %}</a>
+                            {% endif %}
+                        {% endbuttons %}
+                    </fieldset>
+                </form>
+            </div>
+
+            <aside class="col-sm-3">
+                <div class="widget">
+                    <h4>
+                        <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Informations' %}
+                    </h4>
+                    <p>{%trans '"Add" to add a new enrichment and "delete" removes enrichment.' %}</p>
+                    <p>{%trans 'Click on a display range of enrichment to modify its properties.' %}</p>
+                    <p>{%trans 'Use the yellow tabs on the play bar to set the display enrichment beach.' %}</p>
+                    <p>{%trans 'Must "Save" to view the results.' %}</p>
+                </div>
+                <div class="widget user-tools">
+                    <h4>
+                        <span class="glyphicon glyphicon-wrench"></span> {% trans 'Edit the video' %}
+                    </h4>
+                    {% include 'videos/ownertools.html' with video=enrichformset.instance %}
+                </div>
+            </aside>
+        </div>
+        <!-- end row -->
+    </article>
+{% endblock bootstrap3_content %}
+
+{% block box %}{% endblock box %}

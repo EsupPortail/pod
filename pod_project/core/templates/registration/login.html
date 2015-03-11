@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block bootstrap3_title %}{{ block.super }}{% trans "Sign on" %}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<script>
+$( document ).ready(function() {
+    $("#connInv").click(function () {
+        $("#formConn").toggle('slow');
+        return false;
+    });
+    
+    {% if USE_CAS %}
+        {% if form.errors or messages %}
+            $("#formConn").show();
+        {%else%}
+            $("#formConn").hide();
+        {% endif %}
+    {% endif %}
+});
+</script>
+{% endblock bootstrap3_extra_head %}
+
+
+{% block breadcrumbs %}
+{% if not request.GET.is_iframe %}
+{{ block.super }} <li class="active">{% trans "Sign on" %}</li>
+{%endif%}
+{%endblock%}
+
+{% block mainToolbar %}
+{% endblock mainToolbar %}
+
+{% block stats %}
+{% endblock stats %}
+
+{% block article_title %}
+    {% trans "Sign on" %}
+{% endblock %}
+
+{% block article %}
+    {% block article_content %}
+
+{% if form.errors %}
+<p>{% trans "Login or password invalid" %}.</p>
+<p>{{form.errors}}</p>
+{% endif %}
+
+<p>&nbsp;</p>
+<div class="text-center">
+    {% if USE_CAS %}
+	<a class="btn btn-success" href="{% url 'cas_login' %}?gateway=False&next={{ next|urlencode }}"  id="connCas" title="{% trans "Single sign on" %} {{TITLE_ETB}}"><i class="fa fa-user fa-fw"></i>{% trans "Single sign on" %} {{TITLE_ETB}}</a>
+	{% endif %}
+	<a class="btn btn-default" href="#" id="connInv" title=""><i class="fa fa-user fa-fw"></i>{% trans "local sign on" %}</a>
+</div>
+
+<form method="post" action="{% url 'core.views.core_login' %}" id="formConn">
+    {% csrf_token %}
+    
+    {% bootstrap_form form %}
+    
+    <input type="hidden" name="next" value="{{ next }}" />
+    <input type="hidden" name="gateway" value="False" />
+    
+    {% buttons %}
+        <button type="submit" class="btn btn-success">
+            {% bootstrap_icon "ok" %} {% trans "Log in" %}
+        </button>
+        
+        <button type="reset" class="btn">
+            {% bootstrap_icon "remove" %} {% trans "Erase" %}
+        </button>
+        {% if not request.GET.is_iframe %}
+        {% if request.META.HTTP_REFERER %}
+        <a href="{{request.META.HTTP_REFERER}}" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Back" %}</a>
+        {% else %}
+        <a href="/" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Home" %}</a>
+        {% endif %}
+        {% endif %}
+    {% endbuttons %}
+    
+</form>
+
+    {% endblock article_content %}
+    {% block video_list %} {% endblock video_list %}
+    {% block pagination %} {% endblock pagination %}
+{% endblock article %}
+
+
+{% block box %}
+    <aside class="col-sm-3">
+    {% block box_info %}
+    <div class="widget">
+        <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Information" %}</h4>
+    	{% trans "Don't hesitate to contact us for any assistance" %} : <a href="mailto:{{HELP_MAIL}}">{{HELP_MAIL}}</a>
+    </div>
+    {% endblock box_info %}
+    
+    {% block box_discipline %}{{ block.super }}{% endblock box_discipline %}
+    {% block box_tags %}{{ block.super }}{% endblock box_tags %}
+    {% block box_note %} {% endblock box_note %}
+    </aside>
+{% endblock %}
+
+
+
+

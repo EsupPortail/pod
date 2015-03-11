@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block bootstrap3_title %}{{ block.super }}{% trans "My profile" %}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+        <!-- media -->
+        <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+        <script type="text/javascript" src="/admin/jsi18n/"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/actions.js"></script>
+        <!-- form.media -->
+        {{form.media}}
+        <!-- fin form.media -->
+<script>
+var preventUnloadPrompt;
+var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
+    var num=0;
+    var name = "";
+</script>
+{% endblock bootstrap3_extra_head %}
+
+
+{% block breadcrumbs %}
+    {{ block.super }} <li class="active">{% trans "My Profile" %}</li>
+{%endblock%}
+
+{% block mainToolbar %}
+{% endblock mainToolbar %}
+
+{% block stats %}
+{% endblock stats %}
+
+{% block article_title %}
+    {% trans "My Profile" %}
+{% endblock %}
+
+{% block article %}
+    {% block article_content %}
+
+{% if form.errors %}
+<!-- <p>{% trans "errors have been found in the form" %}</p> -->
+{% endif %}
+
+<form method="post" action="{% url 'user_profile' %}">
+{% csrf_token %}
+{% bootstrap_form form %}
+
+{% buttons %}
+    <button type="submit" class="btn btn-success">
+        {% bootstrap_icon "save" %} {% trans "Send" %}
+    </button>
+    <button type="reset" class="btn">
+        {% bootstrap_icon "remove" %} {% trans "Cancel" %}
+    </button>
+    {% if request.META.HTTP_REFERER %}
+    <a href="{{request.META.HTTP_REFERER}}" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Back" %}</a>
+    {% else %}
+    <a href="/" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Home" %}</a>
+    {% endif %}
+    <!--
+    <button type="reset" class="btn btn-info" onclick="javascript:window.history.back();">
+        {% bootstrap_icon "arrow-left" %} {% trans "Back" %}
+    </button>
+    -->
+{% endbuttons %}
+</form>
+
+    {% endblock article_content %}
+    {% block video_list %} {% endblock video_list %}
+    {% block pagination %} {% endblock pagination %}
+{% endblock article %}
+
+
+{% block box %}
+    <aside class="col-sm-3">
+    {% block box_info %}
+{% if not request.user.is_staff %}
+<div class="widget" style="text-align: justify">
+<h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Informations"%}</h4>
+<p>{%trans "Your current permissions do not allow you to add a photo to your profile. Please contact us to add these rights"%} : <a href="mailto:{{HELP_MAIL}}">{{HELP_MAIL}}</a></p>
+</div>
+{%endif%}
+    {% endblock box_info %}
+    
+    {% block box_discipline %}{{ block.super }}{% endblock box_discipline %}
+    {% block box_tags %}{{ block.super }}{% endblock box_tags %}
+    {% block box_note %} {% endblock box_note %}
+    </aside>
+{% endblock %}
+
+
+
+
+

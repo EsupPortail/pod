@@ -1,0 +1,140 @@
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>CKEDitor | Select an image to embed</title>
+		<link rel="stylesheet" href="{{ STATIC_URL }}admin/css/base.css" type="text/css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}admin/css/form.css" type="text/css" />
+        <!-- media -->
+        <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+        <script type="text/javascript" src="/admin/jsi18n/"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/actions.js"></script>
+        <!-- form.media -->
+        {{form.media}}
+        <!-- fin media -->	
+        <script>
+        var num=0;
+        var name = "";
+        function showRelatedObjectLookupPopup(triggeringLink) {
+            name = triggeringLink.id.replace(/^lookup_/, '');
+            name = id_to_windowname(name);
+            var href;
+            if (triggeringLink.href.search(/\?/) >= 0) {
+                href = triggeringLink.href + '&_popup=1';
+            } else {
+                href = triggeringLink.href + '?_popup=1';
+            }
+            toThis = '<iframe style="width:99%;height:99%;" id="resultFrame" src="'+href+'" onload="frameReady();"></iframe>';
+
+            if (document.getElementById) {
+                document.getElementById("iframe").innerHTML = toThis;
+            } 
+            
+            return false;
+        }
+        
+        function frameReady(){
+            var el = document.getElementById('resultFrame');
+            getIframeWindow(el).opener = window;
+            //document.myform.style.visibility='hidden';
+            document.myform.style.display = 'none';
+        }
+        
+        function getIframeWindow(iframe_object) {
+          var doc;
+        
+          if (iframe_object.contentWindow) {
+            return iframe_object.contentWindow;
+          }
+        
+          if (iframe_object.window) {
+            return iframe_object.window;
+          } 
+        
+          if (!doc && iframe_object.contentDocument) {
+            doc = iframe_object.contentDocument;
+          } 
+        
+          if (!doc && iframe_object.document) {
+            doc = iframe_object.document;
+          }
+        
+          if (doc && doc.defaultView) {
+           return doc.defaultView;
+          }
+        
+          if (doc && doc.parentWindow) {
+            return doc.parentWindow;
+          }
+        
+          return undefined;
+        }
+        
+        dismissRelatedImageLookupPopup = function(win, chosenId, chosenThumbnailUrl, chosenDescriptionTxt) {
+    		//var name = windowname_to_id(win.name);
+    		var img_name = name + '_thumbnail_img';
+    		var txt_name = name + '_description_txt';
+    		var clear_name = name + '_clear';
+    		var elem = document.getElementById(name);
+    		document.getElementById(name).value = chosenId;
+    		document.getElementById(img_name).src = chosenThumbnailUrl;
+    		document.getElementById(txt_name).innerHTML = chosenDescriptionTxt;
+    		document.getElementById(clear_name).style.display = 'inline';
+    		document.myform.submit();
+    	};
+        
+        </script>
+	</head>
+	<body>
+	{% if fic and get_CKEditorFuncNum %}
+	   <script>
+	   window.opener.CKEDITOR.tools.callFunction({{get_CKEditorFuncNum}}, "{{fic.url}}");
+       window.close();
+       </script>
+	{% else %}
+	<blockquote>
+	   <form action="{% url 'ckeditor_browse' %}?CKEditorFuncNum={{get_CKEditorFuncNum}}" method="post" enctype="multipart/form-data" name="myform">
+	   {% csrf_token %}
+	   Pour sélectionner un fichier, cliquer sur la loupe. Une fois le fichier sélectionné, cliquer sur valider.
+        {{form.as_p}}
+        <p><input type="submit" value="Valider" id="button_valider"/></p>
+       </form>
+       
+       <script type="text/javascript">
+        (function($) {
+            $(document).ready(function($) {
+                showRelatedObjectLookupPopup(document.getElementById("lookup_id_document"));
+            });
+        })(django.jQuery);
+        
+        </script>
+    </blockquote>
+    <div id="iframe">
+        
+    </div>
+    {% endif%}
+	</body>
+</html>

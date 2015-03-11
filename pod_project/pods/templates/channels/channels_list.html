@@ -1,0 +1,48 @@
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n list staticfiles %}
+{% load thumbnail %}
+
+<div id="video-list" class="row">
+{% for channel in channels %}
+	<div class="video-thumb col-xs-6 col-md-4">
+	    <a href="{% url "channel" slug_c=channel.slug %}" title="{{channel.title}} ({{channel.video_count}})">
+		<span class="poster">
+			{% if channel.headband %}
+                <span class="play text-center">
+    				<span class="glyphicon glyphicon-play-circle"></span>
+    			</span>
+                <img alt="img" src="{% thumbnail channel.headband 285x160 crop upscale subject_location=channel.headband.subject_location %}" alt="{{channel.title}}" class="preview">
+            {%else%}
+                <img alt="img" src="{% static DEFAULT_IMG %}" alt="{{channel.title}}">
+            {% endif %}
+		</span>
+		<h5>{{channel.title|safe|striptags|truncatechars:32}} ({{channel.video_count}})</h5>
+		</a>
+		{% if user.is_authenticated and channel.owner = request.user%}
+		<span class="user-tools hidden-xs"><!-- ONLY VISIBLE TO THE VIDEO OWNER ! --> 
+			<a href="{% url "channel_edit" slug_c=channel.slug %}" class="btn btn-default btn-xs" title="{% trans "edit"%}"><span class="glyphicon glyphicon-pencil"></span><span class="sr-only">{% trans "edit"%}</span></a>
+	    </span>
+	    {% endif %}
+	</div>
+{%endfor%}
+</div>
+{% block pagination %} {% pagination channels %}{% endblock %}

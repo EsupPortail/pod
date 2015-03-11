@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n list staticfiles %}
+{% load thumbnail %}
+{% load taggit_extras %}
+
+{% block bootstrap3_title %}{% trans "Videos" %}{% endblock %}
+
+{% block bootstrap3_extra_head %} {% endblock bootstrap3_extra_head %}
+
+{% block article_title %}{% trans "Videos" %}{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="active">{% trans "Videos" %}</li>{% endblock %}
+
+{% block mainToolbar %}
+{% include "maintoolbar.html" %}
+{% endblock mainToolbar %}
+
+{% block article %}
+<div id="objects_list">
+{% include "videos/videos_list.html" %}
+</div>
+{% endblock %}
+
+{% block box %}
+<aside class="col-sm-3">
+{% block box_filtre %}
+<div class="widget">
+<h4><span class="glyphicon glyphicon-filter"></span> {% trans "Filters"%}</h4>
+<form action="{% url 'videos' %}" class="form filtres" method="get" id="filters" style="display: block;">
+
+<fieldset>
+<legend><span class="glyphicon glyphicon-user"></span> {% trans "Authors" %}</legend>
+<div class="form-group">
+<input placeholder="{% trans "Search" %}" id="ownerbox" type="text" class="form-control">
+</div>
+<div class="form-group navList owners">
+{% for owner in OWNERS %}
+    <div class="checkbox"><label>
+    {% if owner in owners %}
+        <input type="checkbox" name="owner" value="{{owner.username}}" checked>
+    {% else %}
+        <input type="checkbox" name="owner" value="{{owner.username}}">
+    {% endif %}
+    {% if owner.userprofile.image.icons %}
+        <img src="{{ owner.userprofile.image.icons.32 }}" alt="{{owner.get_full_name}}">
+      	{% else %}
+        <img id="{{ thumb_id }}" src="{% static "filer/icons/image_32x32.png" %}" alt="{% trans 'file missing' %}" />
+   	{% endif %}
+   	{% if owner.get_full_name %}
+    <span class="fullname">{{owner.get_full_name}}</span>
+    {% else %}
+    <span class="fullname">{{owner.username}}</span>
+    {% endif %}
+    {% if owner.userprofile.description %}<a href="#" class="show-desc"><span class="glyphicon glyphicon-user"></span><span class="user-description">{{owner.userprofile.description|linebreaks}}</span></a>{%endif%}
+    {% if owner.userprofile.url %}<a href="{{owner.userprofile.url}}" target="_blank" title="{{owner.userprofile.url}}"><i class="fa fa-globe fa-fw"></i></a>{% endif %}
+    </label></div>
+{%endfor%}
+</div>
+</fieldset>
+
+<fieldset>
+<legend><span class="glyphicon glyphicon-tasks"></span> {% trans "Types"%}</legend>
+<div class="form-group"><!-- add .show-all to this .form-group to reveal the .more checkboxes -->
+{% for type in TYPES %}
+    {% if forloop.counter < 7 or type.slug in types %}
+    <div class="checkbox">
+    {% else %}
+    <div class="checkbox more">
+    {%endif%}
+    <label>
+    {% if type.slug in types %}
+        <input type="checkbox" name="type" value="{{type.slug}}" checked>{{type}}
+    {% else %}
+        <input type="checkbox" name="type" value="{{type.slug}}">{{type}}
+    {% endif %}
+    </label>
+    </div>
+{%endfor%}
+</div>
+{% if TYPES.count > 6 %}
+<div class="list-all"><a href="#" class="btn btn-default btn-xs list-all-plus">{% trans "more" %} <span class="glyphicon glyphicon-chevron-down"></span></a><a href="#" class="btn btn-default btn-xs list-all-minus hide">{% trans "less" %} <span class="glyphicon glyphicon-chevron-up"></span></a></div>
+{% endif %}
+</fieldset>
+
+<fieldset>
+<legend><span class="glyphicon glyphicon-tasks"></span> {% trans "Disciplines"%}</legend>
+<div class="form-group">
+{% for discipline in DISCIPLINES %}
+    {% if forloop.counter < 7 or discipline.slug in disciplines %}
+    <div class="checkbox">
+    {% else %}
+    <div class="checkbox more">
+    {%endif%}
+    <label>
+    {% if discipline.slug in disciplines %}
+        <input type="checkbox" name="discipline" value="{{discipline.slug}}" checked>{{discipline}}
+    {% else %}
+        <input type="checkbox" name="discipline" value="{{discipline.slug}}">{{discipline}}
+    {% endif %}
+    </label>
+    </div>
+{%endfor%}
+</div>
+{% if DISCIPLINES.count > 6 %}
+<div class="list-all"><a href="#" class="btn btn-default btn-xs list-all-plus">{% trans "more" %} <span class="glyphicon glyphicon-chevron-down"></span></a><a href="#" class="btn btn-default btn-xs list-all-minus hide">{% trans "less" %} <span class="glyphicon glyphicon-chevron-up"></span></a></div>
+{% endif %}
+</fieldset>
+
+<fieldset>
+<legend><span class="glyphicon glyphicon-tags"></span> {% trans "Tags"%}</legend>
+<div class="form-group">
+{% get_tagcloud as tagscloud %}
+{% with tagslist=tagscloud|dictsortreversed:"weight"|slice:":20" %}
+{% for tag in tagslist %}
+    {% if forloop.counter < 7 or tag.slug in tags_slug %}
+    <div class="checkbox">
+    {% else %}
+    <div class="checkbox more">
+    {%endif%}
+    <label>
+    {% if tag.slug in tags_slug %}
+        <input type="checkbox" name="tag" value="{{tag.slug}}" checked>{{tag}}
+    {% else %}
+        <input type="checkbox" name="tag" value="{{tag.slug}}">{{tag}}
+    {% endif %}
+    </label>
+    </div>
+{%endfor%}
+</ul>
+{% if tagslist|length > 6 %}
+<div class="list-all"><a href="#" class="btn btn-default btn-xs list-all-plus">{% trans "more" %} <span class="glyphicon glyphicon-chevron-down"></span></a><a href="#" class="btn btn-default btn-xs list-all-minus hide">{% trans "less" %} <span class="glyphicon glyphicon-chevron-up"></span></a></div>
+{% endif %}
+{% endwith %}
+</fieldset>
+<noscript><input type="submit" value="{% trans "Submit"%}"/></noscript>
+</form>
+</div>
+{% endblock box_filtre %}
+</aside>
+{% endblock %}

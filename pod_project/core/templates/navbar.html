@@ -1,0 +1,138 @@
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+{% load list %}
+{% load staticfiles %}
+<!-- NAVBAR -->
+<nav class="navbar navbar-default" role="navigation">
+	<div class="container"> 
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#mainMenu">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+			<a class="navbar-brand visible-xs" href="#"><img src="{% static LOGO_COMPACT_SITE %}" alt="Lille.POD"/></a>
+        </div>
+		
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="mainMenu">
+			<ul class="nav navbar-nav">
+				<li><a href="/">{% trans "Home" %}</a></li>
+				<!-- channel -->
+				<li class="dropdown">
+                    <a href="{% url 'channels'%}" class="dropdown-toggle" data-toggle="dropdown">
+                        {% trans "Channel" %}
+                        {% if CHANNELS %}<b class="caret"></b>{%endif%}
+                    </a>
+                    <ul class="dropdown-menu  multi-level">
+                        <li class="divider"></li>
+                        {% for channel in CHANNELS %}
+                            {% if channel.themes.all %}
+                            <li class="dropdown-submenu">
+                                <a tabindex="-1" href="{{channel.get_absolute_url}}">{{channel.title}} ({{channel.video_count}})</a>
+                                <ul class="dropdown-menu">
+                                {% for theme in channel.themes.all %}
+                                    <li><a href="{{theme.get_absolute_url}}">{{theme.title}} ({{theme.video_count}})</a></li>
+                                {% endfor %}
+                                </ul>
+                            </li>
+                            {% else %}
+                                <li><a href="{{channel.get_absolute_url}}">{{channel.title}} ({{channel.video_count}})</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        <li class="divider"></li>
+                        <li>
+                            <a href="{% url 'channels' %}">
+                                {% trans "Channel"%}
+                                <span class="glyphicon glyphicon-list-alt pull-right"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- end channel -->
+                <li class="dropdown">
+                    <a href="{% url 'owners' %}" class="dropdown-toggle" data-toggle="dropdown">
+                        {% trans "Authors"%}<b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu  multi-level">
+                        <li class="divider"></li>
+    					{% for filter in FILTER_USER_MENU %}
+    						<li class="dropdown-submenu">
+                                <a href="{% url 'owners' %}?owners_filter={{filter|urlencode}}">{{filter|upper}}</a>
+                                <ul class="dropdown-menu">
+                                    {% user_menu filter OWNERS %}
+                                </ul>
+    						</li>
+    					{% endfor %}
+                       <li class="divider"></li>
+                       <li>
+                           <a href="{% url 'owners' %}">
+                               {% trans "Authors"%}
+                               <span class="glyphicon glyphicon-list-alt pull-right"></span>
+                           </a>
+                       </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="{% url 'types' %}" class="dropdown-toggle" data-toggle="dropdown">
+                        {% trans "Types"%}<b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="divider"></li>
+                        {% for type in TYPES %}
+                            <li><a href="{% url 'videos' %}?type={{type.slug}}">{{type.title}} ({{type.video_count}})</a></li>
+                        {% endfor %}
+                        <li class="divider"></li>
+                        <li>
+                            <a href="{% url 'types' %}">
+                                {% trans "Types"%}
+                                <span class="glyphicon glyphicon-list-alt pull-right"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+    			<li><a href="{% url 'videos' %}">{% trans "Videos" %}</a></li>
+			</ul>
+			<a href="{% url 'video_edit' %}" class="btn btn-success navbar-btn navbar-right">
+                <span class="glyphicon glyphicon-plus"></span>
+                {% trans "Add new video" %}
+            </a>
+			<form class="navbar-form navbar-right" role="search" method="get" action="{% url "haystack_search" %}">
+				<div id="searchBar" class="input-group">
+					<input type="text" class="form-control" autofocus="autofocus" name="q" placeholder="{% trans "Search" %}" />
+					<span class="input-group-btn">
+					    <button class="btn btn-default submit" type="button">
+                            <span class="glyphicon glyphicon-search"></span>
+                            <span class="sr-only">{% trans "Search" %}</span>
+                        </button>
+					</span>
+                </div>
+				<!-- /input-group -->
+			</form>
+		</div>
+		<!-- /.navbar-collapse --> 
+	</div>
+	<!-- /.container-fluid --> 
+</nav>
+<!-- /NAVBAR -->

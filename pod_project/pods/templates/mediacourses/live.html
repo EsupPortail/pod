@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+
+{% block bootstrap3_title %}{{ block.super }} {% trans "Live" %} {{recorder.name}}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<style>
+#livevideo_wrapper {float:left; width:50%; margin:0; padding:0; position:absolute}
+#DiaFrame {left:50%; width:49%;height:100%; margin:0; padding:0; position:absolute}
+</style>
+
+<script>
+var list_disp = {"50/50":"50/50", "30/70":"30/70", "70/30":"70/30", "100/20":"Pip media", "20/100":"Pip video", "100/0":"only video", "0/100":"only media"};
+
+$(document).ready(function() {
+    var selectChangeDisplay = document.getElementById("changeDisplay");
+    $("#livevideo_wrapper").width("33%");
+    for (var key in list_disp) {
+        if (list_disp.hasOwnProperty(key)) { // this will check if key is owned by data object and not by any of it's ancestors
+            var option = document.createElement("option");
+            option.text = list_disp[key];
+            option.value = key;
+            selectChangeDisplay.add(option);
+        }
+    }
+    $("#changeDisplay").on("change", function(){
+        changeDisplay($(this).val());
+    });
+});
+
+function changeDisplay(disp) {
+    vid_width = parseInt(disp.split("/")[0]);
+    slide_width = parseInt(disp.split("/")[1])-1;
+    if (vid_width==0) vid_width=1;
+    videozindex= 1000;
+    if(vid_width==100 && slide_width > 0) {
+            $('#livevideo_wrapper').css('zIndex',videozindex+1);
+            $('#DiaFrame').css('zIndex',videozindex+2);
+            
+            $("#livevideo_wrapper").animate({width: vid_width+"%", height:"450px", left:"0%"},500, function() {
+                //console.log( " Animation complete.");
+            });
+            $("#DiaFrame").animate({width: slide_width+"%", height:slide_width+"%", left:(100-slide_width)+"%"},500, function() {
+                animation_complete=true;
+            });
+        } else {
+            if(slide_width==99 && vid_width > 1){
+                //pip media
+                // change z-index !
+                $('#livevideo_wrapper').css('zIndex',videozindex+4);
+                $('#DiaFrame').css('zIndex',videozindex+1);
+                $("#livevideo_wrapper").animate({width: vid_width+"%", height:vid_width+"%", left:"0%"},500, function() {
+                });
+                $("#DiaFrame").animate({width: slide_width+"%", height:"100%", left:(100-slide_width)+"%"},500, function() {
+                });
+            } else {
+                $("#livevideo_wrapper").animate({width: vid_width+"%", height:"100%", left:"0%"},500, function() {
+                });
+                $("#DiaFrame").animate({width: slide_width+"%", height:"100%", left:(100-slide_width)+"%"},500, function() {
+                });
+            }
+        }
+    
+    
+    
+}
+
+</script>
+{% endblock bootstrap3_extra_head %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li><a href="{% url 'lives' %}">{% trans "Lives" %}</a></li>
+<li class="active">{% trans "Live" %} {{recorder.name}}</li>
+{%endblock%}
+
+{% block mainToolbar %}
+{% endblock mainToolbar %}
+
+{% block article_title %}{% trans "Live" %} {{recorder.name}}{% endblock %}
+
+
+
+{% block article %}
+<div id="global_video">
+    <div id="player" style="width:100%;position:relative" >
+        
+        <div id="livevideo" style="position:absolute; display:block">Loading the player...</div>
+        <script type="text/javascript" src="{% static "jwplayer/jwplayer.js" %}"></script>
+        <script type="text/javascript">
+            jwplayer("livevideo").setup({
+                file: "{{FMS_LIVE_URL}}/{{recorder.ipunder }}_2",
+                autostart: 'true',
+                {% if recorder.slide %}
+                "width": "50%",
+                {% else %}
+                "width": "100%",
+                {% endif %}
+                "height": "100%",
+            });
+            jwplayer("livevideo").onReady(function(event){$("#livevideo_wrapper").css("position","absolute");$("#livevideo_wrapper").css("float","left");})
+        </script>
+        
+        {% if recorder.slide %}
+        <iframe id="DiaFrame" name="DiaFrame" scrolling="no" src="{% url 'liveSlide'%}?ip={{recorder.ipunder }}"></iframe>
+        {% endif%}
+    </div>
+    <!--
+    {% if recorder.slide %}
+    <div class="clear" style="float:right">
+        <label for="changeDisplay">{% trans "Change display"%}:</label>
+        <select name="changeDisplay" id="changeDisplay">
+        </select>
+    </div>
+    {% endif%}
+    -->
+</div>
+{% endblock %}
+
+{% block box %}
+{% endblock %}

@@ -1,0 +1,282 @@
+a:link, a:visited {
+	color: @complementary;
+	text-decoration:none;
+}
+a:hover, a:active {
+	color: @analogue;
+	text-decoration:none;
+}
+.noSpace(){
+    padding: 0;
+    margin: 0;
+}
+.borderBox(){
+    -moz-box-sizing:border-box;
+    box-sizing:border-box;
+}
+.global {
+    width: 100%;
+    max-width: @screenWidth;
+    min-width: 640px;
+    margin: auto;
+    padding: 10px;
+    .borderBox;
+    @media @desktop {
+         width: 90%; //90
+    }
+}
+.global-noSpace:extend(.global) {
+    padding: 0;
+}
+.inline(@vert:middle) {
+    display: inline-block;
+    vertical-align: @vert;
+}
+.nofocus() {
+    outline: none;
+}
+.radius(@val: 4px) {
+    border-radius: @val;
+    -moz-border-radius: @val;
+    -ms-border-radius: @val;
+    -webkit-border-radius: @val;
+}
+.cesure(){
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    -o-hyphens: auto;
+    hyphens: auto;
+}
+.tween (@prop,@time: 0.5s ,@ease: ease-out) {
+    transition: @prop @time @ease;
+    -webkit-transition: @prop @time @ease;
+    -moz-transition: @prop @time @ease;
+}
+.shadow (@offset:1px,@radius:1px,@tint:@mediumdark) {
+    -webkit-box-shadow: @offset @offset @radius @tint;
+    -moz-box-shadow: @offset @offset @radius @tint;
+    box-shadow: @offset @offset @radius @tint;
+}
+.txtshadow (@offset: 0,@radius: 5px,@tint: #333) {
+    -webkit-text-shadow: @offset @offset @radius @tint;
+    -moz-text-shadow: @offset @offset @radius @tint;
+    text-shadow: @offset @offset @radius @tint;
+}
+.links (@link,@hover,@deco: underline,@decoh: none) {
+    a:link, a:visited {
+        color: @link;
+        text-decoration:@deco;
+    }
+    a:hover, a:active {
+        color: @hover;
+        text-decoration:@decoh;
+    }
+}
+.linksIn (@link,@hover,@deco: underline,@decoh: none,@bg:none) {
+    &:link, &:visited {
+        color: @link;
+        text-decoration:@deco;
+    }
+    &:hover, &:active {
+        color: @hover;
+        text-decoration:@decoh;
+        background-color: @bg;
+    }
+}
+.bigLink (@bg:@complementary,@padding:5px,@rem:12,@display:block) {
+    &:link, &:visited {
+        display: @display;
+        text-decoration: none;
+        .radius;
+        color: #fff;
+        padding: @padding;
+        border: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+        text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        .nofocus;
+        margin-bottom: 0;
+        .rem(@rem);
+        font-weight: normal;
+        line-height: 1.428571429;
+        text-align: center;
+        cursor: pointer;
+        white-space: nowrap;
+        color:#fff;
+        background:@bg;
+    }
+    &:hover {
+        background:lighten(@bg,10%);
+    }
+    &:active {
+        -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+        box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    }
+}
+button, .log {
+    border: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    .nofocus;
+    .inline;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    .rem(14);
+    font-weight: normal;
+    line-height: 1.428571429;
+    text-align: center;
+    cursor: pointer;
+    .radius;
+    white-space: nowrap;
+    color:#fff;
+    background: @complementary;
+    &:hover {
+        background:lighten(@complementary, 10%);
+    }
+    &:active {
+       -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+        box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    }
+    * {
+        .inline;
+    }
+    i {
+        color:#fff;
+    }
+    span {
+    }
+    &.ok {
+        background: @green;
+        &:hover{
+            background: lighten(@green, 10%);
+        }
+    }
+    &.cancel {
+        background: @red;
+        &:hover{
+            background: lighten(@red,10%);
+        }
+    }
+    &.gotoHome {
+        background: @complementary;
+        &:hover{
+            background:lighten(@complementary,10%);
+        }
+    }
+}
+.inputButton(@col:@complementary) {
+    border: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    .nofocus;
+    .inline;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    .rem(14);
+    font-weight: normal;
+
+    line-height: 1.428571429;
+    text-align: center;
+    cursor: pointer;
+    .radius;
+    white-space: nowrap;
+    color:#fff;
+    background:@col;
+    &:hover {
+        background:lighten(@col, 10%);
+    }
+    &:active {
+       -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+        box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    }
+    * {
+        .inline;
+    }
+    i {
+        color:#fff;
+    }
+    span {
+    }
+}
+.gradient (@first, @last, @start: 0%, @stop: 100%) {
+    background: @first;
+    background: -moz-linear-gradient(top,  @first @start, @last @stop);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(@start,@first), color-stop(@stop,@last));
+    background: -webkit-linear-gradient(top,  @first @start,@last @stop);
+    background: -o-linear-gradient(top,  @first @start,@last @stop);
+    background: -ms-linear-gradient(top,  @first @start,@last @stop);
+    background: linear-gradient(to bottom,  @first @start,@last @stop);
+    filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{first}',endColorstr='@{last}',GradientType=0)";
+}
+.rem(@size, @weight: normal){
+    font-size: ~"@{size}px";
+    @rem: (@size/@main-font-size);
+    font-size: ~"@{rem}rem";
+    font-weight: @weight;
+}
+.grid-2 > li {
+    width: floor((100%/2)-1);
+    .inline;
+    vertical-align: top;
+}
+.grid-3 > li {
+    width: floor((100%/3)-1);
+    .inline;
+    vertical-align: top;
+}
+.grid-4 > li {
+    width: floor((100%/4)-1);
+    .inline;
+    vertical-align: top;
+}
+.grid-5 > li {
+    width: floor((100%/5)-1);
+    .inline;
+    vertical-align: top;
+}
+li {
+    list-style: none;
+}
+fieldset {
+    border:1px dashed #ccc !important;
+}
+legend {
+    font-weight:bold;
+    .rem(12);
+    padding: 0 6px;
+    margin: 0 8px;
+}
+.fontA(@char) {
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: @char;
+}
+input.error, select.error {
+	/*input, select {
+		.shadow(0,10px,red); 
+	}*/
+	.shadow(0,10px,red);
+	
+}
+label.error {
+    color: red;
+    font-weight: normal !important;
+    text-align: left !important;
+    padding-left: 8px;
+    text-transform: none !important;
+    font-style: italic !important;
+}
+.noshadow () {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+.notxtshadow () {
+    -webkit-text-shadow: none;
+    -moz-text-shadow: none;
+    text-shadow: none;
+}

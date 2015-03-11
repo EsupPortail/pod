@@ -1,0 +1,49 @@
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+{% if video and video.slug != "" %}
+<span class="user-tools hidden-xs"><!-- ONLY VISIBLE TO THE VIDEO OWNER ! -->
+<a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Edit" %}">
+  <span class="glyphicon glyphicon-pencil"></span><span class="sr-only">{% trans "Edit" %}</span>
+</a>
+
+<a href="{% url 'video_completion' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add subtitles, contributors, download documents"%}">
+  <span class="glyphicon glyphicon-paperclip"></span><span class="sr-only">{% trans "Completion the video" %}</span>
+</a>
+
+<a href="{% url 'video_chapter' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Chapter the video" %}">
+  <span class="glyphicon glyphicon-list"></span><span class="sr-only">{% trans "Chapter the video" %}</span>
+</a>
+{%if user.is_staff%}
+<a href="{% url 'video_enrich' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Enrich the video" %}">
+  <span class="glyphicon glyphicon-file"></span><span class="sr-only">{% trans "Enrich the video" %}</span>
+</a>
+{%endif%}
+<a href="{% url 'video' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Watch the video" %}">
+  <span class="glyphicon glyphicon-film"></span><span class="sr-only">{% trans "Watch the video" %}</span>
+</a>
+{% if not video.encoding_in_progress %}
+<a href="{% url 'video_delete' slug=video.slug %}" class="btn btn-danger btn-xs" title="{% trans "Delete the video" %}">
+  <span class="glyphicon glyphicon-remove"></span><span class="sr-only">{% trans "Delete the video" %}</span>
+</a>
+{%endif%}
+</span>
+{%endif%}

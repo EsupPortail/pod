@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load i18n staticfiles %}
+{% load taggit_extras %}
+
+{% block bootstrap3_title %}{{ block.super }}{% trans 'Tags' %}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+    <link rel="stylesheet" type="text/css" href="{% static "JS/jqcloud/jqcloud.css" %}" />
+    <style type="text/css">
+        #wordcloud {
+            margin: 30px auto;
+            width: 600px;
+            height: 371px;
+            border: none;
+        }
+        #wordcloud span.w10, #wordcloud span.w9, #wordcloud span.w8, #wordcloud span.w7 {
+            text-shadow: 0px 1px 1px #ccc;
+        }
+        #wordcloud span.w3, #wordcloud span.w2, #wordcloud span.w1 {
+            text-shadow: 0px 1px 1px #fff;
+        }
+        div.jqcloud span.vertical {
+            -webkit-writing-mode: vertical-rl;
+            writing-mode: tb-rl;
+        }
+    </style>
+
+    <script type="text/javascript" src="{% static 'JS/jqcloud/jqcloud-1.0.4.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            {% get_tagcloud as tagscloud %}
+            var word_list = [
+                {% with tagscloudlist=tagscloud|dictsortreversed:'weight'|slice:':100' %}
+                    {% for tag in tagscloudlist %}
+                        {% if forloop.counter|divisibleby:2 %}
+                            {
+                                text: "{{ tag }}",
+                                weight: {{ tag.weight|floatformat:0 }},
+                                link: "{% url 'videos' %}?tag={{ tag.slug }}",
+                                html: {
+                                    class: 'vertical'
+                                }
+                            },
+                        {% else %}
+                            {
+                                text: "{{ tag }}",
+                                weight: {{ tag.weight|floatformat:0 }},
+                                link: "{% url 'videos' %}?tag={{ tag.slug }}",
+                                html: {
+                                    class: 'horizontal'
+                                }
+                            },
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}
+            ];
+
+            $('#wordcloud').jQCloud(word_list);
+        });
+    </script>
+{% endblock bootstrap3_extra_head %}
+
+{% block opengraph %}
+    <meta name="description" content="">
+	<!-- Open Graph data -->
+	<meta property="og:title" content="{% trans 'Tags' %}" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
+	<meta property="og:description" content="" /> 
+	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="active">{% trans 'Tags' %}</li>
+{% endblock breadcrumbs %}
+
+{% block mainToolbar %}{% endblock mainToolbar %}
+
+{% block stats %}{% endblock stats %}
+
+{% block article_title %}
+    {% trans 'Tags' %}
+{% endblock %}
+
+{% block article %}
+    {% block article_content %}
+        <div id="wordcloud">
+            <noscript>
+                {% with tagscloudlist=tagscloud|dictsortreversed:'weight'|slice:':100'  %}
+                    {% for tag in tagscloudlist %}
+                        - {{ tag }}<br />
+                    {% endfor %}
+                {% endwith %}
+            </noscript>
+        </div>
+    {% endblock article_content %}
+    {% block video_list %}{% endblock video_list %}
+{% endblock article %}
+
+{% block box %}
+    {{ block.super }}
+    {% block box_note %}{% endblock box_note %}
+    {% block box_info %}{% endblock box_info %}
+{% endblock box %}

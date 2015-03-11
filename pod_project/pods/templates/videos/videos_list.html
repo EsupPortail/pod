@@ -1,0 +1,116 @@
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load i18n list staticfiles %}
+{% load thumbnail %}
+
+<div id="videoList" class="row">
+    {% for video in videos %}
+        <div class="video-thumb col-xs-6 col-md-4">
+            <a
+                class="video-holder"
+                title="{{ video.title }}"
+                {% if channel %}
+                    {% if theme %}
+                        href="{% url 'video' slug=video.slug slug_c=channel.slug slug_t=theme.slug %}"
+                    {% else %}
+                        href="{% url 'video' slug=video.slug slug_c=channel.slug %}"
+                    {% endif %}
+                {% else %}
+                    href="{% url 'video' slug=video.slug %}"
+                {% endif %}
+            >
+                <span class="poster">
+                    <span class="play text-center">
+                        <span class="glyphicon glyphicon-play-circle"></span>
+                    </span>
+                    <span class="time-icons">
+                        <span class="time">{{ video.duration_in_time }}</span>
+                        <span class="icons">
+                            {% if video.password or video.is_restricted %}
+                                <span title="verrouillée" class="glyphicon glyphicon-lock"></span>
+                            {% endif %}
+                            {% with mediatype=video.get_mediatype|first %}
+                                {% if mediatype %}
+                                  {% if mediatype == "video" %}
+                                      <span title="video" class="glyphicon glyphicon-film"></span>
+                                  {% endif %}
+                                  {% if mediatype == "audio" %}
+                                      <span title="audio" class="glyphicon glyphicon-headphones"></span>
+                                  {% endif %}
+                                {% endif %}
+                            {% endwith %}
+                            {% if request.user and request.user == video.owner %}
+                                {% if video.is_draft %}
+                                    <span title="en ligne" class="glyphicon glyphicon-circle"></span>
+                                {% else %}
+                                    <span title="en ligne" class="glyphicon glyphicon-ok-circle"></span>
+                                {% endif %}
+                            {% endif %}
+                            {% if video.chapterpods_set.all or video.enrichpods_set.all %}
+                                <span title="chapitres" class="glyphicon glyphicon-list"></span>
+                            {% endif %}
+                        </span>
+                    </span>
+                    {% if video.thumbnail %}
+                        <img
+                            src="{% thumbnail video.thumbnail 285x160 crop upscale subject_location=video.thumbnail.subject_location %}"
+                            alt="{{ video.title }}"
+                            class="preview"
+                        />
+                    {% else %}
+                        <img src="static/images/default.png" class="preview" alt="{{ video.title }}" />
+                    {% endif %}
+                </span>
+                <h5>{{ video.title|truncatechars:36 }} {% is_new video %}</h5>
+            </a>
+            {% if user.is_authenticated and video.owner == request.user %}
+                <span class="user-tools hidden-xs"><!-- ONLY VISIBLE TO THE VIDEO OWNER ! -->
+                    <a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans 'Edit' %}">
+                        <span class="glyphicon glyphicon-pencil"></span><span class="sr-only">{% trans 'Edit' %}</span>
+                    </a>
+                    <a href="{% url 'video_completion' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans 'Add subtitles, contributors, download documents' %}">
+                        <span class="glyphicon glyphicon-paperclip"></span><span class="sr-only">{% trans 'Completion' %}</span>
+                    </a>
+                    <a href="{% url 'video_chapter' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans 'Chapter' %}">
+                        <span class="glyphicon glyphicon-list"></span><span class="sr-only">{% trans 'Chapter' %}</span>
+                    </a>
+                    {% if user.is_staff %}
+                        <a href="{% url 'video_enrich' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans 'Enrich' %}">
+                            <span class="glyphicon glyphicon-file"></span><span class="sr-only">{% trans 'Enrich' %}</span>
+                        </a>
+                    {% endif %}
+                    {% if not video.encoding_in_progress %}
+                        <a href="{% url 'video_delete' slug=video.slug %}" class="btn btn-danger btn-xs" title="{% trans 'Delete' %}">
+                            <span class="glyphicon glyphicon-remove"></span><span class="sr-only">{% trans 'Delete' %}</span>
+                        </a>
+                    {% endif %}
+                </span>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+<div id="pager" class="text-center">
+    {% block pagination %} {% pagination videos %} {% endblock %}
+</div>
+<script>
+    $('div.results').html('{{ videos.paginator.count }} {% trans 'Videos' %}');
+</script>

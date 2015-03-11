@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+
+{% block bootstrap3_title %}{{ block.super }}{% trans "Lives" %}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<script type="text/javascript">window.setInterval("location.reload(true)",30000);</script>
+{% endblock bootstrap3_extra_head %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li class="active">{% trans "Lives" %}</li>
+{%endblock%}
+
+{% block mainToolbar %}
+{% endblock mainToolbar %}
+
+{% block article_title %}
+    {% trans "Lives" %}
+{% endblock %}
+
+{% block article %}
+    {% block article_content %}
+        {{ flatpage.content }}
+    {% endblock article_content %}
+    {% block video_list %}
+<div id="video-list" class="row">
+{% for building in buildings %}
+	<div class="video-thumb col-xs-6 col-md-4">
+	   <h5>{{building.name}}</h5>
+      {% if building.image %}
+	      <img alt="img" src="{% thumbnail building.image 285x160 crop upscale subject_location=building.image.subject_location %}" alt="{{building.name}}">
+	  {%else%}
+	      <img alt="img" src="{% static DEFAULT_IMG %}">
+	  {% endif %}
+	  <ul class="rooms_list">     
+      {% for recorder in building.recorder_set.all%}
+		 <li>
+			    {%if recorder.status %}
+				       <a href="{% url "live" pk=recorder.id %}" class="live_on">{{recorder.name}}</a>
+			    {%else%}
+				       <span class="live_off">{{recorder.name}}</span>
+			    {%endif%}
+			    {% if recorder.gmapurl %}
+				       <a href="{{recorder.gmapurl}}" target="_blank"><img src="{% static "images/pod_geoloc.png" %}" align="absbottom" alt="géolocalisation" title="plan d'accès"/></a>
+			    {%endif%}
+		 </li>
+      {%endfor%}
+      </ul>
+	</div>
+{% endfor %}
+</div>
+    {% endblock video_list %}
+{% endblock article %}
+
+
+{% block box %}
+{{ block.super }}
+{% block box_note %} {% endblock box_note %}
+{% block box_info %} {% endblock box_info %}
+{% endblock %}
+
+

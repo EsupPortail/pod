@@ -1,0 +1,155 @@
+[
+  {
+    "model": "core.encodingtype",
+    "pk": 1,
+    "fields": {
+      "bitrate_audio": "96k",
+      "output_height": 240,
+      "name": "240",
+      "mediatype": "video",
+      "bitrate_video":"300k"
+    }
+  },
+  {
+    "model": "core.encodingtype",
+    "pk": 2,
+    "fields": {
+      "bitrate_audio": "128k",
+      "output_height": 480,
+      "name": "480",
+      "mediatype": "video",
+      "bitrate_video":"600k"
+    }
+  },
+  {
+    "model": "core.encodingtype",
+    "pk": 3,
+    "fields": {
+      "bitrate_audio": "196k",
+      "output_height": 720,
+      "name": "720",
+      "mediatype": "video",
+      "bitrate_video":"1000k"
+    }
+  },
+  {
+    "model": "core.encodingtype",
+    "pk": 4,
+    "fields": {
+      "bitrate_audio": "196k",
+      "output_height": 1080,
+      "name": "1080",
+      "mediatype": "video",
+      "bitrate_video":"1500k"
+    }
+  },
+  {
+    "model": "core.encodingtype",
+    "pk": 5,
+    "fields": {
+      "bitrate_audio": "128k",
+      "output_height": 240,
+      "name": "audio",
+      "mediatype": "audio",
+      "bitrate_video":""
+    }
+  },
+  {
+    "pk": 1, 
+    "model": "flatpages.flatpage", 
+    "fields": {
+        "content_fr": "<p>Bienvenue</p>\r\n", 
+        "registration_required": false, 
+        "content_en": "<p>Welcome</p>\r\n", 
+        "title": "Home", 
+        "url": "/", 
+        "template_name": "", 
+        "title_en": "Home", 
+        "sites": [
+            1
+        ], 
+        "content": "<p>Welcome</p>\r\n", 
+        "enable_comments": false, 
+        "title_fr": "Accueil"
+    }
+  },
+    {
+        "pk": 1, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Manager", 
+            "permissions": [
+                65, 
+                66, 
+                67, 
+                25, 
+                26, 
+                110, 
+                111, 
+                74, 
+                75, 
+                101, 
+                102, 
+                92, 
+                93, 
+                83, 
+                84, 
+                98, 
+                99, 
+                100, 
+                89, 
+                90, 
+                116, 
+                117, 
+                104, 
+                105, 
+                106, 
+                107, 
+                108, 
+                109, 
+                119, 
+                120, 
+                121, 
+                86, 
+                87, 
+                113, 
+                114, 
+                77, 
+                78, 
+                95, 
+                96, 
+                97, 
+                80, 
+                81
+            ]
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "can delete file", 
+            "permissions": [
+                40, 
+                33, 
+                49
+            ]
+        }
+    },
+  {
+    "pk": 1, 
+    "model": "filer.folder", 
+    "fields": {
+        "rght": 2, 
+        "uploaded_at": "2014-03-11T14:13:36Z", 
+        "name": "root", 
+        "parent": null, 
+        "level": 0, 
+        "created_at": "2014-03-11T14:13:36Z", 
+        "modified_at": "2014-03-11T14:13:36Z", 
+        "lft": 1, 
+        "tree_id": 1, 
+        "owner": 1
+    }
+  }
+]

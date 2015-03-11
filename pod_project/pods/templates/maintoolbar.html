@@ -1,0 +1,49 @@
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+<div class="well well-sm">
+	<div class="row">
+		<div class="col-sm-8">
+			<form class="form-inline">
+				<label for="orderby"><span class="glyphicon glyphicon-sort"></span> {% trans "Sort by" %}</label>
+				<select class="form-control input-sm" id="orderby">
+					<option value="order_by_title">{% trans "Title A-Z" %}</option>
+                	<option value="order_by_-title">{% trans "Title Z-A" %}</option>
+                	<option value="order_by_date_added">{% trans "Date ascending" %}</option>
+                	<option value="order_by_-date_added">{% trans "Date descending" %}</option>
+				</select>
+				&nbsp;
+				<label for="perpage"><span class="glyphicon glyphicon-th"></span> {% trans "Items per page" %}</label>
+				<select class="form-control input-sm" id="perpage">
+					<option value="12">12</option>
+					<option value="24">24</option>
+					<option value="48">48</option>
+				</select>
+				<input name="" type="submit" class="sr-only">
+			</form>
+		</div>
+		{% block stats %}
+		<div class="col-sm-4  text-right">
+			<div class="results">{{videos.paginator.count}} {% trans "videos" %}</div>
+		</div>
+		{% endblock stats %}
+	</div>
+</div>

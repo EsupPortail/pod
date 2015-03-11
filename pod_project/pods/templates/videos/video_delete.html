@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block bootstrap3_title %}
+{% trans "Delete the video" %} {{form.instance.title}}
+{% endblock bootstrap3_title %}
+
+{% block bootstrap3_extra_head %}
+{% endblock bootstrap3_extra_head %}
+
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li> <li class="active"> {% trans "Delete the video" %} {{video.title}} </li>
+{% endblock %}
+
+
+
+{% block article_title %}
+{% trans "Delete the video" %} {{video.title}}
+{% endblock %}
+
+{% block mainToolbar %}
+{% endblock mainToolbar %}
+
+{% block article %}
+    {% block article_content %}
+        
+
+
+<form method="post" action="{% url 'video_delete' slug=video.slug %}" id="video_form" accept-charset="utf-8">
+
+{% csrf_token %}
+
+<fieldset>
+<legend>{% trans "Delete the video" %} {{video.title}}</legend>
+
+
+<div class="content form">
+    <div class="field">
+        {% if not video.encoding_in_progress %}
+        <div class="subfield"><p>{% trans "Are you sure you want to delete the video" %} <strong>{{video.title}}</strong> ?</p></div>	
+        {% else %}
+        <div class="subfield"><p>{% trans "You can not remove this video because it is still being encoded" %}</p></div>
+        {% endif %}
+    </div>
+</div>
+
+<p  align="center">
+<input type="button" value="{% trans "Cancel" %}" name="action1" onClick="history.go(-1);return true;"/>
+{% if not video.encoding_in_progress %}
+<input type="submit" value="{% trans "Delete" %}" name="action1"/>
+{% endif %}
+
+</p>
+</fieldset>
+</form>
+
+
+    {% endblock article_content %}
+    {% block video_list %}
+    {% endblock video_list %}
+{% endblock article %}
+
+
+{% block box %}
+<aside class="col-sm-3">
+{% block box_info %}
+{% endblock box_info %}
+{% block box_discipline %}
+{{block.super}}
+{% endblock box_discipline %}
+{% block box_tags %}
+{{block.super}}
+{% endblock box_tags %}
+{% block box_social %} {% endblock box_social %}
+{% block box_note %} {% endblock box_note %}
+</aside>
+{% endblock %}
+

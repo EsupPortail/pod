@@ -1,0 +1,164 @@
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load i18n list staticfiles %}
+
+<div
+    id="player"
+    {% with mediatype=video.get_mediatype|first %}
+        {% if mediatype == 'audio' %}
+           {% if video.is_richmedia %}
+                class="richaudio"
+           {% else %}
+                class="simpleaudio"
+           {% endif %}
+        {% else %}
+            {% if video.is_richmedia %}
+                class="richvideo"
+            {% else %}
+                class="simplevideo"
+            {% endif %}
+        {% endif %}
+    {% endwith %}
+>
+    {% if video.encodingpods_set.all %}
+        {% with mediatype=video.get_mediatype|first %}
+            {% if mediatype %}
+                {% if mediatype == 'video' %}
+                    <video
+                        id="player_video"
+                        class="video-js vjs-default-skin"
+                        controls
+                        preload="none"
+                        width="100%"
+                        height="400"
+                        {% if video.thumbnail %}
+                            poster="{{ video.thumbnail.url }}"
+                            data-setup='{"poster":"{{ video.thumbnail.url }}","playbackRates":[0.5, 1, 1.5, 2]}'
+                        {% else %}
+                            poster="{% static DEFAULT_IMG %}"
+                            data-setup='{"poster":"{% static DEFAULT_IMG %}","playbackRates":[0.5, 1, 1.5, 2]}'
+                        {% endif %}
+                        {% if request.GET.autoplay %}autoplay{% endif %}
+                    >
+                        {% for track in video.trackpods_set.all %}
+                            <track
+                                kind="{{ track.kind }}"
+                                src="{{ track.src.url }}"
+                                srclang="{{ track.lang }}"
+                                label="{% get_label_lang track.lang %}"
+                            >
+                        {% endfor %}
+
+                        {% for encoding in video.encodingpods_set.all %}
+                            <source
+                                src="/get_video_encoding/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
+                                type="{{ encoding.encodingFormat }}"
+                                data-res="{{ encoding.encodingType.output_height }}"
+                            >
+                        {% endfor %}
+                    </video>
+                {% endif %}
+                {% if mediatype == 'audio' %}
+                    <audio
+                        id="player_video"
+                        class="video-js vjs-default-skin"
+                        controls
+                        preload="none"
+                        width="100%"
+                        height="300"
+                        {% if video.thumbnail %}
+                            poster="{{ video.thumbnail.url }}"
+                            data-setup="{'poster':'{{ video.thumbnail.url }}'}"
+                        {% else %}
+                            poster="{% static DEFAULT_IMG %}"
+                            data-setup="{'poster':'{% static DEFAULT_IMG %}'}"
+                        {% endif %}
+                    >
+                        {% for track in video.trackpods_set.all %}
+                            <track
+                                kind="{{ track.kind }}"
+                                src="{{ track.src.url }}"
+                                srclang="{{ track.lang }}"
+                                label="{% get_label_lang track.lang %}"
+                            >
+                        {% endfor %}
+
+                        {% for encoding in video.encodingpods_set.all %}
+                            <source
+                                src="/get_video_encoding/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
+                                type="{{ encoding.encodingFormat }}"
+                                data-res="{{ encoding.encodingType.output_height }}"
+                            >
+                        {% endfor %}
+                    </audio>
+                {% endif %}
+            {% endif %}
+        {% endwith %}
+    {% else %}
+        <p style="color:white">{% trans "The video is currently being encoded." %}</p>
+    {% endif %}
+
+    {% if video.enrichpods_set.all %}
+        <div class="vjs-slide">&nbsp;</div>
+        <div class="vjs-title">&nbsp;</div>
+        <ul id="slides">
+            {% for chap in video.enrichpods_set.all %}
+                <li
+                    data-start="{{ chap.start }}"
+                    data-end="{{ chap.end }}"
+                    data-id="{{ chap.id }}"
+                    data-type="{{ chap.type }}"
+                    data-title="{{ chap.title }}"
+                    data-stop-video="{{ chap.stop_video }}"
+                >
+                    {% if chap.type %}
+                        <div class="content" >
+                            <noscript>
+                                {% if chap.type == 'image' %}
+                                    <img src="{{ chap.image.url }}" alt="{{ chap.title }}" />
+                                {% endif %}
+                                {% if chap.type == 'richtext' %}
+                                    <div id="caption_texte" >{{ chap.richtext|safe }}</div>
+                                {% endif %}
+                                {% if chap.type == 'weblink' %}
+                                    <object type="text/html" data="{{ chap.weblink }}" title="{{ chap.title }}"></object>
+                                {% endif %}
+                                {% if chap.type == 'document' %}
+                                    <object type="text/html" data="{{ chap.document.url }}" title="{{ chap.title }}"></object>
+                                {% endif %}
+                                {% if chap.type == 'embed' %}
+                                    <div id="caption_embed">{{ chap.embed|safe }}</div>
+                                {% endif %}
+                            </noscript>
+                        </div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if video.chapterpods_set.all %}
+        <ul id="chapters">
+            {% for chap in video.chapterpods_set.all %}
+                <li data-start="{{ chap.time }}" data-title="{{ chap.title }}">{{ chap.title }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>

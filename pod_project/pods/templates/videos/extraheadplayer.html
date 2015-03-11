@@ -1,0 +1,108 @@
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load i18n staticfiles %}
+
+<link href="{% static 'video-js/video-js.min.css' %}" rel="stylesheet" type="text/css" />
+<style>
+    {% if request.GET.is_iframe %}
+        .vjs-control.vjs-info-button:before {
+            font-family: FontAwesome;
+            content: "\f05a";
+        }
+        .video-js .vjs-slide > article > div, .video-js .vjs-slide > article > object {
+            width: 99%;
+            height: 95%;
+        }
+    {% endif %}
+
+    {{ channel.style }}
+
+    .vjs-control.vjs-chap-button:before {
+        font-family: FontAwesome;
+        content: "\f03a";
+    }
+
+    /* Position the button */
+    .vjs-res-button {
+        float: right;
+        line-height: 3em;
+    }
+    /* Don't show hover effects on title */
+    ul li.vjs-menu-title.vjs-res-menu-title:hover,
+    ul li.vjs-menu-title.vjs-disp-menu-title:hover,
+    ul li.vjs-menu-title.vjs-chap-menu-title:hover{
+        cursor: default;
+        background-color: transparent;
+        color: #CCC;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+    /* Needed to keep text visible in video.js 4.9 */
+    .vjs-res-button .vjs-control-text,
+    .vjs-disp-button .vjs-control-text {
+        width: auto;
+        height: auto;
+        clip: auto;
+        margin: 0;
+        left: 5px;
+    }
+</style>
+
+<script src="{% static 'JS/video-quality-selector.js' %}"></script>
+<script src="{% static 'JS/video-display-selector.js' %}"></script>
+<script src="{% static 'JS/video-chapter-selector.js' %}"></script>
+<script src="{% static 'JS/player.js' %}"></script>
+<script>
+    {% if video.overview and video.overview.width != None %}
+        var overview = '{{ video.overview.url }}';
+        var overview_width = {{ video.overview.width }};
+        var overview_height = {{ video.overview.height }};
+    {% else %}
+        var overview = '';
+    {% endif %}
+    {% if LOGO_PLAYER != '' %}
+        var logo_player = '{% static LOGO_PLAYER %}';
+    {% else %}
+        var logo_player = '';
+    {% endif %}
+    {% if request.GET.is_iframe %}
+        is_iframe = true;
+    {% else %}
+        is_iframe = false;
+    {% endif %}
+    {% with mediatype=video.get_mediatype|first %}
+        {% if mediatype == 'audio' %}
+            list_disp = {'0/100': 'only media'};
+            defaultDisp = '0/100';
+        {% endif %}
+        {% if mediatype == 'video' %}
+            {% for encoding in video.get_encoding_240 %}
+                {% if encoding.encodingFormat == 'video/mp4' %}
+                    videosize_mp4 = {{ encoding.encodingFile.size }} * 8; //videosize in bytes
+                {% endif %}
+                {% if encoding.encodingFormat == 'video/webm' %}
+                    videosize_webm = {{ encoding.encodingFile.size }} * 8; //videosize in bytes
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</script>

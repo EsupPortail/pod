@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load i18n  %}
+
+{% block bootstrap3_title %}{% trans "My favorites" %}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+
+{% endblock bootstrap3_extra_head %}
+
+{% block article_title %}{% trans "My favorites" %}{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="active">{% trans "My favorites" %}</li>{% endblock %}
+
+{% block mainToolbar %}
+{% if request.user.favorites_set.all %}
+<div class="well well-sm">
+	<div class="row">
+		<div class="col-sm-8">
+			<form class="form-inline">
+				<label for="orderby"><span class="glyphicon glyphicon-sort"></span> {% trans "Sort by" %}</label>
+				<select class="form-control input-sm" id="orderby">
+					<option value="order_by_title">{% trans "Title A-Z" %}</option>
+                	<option value="order_by_-title">{% trans "Title Z-A" %}</option>
+                	<option value="order_by_date_added">{% trans "Date ascending" %}</option>
+                	<option value="order_by_-date_added">{% trans "Date descending" %}</option>
+				</select>
+				&nbsp;
+				<label for="perpage"><span class="glyphicon glyphicon-th"></span> {% trans "Items per page" %}</label>
+				<select class="form-control input-sm" id="perpage">
+					<option value="12">12</option>
+					<option value="24">24</option>
+					<option value="48">48</option>
+				</select>
+				<input name="" type="submit" class="sr-only">
+			</form>
+		</div>
+		{% block stats %}
+		<div class="col-sm-4  text-right">
+			<div class="results">{{request.user.favorites_set.all.count}} {% trans "videos" %}</div>
+		</div>
+		{% endblock stats %}
+	</div>
+</div>
+{%endif%}
+{% endblock mainToolbar %}
+
+{% block article %}
+{% if request.user.favorites_set.all %}
+<div id="objects_list">
+{% include "videos/videos_list.html" %}
+</div>
+{% else %}
+<p>{% trans "No video found" %}</p>
+{%endif%}
+{% endblock %}
+
+{% block box %}
+{{ block.super }}
+{% block box_social %} {% endblock box_social %}
+{% block box_note %} {% endblock box_note %}
+{% block box_info %} {% endblock box_info %}
+{% endblock %}

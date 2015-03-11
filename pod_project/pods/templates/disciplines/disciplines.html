@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load i18n staticfiles %}
+
+{% block bootstrap3_title %}{% trans 'Disciplines' %}{% endblock bootstrap3_title %}
+
+{% block bootstrap3_extra_head %}{% endblock bootstrap3_extra_head %}
+
+{% block opengraph %}
+    <meta name="description" content="">
+	<!-- Open Graph data -->
+	<meta property="og:title" content="{% trans 'Disciplines' %}" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
+	<meta property="og:description" content="" /> 
+	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+{% endblock %}
+
+{% block article_title %}{% trans 'Disciplines' %}{% endblock article_title %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="active">{% trans 'Disciplines' %}</li>{% endblock breadcrumbs %}
+
+{% block mainToolbar %}
+    <div class="well well-sm">
+        <div class="row">
+            <div class="col-sm-8">
+                <form class="form-inline">
+                    <label for="orderby">
+                        <span class="glyphicon glyphicon-sort"></span>
+                        {% trans 'Sort by' %}
+                    </label>
+                    <select class="form-control input-sm" id="orderby">
+                        <option value="order_by_title">{% trans 'Title A-Z' %}</option>
+                        <option value="order_by_-title">{% trans 'Title Z-A' %}</option>
+                        <option value="order_by_date_added">{% trans 'Date ascending' %}</option>
+                        <option value="order_by_-date_added">{% trans 'Date descending' %}</option>
+                    </select>
+                    &nbsp;
+                    <label for="perpage">
+                        <span class="glyphicon glyphicon-th"></span>
+                        {% trans 'Items per page' %}
+                    </label>
+                    <select class="form-control input-sm" id="perpage">
+                        <option value="12">12</option>
+                        <option value="24">24</option>
+                        <option value="48">48</option>
+                    </select>
+                    <input name="" type="submit" class="sr-only" />
+                </form>
+            </div>
+            {% block stats %}
+                <div class="col-sm-4  text-right">
+                    <div class="results">{{ video_count }} {% trans 'videos' %}</div>
+                    <div class="resultschannel">{{ disciplines.paginator.count }} {% trans 'Disciplines' %}</div>
+                </div>
+            {% endblock stats %}
+        </div>
+    </div>
+{% endblock mainToolbar %}
+
+{% block article %}
+    {% block article_content %}{% endblock article_content %}
+    {% block video_list %}
+        <div id="objects_list">
+            {% include 'disciplines/disciplines_list.html' %}
+        </div>
+    {% endblock video_list %}
+{% endblock article %}
+
+{% block box %}
+    {{ block.super }}
+    {% block box_note %}{% endblock box_note %}
+    {% block box_info %}{% endblock box_info %}
+{% endblock box %}

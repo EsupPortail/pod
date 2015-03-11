@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+
+{% block bootstrap3_title %}{{ block.super }}{% trans "Page not found" %}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<style>
+    span[frown] { transform: rotate(90deg); display:inline-block; color: #bbb; }
+</style>
+{% endblock bootstrap3_extra_head %}
+
+
+{% block breadcrumbs %}
+    {{ block.super }} <li class="active">{% trans "Page not found" %}</li>
+{%endblock%}
+
+{% block mainToolbar %}
+{% endblock mainToolbar %}
+
+{% block stats %}
+{% endblock stats %}
+
+{% block article_title %}
+    {% trans "Page not found" %}&nbsp;&nbsp;<span frown>:(</span>
+{% endblock %}
+
+{% block article %}
+    {% block article_content %}
+    <div>
+       <p>{% trans "The requested address was not found on this server" %}</p>
+       <p><a href="/" id="home">[ {% trans "Home" %} ]</a></p>
+    </div>
+    {% endblock article_content %}
+    {% block video_list %} {% endblock video_list %}
+    {% block pagination %} {% endblock pagination %}
+{% endblock article %}
+
+
+{% block box %}
+    <aside class="col-sm-3">
+    {% block box_info %}
+    {% endblock box_info %}
+    
+    {% block box_discipline %}{{ block.super }}{% endblock box_discipline %}
+    {% block box_tags %}{{ block.super }}{% endblock box_tags %}
+    {% block box_note %} {% endblock box_note %}
+    </aside>
+{% endblock %}
+
+

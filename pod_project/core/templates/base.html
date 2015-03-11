@@ -1,0 +1,263 @@
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+<!DOCTYPE html>
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% load i18n %}
+{% load taggit_extras %}
+{% load core %}
+<html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{{ TITLE_SITE }} - {% block bootstrap3_title %}{% endblock %}</title>
+        {% bootstrap_css %}
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        {% bootstrap_javascript jquery=True %}
+        <!-- SOCIAL NETWORK BUTTONS by NOIZWAVES http://noizwaves.github.io/bootstrap-social-buttons -->
+        {% with SOCIAL_CSS=TEMPLATE_THEME|add:'/theme/social-buttons.css' %}
+            <link href="{% static SOCIAL_CSS %}" rel="stylesheet" />
+        {% endwith %}
+        <!--FontAwesome for Bootstrap-->
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
+        <script src="{% static 'JS/navigation.js' %}"></script>
+        <script src="{% static 'JS/main.js' %}"></script>
+        {% if not request.GET.is_iframe %}
+            <script>
+                ajax_image = '<div align="center"><img src="{% static 'images/loading.gif' %}" alt="Loading..." /></div>';
+                expiration_date_second = {% timeleft request.session.get_expiry_date|date:'U' %};
+                nIntervId = setInterval(decreasetimeleft, 1000);
+                expiresession = "{% trans 'Warning, your session will expire' %}";
+                expiredsession = "{% trans 'Error, your session has expired' %}";
+                function decreasetimeleft() {
+                    if (expiration_date_second > 5) {
+                        expiration_date_second--;
+                    } else {
+                        clearInterval(nIntervId);
+                        alert(expiresession);
+                    }
+                }
+                {% if messages %}
+                    $(document).ready(function() {
+                        window.setTimeout(function() { $('.alert').alert('close'); }, 3000);
+                    });
+                {% endif %}
+            </script>
+        {% endif %}
+        {% block bootstrap3_extra_head %}{% endblock %}
+        {% block opengraph %}{% endblock %}
+    </head>
+    <body>
+        {% if not request.GET.is_iframe %}
+            <!-- select other website -->
+            {% if TEMPLATE_CUSTOM != None %}
+                {% with TEMPLATE_CUSTOM|add:'/header.html' as custom_header %}
+                    {% include custom_header %}
+                {% endwith %}
+            {% endif %}
+            <!-- end select other website -->
+            <!-- header -->
+            {% include 'header.html' %}
+            <!-- header -->
+            <!-- navbar -->
+            {% include 'navbar.html' %}
+            <!-- navbar -->
+        {% endif %}
+        {% bootstrap_messages %}
+
+        {% block bootstrap3_content %}
+            <article class="container" role="main">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <ol class="breadcrumb">
+                            {% block breadcrumbs %}
+                                <li><a href="/">{% trans 'Home' %}</a></li>
+                            {% endblock breadcrumbs %}
+                        </ol>
+
+                        <h2>{% block article_title %}Bienvenue !{% endblock article_title %}</h2>
+
+                        {% block mainToolbar %}
+                            <div class="well well-sm">
+                                <div class="row">
+                                    {% block stats %}
+                                        <div class="col-sm-7">
+                                            <div class="results">4 vidéos trouvées</div>
+                                        </div>
+                                    {% endblock stats %}
+                                    <div class="col-sm-5 text-right">
+                                        <form class="form-inline">
+                                            <label for="orderby">
+                                                <span class="glyphicon glyphicon-sort"></span>
+                                                Trier par
+                                            </label>
+                                            <select class="form-control input-sm" id="orderby">
+                                                <option>A &rarr; Z</option>
+                                                <option>Z &rarr; A</option>
+                                                <option>Les plus récentes</option>
+                                                <option>Les plus anciennes</option>
+                                            </select>
+                                            <input name="" type="submit" class="sr-only" />
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endblock mainToolbar %}
+
+                        {% block article %}
+                            {% block article_content %}{% endblock article_content %}
+                            {% block video_list %}{% endblock video_list %}
+                            {% block pagination %}{% endblock pagination %}
+                        {% endblock article %}
+                        <p>&nbsp;</p>
+                    </div>
+                    {% if not request.GET.is_iframe %}
+                        {% block box %}
+                            <aside class="col-sm-3">
+                                {% block box_social %}
+                                    <div class="widget social" id="share">
+                                        <h4>
+                                            <span class="glyphicon glyphicon-send"></span>
+                                            {% trans 'Share' %}
+                                        </h4>
+                                        <div class="row text-center">
+                                            <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-facebook btn-sm" title="Partager sur Facebook"><i class="fa fa-facebook fa-fw"></i></a>
+                                            <a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-twitter btn-sm" title="Partager sur Twitter"><i class="fa fa-twitter fa-fw"></i></a>
+                                            <a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-google-plus btn-sm" title="Partager sur Google+"><i class="fa fa-google-plus fa-fw"></i></a>
+                                            <a target="_blank" href="javascript:void((function()%7Bvar%20e=document.createElement('script');e.setAttribute('type','text/javascript');e.setAttribute('charset','UTF-8');e.setAttribute('src','http://assets.pinterest.com/js/pinmarklet.js?r='+Math.random()*99999999);document.body.appendChild(e)%7D)());" class="btn btn-pinterest btn-sm" title="Partager sur Pinterest"><i class="fa fa-pinterest fa-fw"></i></a>
+                                        </div>
+                                    </div>
+                                {% endblock box_social %}
+                                {% block box_discipline %}
+                                    <div class="widget">
+                                        <h4>
+                                            <span class="glyphicon glyphicon-book"></span>
+                                            {% trans 'Disciplines' %}
+                                            <a href="{% url 'disciplines' %}" title="{% trans 'See all' %}">
+                                                <span class="glyphicon glyphicon-list pull-right"></span>
+                                            </a>
+                                        </h4>
+                                        <form class="form" method="get">
+                                            <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') && (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline">
+                                                <option value="#" class="btn btn-default btn-sm btn-block">{% trans "Disciplines" %}...</option>
+                                                {% for disc in DISCIPLINES %}
+                                                    <option value="{{disc.slug}}" class="btn btn-default btn-sm btn-block" data-value="{% url 'videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
+                                                {% endfor %}
+                                            </select>
+                                            <input type="submit" value="Valider" class="btn btn-default btn-sm sr-only" />
+                                        </form>
+                                    </div>
+                                {% endblock box_discipline %}
+                                {% block box_tags %}
+                                    <div class="widget">
+                                        <h4>
+                                            <span class="glyphicon glyphicon-tag"></span>
+                                            {% trans 'Tags' %}
+                                            <a href="{% url 'tags' %}" title="{% trans 'See the cloud' %}">
+                                                <span class="glyphicon glyphicon-cloud pull-right"></span>
+                                            </a>
+                                        </h4>
+                                        {% get_tagcloud as tagscloud %}
+                                        {% with tagslist=tagscloud|dictsortreversed:'weight'|slice:':20' %}
+                                            {% for tag in tagslist %}
+                                                <a href="{% url 'videos' %}?tag={{ tag.slug }}">
+                                                    <span style="font-size:1{{tag.weight|floatformat:0}}px">{{ tag }}</span>
+                                                    <span class="badge">{{ tag.num_times }}</span>
+                                                </a>
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </div>
+                                {% endblock box_tags %}
+                                {% block box_note %}
+                                    <div class="widget notes text-right">
+                                        <h4 class="text-left">
+                                            <span class="glyphicon glyphicon-paperclip"></span>
+                                            {% trans 'Notes' %}
+                                        </h4>
+                                        <form>
+                                            <div class="form-group">
+                                                <textarea name="" cols="" rows="5" class="form-control"></textarea>
+                                            </div>
+                                            <a href="#" class="btn btn-success">
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                {% trans 'Save' %}
+                                            </a>
+                                            <input type="submit" value="Sauvegarder" class="btn btn-success sr-only" />
+                                        </form>
+                                    </div>
+                                {% endblock box_note %}
+                                {% block box_info %}
+                                    <div class="widget">
+                                        <h4>
+                                            <span class="glyphicon glyphicon-info-sign"></span>
+                                            {% trans 'Informations' %}
+                                        </h4>
+                                        Aliquam congue diam vitae metus elementum, nec fermentum leo facilisis. Nulla blandit placerat enim, nec tempor neque luctus nec. Duis ac tortor ipsum. Donec eget imperdiet lacus. Etiam elementum aliquam purus, ut rutrum sapien tempor sit amet. Morbi laoreet vel diam vitae elementum. Morbi semper sagittis adipiscing.
+                                    </div>
+                                {% endblock box_info %}
+                                {% block box_filtre %}
+                                {% endblock box_filtre %}
+                            </aside>
+                        {% endblock box %}
+                    {% endif %}
+                </div>
+            </article>
+        {% endblock bootstrap3_content %}
+
+        {% if not request.GET.is_iframe %}
+            <!-- footer -->
+            {% if TEMPLATE_CUSTOM != None %}
+                {% with TEMPLATE_CUSTOM|add:'/footer.html' as custom_footer %}
+                    {% include custom_footer %}
+                {% endwith %}
+            {% endif %}
+            <!-- footer -->
+
+            <!-- DIV MEDIA BOX -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">{% trans 'My files' %}</h4>
+                            <small>{% trans 'You will find here all your folders and files' %}</small>
+                        </div>
+                        <div class="modal-body" id="mediabox"></div>
+                        <div class="modal-footer row">
+                            <div class="col-xs-10 text-left">
+                                <small>{% blocktrans %}"upload" allows you to import one or more files from your computer.<br/> The "Clipboard" is a temporary space that welcomes new files and files to move. Use the arrow "→" and "⇐" to move files to and from the "Clipboard" finally click <img src="/static/filer/img/select_item.gif" alt="Select this file"/> to select a file. Feel free to watch the video help for using the file manager.{% endblocktrans %}</small>
+                            </div>
+                            <div class="col-xs-2">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+                            </div>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        {% endif %}
+    </body>
+</html>

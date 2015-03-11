@@ -1,0 +1,67 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.pyc
+
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite*
+
+
+# OS generated files #
+######################
+.DS_Store?
+ehthumbs.db
+Icon?
+Thumbs.db
+*.swp
+.*.swp
+*~
+*.lock
+*.out
+
+# Custom files  #
+#################
+*settings.py
+*urls-lille1.py
+*wsgi.py
+import_data/
+media/
+*pods/fixtures/
+pod_project/urls.py
+## Lang files
+*.po
+*.mo
+## Others
+jwplayer/
+*pod_project/static/
+pod_project/pods/viewsv1.py
+*.bak
+
+# IDE Files #
+#############
+.idea
+
+# Certificates #
+################
+*.crt
+*.key
+

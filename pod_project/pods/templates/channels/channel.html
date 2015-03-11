@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load i18n list staticfiles %}
+
+{% block bootstrap3_title %}{{ channel.title }}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+    <style>
+        {{ channel.style }}
+    </style>
+{% endblock bootstrap3_extra_head %}
+
+{% block opengraph %}
+    <meta name="description" content="{{ channel.description|striptags|addslashes|linebreaksbr|truncatechars:150 }}">
+	<!-- Open Graph data -->
+	<meta property="og:title" content="{{ channel.title }}" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.jpg' %}" />
+	<meta property="og:description" content="{{ channel.description|striptags|addslashes|linebreaksbr|truncatechars:250  }}" /> 
+	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+{% endblock %}
+
+{% block article_title %}{{ channel.title }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li>
+        <a href="{% url 'channels' %}">
+            {% trans 'Channels' %}
+        </a>
+    </li>
+    <li class="active">{{ channel.title }}</li>
+{% endblock breadcrumbs %}
+
+{% block bandeau %}
+    {% if channel.headband %}
+        <div class="channelheader">
+            <img src="{{ channel.headband.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" />
+        </div>
+    {% endif %}
+{% endblock bandeau %}
+
+{% block mainToolbar %}
+    <div class="well well-sm">
+        <div class="row">
+            <div class="col-sm-8">
+                <form class="form-inline">
+                    <label for="orderby"><span class="glyphicon glyphicon-sort"></span> {% trans 'Sort by' %}</label>
+                    <select class="form-control input-sm" id="orderby">
+                        <option value="order_by_title">{% trans 'Title A-Z' %}</option>
+                        <option value="order_by_-title">{% trans 'Title Z-A' %}</option>
+                        <option value="order_by_date_added">{% trans 'Date ascending' %}</option>
+                        <option value="order_by_-date_added">{% trans 'Date descending' %}</option>
+                    </select>
+                    &nbsp;
+                    <label for="perpage"><span class="glyphicon glyphicon-th"></span> {% trans 'Items per page' %}</label>
+                    <select class="form-control input-sm" id="perpage">
+                        <option value="12">12</option>
+                        <option value="24">24</option>
+                        <option value="48">48</option>
+                    </select>
+                    <input name="" type="submit" class="sr-only" />
+                </form>
+            </div>
+            {% block stats %}
+                <div class="col-sm-4  text-right">
+                    {% if videos %}
+                        <div class="results">{{ video_count }} {% trans 'videos' %}</div>
+                    {% endif %}
+                    {% if channel.themes.all %}
+                        <div class="resultstheme">{{ channel.themes.all.count }} {% trans 'Themes' %}</div>
+                    {% endif %}
+                    {% if user.is_authenticated and channel.owner == request.user%}
+                        <div class="resultschannel">
+                            <a href="{% url 'channel_edit' slug_c=channel.slug %}" title="{% trans 'edit' %}">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                {% trans 'edit' %}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endblock stats %}
+        </div>
+    </div>
+{% endblock mainToolbar %}
+
+
+{% block article %}
+    {% block article_content %}
+        {% if channel.description %}
+            {{ channel.description|safe }}
+        {% endif %}
+
+        {% if channel.themes.all %}
+            <p>{% trans 'Here related themes in this channel' %} :</p>
+            <form class="form visible-xs" method="GET">
+                <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') && (window.location = this.options[this.selectedIndex].getAttribute('data-value'));">
+                   <option value="#" class="btn btn-default btn-sm btn-block">{% trans 'Themes' %}...</option>
+                    {% for th in channel.themes.all %}
+                        {% if th == theme %}
+                            <option selected>{{ th.title }}</option>
+                        {% else %}
+                            <option value="{{ th.slug }}" data-value="{% url 'theme' slug_c=channel.slug slug_t=th.slug %}" class="btn btn-default btn-sm btn-block">
+                                {{ th.title }}
+                            </option>
+                       {% endif %}
+                    {% endfor %}
+                </select>
+                <input class="sr-only" type="submit" />
+            </form>
+            <hr />
+            <ul class="theme_list list-unstyled row hidden-xs">
+                {% for th in channel.themes.all %}
+                    {% if th == theme %}
+                        <li class="col-sm-4 col-xs-6">
+                            <a href="#" class="btn btn-info btn-sm btn-block" disabled="disabled">
+                                {{ th.title }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="col-sm-4 col-xs-6">
+                            {% if th.headband %}
+                                <img src="{{ th.headband.icons.32 }}" alt="{% trans 'Headband' %} {{ th.title }}" />
+                            {% endif %}
+                            <a class="btn btn-default btn-sm btn-block" href="{% url 'theme' slug_c=channel.slug slug_t=th.slug %}">
+                                {{ th.title }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if theme %}
+            {% if theme.headband %}
+                <img src="{{ theme.headband.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" />
+            {% endif %}
+            <h3>{{ theme.title }}</h3>
+            {% if theme.description %}
+                <p>{{ theme.description }}</p>
+            {% endif %}
+        {% endif %}
+    {% endblock article_content %}
+
+    {% block video_list %}
+        {% if videos %}
+            <div id="objects_list">
+                {% include 'videos/videos_list.html' %}
+            </div>
+        {% else %}
+            <p>{% trans 'no video found' %}</p>
+        {% endif %}
+    {% endblock video_list %}
+{% endblock article %}
+
+{% block box %}
+    {{ block.super }}
+    {% block box_note %}{% endblock box_note %}
+    {% block box_info %}{% endblock box_info %}
+{% endblock box %}

@@ -1,0 +1,130 @@
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load staticfiles %}
+{% load i18n %}
+{% load core %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_language_info_list for LANGUAGES as languages %}
+<header class="page-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-8 hidden-xs">
+                <a href="/" class="link hidden-xs">
+				    <h1 class="sr-only">{{ TITLE_SITE }}</h1>
+				    <img src="{% static LOGO_SITE %}" alt="{{ TITLE_SITE }}" />
+                </a>
+            </div>
+			<div class="user-area text-right col-sm-4 col-xs-12">
+				<form class="form form-inline" action="{% url 'set_language' %}" method="post">
+				    {% if languages|length > 1%}
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                        <div class="form-group">
+                            <label class="sr-only">{% trans "Language" %}</label>
+                            <select class="language form-control input-sm" name="language">
+                                {% for language in languages %}
+                                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                        {{ language.name_local }} ({{ language.code|upper }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <noscript>
+                                <input type="submit" value="{% trans 'Send' %}" />
+                            </noscript>
+                        </div>
+					{% endif %}
+					{% if user.is_authenticated %}
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">
+                                {% if user.get_full_name != '' %}
+                                    {{ user.get_full_name }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
+                                <span class="caret"></span>
+                                <span class="sr-only">{% trans 'Toggle dropdown' %}</span>
+                            </button>
+                            <ul class="dropdown-menu text-left" role="menu">
+                                <li>
+                                    <a href="{% url 'user_profile' %}">
+                                        <span class="glyphicon glyphicon-user"></span>
+                                        {% trans 'Profile' %}
+                                    </a>
+                                </li>
+                                {% if user.is_superuser or user.userprofile.is_manager %}
+                                    <li>
+                                        <a href="{% url 'admin:index' %}">
+                                            <span class="glyphicon glyphicon-cog"></span>
+                                            {% trans 'Administration' %}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li class="divider"></li>
+                                {% if request.user.pod_set.all %}
+                                    <li>
+                                        <a href="{% url 'pods.views.owner_videos_list' %}">
+                                            <span class="glyphicon glyphicon-facetime-video"></span>
+                                            {% trans 'My Videos' %}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if request.user.owner_channels.all %}
+                                    <li>
+                                        <a href="{% url 'pods.views.owner_channels_list' %}">
+                                            <span class="glyphicon glyphicon-th-large"></span>
+                                            {% trans 'My channels' %}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li>
+                                    <a href="{% url 'pods.views.favorites_videos_list' %}">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                        {% trans 'My Favorites' %}
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" class="disabled">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                        {% trans 'Expire session ' %} :<br />
+                                        {{ request.session.get_expiry_date }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'core.views.core_logout' %}">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                        {% trans 'Logout' %}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+					{% else %}
+					    <a href="{% url 'core.views.core_login' %}?next={{ request.get_full_path|urlencode }}" class="btn btn-warning btn-sm">
+                            <span class="glyphicon glyphicon-user"></span>
+                            {% trans 'Log in' %}
+                        </a>
+					{% endif %}
+                        {{WEBTV|safe}}
+				</form>
+			</div>
+		</div>
+	</div>
+</header>
