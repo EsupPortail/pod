@@ -26,6 +26,7 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from core.models import EncodingType
 from pods.models import EncodingPods
+from pods.models import Pod
 
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files import File
@@ -37,10 +38,15 @@ FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
 DEFAULT_THUMBNAIL_OUT_SIZE_HEIGHT = 480
 VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
 DEFAULT_OVERVIEW_OUT_SIZE_HEIGHT = 64
+DEBUG = getattr(settings, 'DEBUG', True)
 
-def encode_video(video):
+def encode_video(video_to_encode):
+    VIDEO_ID = video_to_encode.id
     start = "Start at : %s" % time.ctime()
-    print start
+    if DEBUG :
+        print start
+    video=None
+    video = Pod.objects.get(id=VIDEO_ID)
     video.encoding_status = "Start encode"
     video.infoVideo = "%s" %start
     video.save()
@@ -49,8 +55,20 @@ def encode_video(video):
     if os.path.exists(video.video.path):
         #DELETE PREVIOUS ENCODING
         ##### EncodingPods.objects.filter(video=video).delete()
+        if DEBUG :
+            print "DELETE PREVIOUS ENCODING"
+        video=None
+        video = Pod.objects.get(id=VIDEO_ID)
+        previous_encoding = EncodingPods.objects.filter(video=video)
+        video.infoVideo += "DELETE PREVIOUS ENCODING"
+        previous_encoding.delete()
+        video.save()
         
+        if DEBUG :
+            print "get video data"
         #GET VIDEO DATA
+        video=None
+        video = Pod.objects.get(id=VIDEO_ID)
         command = "%(ffprobe)s -v quiet -show_format -show_streams -print_format json -i %(src)s " %{ # add -count_frames to get nb_read_frames but it's quite long
                         'ffprobe':FFPROBE,
                         'src':video.video.path,
@@ -59,24 +77,45 @@ def encode_video(video):
         ffproberesult = commands.getoutput(command)
         info = json.loads(ffproberesult)
         #print info['streams'][1]['codec_long_name'], info['streams'][1]['duration']
+        video=None
+        video = Pod.objects.get(id=VIDEO_ID)
+        if video.infoVideo is None:
+            video.infoVideo = ""
         video.infoVideo += unicode(json.dumps(info, sort_keys=True, indent=4, separators=(',', ': ')), errors='ignore')
         video.save()
         #DURATION
+        video=None
+        video = Pod.objects.get(id=VIDEO_ID)
         video.encoding_status = "Get duration"
         video.save()
         duration = None
         try:
             duration = float("%s" %info["format"]['duration'])
+            video=None
+            video = Pod.objects.get(id=VIDEO_ID)
             video.duration = int(duration)
             video.save()
         except:
-            msg = u'\n***** Unexpected error :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
-            video.infoVideo += unicode(msg, errors='ignore')
-            video.encoding_status = ">>>>>> NO DURATION"
-            video.save()
-            send_email(">>>>>> NO DURATION", video)
+            try:
+                msg = u'\n***** Unexpected error :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
+                video=None
+                video = Pod.objects.get(id=VIDEO_ID)
+                if video.infoVideo is None:
+                    video.infoVideo = ""
+                video.infoVideo += unicode(msg, errors='ignore')
+                video.encoding_status = ">>>>>> NO DURATION"
+                video.save()
+                send_email(">>>>>> NO DURATION", video)
+            except:
+                msg = u'\n***** Unexpected error :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
+                video = Pod.objects.get(id=VIDEO_ID)
+                send_email(msg, video)
             return
         #PARSE STREAMS
+        video=None
+        video = Pod.objects.get(id=VIDEO_ID)
+        if video.infoVideo is None:
+            video.infoVideo = ""
         is_video = False
         in_width = 0
         in_height = 0
@@ -165,23 +204,31 @@ def encode_video(video):
                 send_email("NO CODEC TYPE FOUND", video)
                 return
         #FIN PARSE STREAMS
-        
+        if DEBUG :
+            print "FIN PARSE STREAMS"
+        video=None
+        video = Pod.objects.get(id=VIDEO_ID)
         #VIDEO/AUDIO FOLDER
         if not(os.access(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR , video.owner.username, "%s" %video.id) , os.F_OK)):
             os.makedirs(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR , video.owner.username, "%s" %video.id))
-        
+        if DEBUG :
+            print "VIDEO/AUDIO FOLDER"
         # FILER FOLDER
         rootFolder =  Folder.objects.get(name=video.owner,owner=video.owner,level=0)
         folder, created = Folder.objects.get_or_create(name=video.slug, owner=video.owner, parent=rootFolder)
-        
+        if DEBUG :
+            print "FILER FOLDER"
+        video=None
         #FOR VIDEO 
         if is_video:
             #MAKE THUMBNAILS
+            video = Pod.objects.get(id=VIDEO_ID)
             if int(video.duration) > 3:
-                add_thumbnails(video, in_width, in_height, folder)
+                add_thumbnails(VIDEO_ID, in_width, in_height, folder)
+            video=None
             #MAKE OVERVIEW
             if nb_frames > 100:
-                add_overview(video, in_width, in_height, nb_frames)
+                add_overview(VIDEO_ID, in_width, in_height, nb_frames)
             
             list_encod_video = EncodingType.objects.filter(mediatype='video').order_by('output_height') #.exclude(output_height=1080)
             for encod_video in list_encod_video:
@@ -192,34 +239,45 @@ def encode_video(video):
                 except:
                     pass
                 if in_height >= encod_video.output_height:
+                    video = Pod.objects.get(id=VIDEO_ID)
                     videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR , video.owner.username, "%s" %video.id, 
                                     "video_%s_%s.mp4"%(video.id,encod_video.output_height))
                     videourl = os.path.join(VIDEOS_DIR , video.owner.username, "%s" %video.id, 
                                     "video_%s_%s.mp4"%(video.id,encod_video.output_height))
-                    encode_mp4(video, in_width, in_height, bufsize, in_audio_rate, encod_video, videofilename, videourl)
+                    encode_mp4(VIDEO_ID, in_width, in_height, bufsize, in_audio_rate, encod_video, videofilename, videourl)
                     if os.access(videofilename, os.F_OK):
-                        encode_webm(video, videofilename, encod_video, bufsize)
+                        encode_webm(VIDEO_ID, videofilename, encod_video, bufsize)
         else:
             list_encod_audio = EncodingType.objects.filter(mediatype='audio')
             for encod_audio in list_encod_audio:
+                video = Pod.objects.get(id=VIDEO_ID)
                 audiofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR , video.owner.username, "%s" %video.id, 
                                     "audio_%s_%s.mp3"%(video.id,encod_audio.output_height))
                 audiourl = os.path.join(VIDEOS_DIR , video.owner.username, "%s" %video.id, 
                                 "audio_%s_%s.mp3"%(video.id,encod_audio.output_height))
-                encode_mp3(video, audiofilename, audiourl, encod_audio, in_audio_rate)
+                encode_mp3(VIDEO_ID, audiofilename, audiourl, encod_audio, in_audio_rate)
                 if os.access(audiofilename, os.F_OK):
-                    encode_wav(video, audiofilename, in_audio_rate, encod_audio)
-        
+                    encode_wav(VIDEO_ID, audiofilename, in_audio_rate, encod_audio)
+        video = None
+        video = Pod.objects.get(id=VIDEO_ID)
         video.encoding_status = "DONE at %s" % time.ctime()
         video.save()
                         
     else:
+        video = None
+        video = Pod.objects.get(id=VIDEO_ID)
+        if video.infoVideo is None:
+            video.infoVideo = ""
         video.infoVideo += "\n!!! Video file not found !!!"
         video.save()
         send_email("\n!!! Video file not found !!!", video)
 
     end = "End : %s" % time.ctime()
     print end
+    video = None
+    video = Pod.objects.get(id=VIDEO_ID)
+    if video.infoVideo is None:
+        video.infoVideo = ""
     video.infoVideo += "\n %s" %end
     video.encoding_in_progress=False
     video.save()
@@ -249,7 +307,10 @@ def send_email(msg, video):
 
 
 #DEF THUMBNAILS
-def add_thumbnails(video, in_w, in_h, folder):
+def add_thumbnails(video_id, in_w, in_h, folder):
+    if DEBUG :
+        print "ADD THUMBNAILS"
+    video = Pod.objects.get(id=video_id)
     video.encoding_status = "ADD THUMBNAILS"
     video.save()
     tempfile = NamedTemporaryFile()
@@ -270,8 +331,12 @@ def add_thumbnails(video, in_w, in_h, folder):
     output = ""
     f.close()
     
+    video=None
+    video = Pod.objects.get(id=video_id)
     for i in range(2,5):
         if os.access("%s_%s.png"%(tempfile.name, i), os.F_OK):
+            if DEBUG :
+                print "THUMBNAILS %s" %i
             upc_image, created = Image.objects.get_or_create(folder=folder, name="%s_%s.png"%(video.slug,i))
             upc_image.file.save("%s_%s.png"%(video.slug,i), File(open("%s_%s.png"%(tempfile.name, i))), save=True)
             upc_image.owner=video.owner
@@ -281,19 +346,22 @@ def add_thumbnails(video, in_w, in_h, folder):
             except:
                 pass
             if i == 2:
-                print "video thumbnail"
                 video.thumbnail = upc_image
-                video.save()
         else:
+            if video.infoVideo is None:
+                video.infoVideo = ""
             video.infoVideo += "\n [add_thumbnails] error accessing %s_%s.png" %(tempfile.name, i)
-            video.save()
+    video.save()
     try:
         os.remove("%s_1.png"%(tempfile.name))
         os.remove("%s_5.png"%(tempfile.name))
     except:
         pass
 
-def add_overview(video, in_w, in_h, frames):
+def add_overview(video_id, in_w, in_h, frames):
+    if DEBUG :
+        print "OVERVIEW"
+    video = Pod.objects.get(id=video_id)
     thumbnails = int(frames/100)
     scale = get_scale(in_w, in_h, DEFAULT_OVERVIEW_OUT_SIZE_HEIGHT)
     
@@ -317,6 +385,10 @@ def add_overview(video, in_w, in_h, frames):
             os.remove(overviewfilename)
         else:
             # there does not seem to be errors, follow the rest of the procedures
+            if DEBUG :
+                print "OVERVIEW : %s" %overviewurl
+            video = None
+            video = Pod.objects.get(id=video_id)
             video.overview = overviewurl
             video.save()
     
@@ -325,7 +397,11 @@ def add_overview(video, in_w, in_h, frames):
     output = ""
     f.close()
 
-def encode_mp4(video, in_w, in_h, bufsize, in_ar, encod_video, videofilename, videourl):
+def encode_mp4(video_id, in_w, in_h, bufsize, in_ar, encod_video, videofilename, videourl):
+    if DEBUG :
+        print "ENCODING MP4 %s" %encod_video.output_height
+    video = None
+    video = Pod.objects.get(id=video_id)
     video.encoding_status = "ENCODING MP4 %s" %encod_video.output_height
     video.save()
     scale = get_scale(in_w, in_h, encod_video.output_height)
@@ -344,41 +420,65 @@ def encode_mp4(video, in_w, in_h, bufsize, in_ar, encod_video, videofilename, vi
         }
     
     ffmpegresult = commands.getoutput(com)
+    video = None
+    video = Pod.objects.get(id=video_id)
+    if video.infoVideo is None:
+        video.infoVideo = ""
     video.infoVideo +=  "\n END ENCOD_VIDEO MP4 %s %s" %(encod_video.output_height, time.ctime())
+    video.save()
     output = "\n\n ENCOD_VIDEO MP4 %s \n" %encod_video.output_height
     output += 80*"~"
     output += "\n"
     output += ffmpegresult
+    
+    if DEBUG :
+        print "ENCOD_VIDEO MP4 %s \n" %encod_video.output_height
     
     if os.access(videofilename, os.F_OK): # outfile exists
         # There was a error cause the outfile size is zero
         if (os.stat(videofilename).st_size==0): 
             # We remove the file so that it does not cause confusion
             output += "\nERROR : Output size is 0\n"
+            video = None
+            video = Pod.objects.get(id=video_id)
+            if video.infoVideo is None:
+                video.infoVideo = ""
             video.infoVideo +=  "\nERROR : Output size is 0\n"
+            video.save()
             os.remove(videofilename)
             send_email("ERROR ENCODING MP4 %s Output size is 0" %encod_video.output_height, video)
         else:
             # there does not seem to be errors, follow the rest of the procedures
+            video = None
+            video = Pod.objects.get(id=video_id)
             ep, created = EncodingPods.objects.get_or_create(video=video, encodingType=encod_video, encodingFormat="video/mp4")
             ep.encodingFile = videourl
             ep.save()
+            video.save()
             
-    video.save()
+    
     f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR , video.owner.username, "%s" %video.id, "encode.log"), 'a+b')
     f.write(output)
     output = ""
     f.close()
 
 
-def encode_webm(video, videofilename, encod_video, bufsize):
+def encode_webm(video_id, videofilename, encod_video, bufsize):
+    if DEBUG :
+        print "ENCODING WEBM %s" %encod_video.output_height
+    video = Pod.objects.get(id=video_id)
     video.encoding_status = " ENCODING WEBM %s" %encod_video.output_height
     video.save()
     webmfilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR , video.owner.username, "%s" %video.id, 
                     "video_%s_%s.webm"%(video.id,encod_video.output_height))
     webmurl = os.path.join(VIDEOS_DIR , video.owner.username, "%s" %video.id, 
                     "video_%s_%s.webm"%(video.id,encod_video.output_height))
+    video = None
+    video = Pod.objects.get(id=video_id)
+    if video.infoVideo is None:
+        video.infoVideo = ""
     video.infoVideo +=  "\nSTART ENCOD_VIDEO WEBM %s %s" %(encod_video.output_height, time.ctime())
+    video.save()
     #com = "%(ffmpeg)s -i %(src)s -c:v libvpx -b:v %(bv)s -crf 25 -c:a libvorbis -b:a %(ba)s -threads 0 -y %(out)s"
     com = "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s" %{
             'ffmpeg':FFMPEG,
@@ -390,35 +490,49 @@ def encode_webm(video, videofilename, encod_video, bufsize):
     }
     
     ffmpegresult = commands.getoutput(com)
+    video = None
+    video = Pod.objects.get(id=video_id)
+    if video.infoVideo is None:
+        video.infoVideo = ""
     video.infoVideo +=  "\nEND ENCOD_VIDEO WEBM %s %s" %(encod_video.output_height, time.ctime())
-    output = "\n\n ENCOD_VIDEO WEBM %s  \n" %encod_video.output_height
+    video.save()
+    output = "\n\n END ENCOD_VIDEO WEBM %s  \n" %encod_video.output_height
     output += 80*"~"
     output += "\n"
     output += ffmpegresult
     output += "\n"
     output += 80*"~"
-    
+    if DEBUG :
+        print "END ENCOD_VIDEO WEBM %s %s" %(encod_video.output_height, time.ctime())
     if os.access(webmfilename, os.F_OK): # outfile exists
         # There was a error cause the outfile size is zero
         if (os.stat(webmfilename).st_size==0): 
             # We remove the file so that it does not cause confusion
             output += "\nERROR : Output size is 0\n"
+            video = None
+            video = Pod.objects.get(id=video_id)
+            if video.infoVideo is None:
+                video.infoVideo = ""
             video.infoVideo +=  "\nERROR : Output size is 0\n"
+            video.save()
             os.remove(webmfilename)
             send_email("ERROR ENCODING WEBM %s Output size is 0" %encod_video.output_height, video)
         else:
             # there does not seem to be errors, follow the rest of the procedures
+            video = None
+            video = Pod.objects.get(id=video_id)
             ep, created = EncodingPods.objects.get_or_create(video=video, encodingType=encod_video, encodingFormat="video/webm")
             ep.encodingFile = webmurl
             ep.save()
+            video.save()
             
-    video.save()
     f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR , video.owner.username, "%s" %video.id, "encode.log"), 'a+b')
     f.write(output)
     output = ""
     f.close()
 
-def encode_mp3(video, audiofilename, audiourl, encod_audio, in_ar):
+def encode_mp3(video_id, audiofilename, audiourl, encod_audio, in_ar):
+    video = Pod.objects.get(id=video_id)
     video.encoding_status = "Encoding MP3"
     video.save()
     
@@ -458,6 +572,8 @@ def encode_mp3(video, audiofilename, audiourl, encod_audio, in_ar):
     f.close()
 
 def encode_wav(video, audiofilename, in_ar, encod_audio):
+    video = None
+    video = Pod.objects.get(id=video_id)
     video.encoding_status = "ENCODING WAV"
     video.save()
     wavfilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR , video.owner.username, "%s" %video.id, 
