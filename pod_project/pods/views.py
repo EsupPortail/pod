@@ -521,6 +521,8 @@ def video_edit(request, slug=None):
           # Without this next line the tags won't be saved.
           video_form.save_m2m()
           messages.add_message(request, messages.INFO, _(u'The changes have been saved'))
+          # Without this next line the tags does not appear in search engine
+          vid.save()
           
           referer = request.POST.get("referer")
           if request.POST.get("action2") and request.POST.get("referer"): #go back
