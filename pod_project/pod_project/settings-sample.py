@@ -16,6 +16,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
+#Mettre url de production
 ALLOWED_HOSTS = ['pod.univ.fr']
 
 # Liste des applications
@@ -117,6 +118,7 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = ('fr', 'en')
 STATIC_URL = '/static/'
 
 # Fichiers dynamiques (contenu du site)
+# Attention, il faut creer le repertoire media
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'uploads')
@@ -214,6 +216,7 @@ WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">'
     'WEBTV<span class="glyphicon glyphicon-link"></span>' \
     '</a>'
 
+#Mettre à '' si non utilise
 FMS_LIVE_URL = 'rtmp://fms.univ.fr'
 FMS_ROOT_URL = 'http://root.univ.fr'
 
