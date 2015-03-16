@@ -195,10 +195,11 @@ $(document).on('change', "#displaytime", function(e) {
         }else {
              $('#txtpartage').val($('#txtpartage').val()+'&start='+parseInt(myPlayer.currentTime()));
         }
+        $('#txtposition').val(myPlayer.currentTime().toHHMMSS()); 
     }else{
          $('#txtpartage').val($('#txtpartage').val().replace(/(&start=)\d+/, ''));
+         $('#txtposition').val("");
     }
-    $('#txtposition').val(myPlayer.currentTime().toHHMMSS());
 });
 
 
