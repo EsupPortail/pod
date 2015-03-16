@@ -573,7 +573,7 @@ def encode_mp3(video_id, audiofilename, audiourl, encod_audio, in_ar):
     output = ""
     f.close()
 
-def encode_wav(video, audiofilename, in_ar, encod_audio):
+def encode_wav(video_id, audiofilename, in_ar, encod_audio):
     video = None
     video = Pod.objects.get(id=video_id)
     video.encoding_status = "ENCODING WAV"
