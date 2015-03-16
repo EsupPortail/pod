@@ -60,6 +60,8 @@ def encode_video(video_to_encode):
         video=None
         video = Pod.objects.get(id=VIDEO_ID)
         previous_encoding = EncodingPods.objects.filter(video=video)
+        if video.infoVideo is None:
+            video.infoVideo = ""
         video.infoVideo += "DELETE PREVIOUS ENCODING"
         previous_encoding.delete()
         video.save()
