@@ -188,10 +188,19 @@ $(document).on('change', '#autoplay', function() {
     writeInFrame();
 });
 $(document).on('change', "#displaytime", function(e) {
-    $('#txtpartage').val(($('#displaytime:checked').val()) ? $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime())) : $('#txtpartage').val().replace(/(start=)\d+/, '$10'));
+    //$('#txtpartage').val(($('#displaytime:checked').val()) ? $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime())) : $('#txtpartage').val().replace(/(start=)\d+/, '$10'));
+    if($('#displaytime').is(':checked')){
+        if($('#txtpartage').val().indexOf('start')>0){
+             $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime()));
+        }else {
+             $('#txtpartage').val($('#txtpartage').val()+'&start='+parseInt(myPlayer.currentTime()));
+        }
+    }else{
+         $('#txtpartage').val($('#txtpartage').val().replace(/(&start=)\d+/, ''));
+    }
     $('#txtposition').val(myPlayer.currentTime().toHHMMSS());
-    
 });
+
 
 $(document).on('click', "#share a", function() {
     var src = $(this).attr("href");
