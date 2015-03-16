@@ -373,13 +373,14 @@ def add_overview(video_id, in_w, in_h, frames):
 def encode_mp4(video_id, in_w, in_h, bufsize, in_ar, encod_video, videofilename, videourl):
     if DEBUG :
         print "ENCODING MP4 %s" %encod_video.output_height
+    
+    scale = get_scale(in_w, in_h, encod_video.output_height)
+    
     video = None
     video = Pod.objects.get(id=video_id)
     video.encoding_status = "ENCODING MP4 %s" %encod_video.output_height
     addInfoVideo(video, "\nSTART ENCOD_VIDEO MP4 %s - %s - %s - %s" %(encod_video.output_height, bufsize, scale, time.ctime()))
     video.save()
-    scale = get_scale(in_w, in_h, encod_video.output_height)
-
     #video.infoVideo +=  "\nSTART ENCOD_VIDEO MP4 %s - %s - %s - %s" %(encod_video.output_height, bufsize, scale, time.ctime())
     
     com = "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ar %(ar)s -ac 2 -b:a %(ba)s -movflags faststart -y %(out)s" %{
