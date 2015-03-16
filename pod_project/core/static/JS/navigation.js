@@ -188,10 +188,20 @@ $(document).on('change', '#autoplay', function() {
     writeInFrame();
 });
 $(document).on('change', "#displaytime", function(e) {
-    $('#txtpartage').val(($('#displaytime:checked').val()) ? $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime())) : $('#txtpartage').val().replace(/(start=)\d+/, '$10'));
-    $('#txtposition').val(myPlayer.currentTime().toHHMMSS());
-    
+    //$('#txtpartage').val(($('#displaytime:checked').val()) ? $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime())) : $('#txtpartage').val().replace(/(start=)\d+/, '$10'));
+    if($('#displaytime').is(':checked')){
+        if($('#txtpartage').val().indexOf('start')>0){
+             $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime()));
+        }else {
+             $('#txtpartage').val($('#txtpartage').val()+'&start='+parseInt(myPlayer.currentTime()));
+        }
+        $('#txtposition').val(myPlayer.currentTime().toHHMMSS()); 
+    }else{
+         $('#txtpartage').val($('#txtpartage').val().replace(/(&start=)\d+/, ''));
+         $('#txtposition').val("");
+    }
 });
+
 
 $(document).on('click', "#share a", function() {
     var src = $(this).attr("href");
