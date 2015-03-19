@@ -49,50 +49,57 @@ def paginator_number(context, cl, i, params, index):
     if i == DOT:
         return '<li class="disabled"><span class="current">... </span></li> '
     elif i == cl.number - 1:
-        return format_html('<li class="active"><span class="current">{0}</span> </li>', i+1)
+        return format_html('<li class="active"><span class="current">{0}</span> </li>', i + 1)
     else:
-        if index == 0 :
-            query_string = get_query_string(params, {PAGE_VAR: i+1})
+        if index == 0:
+            query_string = get_query_string(params, {PAGE_VAR: i + 1})
         else:
             query_string = get_query_string(params, {PAGE_VAR: i})
         return format_html('<li><a href="{0}"{1}>{2}</a> </li>',
                            query_string,
-                           mark_safe(' class="end"' if i == cl.paginator.num_pages-1 else ''),
-                           i+1)
+                           mark_safe(
+                               ' class="end"' if i == cl.paginator.num_pages - 1 else ''),
+                           i + 1)
+
 
 @register.simple_tag()
 def dict(params, new_key, new_value):
     old_params = params.copy()
-    return get_query_string(old_params, {"%s" %new_key: "%s" %new_value})
+    return get_query_string(old_params, {"%s" % new_key: "%s" % new_value})
+
 
 @register.simple_tag()
 def randomchoices():
     a = ("horizontal", "vertical")
     return random.choice(a)
 
+
 @register.filter_function
 def only_video(queryset):
     #args = [x.strip() for x in args.split(',')]
     return queryset.values_list('video', flat=True)
 
+
 @register.simple_tag()
 def get_query_string(params, new_params=None, remove=None):
-    if new_params is None: new_params = {}
-    if remove is None: remove = []
-    p = params #self.params.copy()
-    
+    if new_params is None:
+        new_params = {}
+    if remove is None:
+        remove = []
+    p = params  # self.params.copy()
+
     for r in remove:
         for k in list(p):
             if k.startswith(r):
                 del p[k]
-    
+
     for k, v in new_params.items():
         if v is None:
             if k in p:
                 del p[k]
         else:
             p[k] = v
-    return '?%s' %p.urlencode() # urlencode(sorted(p.items()))
+    return '?%s' % p.urlencode()  # urlencode(sorted(p.items()))
 
 
 @register.inclusion_tag('pagination.html', takes_context=True)
@@ -103,10 +110,10 @@ def pagination(context, cl, index=1):
     try:
         paginator = cl.paginator
         page_num = cl.number - index
-    
+
         ON_EACH_SIDE = 3
         ON_ENDS = 2
-        
+
         # If there are 10 or fewer pages, display links to every page.
         # Otherwise, do some fancy
         if paginator.num_pages <= 10:
@@ -119,37 +126,44 @@ def pagination(context, cl, index=1):
             if page_num > (ON_EACH_SIDE + ON_ENDS):
                 page_range.extend(range(0, ON_ENDS))
                 page_range.append(DOT)
-                page_range.extend(range(page_num - ON_EACH_SIDE, page_num + index))
+                page_range.extend(
+                    range(page_num - ON_EACH_SIDE, page_num + index))
             else:
                 page_range.extend(range(0, page_num + index))
             if page_num < (paginator.num_pages - ON_EACH_SIDE - ON_ENDS - 1):
-                page_range.extend(range(page_num + index, page_num + ON_EACH_SIDE + index))
+                page_range.extend(
+                    range(page_num + index, page_num + ON_EACH_SIDE + index))
                 page_range.append(DOT)
-                page_range.extend(range(paginator.num_pages - ON_ENDS, paginator.num_pages))
+                page_range.extend(
+                    range(paginator.num_pages - ON_ENDS, paginator.num_pages))
             else:
                 page_range.extend(range(page_num + index, paginator.num_pages))
-    
+
         return {
             'cl': cl,
             'page_range': page_range,
-            'params':context['request'].GET.copy(),
+            'params': context['request'].GET.copy(),
             '1': 1,
-            'index':index
+            'index': index
         }
     except:
         return {}
 
+
 @register.simple_tag()
 def user_menu(filter, queryset_user):
     html = ""
-    for user in queryset_user.filter(last_name__iregex=r'^%s+'%filter):
-        html+="<li class=\"subItem\"><a href=\"%s%s\">%s %s (%s)</a></li>" %(reverse('videos'), "?owner=%s" %user.username, user.last_name, user.first_name, user.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count())
+    for user in queryset_user.filter(last_name__iregex=r'^%s+' % filter):
+        html += "<li class=\"subItem\"><a href=\"%s%s\">%s %s (%s)</a></li>" % (reverse(
+            'videos'), "?owner=%s" % user.username, user.last_name, user.first_name, user.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count())
     return html
+
 
 @register.simple_tag()
 def video_count(owner):
     return owner.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count()
-    
+
+
 @register.simple_tag()
 def get_label_lang(lang):
     for tab in settings.ALL_LANG_CHOICES:
@@ -157,15 +171,18 @@ def get_label_lang(lang):
             return tab[1]
     return ""
 
+
 @register.inclusion_tag("videos/videos_list.html")
 def get_last_videos():
     return {
-            'videos': Pod.objects.filter(is_draft=False, encodingpods__gt=0).order_by("-date_added").distinct()[:9],
-        }
+        'videos': Pod.objects.filter(is_draft=False, encodingpods__gt=0).order_by("-date_added").distinct()[:9],
+        'DEFAULT_IMG': settings.DEFAULT_IMG
+    }
+
 
 @register.simple_tag()
 def is_new(video):
     diff = datetime.datetime.now().date() - video.date_added
     if diff.total_seconds() < 604800:
-        return '<span class="label label-danger">%s !</span>' %_('New')
+        return '<span class="label label-danger">%s !</span>' % _('New')
     return ""
