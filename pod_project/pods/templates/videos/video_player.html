@@ -86,11 +86,12 @@ voir http://www.gnu.org/licenses/
                         height="300"
                         {% if video.thumbnail %}
                             poster="{{ video.thumbnail.url }}"
-                            data-setup="{'poster':'{{ video.thumbnail.url }}'}"
+                            data-setup='{"poster":"{{ video.thumbnail.url }}","playbackRates":[0.5, 1, 1.5, 2]}'
                         {% else %}
                             poster="{% static DEFAULT_IMG %}"
-                            data-setup="{'poster':'{% static DEFAULT_IMG %}'}"
+                            data-setup='{"poster":"{% static DEFAULT_IMG %}","playbackRates":[0.5, 1, 1.5, 2]}'
                         {% endif %}
+                        {% if request.GET.autoplay %}autoplay{% endif %}
                     >
                         {% for track in video.trackpods_set.all %}
                             <track

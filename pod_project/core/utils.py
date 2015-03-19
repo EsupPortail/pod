@@ -554,6 +554,8 @@ def encode_webm(video_id, videofilename, encod_video, bufsize):
 
 
 def encode_mp3(video_id, audiofilename, audiourl, encod_audio, in_ar):
+    if DEBUG:
+        print "ENCODING MP3"
     video = Pod.objects.get(id=video_id)
     video.encoding_status = "Encoding MP3"
     addInfoVideo(video, "\nStart ENCOD_VIDEO MP3 %s" % (time.ctime()))
@@ -605,6 +607,8 @@ def encode_mp3(video_id, audiofilename, audiourl, encod_audio, in_ar):
 
 
 def encode_wav(video_id, audiofilename, in_ar, encod_audio):
+    if DEBUG:
+        print "ENCODING WAV"
     video = None
     video = Pod.objects.get(id=video_id)
     video.encoding_status = "ENCODING WAV"
