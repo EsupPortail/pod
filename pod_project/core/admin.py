@@ -30,35 +30,40 @@ from core.models import UserProfile, PagesMenuBas, EncodingType
 
 
 class PageForm(FlatpageForm):
+
     class Meta:
         model = FlatPage
         widgets = {
-            'content_fr' : CKEditorWidget(config_name='complete'),
-            'content_en' : CKEditorWidget(config_name='complete'),
+            'content_fr': CKEditorWidget(config_name='complete'),
+            'content_en': CKEditorWidget(config_name='complete'),
         }
 
-from modeltranslation.admin import TranslationAdmin 
+from modeltranslation.admin import TranslationAdmin
 
 
-class CustomFlatPageAdmin(TranslationAdmin): 
-    list_display = ('title', 'url', ) 
+class CustomFlatPageAdmin(TranslationAdmin):
+    list_display = ('title', 'url', )
     form = PageForm
 
-#unregister the default FlatPage admin and register CustomFlatPageAdmin. 
-admin.site.unregister(FlatPage) 
-admin.site.register(FlatPage, CustomFlatPageAdmin) 
+# unregister the default FlatPage admin and register CustomFlatPageAdmin.
+admin.site.unregister(FlatPage)
+admin.site.register(FlatPage, CustomFlatPageAdmin)
 
 
 admin.site.register(PagesMenuBas)
 
 # Define an inline admin descriptor for Employee model
 # which acts a bit like a singleton
+
+
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
     verbose_name_plural = 'profiles'
 
 # Define a new User admin
+
+
 class UserAdmin(UserAdmin):
     inlines = (UserProfileInline, )
 
@@ -66,4 +71,8 @@ class UserAdmin(UserAdmin):
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
-admin.site.register(EncodingType)
+
+class EncodingTypeAdmin(admin.ModelAdmin):
+    list_display = (
+        'name', 'bitrate_audio', 'bitrate_video', 'output_height', 'mediatype')
+admin.site.register(EncodingType, EncodingTypeAdmin)
