@@ -50,155 +50,179 @@ from filer.models import Folder
 import logging
 logger = logging.getLogger(__name__)
 
+
 @python_2_unicode_compatible
 class FileBrowse(models.Model):
-    document = FilerFileField(null=True, blank=True, verbose_name=u'Fichier selectionné')
+    document = FilerFileField(
+        null=True, blank=True, verbose_name=u'Fichier selectionné')
+
     def __str__(self):
-        return "%s" %self.document
+        return "%s" % self.document
+
 
 @python_2_unicode_compatible
 class PagesMenuBas(models.Model):
     page = models.ForeignKey(FlatPage)
-    order = models.PositiveSmallIntegerField(_('order'), default=1, blank=True, null=True)
-    
+    order = models.PositiveSmallIntegerField(
+        _('order'), default=1, blank=True, null=True)
+
     class Meta:
         ordering = ['order', 'page__title']
         verbose_name = _('page bottom menu')
         verbose_name_plural = _('pages bottom menu')
         #app_label = 'Menus'
         #db_table = 'core_pagesmenubas'
-        
+
     def __unicode__(self):
         return self.page.title
-    
+
     def __str__(self):
         return "%s" % (self.page.title)
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    image = FilerImageField(null=True, blank=True, verbose_name=_('Avatar'), 
-        help_text=_('This field allows you to add a photo ID. The picture will be displayed with yours videos.'))
-    description = models.TextField(_('Description'),max_length=100, blank=True, 
-        help_text=_('This field allows you to write a few words about yourself. The text will be displayed with yours videos.'))
+    image = FilerImageField(null=True, blank=True, verbose_name=_('Avatar'),
+                            help_text=_('This field allows you to add a photo ID. The picture will be displayed with yours videos.'))
+    description = models.TextField(_('Description'), max_length=100, blank=True,
+                                   help_text=_('This field allows you to write a few words about yourself. The text will be displayed with yours videos.'))
     url = models.URLField(_('Web link'), blank=True,
-        help_text=_('This field allows you to add an url.'))
-    
+                          help_text=_('This field allows you to add an url.'))
+
     auth_type = models.CharField(max_length=20, default="loc.")
     affiliation = models.CharField(max_length=50, default="member")
     commentaire = models.TextField(_('Comment'), blank=True, default="")
-    
+
     def __str__(self):
         return "%s" % (self.user)
-        
+
     class Meta:
         verbose_name = _('Profile')
         verbose_name_plural = _('Profiles')
         ordering = ('user',)
-    
+
     def is_manager(self):
-        return self.user.groups.filter(name='Manager')    
-    #def get_absolute_url(self):
+        return self.user.groups.filter(name='Manager')
+    # def get_absolute_url(self):
     #    return reverse('core.views.user')
-    
-@receiver(post_save, sender=User)    
+
+
+@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        #creation du profil
+        # creation du profil
         try:
             UserProfile.objects.create(user=instance)
         except:
-            msg = u'\n*****Unexpected error link :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
+            msg = u'\n*****Unexpected error link :%s - %s' % (
+                sys.exc_info()[0], sys.exc_info()[1])
             logger.error(msg)
-        #creation du repertoire pour ses documents
+        # creation du repertoire pour ses documents
         try:
-            Folder.objects.create(owner=instance,name=instance.username)
+            Folder.objects.create(owner=instance, name=instance.username)
             if not instance.groups.filter(name='can delete file').exists():
                 g = Group.objects.get(name='can delete file')
                 g.user_set.add(instance)
         except:
-            msg = u'\n*****Unexpected error link :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
+            msg = u'\n*****Unexpected error link :%s - %s' % (
+                sys.exc_info()[0], sys.exc_info()[1])
             print msg
             logger.error(msg)
 
 VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
 
+
 def get_storage_path(instance, filename):
     fname, dot, extension = filename.rpartition('.')
     try:
         i = fname.index("/")
-        return os.path.join(VIDEOS_DIR, instance.owner.username, '%s/%s.%s' % (os.path.dirname(fname),slugify(os.path.basename(fname)), extension))
+        return os.path.join(VIDEOS_DIR, instance.owner.username, '%s/%s.%s' % (os.path.dirname(fname), slugify(os.path.basename(fname)), extension))
     except:
         return os.path.join(VIDEOS_DIR, instance.owner.username, '%s.%s' % (slugify(fname), extension))
 
+
 @python_2_unicode_compatible
 class Video(models.Model):
-    video = models.FileField(_('Video'),  upload_to=get_storage_path, max_length=255)
-    allow_downloading = models.BooleanField(_('allow downloading'), default=False)
+    video = models.FileField(
+        _('Video'),  upload_to=get_storage_path, max_length=255)
+    allow_downloading = models.BooleanField(
+        _('allow downloading'), default=False)
     title = models.CharField(_('Title'), max_length=250)
     slug = models.SlugField(_('Slug'), unique=True, max_length=255,
-           help_text=_('Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'), 
-           editable=False)
+                            help_text=_(
+                                'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'),
+                            editable=False)
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
-    
+
     date_added = models.DateField(_('Creation date'), default=datetime.now)
-    date_evt = models.DateField(_(u'Date of the event'), default=datetime.now, blank=True, null=True)
-    description = RichTextField(_('Description'), config_name='complete', blank=True)
-    
+    date_evt = models.DateField(
+        _(u'Date of the event'), default=datetime.now, blank=True, null=True)
+    description = RichTextField(
+        _('Description'), config_name='complete', blank=True)
+
     view_count = models.PositiveIntegerField(default=0, editable=False)
-    
-    encoding_in_progress=models.BooleanField(default=False, editable=False)
-    encoding_status = models.CharField(_('Encoding status'), max_length=250, editable=False, blank=True, null=True)
-    
-    thumbnail = FilerImageField(null=True, blank=True, verbose_name=_('Thumbnail'))
-    
+
+    encoding_in_progress = models.BooleanField(default=False, editable=False)
+    encoding_status = models.CharField(
+        _('Encoding status'), max_length=250, editable=False, blank=True, null=True)
+
+    thumbnail = FilerImageField(
+        null=True, blank=True, verbose_name=_('Thumbnail'))
+
     to_encode = models.BooleanField(default=False, editable=False)
-    
-    overview = models.ImageField(_('Overview'), null=True, upload_to=get_storage_path, blank=True, max_length=255, editable=False)
-    
-    duration = models.IntegerField(_('Duration'), max_length=12, default=0, editable=False, blank=True)
+
+    overview = models.ImageField(
+        _('Overview'), null=True, upload_to=get_storage_path, blank=True, max_length=255, editable=False)
+
+    duration = models.IntegerField(
+        _('Duration'), max_length=12, default=0, editable=False, blank=True)
     infoVideo = models.TextField(null=True, blank=True, editable=False)
-    
+
     class Meta:
         ordering = ['-date_added', '-id']
         get_latest_by = 'date_added'
         verbose_name = _("video")
         verbose_name_plural = _("video")
         abstract = True
-        
+
     def __unicode__(self):
-        return u"Titre:%s - Prop:%s - Date:%s" %(self.title, self.owner, self.date_added)
+        return u"Titre:%s - Prop:%s - Date:%s" % (self.title, self.owner, self.date_added)
 
     def __str__(self):
-        return "%s" %(self.title)
-    
+        return "%s" % (self.title)
+
     def filename(self):
         return os.path.basename(self.video.name)
-    
+
     def admin_thumbnail(self):
         try:
             if self.thumbnail is None:
                 return ""
             else:
-                return "<img src=\"%s\" alt=\"%s\" />" %(self.thumbnail.icons['64'], self.title)
+                return "<img src=\"%s\" alt=\"%s\" />" % (self.thumbnail.icons['64'], self.title)
         except:
             return ""
     admin_thumbnail.short_description = _('Thumbnail')
     admin_thumbnail.allow_tags = True
-    
+
     def duration_in_time(self):
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
 
     duration_in_time.short_description = _('Duration')
     duration_in_time.allow_tags = True
 
+
 class EncodingType(models.Model):
+
     """
     encoding video in mp4 and Webm
     encoding audio in mp3 and Wav
     """
     name = models.CharField(_('name'), max_length=250)
-    bitrate_audio = models.CharField(_('bitrate_audio'), max_length=250, help_text="Please use the only format k: i.e.: <em>300k</em> or <em>600k</em> or <em>1000k</em>.")
-    bitrate_video = models.CharField(_('bitrate_video'), max_length=250, help_text="Please use the only format k. i.e.: <em>300k</em> or <em>600k</em> or <em>1000k</em>.", blank=True)
+    bitrate_audio = models.CharField(
+        _('bitrate_audio'), max_length=250, help_text="Please use the only format k: i.e.: <em>300k</em> or <em>600k</em> or <em>1000k</em>.")
+    bitrate_video = models.CharField(
+        _('bitrate_video'), max_length=250, help_text="Please use the only format k. i.e.: <em>300k</em> or <em>600k</em> or <em>1000k</em>.", blank=True)
     HEIGHT_CHOICES = (
         (0, '0'),
         (240, '240'),
@@ -207,13 +231,17 @@ class EncodingType(models.Model):
         (720, '720'),
         (1080, '1080'),
     )
-    output_height = models.IntegerField(_('output_height'), max_length=4, choices=HEIGHT_CHOICES, default=240)
+    output_height = models.IntegerField(
+        _('output_height'), max_length=4, choices=HEIGHT_CHOICES, default=240)
     TYPE_CHOICES = (
         ("audio", 'Audio'),
         ("video", 'Video'),
     )
-    mediatype = models.CharField(_('mediatype'), max_length=5, choices=TYPE_CHOICES, default="video")
+    mediatype = models.CharField(
+        _('mediatype'), max_length=5, choices=TYPE_CHOICES, default="video")
+
     def __str__(self):
-        return "%s %s %s" %(self.mediatype, self.name, self.output_height )
-    
-    
+        return "%s %s %s" % (self.mediatype, self.name, self.output_height)
+
+    def __unicode__(self):
+        return "%s %s %s" % (self.mediatype, self.name, self.output_height)

@@ -76,7 +76,7 @@ voir http://www.gnu.org/licenses/
                             class="preview"
                         />
                     {% else %}
-                        <img src="static/images/default.png" class="preview" alt="{{ video.title }}" />
+                        <img src="{% static DEFAULT_IMG %}" class="preview" alt="{{ video.title }}" />
                     {% endif %}
                 </span>
                 <h5>{{ video.title|truncatechars:36 }} {% is_new video %}</h5>
