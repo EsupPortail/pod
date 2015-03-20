@@ -2,7 +2,7 @@
 
 ![Lille1Pod, la plateforme vidéo de lille1](http://pod.univ-lille1.fr/static/images/share.jpg "Pod, la plateforme vidéo de l'université de Lille, Science et technologique")        ![Université de Lille, Sciences et technologies](http://www.univ-lille1.fr/digitalAssets/38/38040_logo-trans.png "Université de Lille, Sciences et technologies")  
 
-# pod
+# Pod
 =======
 
 > La plateforme Pod, développée et déployée par l'université Lille1, a pour objectif de faciliter la mise à disposition de vidéos et de ce fait, d'encourager l'utilisation de celles-ci dans le cadre de l'enseignement et la recherche.
@@ -25,9 +25,11 @@
 
 > Développée en python à l'aide du framework Django, elle utilise ffmpeg pour encoder les fichiers et elasticsearch comme moteur de recherche. "Full HTML5", son affichage est responsive et donc s'adapte aux différents types de terminaux web.
 
+-------------------------
 
 > Documentation : [https://github.com/ptitloup/pod/wiki] (https://github.com/ptitloup/pod/wiki "documentation/wiki")
 
+-------------------------
 
 > Avec la participation de :
 > * [UNR Nord pas de calais] (http://www.unr-npdc.org/) ![UNR Nord pas de calais] (http://www.unr-npdc.org/sites/www.unr-npdc.org/themes/unrnpdc/img/logo_unr.gif "UNR Nord pas de calais")
