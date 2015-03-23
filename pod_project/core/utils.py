@@ -27,6 +27,8 @@ import subprocess
 import re
 import time
 import json
+import logging
+import traceback
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from core.models import EncodingType
@@ -45,6 +47,8 @@ VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
 DEFAULT_OVERVIEW_OUT_SIZE_HEIGHT = 64
 DEBUG = getattr(settings, 'DEBUG', True)
 
+log = logging.getLogger(__name__)
+
 
 def encode_video(video_to_encode):
     VIDEO_ID = video_to_encode.id
@@ -58,12 +62,13 @@ def encode_video(video_to_encode):
     if os.path.exists(video_to_encode.video.path):
         # DELETE PREVIOUS ENCODING
         # EncodingPods.objects.filter(video=video).delete()
-        if DEBUG:
-            print "DELETE PREVIOUS ENCODING"
         previous_encoding = EncodingPods.objects.filter(video=video_to_encode)
-        video_to_encode.infoVideo += "DELETE PREVIOUS ENCODING"
-        previous_encoding.delete()
-        video_to_encode.save()
+        if len(previous_encoding) > 0:
+            if DEBUG:
+                print "DELETE PREVIOUS ENCODING"
+            video_to_encode.infoVideo += "DELETE PREVIOUS ENCODING"
+            previous_encoding.delete()
+            video_to_encode.save()
 
         if DEBUG:
             print "get video data"
@@ -73,7 +78,7 @@ def encode_video(video_to_encode):
             'src': video_to_encode.video.path,
         }
         if DEBUG:
-            print "%s" %command
+            print "%s" % command
         ffproberesult = commands.getoutput(command)
         info = json.loads(ffproberesult)
         # print info['streams'][1]['codec_long_name'],
@@ -88,17 +93,12 @@ def encode_video(video_to_encode):
             duration = float("%s" % info["format"]['duration'])
             video_to_encode.duration = int(duration)
             video_to_encode.save()
-        except:
-            try:
-                msg = u'\n***** Unexpected error :%s - %s' % (
-                    sys.exc_info()[0], sys.exc_info()[1])
-                video_to_encode.encoding_status = ">>>>>> NO DURATION"
-                video_to_encode.save()
-                send_email(">>>>>> NO DURATION", video_to_encode)
-            except:
-                msg = u'\n***** Unexpected error :%s - %s' % (
-                    sys.exc_info()[0], sys.exc_info()[1])
-                send_email(msg, video_to_encode)
+        except Exception as e:
+            msg = u'\n NO DURATION ***** Unexpected error :%r' % e
+            msg += '\n%s' % traceback.format_exc()
+            log.error(msg)
+            addInfoVideo(video_to_encode, msg)
+            send_email(msg, video_to_encode)
             return
         # PARSE STREAMS
         is_video = False
@@ -118,12 +118,12 @@ def encode_video(video_to_encode):
                         in_height = int(stream["height"])
                         addInfoVideo(video_to_encode, unicode(
                             "\n Width : %s - Height : %s" % (in_width, in_height), errors='ignore'))
-                    except:
-                        msg = u'\n***** Unexpected error :%s - %s' % (
-                            sys.exc_info()[0], sys.exc_info()[1])
-                        addInfoVideo(
-                            video_to_encode, unicode(msg, errors='ignore'))
-                        send_email("VIDEO WITHOUT WIDTH AND HEIGHT", video)
+                    except Exception as e:
+                        msg = u'\n VIDEO WITHOUT WIDTH AND HEIGHT ***** Unexpected error :%r' % e
+                        msg += '\n%s' % traceback.format_exc()
+                        log.error(msg)
+                        addInfoVideo(video_to_encode, msg)
+                        send_email(msg, video_to_encode)
                         return
                     # CALC FRAMES with frame rate and duration
                     try:
@@ -132,16 +132,16 @@ def encode_video(video_to_encode):
                         if stream.get("nb_frames"):
                             nb_frames = int(stream.get("nb_frames"))
                         else:
-                            in_frame = int(
-                                stream["r_frame_rate"].replace("/1", ""))
-                            nb_frames = int(round(duration * float(in_frame)))
+                            in_frame_rate = eval(stream["r_frame_rate"])
+                            nb_frames = int(round(duration * float(in_frame_rate)))
                         addInfoVideo(
                             video_to_encode, unicode("\n Nb frames %s" % (nb_frames), errors='ignore'))
-                    except:
-                        msg = u'\n***** Unexpected error :%s - %s' % (
-                            sys.exc_info()[0], sys.exc_info()[1])
+                    except Exception as e:
+                        msg = u'\n***** ERROR NB FRAMES Unexpected error :%r' % e
+                        msg += '\n%s' % traceback.format_exc()
+                        log.error(msg)
                         addInfoVideo(video_to_encode, msg)
-                        send_email("ERROR NB FRAMES", video)
+                        send_email(msg, video_to_encode)
                         return
                     # SAR sample_aspect_ratio
                     if stream.get("sample_aspect_ratio"):
@@ -156,11 +156,12 @@ def encode_video(video_to_encode):
                             in_width = int(1. * in_width * sar)
                             addInfoVideo(
                                 video_to_encode, "\n IN_WIDTH %s" % (in_width))
-                        except:
-                            msg = u'\n***** Unexpected error :%s - %s' % (
-                                sys.exc_info()[0], sys.exc_info()[1])
+                        except Exception as e:
+                            msg = u'\nERROR CALC SAR ***** Unexpected error :%r' % e
+                            msg += '\n%s' % traceback.format_exc()
+                            log.error(msg)
                             addInfoVideo(video_to_encode, msg)
-                            send_email("ERROR CALC SAR", video)
+                            send_email(msg, video_to_encode)
                             return
                     # Fin stream video
                 if stream["codec_type"] == "audio":
@@ -185,7 +186,10 @@ def encode_video(video_to_encode):
             else:
                 video_to_encode.encoding_status = "NO CODEC TYPE FOUND"
                 video_to_encode.save()
-                send_email("NO CODEC TYPE FOUND", video_to_encode)
+                msg = u'\nNO CODEC TYPE FOUND'
+                log.error(msg)
+                addInfoVideo(video_to_encode, msg)
+                send_email(msg, video_to_encode)
                 return
         # FIN PARSE STREAMS
         if DEBUG:
@@ -296,11 +300,11 @@ def get_scale(in_w, in_h, out_h):
 
 def send_email(msg, video):
     admin_emails = [v for k, v in settings.ADMINS]
-    msg = EmailMultiAlternatives("[" + settings.TITLE_SITE + "] Error Encoding",
-                                 "Error Encoding  video id : %s\n%s" % (video.id, msg), settings.DEFAULT_FROM_EMAIL, admin_emails)
-    msg.attach_alternative(
-        "<p>Error Encoding video id : %s</p><p>%s</p>" % (video.id, msg), "text/html")
-    msg.send(fail_silently=False)
+    email_msg = EmailMultiAlternatives("[" + settings.TITLE_SITE + "] Error Encoding",
+                                       "Error Encoding  video id : %s\n%s" % (video.id, msg), settings.DEFAULT_FROM_EMAIL, admin_emails)
+    email_msg.attach_alternative(
+        "<p>Error Encoding video id : %s</p><p>%s</p>" % (video.id, msg.replace('\n', "<br/>")), "text/html")
+    email_msg.send(fail_silently=False)
     return
 
 
@@ -310,10 +314,12 @@ def addInfoVideo(video, msg):
             video.infoVideo = ""
         video.infoVideo += "\n%s" % msg
         video.save()
-    except:
-        msg = u'\n***** Unexpected error :%s - %s' % (
-            sys.exc_info()[0], sys.exc_info()[1])
-        send_email("Error in adding info video : %s" % msg, video)
+    except Execption as e:
+        msg = u'\nError in adding info video ***** Unexpected error :%r' % e
+        msg += '\n%s' % traceback.format_exc()
+        log.error(msg)
+        addInfoVideo(video, msg)
+        send_email(msg, video)
 
 
 # DEF THUMBNAILS
@@ -330,7 +336,7 @@ def add_thumbnails(video_id, in_w, in_h, folder):
     com = "%s -i \"%s\" -vf fps=\"fps=1/%s,scale=%s\" -an -vsync 0 -threads 0 -f image2 -y %s_%s.png" % (
         FFMPEG, video.video.path, thumbnails, scale, tempfile.name, "%d")
     if DEBUG:
-        print "%s" %com
+        print "%s" % com
     thumbresult = commands.getoutput(com)
     output = "\n\nTHUMBNAILS"
     output += 80 * "~"
@@ -364,8 +370,11 @@ def add_thumbnails(video_id, in_w, in_h, folder):
             if i == 2:
                 video.thumbnail = upc_image
         else:
-            addInfoVideo(
-                video, "\n [add_thumbnails] error accessing %s_%s.png" % (tempfile.name, i))
+            msg = "\n [add_thumbnails] error accessing %s_%s.png" % (
+                tempfile.name, i)
+            log.error(msg)
+            addInfoVideo(video, msg)
+            send_email(msg, video)
     video.save()
     try:
         os.remove("%s_1.png" % (tempfile.name))
@@ -389,7 +398,7 @@ def add_overview(video_id, in_w, in_h, frames):
     com = "%s -i \"%s\" -vf \"thumbnail=%s,scale=%s,tile=100x1:nb_frames=100:padding=0:margin=0\" -an -vsync 0 -threads 0 -y %s" % (
         FFMPEG, video.video.path, thumbnails, scale, overviewfilename)
     if DEBUG:
-        print "%s" %com
+        print "%s" % com
     overviewresult = commands.getoutput(com)
     output = "\n\nOVERVIEW"
     output += 80 * "~"
@@ -402,7 +411,12 @@ def add_overview(video_id, in_w, in_h, frames):
         # There was a error cause the outfile size is zero
         if (os.stat(overviewfilename).st_size == 0):
             # We remove the file so that it does not cause confusion
-            output += "\nERROR : Output size is 0\n"
+            msg = "\n [add_overview] ERROR : Output size is 0"
+            output += msg
+            log.error(msg)
+            video = Pod.objects.get(id=video_id)
+            addInfoVideo(video, msg)
+            send_email(msg, video)
             os.remove(overviewfilename)
         else:
             # there does not seem to be errors, follow the rest of the
@@ -446,7 +460,7 @@ def encode_mp4(video_id, in_w, in_h, bufsize, in_ar, encod_video, videofilename,
         'out': videofilename
     }
     if DEBUG:
-        print "%s" %com
+        print "%s" % com
     ffmpegresult = commands.getoutput(com)
     video = None
     video = Pod.objects.get(id=video_id)
@@ -465,11 +479,12 @@ def encode_mp4(video_id, in_w, in_h, bufsize, in_ar, encod_video, videofilename,
         # There was a error cause the outfile size is zero
         if (os.stat(videofilename).st_size == 0):
             # We remove the file so that it does not cause confusion
-            output += "\nERROR : Output size is 0\n"
-            addInfoVideo(video, "\nERROR : Output size is 0\n")
             os.remove(videofilename)
-            send_email("ERROR ENCODING MP4 %s Output size is 0" %
-                       encod_video.output_height, video)
+            msg = "ERROR ENCODING MP4 %s Output size is 0" % encod_video.output_height
+            output += msg
+            log.error(msg)
+            addInfoVideo(video, msg)
+            send_email(msg, video)
         else:
             # there does not seem to be errors, follow the rest of the
             # procedures
@@ -511,7 +526,7 @@ def encode_webm(video_id, videofilename, encod_video, bufsize):
         'out': webmfilename
     }
     if DEBUG:
-        print "%s" %com
+        print "%s" % com
     ffmpegresult = commands.getoutput(com)
     video = None
     video = Pod.objects.get(id=video_id)
@@ -530,11 +545,12 @@ def encode_webm(video_id, videofilename, encod_video, bufsize):
         # There was a error cause the outfile size is zero
         if (os.stat(webmfilename).st_size == 0):
             # We remove the file so that it does not cause confusion
-            output += "\nERROR : Output size is 0\n"
-            addInfoVideo(video, "\nERROR : Output size is 0\n")
             os.remove(webmfilename)
-            send_email("ERROR ENCODING WEBM %s Output size is 0" %
-                       encod_video.output_height, video)
+            msg = "ERROR ENCODING WEBM %s Output size is 0" % encod_video.output_height
+            output += msg
+            log.error(msg)
+            addInfoVideo(video, msg)
+            send_email(msg, video)
         else:
             # there does not seem to be errors, follow the rest of the
             # procedures
@@ -569,7 +585,7 @@ def encode_mp3(video_id, audiofilename, audiourl, encod_audio, in_ar):
         'out': audiofilename
     }
     if DEBUG:
-        print "%s" %com
+        print "%s" % com
     ffmpegresult = commands.getoutput(com)
     output = "\n\n ENCOD_AUDIO MP3 \n"
     output += 80 * "~"
@@ -586,11 +602,13 @@ def encode_mp3(video_id, audiofilename, audiourl, encod_audio, in_ar):
         # There was a error cause the outfile size is zero
         if (os.stat(audiofilename).st_size == 0):
             # We remove the file so that it does not cause confusion
-            output += "\nERROR : Output size is 0\n"
-            addInfoVideo(video, "\nERROR : Output size is 0\n")
             os.remove(audiofilename)
-            send_email("ERROR ENCODING MP3 %s Output size is 0" %
-                       encod_video.output_height, video)
+            msg = "ERROR ENCODING MP3 Output size is 0"
+            output += msg
+            log.error(msg)
+            addInfoVideo(video, msg)
+            send_email(msg, video)
+
         else:
             # there does not seem to be errors, follow the rest of the
             # procedures
@@ -627,7 +645,7 @@ def encode_wav(video_id, audiofilename, in_ar, encod_audio):
         'out': wavfilename
     }
     if DEBUG:
-        print "%s" %com
+        print "%s" % com
     ffmpegresult = commands.getoutput(com)
 
     output = "\n\n ENCOD_AUDIO WAV \n"
@@ -645,11 +663,12 @@ def encode_wav(video_id, audiofilename, in_ar, encod_audio):
         # There was a error cause the outfile size is zero
         if (os.stat(wavfilename).st_size == 0):
             # We remove the file so that it does not cause confusion
-            output += "\nERROR : Output size is 0\n"
-            addInfoVideo(video, "\nERROR : Output size is 0\n")
             os.remove(wavfilename)
-            send_email("ERROR ENCODING WAV %s Output size is 0" %
-                       encod_video.output_height, video)
+            msg = "ERROR ENCODING WAV Output size is 0"
+            output += msg
+            log.error(msg)
+            addInfoVideo(video, msg)
+            send_email(msg, video)
         else:
             # there does not seem to be errors, follow the rest of the
             # procedures
