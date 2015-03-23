@@ -27,7 +27,7 @@
 
 -------------------------
 
-> Documentation : [https://github.com/ptitloup/pod/wiki] (https://github.com/ptitloup/pod/wiki "documentation/wiki")
+> Documentation : [https://github.com/SemmLille/pod/wiki] (https://github.com/SemmLille/pod/wiki "documentation/wiki")
 
 -------------------------
 
