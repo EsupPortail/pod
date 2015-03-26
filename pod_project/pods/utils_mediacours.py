@@ -93,7 +93,6 @@ def process_mediazipfile(media):
                     EnrichPods.objects.filter(video=pod).delete()
                     i=0
                     start_img = 1 if SKIP_FIRST_IMAGE else 0
-                    print "----> start_img %s " %start_img
                     for item in list_node_img[start_img:]: #skip the first
                         i+=1
                         mediaerror(media, ">> ITEM %s: %s" %(i,item.getAttribute("src")))
