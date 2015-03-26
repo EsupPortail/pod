@@ -154,6 +154,10 @@ CACHES = {
 # Login
 LOGIN_URL = '/accounts/login/'
 USE_CAS = False
+if USE_CAS:
+    MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
+    MIDDLEWARE_CLASSES.append('django_cas_gateway.middleware.CASMiddleware')
+    MIDDLEWARE_CLASSES = tuple(MIDDLEWARE_CLASSES)
 CAS_SERVER_URL = 'https://cas.univ.fr/'
 CAS_LOGOUT_COMPLETELY = True
 CAS_RETRY_LOGIN = True
@@ -285,3 +289,6 @@ VIDEO_EXT_ACCEPT = (
     '.wav',
     '.wma'
 )
+
+#AUDIOVIDEOCOURS
+SKIP_FIRST_IMAGE = True

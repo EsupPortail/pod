@@ -24,8 +24,12 @@ import datetime
 import os
 import sys
 import zipfile
+import traceback
+import logging
+
 from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
+from django.conf import settings
 
 from filer.models.foldermodels import Folder
 from filer.models.imagemodels import Image
@@ -33,8 +37,11 @@ from filer.models.filemodels import File as filerFile
 
 from pods.models import Pod, Type, EnrichPods
 
-FTP_ROOT_FOLDER = "/audiovideocours/ftp/ftp"
-DEFAULT_TYPE = "autres"
+FTP_ROOT_FOLDER = getattr(settings, "FTP_ROOT_FOLDER", "/audiovideocours/ftp")
+DEFAULT_TYPE = getattr(settings, "DEFAULT_TYPE", "autres")
+SKIP_FIRST_IMAGE = getattr(settings, "SKIP_FIRST_IMAGE", False)
+
+log = logging.getLogger(__name__)
 
 def process_mediacours(media):
     media.started = True
@@ -85,7 +92,9 @@ def process_mediazipfile(media):
                     #Delete previous enrichment
                     EnrichPods.objects.filter(video=pod).delete()
                     i=0
-                    for item in list_node_img[1:]: #skip the first
+                    start_img = 1 if SKIP_FIRST_IMAGE else 0
+                    print "----> start_img %s " %start_img
+                    for item in list_node_img[start_img:]: #skip the first
                         i+=1
                         mediaerror(media, ">> ITEM %s: %s" %(i,item.getAttribute("src")))
                         filename = media_name + "/%s" %item.getAttribute("src")
@@ -112,9 +121,12 @@ def process_mediazipfile(media):
                                     ep.save()
                                 else:
                                     mediaerror(media, "file %s is empty" %filename )
-                            except:
-                                msg = u'\n*****Unexpected error link :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
+                            except Exception as e:
+                                msg = u'\n enrichment ***** Unexpected error :%r' % e
+                                msg += '\n%s' % traceback.format_exc()
+                                log.error(msg)
                                 mediaerror(media, "%s\n-->No file found for %s" %(msg,filename))
+                                
                     #End for each slide
                     #Update the end time of each enrichment
                     enrich_set = EnrichPods.objects.filter(video=pod).order_by("start")
@@ -138,8 +150,10 @@ def process_mediazipfile(media):
                                     current_enrich.end = pod.duration-1
                             current_enrich.save()
                             current_enrich = next_enrich
-                        except:
-                            msg = u'\n*****Unexpected error link :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
+                        except Exception as e:
+                            msg = u'\n iterator ***** Unexpected error :%r' % e
+                            msg += '\n%s' % traceback.format_exc()
+                            log.error(msg)
                             mediaerror(media, "%s\nBREAK" %(msg))
                             break
                     
@@ -151,13 +165,21 @@ def process_mediazipfile(media):
                     
                     #End update enrich end time
             except KeyError: #end try video_src
-                print u'\n*****Unexpected error link :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
-                mediaerror(media,'\n audio or video file not found')
+                #print u'\n*****Unexpected error link :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
+                #mediaerror(media,'\n audio or video file not found')
+                msg = u'\n key error ***** Unexpected error :%r' % e
+                msg += '\n%s' % traceback.format_exc()
+                log.error(msg)
+                mediaerror(media, "%s\nBREAK" %(msg))
         else :
             mediaerror(media,'No audio or video markup found')
-    except:
-        print u'\n*****Unexpected error link :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
-        mediaerror(media,'Smil file not found')
+    except Exception as e:
+        msg = u'\n key error ***** Unexpected error :%r' % e
+        msg += '\n%s' % traceback.format_exc()
+        log.error(msg)
+        mediaerror(media, "%s\nSmil file not found" %(msg))
+        #print u'\n*****Unexpected error link :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
+        #mediaerror(media,'Smil file not found')
     zip.close()
     mediaerror(media,'End processing zip file')
                 
