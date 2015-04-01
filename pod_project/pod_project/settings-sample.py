@@ -62,8 +62,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Pages statiques
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    # CAS
-    'django_cas_gateway.middleware.CASMiddleware'
 )
 
 ROOT_URLCONF = 'pod_project.urls'
