@@ -27,13 +27,14 @@ voir http://www.gnu.org/licenses/
 
 {% block bootstrap3_extra_head %}
 <style>
-#livevideo_wrapper {float:left; width:50%; margin:0; padding:0; position:absolute}
-#DiaFrame {left:50%; width:49%;height:100%; margin:0; padding:0; position:absolute}
+#livevideo_wrapper {float:left; width:30%; margin:0; padding:0; position:absolute}
+#DiaFrame {left:30%; width:69%;height:100%; margin:0; padding:0; position:absolute; border: none;}
 </style>
 
 <script>
-var list_disp = {"50/50":"50/50", "30/70":"30/70", "70/30":"70/30", "100/20":"Pip media", "20/100":"Pip video", "100/0":"only video", "0/100":"only media"};
 
+var list_disp = {"30/70":"30/70", "70/30":"70/30", "50/50":"50/50", "100/20":"Pip media", "20/100":"Pip video", "100/0":"only video", "0/100":"only media"};
+{% if recorder.slide %}
 $(document).ready(function() {
     var selectChangeDisplay = document.getElementById("changeDisplay");
     $("#livevideo_wrapper").width("33%");
@@ -48,8 +49,9 @@ $(document).ready(function() {
     $("#changeDisplay").on("change", function(){
         changeDisplay($(this).val());
     });
+    changeDisplay("30/70");
 });
-
+{% endif %}
 function changeDisplay(disp) {
     vid_width = parseInt(disp.split("/")[0]);
     slide_width = parseInt(disp.split("/")[1])-1;
@@ -90,31 +92,36 @@ function changeDisplay(disp) {
 </script>
 {% endblock bootstrap3_extra_head %}
 
-{% block breadcrumbs %}
-{{ block.super }}
-<li><a href="{% url 'lives' %}">{% trans "Lives" %}</a></li>
-<li class="active">{% trans "Live" %} {{recorder.name}}</li>
-{%endblock%}
-
 {% block mainToolbar %}
 {% endblock mainToolbar %}
 
-{% block article_title %}{% trans "Live" %} {{recorder.name}}{% endblock %}
+
+{% block bootstrap3_content %}
+ <article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+            <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                    {{ block.super }}
+                    <li><a href="{% url 'lives' %}">{% trans "Lives" %}</a></li>
+                    <li class="active">{% trans "Live" %} {{recorder.name}}</li>
+                {% endblock breadcrumbs %}
+            </ol>
+
+            <h3 itemprop="name" >
+                    {% trans "Live" %} {{recorder.name}}
+            </h3>
 
 
-
-{% block article %}
 <div id="global_video">
-    <div id="player" style="width:100%;position:relative" >
+    <div id="player" style="width:100%;position:relative;height:500px" >
         
         <div id="livevideo" style="position:absolute; display:block">Loading the player...</div>
         <script type="text/javascript" src="{% static "jwplayer/jwplayer.js" %}"></script>
         <script type="text/javascript">
             jwplayer("livevideo").setup({
-                file: "{{FMS_LIVE_URL}}/{{recorder.ipunder }}_2",
+                file: "{{FMS_LIVE_URL}}/{{recorder.ipunder }}",
                 autostart: 'true',
                 {% if recorder.slide %}
-                "width": "50%",
+                "width": "30%",
                 {% else %}
                 "width": "100%",
                 {% endif %}
@@ -127,7 +134,7 @@ function changeDisplay(disp) {
         <iframe id="DiaFrame" name="DiaFrame" scrolling="no" src="{% url 'liveSlide'%}?ip={{recorder.ipunder }}"></iframe>
         {% endif%}
     </div>
-    <!--
+    
     {% if recorder.slide %}
     <div class="clear" style="float:right">
         <label for="changeDisplay">{% trans "Change display"%}:</label>
@@ -135,8 +142,9 @@ function changeDisplay(disp) {
         </select>
     </div>
     {% endif%}
-    -->
+    
 </div>
+</article>
 {% endblock %}
 
 {% block box %}
