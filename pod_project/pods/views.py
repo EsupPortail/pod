@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+import os
+
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render
@@ -25,7 +28,7 @@ from django.utils.http import urlquote
 import simplejson as json
 from haystack.query import SearchQuerySet
 
-
+from django.core.servers.basehttp import FileWrapper
 
 DEFAULT_PER_PAGE = 12
 
@@ -413,11 +416,14 @@ def video(request, slug, slug_c=None, slug_t=None):
             if form.is_valid():
                 password = form.cleaned_data['password']
                 if password == video.password:
-                    return render_to_response(
-                        'videos/video.html',
-                        {'video': video, 'channel': channel, 'theme': theme, 'share_url': share_url},
-                        context_instance=RequestContext(request)
-                    )
+                    if request.GET.get('action') and request.GET.get('action')=="download" :
+                        return download_video(video, request.GET)
+                    else:
+                        return render_to_response(
+                            'videos/video.html',
+                            {'video': video, 'channel': channel, 'theme': theme, 'share_url': share_url},
+                            context_instance=RequestContext(request)
+                        )
                 else:
                     messages.add_message(request, messages.ERROR, _(u'Incorrect password'))
                     return render_to_response(
@@ -436,19 +442,33 @@ def video(request, slug, slug_c=None, slug_t=None):
     if request.user.is_authenticated():
         note, created = Notes.objects.get_or_create(video=video, user=request.user)
         notes_form = NotesForm(instance=note)
-        
+        if request.GET.get('action') and request.GET.get('action')=="download" :
+            return download_video(video, request.GET)
+        else:
+            return render_to_response(
+                'videos/video.html',
+                {'video': video, 'channel': channel, 'theme': theme, 'notes_form': notes_form, 'share_url': share_url},
+                context_instance=RequestContext(request)
+            )
+    if request.GET.get('action') and request.GET.get('action')=="download" :
+        return download_video(video, request.GET)
+    else:
         return render_to_response(
             'videos/video.html',
-            {'video': video, 'channel': channel, 'theme': theme, 'notes_form': notes_form, 'share_url': share_url},
+            {'video': video, 'channel': channel, 'theme': theme, 'share_url': share_url},
             context_instance=RequestContext(request)
         )
 
-    return render_to_response(
-        'videos/video.html',
-        {'video': video, 'channel': channel, 'theme': theme, 'share_url': share_url},
-        context_instance=RequestContext(request)
-    )
-
+def download_video(video, get_request):
+    try:
+        filename = EncodingPods.objects.get(video=video, encodingType__output_height=get_request.get('resolution'), encodingFormat="video/mp4").encodingFile.path
+    except:
+        filename = EncodingPods.objects.get(video=video, encodingType__output_height=240, encodingFormat="video/mp4").encodingFile.path
+    wrapper = FileWrapper(file(filename))
+    response = HttpResponse(wrapper, content_type='video/mp4')
+    response['Content-Length'] = os.path.getsize(filename)
+    response['Content-Disposition'] = 'attachment; filename="%s_%s.mp4"' %(video.slug,os.path.basename(filename))
+    return response
 
 @login_required
 @csrf_protect
