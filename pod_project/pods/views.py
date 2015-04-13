@@ -527,17 +527,14 @@ def video(request, slug, slug_c=None, slug_t=None):
 
 
 def download_video(video, get_request):
-    try:
-        filename = EncodingPods.objects.get(video=video, encodingType__output_height=get_request.get(
-            'resolution'), encodingFormat="video/mp4").encodingFile.path
-    except:
-        filename = EncodingPods.objects.get(
-            video=video, encodingType__output_height=240, encodingFormat="video/mp4").encodingFile.path
+    format = "video/mp4" if "video" in video.get_mediatype() else "audio/mp3"
+    resolution = get_request.get('resolution') if get_request.get('resolution') else 240
+    filename = EncodingPods.objects.get(video=video, encodingType__output_height=resolution, encodingFormat=format).encodingFile.path
     wrapper = FileWrapper(file(filename))
-    response = HttpResponse(wrapper, content_type='video/mp4')
+    response = HttpResponse(wrapper, content_type=format)
     response['Content-Length'] = os.path.getsize(filename)
-    response['Content-Disposition'] = 'attachment; filename="%s_%s.mp4"' % (
-        video.slug, os.path.basename(filename))
+    response['Content-Disposition'] = 'attachment; filename="%s_%s.%s"' % (
+        video.slug, resolution, format.split("/")[1])
     return response
 
 
