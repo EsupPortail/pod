@@ -916,11 +916,6 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
     # print csrf
     # print csrftoken
     video = get_object_or_404(Pod, slug=slug)
-
-    
-
-    
-
     if video.is_draft:
         if not request.user.is_authenticated():
             return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
@@ -931,20 +926,11 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
                 messages.add_message(
                     request, messages.ERROR, _(u'You cannot watch this video'))
                 raise PermissionDenied
-
     if video.is_restricted:
         if not request.user.is_authenticated():
             return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
-
     encodingpods = get_object_or_404(EncodingPods,
         encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
-
-    response = StreamingHttpResponse(encodingpods.encodingFile, content_type='%s' %encodingpods.encodingFormat)
-    response['Content-length'] = encodingpods.encodingFile.size #video.uploaded_video.file.size
-    return response
-
-    # print encodingpods.encodingFile.url
-
     """
     #TODO
     import re
@@ -964,6 +950,12 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
     response = StreamingHttpResponse(video.uploaded_video, content_type='video/mp4')
     response['Content-length'] = video.uploaded_video.file.size
     return response
+
+    response = StreamingHttpResponse(encodingpods.encodingFile, content_type='%s' %encodingpods.encodingFormat)
+    response['Content-length'] = encodingpods.encodingFile.size #video.uploaded_video.file.size
+    return response
+
+    # print encodingpods.encodingFile.url
 
     #END TODO
     """
