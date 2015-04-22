@@ -441,21 +441,6 @@ class ContributorPods(models.Model):
     name = models.CharField(_('lastname / firstname'), max_length=200)
     email_address = models.EmailField(
         _('mail'), null=True, blank=True, default="")
-    """
-    ROLE_CHOICES = (
-        (_("auteurs"), _("auteurs")),
-        (_("réalisateur"), _("réalisateur")),
-        (_("monteurs"), _("monteurs")),
-        (_("concepteurs"), _("concepteurs")),
-        (_("intervenant"), _("intervenant")),
-        (_("comédien"), _("comédien")),
-        (_("voix-off"), _("voix-off")),
-        (_("consultant"), _("consultant")),
-        (_("scénariste"), _("scénariste")),
-        (_("prise de son"), _("prise de son")),
-        (_("manipulateur"), _("manipulateur"))
-    )
-    """
     ROLE_CHOICES = (
         (_("authors"), _("authors")),
         (_("director"), _("director")),
@@ -554,7 +539,7 @@ class EnrichPods(models.Model):
     end = models.PositiveIntegerField(
         _('Stop'), default=0, help_text=_('Stop displaying enrichment in second'))
 
-    CHAPTER_CHOICES = (
+    ENRICH_CHOICES = (
         ("image", _("image")),
         ("richtext", _("richtext")),
         ("weblink", _("weblink")),
@@ -562,7 +547,7 @@ class EnrichPods(models.Model):
         ("embed", _("embed")),
     )
     type = models.CharField(
-        _('Type'), max_length=10, choices=CHAPTER_CHOICES, null=True, blank=True)
+        _('Type'), max_length=10, choices=ENRICH_CHOICES, null=True, blank=True)
 
     image = FilerImageField(
         null=True, blank=True, verbose_name="Image", related_name="chapter_image")
@@ -595,10 +580,10 @@ class EnrichPods(models.Model):
         newid = -1
         if not self.id:
             try:
-                newid = get_nextautoincrement(ChapterPods)
+                newid = get_nextautoincrement(EnrichPods)
             except:
                 try:
-                    newid = MediaPods.objects.latest('id').id
+                    newid = EnrichPods.objects.latest('id').id
                     newid += 1
                 except:
                     newid = 1
