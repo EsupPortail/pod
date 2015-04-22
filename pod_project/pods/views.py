@@ -152,6 +152,12 @@ def channel(request, slug_c, slug_t=None):
 @csrf_protect
 @login_required
 def channel_edit(request, slug_c):
+    #Add this to improve folder selection and view list
+    if not request.session.get('filer_last_folder_id'):
+        from filer.models import Folder
+        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        request.session['filer_last_folder_id'] = folder.id
+
     channel = get_object_or_404(Channel, slug=slug_c)
     if not request.user.is_superuser or channel.owner != request.user:
         # return HttpResponseForbidden("<h1>Vous n'avez pas accès à cette
@@ -584,6 +590,12 @@ def video_notes(request, slug):
 @csrf_protect
 @login_required
 def video_edit(request, slug=None):
+    #Add this to improve folder selection and view list
+    if not request.session.get('filer_last_folder_id'):
+        from filer.models import Folder
+        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        request.session['filer_last_folder_id'] = folder.id
+
     video_form = PodForm(request)
     video = None
     if slug:
@@ -643,6 +655,12 @@ def video_edit(request, slug=None):
 @login_required
 #@staff_member_required
 def video_completion(request, slug):
+    #Add this to improve folder selection and view list
+    if not request.session.get('filer_last_folder_id'):
+        from filer.models import Folder
+        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        request.session['filer_last_folder_id'] = folder.id
+
     video = get_object_or_404(Pod, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
@@ -777,6 +795,12 @@ def video_chapter(request, slug):
 @staff_member_required
 def video_enrich(request, slug):
     video = get_object_or_404(Pod, slug=slug)
+    #Add this to improve folder selection and view list
+    if not request.session.get('filer_last_folder_id'):
+        from filer.models import Folder
+        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        request.session['filer_last_folder_id'] = folder.id
+
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot enrich this video'))

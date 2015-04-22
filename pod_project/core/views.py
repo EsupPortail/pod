@@ -46,7 +46,13 @@ import sys
 import logging
 logger = logging.getLogger(__name__)
 
+@login_required
 def file_browse(request):
+    #Add this to improve folder selection and view list
+    if not request.session.get('filer_last_folder_id'):
+        from filer.models import Folder
+        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        request.session['filer_last_folder_id'] = folder.id
     form = FileBrowseForm() # A empty, unbound form
     fic=None
     get_CKEditorFuncNum = None
@@ -71,6 +77,7 @@ def core_login(request):
             return HttpResponseRedirect(reverse('cas_login')+'?gateway=True&next=%s'%urlquote(next))
         
     if request.user.is_authenticated == True:
+        print "YOUPI"
         return HttpResponseRedirect(next) # Redirect to a success page.
         
     form = AuthenticationForm()
@@ -115,6 +122,11 @@ def core_logout(request):
 @csrf_protect
 @login_required
 def user_profile(request):
+    #Add this to improve folder selection
+    if not request.session.get('filer_last_folder_id'):
+        from filer.models import Folder
+        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        request.session['filer_last_folder_id'] = folder.id
     try:
         profile_form = ProfileForm(instance=request.user.userprofile)
     except:
