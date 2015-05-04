@@ -625,14 +625,14 @@ function progress() {
                     }
                 }
             } else if (howMuchIsDownloaded == 1) {
-                $('div.vjs-res-button').find('li:contains("1080p")').trigger('click');
+                $($('div.vjs-res-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
                 changeResBd = true;
             }
 
             previoustime = seconds;
             previousuploaded = downloaded;
         } else if (howMuchIsDownloaded == 1) {
-            $('div.vjs-res-button').find('li:contains("1080p")').trigger('click');
+            $($('div.vjs-res-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
             changeResBd = true;
         }
     }
