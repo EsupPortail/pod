@@ -604,6 +604,7 @@ function progress() {
         if (seconds != previoustime && howMuchIsDownloaded < 1) {
             intcheck++;
             var lapstime = seconds - previoustime;
+            if(previoustime==0) lapstime = 1;
             var downloaded = filesize * howMuchIsDownloaded;
             var laspdl = downloaded - previousuploaded;
             mediumspeed = mediumspeed + Math.round((laspdl / lapstime) / 1000);
