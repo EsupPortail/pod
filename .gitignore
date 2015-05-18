@@ -55,6 +55,8 @@ jwplayer/
 *pod_project/static/
 pod_project/pods/viewsv1.py
 *.bak
+.coverage
+
 
 # IDE Files #
 #############
