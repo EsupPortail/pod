@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Copyright (C) 2014 Nicolas Can
+Copyright (C) 2015 Remi Kroll review by Nicolas Can
 Ce programme est un logiciel libre : vous pouvez
 le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée

@@ -85,9 +85,9 @@ class Channel(models.Model):
     def __str__(self):
         return "%s" % (self.title)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        super(Channel, self).save()
+        super(Channel, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('channel', kwargs={'slug_c': self.slug})
@@ -116,9 +116,9 @@ class Theme(models.Model):
     def __str__(self):
         return "%s: %s" % (self.channel.title, self.title)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        super(Theme, self).save()
+        super(Theme, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['title']
@@ -153,9 +153,9 @@ class Type(models.Model):
     def __str__(self):
         return "%s" % (self.title)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        super(Type, self).save()
+        super(Type, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['title']
@@ -187,9 +187,9 @@ class Discipline(models.Model):
     def __str__(self):
         return "%s" % (self.title)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        super(Discipline, self).save()
+        super(Discipline, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['title']
