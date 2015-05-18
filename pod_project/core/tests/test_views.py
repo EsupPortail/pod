@@ -22,7 +22,7 @@ voir http://www.gnu.org/licenses/
 from filer.models.imagemodels import Image
 from django.core.files import File
 from core.models import FileBrowse
-from pods.models import User
+from django.contrib.auth.models import User, Group
 from django.test import TestCase
 from django.contrib.auth import authenticate
 
@@ -33,6 +33,7 @@ from django.contrib.auth import authenticate
 class User_ProfileTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='remi', password='12345', is_active=True)
         user.set_password('hello')

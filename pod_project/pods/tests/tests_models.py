@@ -25,7 +25,7 @@ from django.conf import settings
 from django.test import TestCase
 from pods.models import *
 from django.template.defaultfilters import slugify
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from filer.models.imagemodels import Image
 from django.test import Client
 from django.test.client import RequestFactory
@@ -40,6 +40,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 class ChannelTestCase(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         Channel.objects.create(title="ChannelTest1", slug="blabla", owner=remi)
         Channel.objects.create(title="ChannelTest2", visible=True,
@@ -106,6 +107,7 @@ class ChannelTestCase(TestCase):
 class ThemeTestCase(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         Channel.objects.create(title="ChannelTest1", owner=remi)
         Theme.objects.create(
@@ -289,6 +291,7 @@ class NextAutoIncrementTestCase(TestCase):
 class VideoTestCase(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         type1 = Type.objects.create(title="Type1")
         Pod.objects.create(
@@ -421,6 +424,7 @@ class VideoTestCase(TestCase):
 class FavoritesTestCase(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         type1 = Type.objects.create(title="Type1")
         pod = Pod.objects.create(
@@ -462,6 +466,7 @@ class FavoritesTestCase(TestCase):
 class NotesTestCase(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         type1 = Type.objects.create(title="Type1")
         pod = Pod.objects.create(
@@ -510,6 +515,7 @@ class NotesTestCase(TestCase):
 class MediaCoursesTestCase(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         remi2 = User.objects.create_user("Remi2")
         Mediacourses.objects.create(user=remi, title="media1", date_added=datetime.today(
@@ -599,6 +605,7 @@ class BuildingTestCase(TestCase):
 class RecoderTestCase(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         building = Building.objects.create(name="bulding1")
         image = Image.objects.create(owner=remi, original_filename="schema_bdd.jpg", file=File(

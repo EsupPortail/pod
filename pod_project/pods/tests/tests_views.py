@@ -25,7 +25,7 @@ from django.conf import settings
 from django.test import TestCase
 from pods.models import *
 from django.template.defaultfilters import slugify
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from filer.models.imagemodels import Image
 from django.test import Client
 from django.test.client import RequestFactory
@@ -44,6 +44,7 @@ from core.utils import encode_video
 class ChannelsTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         i = 1
         while i <= 15:
@@ -121,6 +122,7 @@ class ChannelsTestView(TestCase):
 class Owner_channels_listTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         self.user = User.objects.create(
             username='testuser', password='12345', is_active=True, is_staff=True, is_superuser=True)
         self.user.set_password('hello')
@@ -168,6 +170,7 @@ class Owner_channels_listTestView(TestCase):
 class ChannelTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create(username='testuser')
         c = Channel.objects.create(title="ChannelTest1", visible=True,
                                    color="Black", owner=remi, style="italic", description="blabla")
@@ -232,6 +235,7 @@ class ChannelTestView(TestCase):
 class Channel_edit_TestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         self.user = User.objects.create(
             username='testuser', password='12345', is_active=True, is_staff=True, is_superuser=True)
         self.user.set_password('hello')
@@ -329,6 +333,7 @@ class Channel_edit_TestView(TestCase):
 class TypesTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user(username="remi")
         type1 = Type.objects.create(title="Type1")
         pod = Pod.objects.create(type=type1, title="Video2", encoding_status="b", encoding_in_progress=True,
@@ -372,6 +377,7 @@ class TypesTestView(TestCase):
 class OwnersTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user(username="Remi", last_name="Lefevbre")
         type1 = Type.objects.create(title="Type1")
         pod = Pod.objects.create(type=type1, title="Video2", encoding_status="b", encoding_in_progress=True,
@@ -432,6 +438,7 @@ class OwnersTestView(TestCase):
 class DisciplinesTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user(username="remi")
         Discipline.objects.create(title="Discipline1")
         type1 = Type.objects.create(title="Type1")
@@ -478,6 +485,7 @@ class DisciplinesTestView(TestCase):
 class Owner_Videos_listTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         self.user = User.objects.create(
             username='testuser', password='12345', is_active=True, is_staff=True, is_superuser=True)
         self.user.set_password('hello')
@@ -536,6 +544,7 @@ class Owner_Videos_listTestView(TestCase):
 class Tags_TestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user(username="remi")
         type1 = Type.objects.create(title="Type1")
         pod = Pod.objects.create(type=type1, title="Video2", encoding_status="b", encoding_in_progress=True,
@@ -572,6 +581,7 @@ class Tags_TestView(TestCase):
 class Video_add_favoriteTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='testuser', password='12345', is_active=True, is_staff=False)
         user.set_password('hello')
@@ -643,6 +653,7 @@ class Video_add_favoriteTestView(TestCase):
 class Favorites_videos_listTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='testuser', password='12345', is_active=True, is_staff=False)
         user.set_password('hello')
@@ -712,6 +723,7 @@ class Favorites_videos_listTestView(TestCase):
 class VideosTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         d1 = Discipline.objects.create(title="Discipline1")
         user = User.objects.create(
             username='remi', last_name="lefevbre",  password='12345', is_active=True, is_staff=False)
@@ -780,6 +792,7 @@ class VideosTestView(TestCase):
 class VideoTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='remi', password='12345', is_active=True)
         user.set_password('hello')
@@ -879,6 +892,7 @@ class VideoTestView(TestCase):
 class Video_edit_testCase(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='remi', password='12345', is_active=True)
         user.set_password('hello')
@@ -962,6 +976,7 @@ class Video_edit_testCase(TestCase):
 class Video_notesTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='remi', password='12345', is_active=True)
         user.set_password('hello')
@@ -1017,6 +1032,7 @@ class Video_notesTestView(TestCase):
 class Video_completion_TestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='remi', password='12345', is_active=True, is_staff=True)
         user.set_password('hello')
@@ -1121,6 +1137,7 @@ class Video_completion_TestView(TestCase):
 class Video_chapterTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='remi', password='12345', is_active=True, is_staff=True)
         user.set_password('hello')
@@ -1189,6 +1206,7 @@ class Video_chapterTestView(TestCase):
 class Video_enrichTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='remi', password='12345', is_active=True, is_staff=True)
         user.set_password('hello')
@@ -1262,6 +1280,7 @@ class Video_enrichTestView(TestCase):
 class Video_deleteTestView(TestCase):
 
     def setUp(self):
+        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='remi', password='12345', is_active=True, is_staff=True)
         user.set_password('hello')

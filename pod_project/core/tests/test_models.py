@@ -22,7 +22,7 @@ voir http://www.gnu.org/licenses/
 from filer.models.imagemodels import Image
 from django.core.files import File
 from core.models import FileBrowse
-from pods.models import User
+from django.contrib.auth.models import User, Group
 from django.test import TestCase
 
 # Create your tests here.
@@ -31,7 +31,7 @@ from django.test import TestCase
 class FileBrowseTestCase(TestCase):
 
     def setUp(self):
-        #todo : add can delete file group
+        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         image = Image.objects.create(owner=remi, original_filename="schema_bdd.jpg", file=File(
             open("schema_bdd.jpg"), "schema_bdd.jpg"))
