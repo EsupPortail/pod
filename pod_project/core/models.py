@@ -45,6 +45,7 @@ from django.contrib.flatpages.models import FlatPage
 import sys
 import os
 import time
+import traceback
 from filer.models import Folder
 
 import logging
@@ -113,21 +114,22 @@ def create_user_profile(sender, instance, created, **kwargs):
         # creation du profil
         try:
             UserProfile.objects.create(user=instance)
-        except:
-            msg = u'\n*****Unexpected error link :%s - %s' % (
-                sys.exc_info()[0], sys.exc_info()[1])
+        except  Exception as e:
+            msg = u'\n Create user profile ***** Unexpected error :%r' % e
+            msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
+            print msg
         # creation du repertoire pour ses documents
         try:
             Folder.objects.create(owner=instance, name=instance.username)
             if not instance.groups.filter(name='can delete file').exists():
                 g = Group.objects.get(name='can delete file')
                 g.user_set.add(instance)
-        except:
-            msg = u'\n*****Unexpected error link :%s - %s' % (
-                sys.exc_info()[0], sys.exc_info()[1])
-            print msg
+        except  Exception as e:
+            msg = u'\n Create folder and add group to user ***** Unexpected error :%r' % e
+            msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
+            print msg
 
 VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
 
