@@ -43,7 +43,9 @@ import logging
 logger = logging.getLogger(__name__)
 import unicodedata
 
-#gloabl function to remove accent, use in tags
+# gloabl function to remove accent, use in tags
+
+
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', unicode(input_str))
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
@@ -238,8 +240,6 @@ class MyTaggableManager(TaggableManager):
             prefetch_cache_name=self.name
         )
         return manager
-
-
 
 
 class _MyTaggableManager(_TaggableManager):

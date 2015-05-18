@@ -141,7 +141,6 @@ class ThemeTestCase(TestCase):
         print (
             "   --->  test_Theme_with_attributs of ThemeTestCase : OK !")
 
-
     """
         test delete object
     """
@@ -243,7 +242,6 @@ class DisciplineTestCase(TestCase):
         print (
             "   --->  test_Discipline_with_attributs of DisciplineTestCase : OK !")
 
-
     """
         test delete object
     """
@@ -268,7 +266,6 @@ class NextAutoIncrementTestCase(TestCase):
 
         print (" --->  SetUp of NextAutoIncrementTestCase : OK !")
 
-
     """
 		Verifie if the id is incremented
 	"""
@@ -282,7 +279,7 @@ class NextAutoIncrementTestCase(TestCase):
                 'id').id + 1, Discipline.objects.get(title="Discipline1").id + 1)
 
             print (
-            "   --->  testAutoIncrementId of NextAutoIncrementTestCase : OK !")
+                "   --->  testAutoIncrementId of NextAutoIncrementTestCase : OK !")
 
 """
 	test the objet pod and Video
@@ -309,7 +306,6 @@ class VideoTestCase(TestCase):
         pod.thumbnail = upc_image1
 
         print (" --->  SetUp of VideoTestCase : OK !")
-
 
     """
 		test all attributs when a video have been save with the minimum of attributs
@@ -342,7 +338,6 @@ class VideoTestCase(TestCase):
 
         print (
             "   --->  test_Video_null_attributs of VideoTestCase : OK !")
-
 
     """
 		test attributs when a video have many attributs
@@ -380,7 +375,6 @@ class VideoTestCase(TestCase):
         print (
             "   --->  test_admin_thumbnail of VideoTestCase : OK !")
 
-
     """
 		test the filename function
 	"""
@@ -407,7 +401,6 @@ class VideoTestCase(TestCase):
         print (
             "   --->  test_duration_in_time of VideoTestCase : OK !")
 
-
     """
         test delete object
     """
@@ -419,7 +412,7 @@ class VideoTestCase(TestCase):
 
         print (
             "   --->  test_delete_object of VideoTestCase : OK !")
-    
+
 """
 	test the favorites object
 """
@@ -635,7 +628,6 @@ class RecoderTestCase(TestCase):
 
         print (
             "   --->  test_attributs of RecoderTestCase : OK !")
-
 
     """
         test delete object

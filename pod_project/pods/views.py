@@ -48,26 +48,30 @@ DEFAULT_PER_PAGE = 12
 
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
 
+
+def get_pagination(page, paginator):
+    try:
+        page = int(page.encode('utf-8'))
+    except:
+        page = 0
+    try:
+        return paginator.page(page + 1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        return paginator.page(paginator.num_pages)
+
 # CHANNELS
 
 
 @login_required
 def owner_channels_list(request):
     channels_list = request.user.owner_channels.all()
-    #per_page = request.GET.get('per_page') if request.GET.get('per_page') and request.GET.get('per_page').isdigit() else DEFAULT_PER_PAGE
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
     page = int(request.GET.get('page', 0))  # request.GET.get('page')
 
-    try:
-        channels = paginator.page(page + 1)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        channels = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        channels = paginator.page(paginator.num_pages)
+    channels = get_pagination(page, paginator)
 
     if request.is_ajax():
         return render_to_response("channels/channels_list.html",
@@ -88,14 +92,7 @@ def channels(request):
     paginator = Paginator(channels_list, per_page)
     page = int(request.GET.get('page', 0))  # request.GET.get('page')
 
-    try:
-        channels = paginator.page(page + 1)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        channels = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        channels = paginator.page(paginator.num_pages)
+    channels = get_pagination(page, paginator)
 
     if request.is_ajax():
         return render_to_response("channels/channels_list.html",
@@ -129,14 +126,7 @@ def channel(request, slug_c, slug_t=None):
     paginator = Paginator(videos_list, per_page)
     page = int(request.GET.get('page', 0))  # request.GET.get('page')
 
-    try:
-        videos = paginator.page(page + 1)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        videos = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        videos = paginator.page(paginator.num_pages)
+    videos = get_pagination(page, paginator)
 
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
@@ -152,10 +142,11 @@ def channel(request, slug_c, slug_t=None):
 @csrf_protect
 @login_required
 def channel_edit(request, slug_c):
-    #Add this to improve folder selection and view list
+    # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
-        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
     channel = get_object_or_404(Channel, slug=slug_c)
@@ -207,14 +198,7 @@ def types(request):
     paginator = Paginator(types_list, per_page)
     page = int(request.GET.get('page', 0))  # request.GET.get('page')
 
-    try:
-        types = paginator.page(page + 1)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        types = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        types = paginator.page(paginator.num_pages)
+    types = get_pagination(page, paginator)
 
     if request.is_ajax():
         return render_to_response("types/types_list.html",
@@ -241,14 +225,7 @@ def owners(request):
     paginator = Paginator(owners_list, per_page)
     page = int(request.GET.get('page', 0))  # request.GET.get('page')
 
-    try:
-        owners = paginator.page(page + 1)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        types = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        owners = paginator.page(paginator.num_pages)
+    owners = get_pagination(page, paginator)
 
     if request.is_ajax():
         return render_to_response("owners/owners_list.html",
@@ -269,14 +246,7 @@ def disciplines(request):
     paginator = Paginator(disciplines_list, per_page)
     page = int(request.GET.get('page', 0))  # request.GET.get('page')
 
-    try:
-        disciplines = paginator.page(page + 1)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        disciplines = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        disciplines = paginator.page(paginator.num_pages)
+    disciplines = get_pagination(page, paginator)
 
     if request.is_ajax():
         return render_to_response("disciplines/disciplines_list.html",
@@ -310,14 +280,7 @@ def owner_videos_list(request):
     paginator = Paginator(videos_list, per_page)
     page = int(request.GET.get('page', 0))  # request.GET.get('page')
 
-    try:
-        videos = paginator.page(page + 1)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        videos = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        videos = paginator.page(paginator.num_pages)
+    videos = get_pagination(page, paginator)
 
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
@@ -345,14 +308,7 @@ def favorites_videos_list(request):
     paginator = Paginator(videos_list, per_page)
     page = int(request.GET.get('page', 0))  # request.GET.get('page')
 
-    try:
-        videos = paginator.page(page + 1)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        videos = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        videos = paginator.page(paginator.num_pages)
+    videos = get_pagination(page, paginator)
 
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
@@ -401,14 +357,7 @@ def videos(request):
     paginator = Paginator(videos_list, per_page)
     page = int(request.GET.get('page', 0))  # request.GET.get('page')
 
-    try:
-        videos = paginator.page(page + 1)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        videos = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        videos = paginator.page(paginator.num_pages)
+    videos = get_pagination(page, paginator)
 
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
@@ -534,8 +483,10 @@ def video(request, slug, slug_c=None, slug_t=None):
 
 def download_video(video, get_request):
     format = "video/mp4" if "video" in video.get_mediatype() else "audio/mp3"
-    resolution = get_request.get('resolution') if get_request.get('resolution') else 240
-    filename = EncodingPods.objects.get(video=video, encodingType__output_height=resolution, encodingFormat=format).encodingFile.path
+    resolution = get_request.get(
+        'resolution') if get_request.get('resolution') else 240
+    filename = EncodingPods.objects.get(
+        video=video, encodingType__output_height=resolution, encodingFormat=format).encodingFile.path
     wrapper = FileWrapper(file(filename))
     response = HttpResponse(wrapper, content_type=format)
     response['Content-Length'] = os.path.getsize(filename)
@@ -590,10 +541,11 @@ def video_notes(request, slug):
 @csrf_protect
 @login_required
 def video_edit(request, slug=None):
-    #Add this to improve folder selection and view list
+    # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
-        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
     video_form = PodForm(request)
@@ -655,10 +607,11 @@ def video_edit(request, slug=None):
 @login_required
 #@staff_member_required
 def video_completion(request, slug):
-    #Add this to improve folder selection and view list
+    # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
-        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
     video = get_object_or_404(Pod, slug=slug)
@@ -795,10 +748,11 @@ def video_chapter(request, slug):
 @staff_member_required
 def video_enrich(request, slug):
     video = get_object_or_404(Pod, slug=slug)
-    #Add this to improve folder selection and view list
+    # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
-        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
     if request.user != video.owner and not request.user.is_superuser:
@@ -837,72 +791,6 @@ def video_enrich(request, slug):
 
 @csrf_protect
 @login_required
-@staff_member_required
-def video_chapter_old(request, slug):
-
-    video = get_object_or_404(Pod, slug=slug)
-
-    if request.user != video.owner and not request.user.is_superuser:
-        messages.add_message(
-            request, messages.ERROR, _(u'You cannot chapter this video'))
-        raise PermissionDenied
-
-    if video.chapterpods_set.all() or request.is_ajax():
-        ChapterInlineFormSet = inlineformset_factory(
-            Pod, ChapterPods, form=ChapterPodsForm, extra=0, can_delete=True)
-    else:
-        ChapterInlineFormSet = inlineformset_factory(
-            Pod, ChapterPods, form=ChapterPodsForm, extra=1, can_delete=True)
-
-    if request.method == "POST":
-        chapterformset = ChapterInlineFormSet(
-            request.POST, instance=video, prefix='chapter_form')
-
-        if chapterformset.is_valid():
-            chapterformset.save()
-            # MAJ...
-            chapterformset = ChapterInlineFormSet(
-                instance=video, prefix='chapter_form')
-            #...
-            if request.is_ajax():
-                """
-                out_data = {}
-                out_data["msg"] = "%s" %_(u'The changes have been saved')
-                out_data["total_form_count"] = "%s" %chapterformset.total_form_count()
-                out_data["initial_form_count"] = "%s" %chapterformset.initial_form_count()
-                for form in chapterformset:
-                    title = form.initial.get("title")
-                    start = form.initial.get("start")
-                    out_data["%s-%s"%(start,title)] = form.initial.get("id")
-                data_json = json.dumps(out_data, sort_keys=True, separators=(',', ': '),indent=4)
-                return HttpResponse(data_json, mimetype='application/json')
-                """
-                print "SAVE"
-                response = render_to_string(
-                    "videos/chapterformset.html", {'chapterformset': chapterformset})
-                return HttpResponse(response)
-            else:
-                messages.add_message(
-                    request, messages.INFO, _(u'The changes have been saved'))
-        else:
-            if request.is_ajax():
-                print chapterformset.errors
-                return HttpResponse(_(u'Error in the form'))
-            else:
-                messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form'))
-
-    else:
-        chapterformset = ChapterInlineFormSet(
-            instance=video, prefix='chapter_form')
-
-    return render_to_response("videos/video_chapter_formset.html",
-                              {'chapterformset': chapterformset},
-                              context_instance=RequestContext(request))
-
-
-@csrf_protect
-@login_required
 def video_delete(request, slug):
     video = get_object_or_404(Pod, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
@@ -932,7 +820,7 @@ def video_delete(request, slug):
 
 
 def get_video_encoding(request, slug, csrftoken, size, type, ext):
-    #csrf = request.COOKIES.get(
+    # csrf = request.COOKIES.get(
     #    'csrftoken') if request.COOKIES.get('csrftoken') else None
     # print csrf
     # print csrftoken
@@ -951,7 +839,7 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
         if not request.user.is_authenticated():
             return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
     encodingpods = get_object_or_404(EncodingPods,
-        encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
+                                     encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
     """
     #TODO
     import re
