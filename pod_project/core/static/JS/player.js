@@ -604,6 +604,7 @@ function progress() {
         if (seconds != previoustime && howMuchIsDownloaded < 1) {
             intcheck++;
             var lapstime = seconds - previoustime;
+            if(previoustime==0) lapstime = 1;
             var downloaded = filesize * howMuchIsDownloaded;
             var laspdl = downloaded - previousuploaded;
             mediumspeed = mediumspeed + Math.round((laspdl / lapstime) / 1000);
@@ -625,14 +626,14 @@ function progress() {
                     }
                 }
             } else if (howMuchIsDownloaded == 1) {
-                $('div.vjs-res-button').find('li:contains("1080p")').trigger('click');
+                $($('div.vjs-res-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
                 changeResBd = true;
             }
 
             previoustime = seconds;
             previousuploaded = downloaded;
         } else if (howMuchIsDownloaded == 1) {
-            $('div.vjs-res-button').find('li:contains("1080p")').trigger('click');
+            $($('div.vjs-res-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
             changeResBd = true;
         }
     }

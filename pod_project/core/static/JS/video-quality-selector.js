@@ -251,6 +251,8 @@
                 player.addClass('vjs-has-started');
                 if (!is_paused) {
                     player.play();
+                } else {
+                    player.pause();
                 }
             });
             // Save the newly selected resolution in our player options property
