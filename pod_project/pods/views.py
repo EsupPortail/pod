@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import os
-
+import hashlib
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render
@@ -36,8 +36,10 @@ from string import replace
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template.loader import render_to_string
-
+from datetime import datetime
+from django.utils import formats
 from django.utils.http import urlquote
+from django.core.mail import EmailMultiAlternatives
 
 import simplejson as json
 from haystack.query import SearchQuerySet
@@ -152,10 +154,11 @@ def channel(request, slug_c, slug_t=None):
 @csrf_protect
 @login_required
 def channel_edit(request, slug_c):
-    #Add this to improve folder selection and view list
+    # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
-        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
     channel = get_object_or_404(Channel, slug=slug_c)
@@ -534,8 +537,10 @@ def video(request, slug, slug_c=None, slug_t=None):
 
 def download_video(video, get_request):
     format = "video/mp4" if "video" in video.get_mediatype() else "audio/mp3"
-    resolution = get_request.get('resolution') if get_request.get('resolution') else 240
-    filename = EncodingPods.objects.get(video=video, encodingType__output_height=resolution, encodingFormat=format).encodingFile.path
+    resolution = get_request.get(
+        'resolution') if get_request.get('resolution') else 240
+    filename = EncodingPods.objects.get(
+        video=video, encodingType__output_height=resolution, encodingFormat=format).encodingFile.path
     wrapper = FileWrapper(file(filename))
     response = HttpResponse(wrapper, content_type=format)
     response['Content-Length'] = os.path.getsize(filename)
@@ -590,10 +595,11 @@ def video_notes(request, slug):
 @csrf_protect
 @login_required
 def video_edit(request, slug=None):
-    #Add this to improve folder selection and view list
+    # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
-        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
     video_form = PodForm(request)
@@ -655,10 +661,11 @@ def video_edit(request, slug=None):
 @login_required
 #@staff_member_required
 def video_completion(request, slug):
-    #Add this to improve folder selection and view list
+    # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
-        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
     video = get_object_or_404(Pod, slug=slug)
@@ -795,10 +802,11 @@ def video_chapter(request, slug):
 @staff_member_required
 def video_enrich(request, slug):
     video = get_object_or_404(Pod, slug=slug)
-    #Add this to improve folder selection and view list
+    # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
-        folder = Folder.objects.get(owner=request.user, name=request.user.username)
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
     if request.user != video.owner and not request.user.is_superuser:
@@ -932,7 +940,7 @@ def video_delete(request, slug):
 
 
 def get_video_encoding(request, slug, csrftoken, size, type, ext):
-    #csrf = request.COOKIES.get(
+    # csrf = request.COOKIES.get(
     #    'csrftoken') if request.COOKIES.get('csrftoken') else None
     # print csrf
     # print csrftoken
@@ -951,7 +959,7 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
         if not request.user.is_authenticated():
             return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
     encodingpods = get_object_or_404(EncodingPods,
-        encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
+                                     encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
     """
     #TODO
     import re
@@ -1008,6 +1016,10 @@ def mediacourses(request):
         raise PermissionDenied
 
     form = MediacoursesForm(request, initial={'mediapath': mediapath})
+    if request.GET.get('course_title'):
+        course_title = request.GET.get('course_title')
+        form = MediacoursesForm(
+            request, initial={'mediapath': mediapath, 'title': course_title})
 
     if request.method == 'POST':  # If the form has been submitted...
         # A form bound to the POST data
@@ -1062,6 +1074,49 @@ def liveState(request):  # affichage des directs
             recorder.status = 0
         recorder.save()
     return HttpResponse("ok")
+
+
+def mediacourses_notify(request):  # post mediacourses notification
+    # http://URL/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
+    if request.GET.get("recordingPlace") and request.GET.get('mediapath') and request.GET.get('key'):
+        m = hashlib.md5()
+        m.update(request.GET.get("recordingPlace") + settings.RECORDER_SALT)
+        if request.GET.get('key') != m.hexdigest():
+            # messages.add_message(
+            #    request, messages.ERROR, _(u'You cannot notify a mediacourse'))
+            #raise PermissionDenied
+            return HttpResponse("nok")
+
+        recorder = get_object_or_404(
+            Recorder, adress_ip=request.GET.get("recordingPlace").replace("_", "."))
+        date_notify = datetime.now()
+        formatted_date_notify = formats.date_format(
+            date_notify, "SHORT_DATE_FORMAT")
+        link_url = ''.join([request.build_absolute_uri(reverse('mediacourses')), "?mediapath=", request.GET.get(
+            'mediapath'), "&course_title=%s" % _("recording"), " %s" % formatted_date_notify.replace("/", "-")])
+
+        text_msg = _("Hello, \n\na new mediacourse has just be added on the video website \"%(title_site)s\" from the recorder \"%(recorder)s\"."
+                     "\nTo add it, just click on link below.\n\n%(link_url)s\nif you cannot click on link, just copy-paste it in your browser."
+                     "\n\nRegards") % {'title_site': settings.TITLE_SITE, 'recorder': recorder.name, 'link_url': link_url}
+
+        html_msg = _("Hello, <p>a new mediacourse has just be added on %(title_site)s from the recorder \"%(recorder)s\"."
+                     "<br/>To add it, just click on link below.</p><a href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on link, just copy-paste it in your browser.</i>"
+                     "<p><p>Regards</p>") % {'title_site': settings.TITLE_SITE, 'recorder': recorder.name, 'link_url': link_url}
+
+        admin_emails = User.objects.filter(
+            is_superuser=True).values_list('email', flat=True)
+        subject = "[" + settings.TITLE_SITE + \
+            "] %s" % _('New mediacourse added')
+
+        email_msg = EmailMultiAlternatives(
+            subject, text_msg, settings.DEFAULT_FROM_EMAIL, admin_emails)
+
+        email_msg.attach_alternative(html_msg, "text/html")
+        email_msg.send(fail_silently=False)
+
+        return HttpResponse("ok")
+    else:
+        return HttpResponse("nok")
 
 
 def liveSlide(request):  # affichage des slides en direct

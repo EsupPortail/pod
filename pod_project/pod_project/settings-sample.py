@@ -290,3 +290,6 @@ VIDEO_EXT_ACCEPT = (
 
 #AUDIOVIDEOCOURS
 SKIP_FIRST_IMAGE = True
+#mot de passe pour les enregistreurs multicam system
+RECORDER_SALT = "abcdefgh"
+

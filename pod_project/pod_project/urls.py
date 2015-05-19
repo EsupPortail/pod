@@ -57,6 +57,8 @@ urlpatterns = patterns(
     # MEDIACOURSES
     url(r'^mediacourses_add/$',
         'pods.views.mediacourses', name="mediacourses"),
+    url(r'^mediacourses_notify/$',
+        'pods.views.mediacourses_notify', name="mediacourses_notify"),
     url(r'^lives/$', 'pods.views.lives', name="lives"),
     # Warning do not modify for the recorder
     url(r'^liveState/$', 'pods.views.liveState', name="liveState"),
