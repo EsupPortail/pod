@@ -71,7 +71,7 @@ def owner_channels_list(request):
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
-    page = request.GET.get('page') #request.GET.get('page')
+    page = request.GET.get('page')  # request.GET.get('page')
 
     channels = get_pagination(page, paginator)
 

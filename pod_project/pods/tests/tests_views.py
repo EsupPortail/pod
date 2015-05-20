@@ -1206,8 +1206,9 @@ class Video_enrichTestView(TestCase):
 
 class Video_mediacourses(TestCase):
     fixtures = ['initial_data.json', ]
+
     def setUp(self):
-        #user is staff but user2 not
+        # user is staff but user2 not
         user = User.objects.create(
             username='remi', password='12345', is_active=True, is_staff=True)
         user.set_password('hello')
@@ -1230,7 +1231,7 @@ class Video_mediacourses(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.client.session['_auth_user_id'], user.pk)
         self.client.logout()
-        self.assertTrue(self.client.session.get('_auth_user_id')==None)
+        self.assertTrue(self.client.session.get('_auth_user_id') == None)
 
     def test_access_user_mediacourses_add(self):
         self.client = Client()
@@ -1267,46 +1268,55 @@ class Video_mediacourses(TestCase):
         self.assertEqual(response.status_code, 200)
     """
 
+
 class Video_mediacourses_notify(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        #add building
+        # add building
         building = Building.objects.create(name='my building')
-        #add recorder
-        recorder = Recorder.objects.create(name='my recorder', adress_ip='192.168.1.59', building=building)
+        # add recorder
+        recorder = Recorder.objects.create(
+            name='my recorder', adress_ip='192.168.1.59', building=building)
 
     def test_mediacourses_notify_args(self):
         response = self.client.get("/mediacourses_notify/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, "nok : recordingPlace or mediapath or key are missing")
+        self.assertEqual(
+            response.content, "nok : recordingPlace or mediapath or key are missing")
         response = self.client.get("/mediacourses_notify/?toto=toto")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, "nok : recordingPlace or mediapath or key are missing")
+        self.assertEqual(
+            response.content, "nok : recordingPlace or mediapath or key are missing")
         #?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=a81c115af212b6ae406ce1509bce8ef6
-        response = self.client.get("/mediacourses_notify/?recordingPlace=192_168_1_59")
+        response = self.client.get(
+            "/mediacourses_notify/?recordingPlace=192_168_1_59")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, "nok : recordingPlace or mediapath or key are missing")
-        response = self.client.get("/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip")
+        self.assertEqual(
+            response.content, "nok : recordingPlace or mediapath or key are missing")
+        response = self.client.get(
+            "/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, "nok : recordingPlace or mediapath or key are missing")
-        response = self.client.get("/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=a81c115af212b6ae406ce1509bce8ef6")
+        self.assertEqual(
+            response.content, "nok : recordingPlace or mediapath or key are missing")
+        response = self.client.get(
+            "/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=a81c115af212b6ae406ce1509bce8ef6")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "nok : key is not valid")
-
 
     def test_mediacourses_notify_without_good_recorder(self):
         import hashlib
         m = hashlib.md5()
         m.update("192_168_1_10" + settings.RECORDER_SALT)
-        response = self.client.get("/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" %m.hexdigest())
+        response = self.client.get(
+            "/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" % m.hexdigest())
         self.assertEqual(response.status_code, 404)
 
     def test_mediacourses_notify_good(self):
         import hashlib
         m = hashlib.md5()
         m.update("192_168_1_59" + settings.RECORDER_SALT)
-        response = self.client.get("/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" %m.hexdigest())
+        response = self.client.get(
+            "/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" % m.hexdigest())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "ok")
-
