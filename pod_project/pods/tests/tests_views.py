@@ -1165,7 +1165,6 @@ class Video_enrichTestView(TestCase):
         pod = Pod.objects.get(id=1)
         self.client = Client()
         user = User.objects.get(username="remi")
-        user.save()
         user = authenticate(
             username='remi', password='hello')
         login = self.client.login(
@@ -1173,7 +1172,6 @@ class Video_enrichTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/video_enrich/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(login, True)
         response = self.client.post("/video_enrich/%s/" % pod.slug, {u'enrich_form-0-type': [u'richtext'], u'enrich_form-0-id': [u''],
                                                                      u'enrich_form-0-title': [u'dfghdfgh'], u'enrich_form-0-weblink': [u''], u'action1': [u'Enregistrer'], u'enrich_form-INITIAL_FORMS': [u'0'],
                                                                      u'enrich_form-0-document': [u''], u'enrich_form-TOTAL_FORMS': [u'1'], u'enrich_form-0-image': [u''], u'enrich_form-MAX_NUM_FORMS': [u'1000'],
@@ -1183,7 +1181,6 @@ class Video_enrichTestView(TestCase):
             Pod, EnrichPods, form=EnrichPodsForm, extra=0, can_delete=True)
         enrichformset = EnrichInlineFormSet(
             instance=Pod.objects.get(id=1), prefix='enrich_form')
-        self.assertEqual(login, True)
         self.assertEqual(
             list(enrichformset.queryset), list(response.context['enrichformset'].queryset))
         print (
@@ -1205,3 +1202,69 @@ class Video_enrichTestView(TestCase):
         self.assertTrue("You cannot enrich this video" in response.content)
         print (
             "   --->  test_access_to_enrich_with_other_authenticating of Video_enrichTestView : OK !")
+
+
+class Video_mediacourses(TestCase):
+    fixtures = ['initial_data.json', ]
+    def setUp(self):
+        #user is staff but user2 not
+        user = User.objects.create(
+            username='remi', password='12345', is_active=True, is_staff=True)
+        user.set_password('hello')
+        user.save()
+
+        user2 = User.objects.create(
+            username='remi2', password='12345', is_active=True)
+        user2.set_password('hello')
+        user2.save()
+
+    def test_access_user_staff_mediacourses_add(self):
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        response = self.client.get("/mediacourses_add/?mediapath=abcdefg.zip")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.client.session['_auth_user_id'], user.pk)
+        self.client.logout()
+        self.assertTrue(self.client.session.get('_auth_user_id')==None)
+
+    def test_access_user_mediacourses_add(self):
+        self.client = Client()
+        user = User.objects.get(username="remi2")
+        user = authenticate(
+            username='remi2', password='hello')
+        login = self.client.login(
+            username='remi2', password='hello')
+        self.assertEqual(login, True)
+        self.assertEqual(self.client.session['_auth_user_id'], user.pk)
+        response = self.client.get("/mediacourses_add/?mediapath=abcdefg.zip")
+        self.assertTrue("this_is_the_login_form" in response.content)
+
+    def test_access_user_mediacourses_add_without_mediapath(self):
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        response = self.client.get("/mediacourses_add/?mediapath=abcdefg.zip")
+        self.assertEqual(response.status_code, 403)
+    """
+    def test_post_data_mediacourses_add(self):
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        response = self.client.post("/mediacourses_add/?mediapath=abcdefg.zip", {u'title': [u'my first course']})
+        self.assertEqual(response.status_code, 200)
+    """
+
+    

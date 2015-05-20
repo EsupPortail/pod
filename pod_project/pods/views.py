@@ -891,7 +891,6 @@ def autocomplete(request):
 @staff_member_required
 def mediacourses(request):
     mediapath = request.GET.get('mediapath')
-    print "mediapath : %s" % mediapath
     if not mediapath and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'Mediapath should be indicated'))
