@@ -69,7 +69,7 @@ def owner_channels_list(request):
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
-    page = int(request.GET.get('page', 0))  # request.GET.get('page')
+    page = request.GET.get('page') #request.GET.get('page')
 
     channels = get_pagination(page, paginator)
 
@@ -90,7 +90,7 @@ def channels(request):
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
-    page = int(request.GET.get('page', 0))  # request.GET.get('page')
+    page = request.GET.get('page')
 
     channels = get_pagination(page, paginator)
 
@@ -124,7 +124,7 @@ def channel(request, slug_c, slug_t=None):
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(videos_list, per_page)
-    page = int(request.GET.get('page', 0))  # request.GET.get('page')
+    page = request.GET.get('page')
 
     videos = get_pagination(page, paginator)
 
@@ -196,7 +196,7 @@ def types(request):
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(types_list, per_page)
-    page = int(request.GET.get('page', 0))  # request.GET.get('page')
+    page = request.GET.get('page')
 
     types = get_pagination(page, paginator)
 
@@ -223,7 +223,7 @@ def owners(request):
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(owners_list, per_page)
-    page = int(request.GET.get('page', 0))  # request.GET.get('page')
+    page = request.GET.get('page')
 
     owners = get_pagination(page, paginator)
 
@@ -244,7 +244,7 @@ def disciplines(request):
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(disciplines_list, per_page)
-    page = int(request.GET.get('page', 0))  # request.GET.get('page')
+    page = request.GET.get('page')
 
     disciplines = get_pagination(page, paginator)
 
@@ -278,7 +278,7 @@ def owner_videos_list(request):
         "%s" % replace(order_by, "order_by_", ""))
 
     paginator = Paginator(videos_list, per_page)
-    page = int(request.GET.get('page', 0))  # request.GET.get('page')
+    page = request.GET.get('page')
 
     videos = get_pagination(page, paginator)
 
@@ -306,7 +306,7 @@ def favorites_videos_list(request):
         "%s" % replace(order_by, "order_by_", ""))
 
     paginator = Paginator(videos_list, per_page)
-    page = int(request.GET.get('page', 0))  # request.GET.get('page')
+    page = request.GET.get('page')
 
     videos = get_pagination(page, paginator)
 
@@ -355,7 +355,7 @@ def videos(request):
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
 
     paginator = Paginator(videos_list, per_page)
-    page = int(request.GET.get('page', 0))  # request.GET.get('page')
+    page = request.GET.get('page')
 
     videos = get_pagination(page, paginator)
 

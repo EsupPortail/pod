@@ -24,6 +24,9 @@ from core.models import *
 from django.conf import settings
 from django.test import TestCase
 from pods.models import *
+import urllib3
+import shutil
+from django.core.files.temp import NamedTemporaryFile
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User, Group
 from filer.models.imagemodels import Image
@@ -38,9 +41,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class ChannelTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         Channel.objects.create(title="ChannelTest1", slug="blabla", owner=remi)
         Channel.objects.create(title="ChannelTest2", visible=True,
@@ -105,9 +108,9 @@ class ChannelTestCase(TestCase):
 
 
 class ThemeTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         Channel.objects.create(title="ChannelTest1", owner=remi)
         Theme.objects.create(
@@ -289,25 +292,22 @@ class NextAutoIncrementTestCase(TestCase):
 
 
 class VideoTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
-        type1 = Type.objects.create(title="Type1")
-        Pod.objects.create(
-            type=type1,  title="Video1", slug="tralala", owner=remi)
-        pod = Pod.objects.create(type=type1, title="Video2", encoding_status="b", encoding_in_progress=True,
-                                 date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video="example.mp4", allow_downloading=True, view_count=2, description="fl",
-                                 overview="schema_bdd.jpg", is_draft=False, duration=3, infoVideo="videotest", to_encode=True)
-
-        rootFolder = Folder.objects.create(
-            name=pod.owner, owner=pod.owner, level=0)
-        folder = Folder.objects.create(
-            name=pod.slug, owner=pod.owner, parent=rootFolder)
-        upc_image1 = Image.objects.create(
-            folder=folder, name="%s_%s.png" % (pod.slug, 1))
-        pod.thumbnail = upc_image1
-
+        other_type = Type.objects.get(id=1)
+        url = "http://pod.univ-lille1.fr/media/"
+        # url = "http://fms.univ-lille1.fr/vod/videos/media/videos/ncan/730/video_730_240.mp4"
+        http = urllib3.PoolManager()
+        tempfile = NamedTemporaryFile(delete=True)
+        with http.request('GET', url, preload_content=False) as r, open(tempfile.name, 'wb') as out_file:
+            shutil.copyfileobj(r, out_file)
+        pod = Pod.objects.create(
+            type=other_type, title="Video1", owner=remi, video="", to_encode=False)
+        Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
+                           date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video="/media/videos/remi/test.mp4", allow_downloading=True, view_count=2, description="fl",
+                           overview="blabla.jpg", is_draft=False, duration=3, infoVideo="videotest", to_encode=False)
         print (" --->  SetUp of VideoTestCase : OK !")
 
     """
@@ -348,14 +348,14 @@ class VideoTestCase(TestCase):
 
     def test_Video_many_attributs(self):
         pod = Pod.objects.get(id=2)
-        self.assertEqual(pod.video.name, "example.mp4")
+        self.assertEqual(pod.video.name, u'/media/videos/remi/test.mp4')
         self.assertEqual(pod.allow_downloading, True)
         self.assertEqual(pod.description, 'fl')
-        self.assertEqual(pod.overview.name, "schema_bdd.jpg")
+        self.assertEqual(pod.overview.name, "blabla.jpg")
         self.assertEqual(pod.view_count, 2)
         self.assertEqual(pod.allow_downloading, True)
         self.assertEqual(pod.encoding_status, 'b')
-        self.assertEqual(pod.to_encode, True)
+        self.assertEqual(pod.to_encode, False)
         self.assertEqual(pod.is_draft, False)
         self.assertEqual(pod.encoding_in_progress, True)
         self.assertEqual(pod.duration, 3)
@@ -386,7 +386,7 @@ class VideoTestCase(TestCase):
         video1 = Pod.objects.get(id=1)
         video2 = Pod.objects.get(id=2)
         self.assertEqual(video1.filename(), "")
-        self.assertEqual(video2.filename(), video2.video.name)
+        self.assertEqual(video2.filename(), u'test.mp4')
 
         print (
             "   --->  test_filename of VideoTestCase : OK !")
@@ -422,13 +422,13 @@ class VideoTestCase(TestCase):
 
 
 class FavoritesTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
-        type1 = Type.objects.create(title="Type1")
+        other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(
-            type=type1,  title="Video1", slug="tralala", owner=remi)
+            type=other_type,  title="Video1", slug="tralala", owner=remi)
         Favorites.objects.create(user=remi, video=pod)
 
         print (" --->  SetUp of FavoritesTestCase : OK !")
@@ -464,15 +464,15 @@ class FavoritesTestCase(TestCase):
 
 
 class NotesTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
-        type1 = Type.objects.create(title="Type1")
+        other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(
-            type=type1,  title="Video1", slug="tralala", owner=remi)
+            type=other_type,  title="Video1", slug="tralala", owner=remi)
         pod2 = Pod.objects.create(
-            type=type1,  title="Video2", slug="tralala", owner=remi)
+            type=other_type,  title="Video2", slug="tralala", owner=remi)
         Notes.objects.create(user=remi, video=pod, note="tata")
         Notes.objects.create(user=remi, video=pod2)
 
@@ -513,15 +513,15 @@ class NotesTestCase(TestCase):
 
 
 class MediaCoursesTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         remi2 = User.objects.create_user("Remi2")
         Mediacourses.objects.create(user=remi, title="media1", date_added=datetime.today(
         ), mediapath="blabla", started=True, error="error1")
-        Mediacourses.objects.get_or_create(user=remi2, title="media2")
-
+        #Mediacourses.objects.get_or_create(user=remi2, title="media2")
+        Mediacourses.objects.create(user=remi2, title="media2", started=True)
         print (" --->  SetUp of MediaCoursesTestCase : OK !")
 
     """
@@ -545,7 +545,7 @@ class MediaCoursesTestCase(TestCase):
         self.assertEqual(media2.date_added.strftime(
             "%d/%m/%y"), media.date_added.strftime("%d/%m/%y"))
         self.assertEqual(media2.title, "media2")
-        self.assertEqual(media2.started, False)
+        self.assertEqual(media2.started, True)
         self.assertEqual(media2.error, None)
 
         print (
@@ -603,9 +603,9 @@ class BuildingTestCase(TestCase):
 
 
 class RecoderTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        group, created = Group.objects.get_or_create(name='can delete file')
         remi = User.objects.create_user("Remi")
         building = Building.objects.create(name="bulding1")
         image = Image.objects.create(owner=remi, original_filename="schema_bdd.jpg", file=File(

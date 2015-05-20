@@ -29,10 +29,10 @@ from django.test import TestCase
 
 
 class FileBrowseTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        group, created = Group.objects.get_or_create(name='can delete file')
-        remi = User.objects.create_user("Remi")
+        remi = User.objects.create(username="remi")
         image = Image.objects.create(owner=remi, original_filename="schema_bdd.jpg", file=File(
             open("schema_bdd.jpg"), "schema_bdd.jpg"))
         FileBrowse.objects.create(document=image)
@@ -41,7 +41,7 @@ class FileBrowseTestCase(TestCase):
         fileBrowse = FileBrowse.objects.get(id=1)
         self.assertEquals(
             fileBrowse.document.original_filename, "schema_bdd.jpg")
-        self.assertEquals(fileBrowse.document.owner.username,  "Remi")
+        self.assertEquals(fileBrowse.document.owner.username,  "remi")
         self.assertEquals(fileBrowse.__str__(), "%s" % fileBrowse.document)
         del(fileBrowse)
         FileBrowse.objects.get(id=1).delete()

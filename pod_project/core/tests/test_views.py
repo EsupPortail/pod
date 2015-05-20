@@ -31,9 +31,9 @@ from django.contrib.auth import authenticate
 
 
 class User_ProfileTestView(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        group, created = Group.objects.get_or_create(name='can delete file')
         user = User.objects.create(
             username='remi', password='12345', is_active=True)
         user.set_password('hello')
