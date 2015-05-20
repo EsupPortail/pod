@@ -43,7 +43,9 @@ import logging
 logger = logging.getLogger(__name__)
 import unicodedata
 
-#gloabl function to remove accent, use in tags
+# gloabl function to remove accent, use in tags
+
+
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', unicode(input_str))
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
@@ -85,9 +87,9 @@ class Channel(models.Model):
     def __str__(self):
         return "%s" % (self.title)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        super(Channel, self).save()
+        super(Channel, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('channel', kwargs={'slug_c': self.slug})
@@ -116,9 +118,9 @@ class Theme(models.Model):
     def __str__(self):
         return "%s: %s" % (self.channel.title, self.title)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        super(Theme, self).save()
+        super(Theme, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['title']
@@ -153,9 +155,9 @@ class Type(models.Model):
     def __str__(self):
         return "%s" % (self.title)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        super(Type, self).save()
+        super(Type, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['title']
@@ -187,9 +189,9 @@ class Discipline(models.Model):
     def __str__(self):
         return "%s" % (self.title)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        super(Discipline, self).save()
+        super(Discipline, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['title']
@@ -238,8 +240,6 @@ class MyTaggableManager(TaggableManager):
             prefetch_cache_name=self.name
         )
         return manager
-
-
 
 
 class _MyTaggableManager(_TaggableManager):

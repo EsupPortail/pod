@@ -168,6 +168,7 @@ AUTH_LDAP_BIND_DN = ''
 AUTH_LDAP_BIND_PASSWORD = ''
 AUTH_LDAP_SCOPE = 'ONELEVEL'
 AUTH_LDAP_USER_SEARCH = ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)") #('ldap', 'parameters')
+AUTH_LDAP_UID_TEST = ""
 
 AUTH_USER_ATTR_MAP = {
     'first_name': 'givenName',
