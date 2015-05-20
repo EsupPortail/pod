@@ -966,7 +966,7 @@ def mediacourses_notify(request):  # post mediacourses notification
             # messages.add_message(
             #    request, messages.ERROR, _(u'You cannot notify a mediacourse'))
             #raise PermissionDenied
-            return HttpResponse("nok")
+            return HttpResponse("nok : key is not valid")
 
         recorder = get_object_or_404(
             Recorder, adress_ip=request.GET.get("recordingPlace").replace("_", "."))
@@ -997,7 +997,7 @@ def mediacourses_notify(request):  # post mediacourses notification
 
         return HttpResponse("ok")
     else:
-        return HttpResponse("nok")
+        return HttpResponse("nok : recordingPlace or mediapath or key are missing")
 
 
 def liveSlide(request):  # affichage des slides en direct
