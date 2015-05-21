@@ -21,6 +21,7 @@ voir http://www.gnu.org/licenses/
 """
 from django.core.files import File
 from core.models import *
+import django
 from django.conf import settings
 from django.test import TestCase
 from pods.models import *
@@ -35,7 +36,7 @@ from django.forms.models import inlineformset_factory
 from pods.forms import ChannelForm, ThemeForm, PodForm, ContributorPodsForm, ChapterPodsForm, EnrichPodsForm
 import threading
 from core.utils import encode_video
-# Create your tests here.
+
 """
     test view
 """
@@ -1243,7 +1244,12 @@ class Video_mediacourses(TestCase):
         self.assertEqual(login, True)
         self.assertEqual(self.client.session['_auth_user_id'], user.pk)
         response = self.client.get("/mediacourses_add/?mediapath=abcdefg.zip")
-        self.assertTrue("this_is_the_login_form" in response.content)
+        version = django.get_version()
+        if version < 1.7:
+            self.assertTrue("this_is_the_login_form" in response.content)
+        else:
+            self.assertRedirects(
+            response, '/admin/login/?next=/mediacourses_add/%3Fmediapath%3Dabcdefg.zip', status_code=302, target_status_code=200, msg_prefix='') 
 
     def test_access_user_mediacourses_add_without_mediapath(self):
         self.client = Client()
@@ -1253,7 +1259,7 @@ class Video_mediacourses(TestCase):
         login = self.client.login(
             username='remi', password='hello')
         self.assertEqual(login, True)
-        response = self.client.get("/mediacourses_add/?mediapath=abcdefg.zip")
+        response = self.client.get("/mediacourses_add/")
         self.assertEqual(response.status_code, 403)
     """
     def test_post_data_mediacourses_add(self):
