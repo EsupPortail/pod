@@ -1,526 +1,360 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import filer.fields.file
+import datetime
+import core.models
+import filer.fields.image
+import ckeditor.fields
+import pods.models
+from django.conf import settings
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Channel'
-        db.create_table(u'pods_channel', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
-            ('title_fr', self.gf('django.db.models.fields.CharField')(max_length=100, unique=True, null=True, blank=True)),
-            ('title_en', self.gf('django.db.models.fields.CharField')(max_length=100, unique=True, null=True, blank=True)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=100)),
-            ('description', self.gf('ckeditor.fields.RichTextField')(blank=True)),
-            ('headband', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['filer.Image'], null=True, blank=True)),
-            ('color', self.gf('django.db.models.fields.CharField')(max_length=10, null=True, blank=True)),
-            ('style', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('owner', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'owner_channels', to=orm['auth.User'])),
-            ('visible', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal(u'pods', ['Channel'])
+    dependencies = [
+        ('taggit', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('core', '0001_initial'),
+        ('filer', '__first__'),
+    ]
 
-        # Adding M2M table for field users on 'Channel'
-        m2m_table_name = db.shorten_name(u'pods_channel_users')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('channel', models.ForeignKey(orm[u'pods.channel'], null=False)),
-            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['channel_id', 'user_id'])
-
-        # Adding model 'Theme'
-        db.create_table(u'pods_theme', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=100)),
-            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('headband', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['filer.Image'], null=True, blank=True)),
-            ('channel', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'themes', to=orm['pods.Channel'])),
-        ))
-        db.send_create_signal(u'pods', ['Theme'])
-
-        # Adding model 'Type'
-        db.create_table(u'pods_type', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
-            ('title_fr', self.gf('django.db.models.fields.CharField')(max_length=100, unique=True, null=True, blank=True)),
-            ('title_en', self.gf('django.db.models.fields.CharField')(max_length=100, unique=True, null=True, blank=True)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=100)),
-            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('headband', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['filer.Image'], null=True, blank=True)),
-        ))
-        db.send_create_signal(u'pods', ['Type'])
-
-        # Adding model 'Discipline'
-        db.create_table(u'pods_discipline', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
-            ('title_fr', self.gf('django.db.models.fields.CharField')(max_length=100, unique=True, null=True, blank=True)),
-            ('title_en', self.gf('django.db.models.fields.CharField')(max_length=100, unique=True, null=True, blank=True)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=100)),
-            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('headband', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['filer.Image'], null=True, blank=True)),
-        ))
-        db.send_create_signal(u'pods', ['Discipline'])
-
-        # Adding model 'Pod'
-        db.create_table(u'pods_pod', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('video', self.gf('django.db.models.fields.files.FileField')(max_length=255)),
-            ('allow_downloading', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=250)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=255)),
-            ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('date_added', self.gf('django.db.models.fields.DateField')(default=datetime.datetime.now)),
-            ('date_evt', self.gf('django.db.models.fields.DateField')(default=datetime.datetime.now, null=True, blank=True)),
-            ('description', self.gf('ckeditor.fields.RichTextField')(blank=True)),
-            ('view_count', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('encoding_in_progress', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('encoding_status', self.gf('django.db.models.fields.CharField')(max_length=250)),
-            ('thumbnail', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['filer.Image'], null=True, blank=True)),
-            ('to_encode', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('overview', self.gf('django.db.models.fields.files.ImageField')(max_length=255, null=True, blank=True)),
-            ('duration', self.gf('django.db.models.fields.IntegerField')(default=0, max_length=12, blank=True)),
-            ('infoVideo', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pods.Type'])),
-            ('is_draft', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('is_restricted', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('password', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
-        ))
-        db.send_create_signal(u'pods', ['Pod'])
-
-        # Adding M2M table for field discipline on 'Pod'
-        m2m_table_name = db.shorten_name(u'pods_pod_discipline')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('pod', models.ForeignKey(orm[u'pods.pod'], null=False)),
-            ('discipline', models.ForeignKey(orm[u'pods.discipline'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['pod_id', 'discipline_id'])
-
-        # Adding M2M table for field channel on 'Pod'
-        m2m_table_name = db.shorten_name(u'pods_pod_channel')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('pod', models.ForeignKey(orm[u'pods.pod'], null=False)),
-            ('channel', models.ForeignKey(orm[u'pods.channel'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['pod_id', 'channel_id'])
-
-        # Adding M2M table for field theme on 'Pod'
-        m2m_table_name = db.shorten_name(u'pods_pod_theme')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('pod', models.ForeignKey(orm[u'pods.pod'], null=False)),
-            ('theme', models.ForeignKey(orm[u'pods.theme'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['pod_id', 'theme_id'])
-
-        # Adding model 'EncodingPods'
-        db.create_table(u'pods_encodingpods', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('video', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pods.Pod'])),
-            ('encodingType', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.EncodingType'])),
-            ('encodingFile', self.gf('django.db.models.fields.files.FileField')(max_length=255, null=True, blank=True)),
-            ('encodingFormat', self.gf('django.db.models.fields.CharField')(default=u'video/mp4', max_length=12)),
-        ))
-        db.send_create_signal(u'pods', ['EncodingPods'])
-
-        # Adding model 'ContributorPods'
-        db.create_table(u'pods_contributorpods', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('video', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pods.Pod'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('email_address', self.gf('django.db.models.fields.EmailField')(default=u'', max_length=75, null=True, blank=True)),
-            ('role', self.gf('django.db.models.fields.CharField')(default=u'authors', max_length=200, null=True, blank=True)),
-            ('weblink', self.gf('django.db.models.fields.URLField')(max_length=200, null=True, blank=True)),
-        ))
-        db.send_create_signal(u'pods', ['ContributorPods'])
-
-        # Adding model 'TrackPods'
-        db.create_table(u'pods_trackpods', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('video', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pods.Pod'])),
-            ('kind', self.gf('django.db.models.fields.CharField')(default=u'subtitles', max_length=10)),
-            ('lang', self.gf('django.db.models.fields.CharField')(max_length=2)),
-            ('src', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['filer.File'], null=True, blank=True)),
-        ))
-        db.send_create_signal(u'pods', ['TrackPods'])
-
-        # Adding model 'DocPods'
-        db.create_table(u'pods_docpods', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('video', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pods.Pod'])),
-            ('document', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['filer.File'], null=True, blank=True)),
-        ))
-        db.send_create_signal(u'pods', ['DocPods'])
-
-        # Adding model 'ChapterPods'
-        db.create_table(u'pods_chapterpods', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('video', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pods.Pod'])),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=105)),
-            ('is_chapter', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('stop_video', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('start', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('end', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('type', self.gf('django.db.models.fields.CharField')(max_length=10, null=True, blank=True)),
-            ('image', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name=u'chapter_image', null=True, to=orm['filer.Image'])),
-            ('richtext', self.gf('ckeditor.fields.RichTextField')(blank=True)),
-            ('weblink', self.gf('django.db.models.fields.URLField')(max_length=200, null=True, blank=True)),
-            ('document', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['filer.File'], null=True, blank=True)),
-            ('embed', self.gf('django.db.models.fields.TextField')(max_length=300, null=True, blank=True)),
-        ))
-        db.send_create_signal(u'pods', ['ChapterPods'])
-
-        # Adding model 'Favorites'
-        db.create_table(u'pods_favorites', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('video', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pods.Pod'])),
-        ))
-        db.send_create_signal(u'pods', ['Favorites'])
-
-        # Adding model 'Mediacourses'
-        db.create_table(u'pods_mediacourses', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('date_added', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('mediapath', self.gf('django.db.models.fields.CharField')(unique=True, max_length=250)),
-            ('started', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('error', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-        ))
-        db.send_create_signal(u'pods', ['Mediacourses'])
-
-        # Adding model 'Building'
-        db.create_table(u'pods_building', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200)),
-            ('image', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name=u'building_image', null=True, to=orm['filer.Image'])),
-        ))
-        db.send_create_signal(u'pods', ['Building'])
-
-        # Adding model 'Recorder'
-        db.create_table(u'pods_recorder', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200)),
-            ('image', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name=u'recorder_image', null=True, to=orm['filer.Image'])),
-            ('adress_ip', self.gf('django.db.models.fields.IPAddressField')(unique=True, max_length=15)),
-            ('status', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('slide', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('gmapurl', self.gf('django.db.models.fields.CharField')(max_length=250, null=True, blank=True)),
-            ('is_restricted', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('building', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pods.Building'])),
-        ))
-        db.send_create_signal(u'pods', ['Recorder'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Channel'
-        db.delete_table(u'pods_channel')
-
-        # Removing M2M table for field users on 'Channel'
-        db.delete_table(db.shorten_name(u'pods_channel_users'))
-
-        # Deleting model 'Theme'
-        db.delete_table(u'pods_theme')
-
-        # Deleting model 'Type'
-        db.delete_table(u'pods_type')
-
-        # Deleting model 'Discipline'
-        db.delete_table(u'pods_discipline')
-
-        # Deleting model 'Pod'
-        db.delete_table(u'pods_pod')
-
-        # Removing M2M table for field discipline on 'Pod'
-        db.delete_table(db.shorten_name(u'pods_pod_discipline'))
-
-        # Removing M2M table for field channel on 'Pod'
-        db.delete_table(db.shorten_name(u'pods_pod_channel'))
-
-        # Removing M2M table for field theme on 'Pod'
-        db.delete_table(db.shorten_name(u'pods_pod_theme'))
-
-        # Deleting model 'EncodingPods'
-        db.delete_table(u'pods_encodingpods')
-
-        # Deleting model 'ContributorPods'
-        db.delete_table(u'pods_contributorpods')
-
-        # Deleting model 'TrackPods'
-        db.delete_table(u'pods_trackpods')
-
-        # Deleting model 'DocPods'
-        db.delete_table(u'pods_docpods')
-
-        # Deleting model 'ChapterPods'
-        db.delete_table(u'pods_chapterpods')
-
-        # Deleting model 'Favorites'
-        db.delete_table(u'pods_favorites')
-
-        # Deleting model 'Mediacourses'
-        db.delete_table(u'pods_mediacourses')
-
-        # Deleting model 'Building'
-        db.delete_table(u'pods_building')
-
-        # Deleting model 'Recorder'
-        db.delete_table(u'pods_recorder')
-
-
-    models = {
-        u'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'core.encodingtype': {
-            'Meta': {'object_name': 'EncodingType'},
-            'bitrate_audio': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
-            'bitrate_video': ('django.db.models.fields.CharField', [], {'max_length': '250', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mediatype': ('django.db.models.fields.CharField', [], {'default': "u'video'", 'max_length': '5'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
-            'output_height': ('django.db.models.fields.IntegerField', [], {'default': '240', 'max_length': '4'})
-        },
-        'filer.file': {
-            'Meta': {'object_name': 'File'},
-            '_file_size': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'file': ('django.db.models.fields.files.FileField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'folder': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'all_files'", 'null': 'True', 'to': "orm['filer.Folder']"}),
-            'has_all_mandatory_data': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255', 'blank': 'True'}),
-            'original_filename': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'owned_files'", 'null': 'True', 'to': u"orm['auth.User']"}),
-            'polymorphic_ctype': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'polymorphic_filer.file_set'", 'null': 'True', 'to': u"orm['contenttypes.ContentType']"}),
-            'sha1': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '40', 'blank': 'True'}),
-            'uploaded_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
-        },
-        'filer.folder': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('parent', 'name'),)", 'object_name': 'Folder'},
-            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
-            'lft': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
-            'modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'filer_owned_folders'", 'null': 'True', 'to': u"orm['auth.User']"}),
-            'parent': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'children'", 'null': 'True', 'to': "orm['filer.Folder']"}),
-            'rght': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
-            'tree_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
-            'uploaded_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
-        },
-        'filer.image': {
-            'Meta': {'object_name': 'Image', '_ormbases': ['filer.File']},
-            '_height': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            '_width': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'author': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'date_taken': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'default_alt_text': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'default_caption': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            u'file_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['filer.File']", 'unique': 'True', 'primary_key': 'True'}),
-            'must_always_publish_author_credit': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'must_always_publish_copyright': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'subject_location': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '64', 'null': 'True', 'blank': 'True'})
-        },
-        u'pods.building': {
-            'Meta': {'object_name': 'Building'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "u'building_image'", 'null': 'True', 'to': "orm['filer.Image']"}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
-        },
-        u'pods.channel': {
-            'Meta': {'ordering': "[u'title']", 'object_name': 'Channel'},
-            'color': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            'description': ('ckeditor.fields.RichTextField', [], {'blank': 'True'}),
-            'headband': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['filer.Image']", 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'owner_channels'", 'to': u"orm['auth.User']"}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'}),
-            'style': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
-            'title_en': ('django.db.models.fields.CharField', [], {'max_length': '100', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'title_fr': ('django.db.models.fields.CharField', [], {'max_length': '100', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'users': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "u'users_channels'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
-            'visible': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
-        },
-        u'pods.chapterpods': {
-            'Meta': {'ordering': "[u'start']", 'object_name': 'ChapterPods'},
-            'document': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['filer.File']", 'null': 'True', 'blank': 'True'}),
-            'embed': ('django.db.models.fields.TextField', [], {'max_length': '300', 'null': 'True', 'blank': 'True'}),
-            'end': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "u'chapter_image'", 'null': 'True', 'to': "orm['filer.Image']"}),
-            'is_chapter': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'richtext': ('ckeditor.fields.RichTextField', [], {'blank': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '105'}),
-            'start': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'stop_video': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'type': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            'video': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['pods.Pod']"}),
-            'weblink': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        },
-        u'pods.contributorpods': {
-            'Meta': {'object_name': 'ContributorPods'},
-            'email_address': ('django.db.models.fields.EmailField', [], {'default': "u''", 'max_length': '75', 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'role': ('django.db.models.fields.CharField', [], {'default': "u'authors'", 'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'video': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['pods.Pod']"}),
-            'weblink': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        },
-        u'pods.discipline': {
-            'Meta': {'ordering': "[u'title']", 'object_name': 'Discipline'},
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'headband': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['filer.Image']", 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'}),
-            'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
-            'title_en': ('django.db.models.fields.CharField', [], {'max_length': '100', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'title_fr': ('django.db.models.fields.CharField', [], {'max_length': '100', 'unique': 'True', 'null': 'True', 'blank': 'True'})
-        },
-        u'pods.docpods': {
-            'Meta': {'object_name': 'DocPods'},
-            'document': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['filer.File']", 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'video': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['pods.Pod']"})
-        },
-        u'pods.encodingpods': {
-            'Meta': {'object_name': 'EncodingPods'},
-            'encodingFile': ('django.db.models.fields.files.FileField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'encodingFormat': ('django.db.models.fields.CharField', [], {'default': "u'video/mp4'", 'max_length': '12'}),
-            'encodingType': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.EncodingType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'video': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['pods.Pod']"})
-        },
-        u'pods.favorites': {
-            'Meta': {'object_name': 'Favorites'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
-            'video': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['pods.Pod']"})
-        },
-        u'pods.mediacourses': {
-            'Meta': {'object_name': 'Mediacourses'},
-            'date_added': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'error': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mediapath': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '250'}),
-            'started': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
-        },
-        u'pods.pod': {
-            'Meta': {'object_name': 'Pod'},
-            'allow_downloading': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'channel': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['pods.Channel']", 'null': 'True', 'blank': 'True'}),
-            'date_added': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime.now'}),
-            'date_evt': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime.now', 'null': 'True', 'blank': 'True'}),
-            'description': ('ckeditor.fields.RichTextField', [], {'blank': 'True'}),
-            'discipline': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['pods.Discipline']", 'symmetrical': 'False', 'blank': 'True'}),
-            'duration': ('django.db.models.fields.IntegerField', [], {'default': '0', 'max_length': '12', 'blank': 'True'}),
-            'encoding_in_progress': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'encoding_status': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'infoVideo': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'is_draft': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_restricted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'overview': ('django.db.models.fields.files.ImageField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '255'}),
-            'theme': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['pods.Theme']", 'null': 'True', 'blank': 'True'}),
-            'thumbnail': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['filer.Image']", 'null': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
-            'to_encode': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['pods.Type']"}),
-            'video': ('django.db.models.fields.files.FileField', [], {'max_length': '255'}),
-            'view_count': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'})
-        },
-        u'pods.recorder': {
-            'Meta': {'object_name': 'Recorder'},
-            'adress_ip': ('django.db.models.fields.IPAddressField', [], {'unique': 'True', 'max_length': '15'}),
-            'building': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['pods.Building']"}),
-            'gmapurl': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "u'recorder_image'", 'null': 'True', 'to': "orm['filer.Image']"}),
-            'is_restricted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
-            'slide': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'status': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
-        },
-        u'pods.theme': {
-            'Meta': {'ordering': "[u'title']", 'object_name': 'Theme'},
-            'channel': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'themes'", 'to': u"orm['pods.Channel']"}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'headband': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['filer.Image']", 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'}),
-            'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
-        },
-        u'pods.trackpods': {
-            'Meta': {'object_name': 'TrackPods'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'kind': ('django.db.models.fields.CharField', [], {'default': "u'subtitles'", 'max_length': '10'}),
-            'lang': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
-            'src': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['filer.File']", 'null': 'True', 'blank': 'True'}),
-            'video': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['pods.Pod']"})
-        },
-        u'pods.type': {
-            'Meta': {'ordering': "[u'title']", 'object_name': 'Type'},
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'headband': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['filer.Image']", 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'}),
-            'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
-            'title_en': ('django.db.models.fields.CharField', [], {'max_length': '100', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'title_fr': ('django.db.models.fields.CharField', [], {'max_length': '100', 'unique': 'True', 'null': 'True', 'blank': 'True'})
-        }
-    }
-
-    complete_apps = ['pods']
+    operations = [
+        migrations.CreateModel(
+            name='Building',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=200, verbose_name='name')),
+                ('image', filer.fields.image.FilerImageField(related_name='building_image', verbose_name='Image', blank=True, to='filer.Image', null=True)),
+            ],
+            options={
+                'verbose_name': 'Building',
+                'verbose_name_plural': 'Buildings',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Channel',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(unique=True, max_length=100, verbose_name='Title')),
+                ('title_fr', models.CharField(max_length=100, unique=True, null=True, verbose_name='Title')),
+                ('title_en', models.CharField(max_length=100, unique=True, null=True, verbose_name='Title')),
+                ('slug', models.SlugField(help_text='Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.', unique=True, max_length=100, verbose_name='Slug')),
+                ('description', ckeditor.fields.RichTextField(verbose_name='Description', blank=True)),
+                ('color', models.CharField(max_length=10, null=True, verbose_name='Background color', blank=True)),
+                ('style', models.TextField(null=True, verbose_name='Extra style', blank=True)),
+                ('visible', models.BooleanField(default=False, help_text='If checked, the channel appear in a list of available channels on the platform', verbose_name='Visible')),
+                ('headband', filer.fields.image.FilerImageField(verbose_name='Headband', blank=True, to='filer.Image', null=True)),
+                ('owner', models.ForeignKey(related_name='owner_channels', verbose_name='Owner', to=settings.AUTH_USER_MODEL)),
+                ('users', models.ManyToManyField(related_name='users_channels', null=True, verbose_name='Users', to=settings.AUTH_USER_MODEL, blank=True)),
+            ],
+            options={
+                'ordering': ['title'],
+                'verbose_name': 'Channel',
+                'verbose_name_plural': 'Channels',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ChapterPods',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(max_length=100, verbose_name='title')),
+                ('slug', models.SlugField(editable=False, max_length=105, help_text='Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.', unique=True, verbose_name='slug')),
+                ('time', models.PositiveIntegerField(default=0, help_text='Start time in second of the chapter', verbose_name='Start time')),
+            ],
+            options={
+                'ordering': ['time'],
+                'verbose_name': 'Chapter',
+                'verbose_name_plural': 'Chapters',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ContributorPods',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=200, verbose_name='lastname / firstname')),
+                ('email_address', models.EmailField(default='', max_length=75, null=True, verbose_name='mail', blank=True)),
+                ('role', models.CharField(default='authors', choices=[('authors', 'authors'), ('director', 'director'), ('editors', 'editors'), ('designers', 'designers'), ('contributor', 'contributor'), ('actor', 'actor'), ('voice-over', 'voice-off'), ('consultant', 'consultant'), ('writer', 'writer'), ('soundman', 'soundman'), ('technician', 'technician')], max_length=200, blank=True, null=True, verbose_name='role')),
+                ('weblink', models.URLField(null=True, verbose_name='Web link', blank=True)),
+            ],
+            options={
+                'verbose_name': 'Contributor Pod',
+                'verbose_name_plural': 'Contributors Pod',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Discipline',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(unique=True, max_length=100, verbose_name='title')),
+                ('title_fr', models.CharField(max_length=100, unique=True, null=True, verbose_name='title')),
+                ('title_en', models.CharField(max_length=100, unique=True, null=True, verbose_name='title')),
+                ('slug', models.SlugField(help_text='Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.', unique=True, max_length=100, verbose_name='slug')),
+                ('description', models.TextField(null=True, blank=True)),
+                ('headband', filer.fields.image.FilerImageField(verbose_name='Headband', blank=True, to='filer.Image', null=True)),
+            ],
+            options={
+                'ordering': ['title'],
+                'verbose_name': 'Discipline',
+                'verbose_name_plural': 'Disciplines',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='DocPods',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('document', filer.fields.file.FilerFileField(verbose_name='Document', blank=True, to='filer.File', null=True)),
+            ],
+            options={
+                'verbose_name': 'Document Pod',
+                'verbose_name_plural': 'Documents Pod',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='EncodingPods',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('encodingFile', models.FileField(max_length=255, upload_to=core.models.get_storage_path, null=True, verbose_name='encodingFile', blank=True)),
+                ('encodingFormat', models.CharField(default='video/mp4', max_length=12, verbose_name='Format', choices=[('video/mp4', 'video/mp4'), ('video/webm', 'video/webm'), ('audio/mp3', 'audio/mp3'), ('audio/wav', 'audio/wav')])),
+                ('encodingType', models.ForeignKey(verbose_name='encodingType', to='core.EncodingType')),
+            ],
+            options={
+                'verbose_name': 'Encoding Pod',
+                'verbose_name_plural': 'Encodings Pod',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='EnrichPods',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(max_length=100, verbose_name='title')),
+                ('slug', models.SlugField(editable=False, max_length=105, help_text='Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.', unique=True, verbose_name='slug')),
+                ('stop_video', models.BooleanField(default=False, help_text='The video will pause when displaying this enrichment', verbose_name='Stop video')),
+                ('start', models.PositiveIntegerField(default=0, help_text='Start displaying enrichment in second', verbose_name='Start')),
+                ('end', models.PositiveIntegerField(default=0, help_text='Stop displaying enrichment in second', verbose_name='Stop')),
+                ('type', models.CharField(blank=True, max_length=10, null=True, verbose_name='Type', choices=[('image', 'image'), ('richtext', 'richtext'), ('weblink', 'weblink'), ('document', 'document'), ('embed', 'embed')])),
+                ('richtext', ckeditor.fields.RichTextField(verbose_name='richtext', blank=True)),
+                ('weblink', models.URLField(null=True, verbose_name='Web link', blank=True)),
+                ('embed', models.TextField(help_text='Integrate an external source', max_length=300, null=True, verbose_name='Embed', blank=True)),
+                ('document', filer.fields.file.FilerFileField(blank=True, to='filer.File', help_text='Integrate an document (PDF, text, html)', null=True, verbose_name='Document')),
+                ('image', filer.fields.image.FilerImageField(related_name='chapter_image', verbose_name='Image', blank=True, to='filer.Image', null=True)),
+            ],
+            options={
+                'ordering': ['start'],
+                'verbose_name': 'Enrichment',
+                'verbose_name_plural': 'Enrichments',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Favorites',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name': 'Favorite',
+                'verbose_name_plural': 'Favorites',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Mediacourses',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(max_length=200, verbose_name='title')),
+                ('date_added', models.DateTimeField(default=datetime.datetime.now, verbose_name='date added', editable=False)),
+                ('mediapath', models.CharField(unique=True, max_length=250)),
+                ('started', models.BooleanField(default=0)),
+                ('error', models.TextField(null=True, blank=True)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name': 'Mediacourse',
+                'verbose_name_plural': 'Mediacourses',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Notes',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('note', models.TextField(null=True, verbose_name='Note', blank=True)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name': 'Note',
+                'verbose_name_plural': 'Notes',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Pod',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('video', models.FileField(upload_to=core.models.get_storage_path, max_length=255, verbose_name='Video')),
+                ('allow_downloading', models.BooleanField(default=False, verbose_name='allow downloading')),
+                ('title', models.CharField(max_length=250, verbose_name='Title')),
+                ('slug', models.SlugField(editable=False, max_length=255, help_text='Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.', unique=True, verbose_name='Slug')),
+                ('date_added', models.DateField(default=datetime.datetime.now, verbose_name='Creation date')),
+                ('date_evt', models.DateField(default=datetime.datetime.now, null=True, verbose_name='Date of the event', blank=True)),
+                ('description', ckeditor.fields.RichTextField(verbose_name='Description', blank=True)),
+                ('view_count', models.PositiveIntegerField(default=0, editable=False)),
+                ('encoding_in_progress', models.BooleanField(default=False, editable=False)),
+                ('encoding_status', models.CharField(verbose_name='Encoding status', max_length=250, null=True, editable=False, blank=True)),
+                ('to_encode', models.BooleanField(default=False, editable=False)),
+                ('overview', models.ImageField(editable=False, upload_to=core.models.get_storage_path, max_length=255, blank=True, null=True, verbose_name='Overview')),
+                ('duration', models.IntegerField(default=0, verbose_name='Duration', max_length=12, editable=False, blank=True)),
+                ('infoVideo', models.TextField(null=True, editable=False, blank=True)),
+                ('is_draft', models.BooleanField(default=True, help_text='If you check this box, the video will be visible and accessible only by you', verbose_name='Draft')),
+                ('is_restricted', models.BooleanField(default=False, help_text='The video is accessible only by those who can authenticate to the site.', verbose_name='Restricted access')),
+                ('password', models.CharField(help_text='The video is available with the specified password.', max_length=50, null=True, verbose_name='password', blank=True)),
+                ('channel', models.ManyToManyField(to='pods.Channel', null=True, verbose_name='Channels', blank=True)),
+                ('discipline', models.ManyToManyField(to='pods.Discipline', verbose_name='Disciplines', blank=True)),
+                ('owner', models.ForeignKey(verbose_name='Owner', to=settings.AUTH_USER_MODEL)),
+                ('tags', pods.models.MyTaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='Separate tags with spaces, enclose the tags consist of several words in quotation marks.', verbose_name='Tags')),
+            ],
+            options={
+                'verbose_name': 'Video',
+                'verbose_name_plural': 'Videos',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Recorder',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=200, verbose_name='name')),
+                ('adress_ip', models.IPAddressField(unique=True)),
+                ('status', models.BooleanField(default=0)),
+                ('slide', models.BooleanField(default=1)),
+                ('gmapurl', models.CharField(max_length=250, null=True, blank=True)),
+                ('is_restricted', models.BooleanField(default=False, help_text='Live is accessible only by those who can authenticate on the website.', verbose_name='Restricted access')),
+                ('building', models.ForeignKey(verbose_name='Building', to='pods.Building')),
+                ('image', filer.fields.image.FilerImageField(related_name='recorder_image', verbose_name='Image', blank=True, to='filer.Image', null=True)),
+            ],
+            options={
+                'verbose_name': 'Recorder',
+                'verbose_name_plural': 'Recorders',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Theme',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(unique=True, max_length=100, verbose_name='Title')),
+                ('slug', models.SlugField(help_text='Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.', unique=True, max_length=100, verbose_name='Slug')),
+                ('description', models.TextField(null=True, blank=True)),
+                ('channel', models.ForeignKey(related_name='themes', verbose_name='Channel', to='pods.Channel')),
+                ('headband', filer.fields.image.FilerImageField(verbose_name='Headband', blank=True, to='filer.Image', null=True)),
+            ],
+            options={
+                'ordering': ['title'],
+                'verbose_name': 'Theme',
+                'verbose_name_plural': 'Themes',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='TrackPods',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('kind', models.CharField(default='subtitles', max_length=10, verbose_name='Kind', choices=[('subtitles', 'subtitles'), ('captions', 'captions')])),
+                ('lang', models.CharField(max_length=2, verbose_name='Language', choices=[('', (('ar', 'Arabic'), ('zh', 'Chinese'), ('en', 'English'), ('fr', 'French'), ('de', 'German'), ('es', 'Spanish'))), ('-----------', (('ab', 'Abkhazian'), ('aa', 'Afar'), ('af', 'Afrikaans'), ('sq', 'Albanian'), ('am', 'Amharic'), ('ar', 'Arabic'), ('an', 'Aragonese'), ('hy', 'Armenian'), ('as', 'Assamese'), ('ay', 'Aymara'), ('az', 'Azerbaijani'), ('ba', 'Bashkir'), ('eu', 'Basque'), ('bn', 'Bengali (Bangla)'), ('dz', 'Bhutani'), ('bh', 'Bihari'), ('bi', 'Bislama'), ('br', 'Breton'), ('bg', 'Bulgarian'), ('my', 'Burmese'), ('be', 'Byelorussian (Belarusian)'), ('km', 'Cambodian'), ('ca', 'Catalan'), ('zh', 'Chinese'), ('co', 'Corsican'), ('hr', 'Croatian'), ('cs', 'Czech'), ('da', 'Danish'), ('nl', 'Dutch'), ('en', 'English'), ('eo', 'Esperanto'), ('et', 'Estonian'), ('fo', 'Faeroese'), ('fa', 'Farsi'), ('fj', 'Fiji'), ('fi', 'Finnish'), ('fr', 'French'), ('fy', 'Frisian'), ('gl', 'Galician'), ('gd', 'Gaelic (Scottish)'), ('gv', 'Gaelic (Manx)'), ('ka', 'Georgian'), ('de', 'German'), ('el', 'Greek'), ('kl', 'Greenlandic'), ('gn', 'Guarani'), ('gu', 'Gujarati'), ('ht', 'Haitian Creole'), ('ha', 'Hausa'), ('he', 'Hebrew'), ('hi', 'Hindi'), ('hu', 'Hungarian'), ('is', 'Icelandic'), ('io', 'Ido'), ('id', 'Indonesian'), ('ia', 'Interlingua'), ('ie', 'Interlingue'), ('iu', 'Inuktitut'), ('ik', 'Inupiak'), ('ga', 'Irish'), ('it', 'Italian'), ('ja', 'Japanese'), ('jv', 'Javanese'), ('kn', 'Kannada'), ('ks', 'Kashmiri'), ('kk', 'Kazakh'), ('rw', 'Kinyarwanda (Ruanda)'), ('ky', 'Kirghiz'), ('rn', 'Kirundi (Rundi)'), ('ko', 'Korean'), ('ku', 'Kurdish'), ('lo', 'Laothian'), ('la', 'Latin'), ('lv', 'Latvian (Lettish)'), ('li', 'Limburgish ( Limburger)'), ('ln', 'Lingala'), ('lt', 'Lithuanian'), ('mk', 'Macedonian'), ('mg', 'Malagasy'), ('ms', 'Malay'), ('ml', 'Malayalam'), ('mt', 'Maltese'), ('mi', 'Maori'), ('mr', 'Marathi'), ('mo', 'Moldavian'), ('mn', 'Mongolian'), ('na', 'Nauru'), ('ne', 'Nepali'), ('no', 'Norwegian'), ('oc', 'Occitan'), ('or', 'Oriya'), ('om', 'Oromo (Afaan Oromo)'), ('ps', 'Pashto (Pushto)'), ('pl', 'Polish'), ('pt', 'Portuguese'), ('pa', 'Punjabi'), ('qu', 'Quechua'), ('rm', 'Rhaeto-Romance'), ('ro', 'Romanian'), ('ru', 'Russian'), ('sm', 'Samoan'), ('sg', 'Sangro'), ('sa', 'Sanskrit'), ('sr', 'Serbian'), ('sh', 'Serbo-Croatian'), ('st', 'Sesotho'), ('tn', 'Setswana'), ('sn', 'Shona'), ('ii', 'Sichuan Yi'), ('sd', 'Sindhi'), ('si', 'Sinhalese'), ('ss', 'Siswati'), ('sk', 'Slovak'), ('sl', 'Slovenian'), ('so', 'Somali'), ('es', 'Spanish'), ('su', 'Sundanese'), ('sw', 'Swahili (Kiswahili)'), ('sv', 'Swedish'), ('tl', 'Tagalog'), ('tg', 'Tajik'), ('ta', 'Tamil'), ('tt', 'Tatar'), ('te', 'Telugu'), ('th', 'Thai'), ('bo', 'Tibetan'), ('ti', 'Tigrinya'), ('to', 'Tonga'), ('ts', 'Tsonga'), ('tr', 'Turkish'), ('tk', 'Turkmen'), ('tw', 'Twi'), ('ug', 'Uighur'), ('uk', 'Ukrainian'), ('ur', 'Urdu'), ('uz', 'Uzbek'), ('vi', 'Vietnamese'), ('vo', 'Volap\xfck'), ('wa', 'Wallon'), ('cy', 'Welsh'), ('wo', 'Wolof'), ('xh', 'Xhosa'), ('yi', 'Yiddish'), ('yo', 'Yoruba'), ('zu', 'Zulu')))])),
+                ('src', filer.fields.file.FilerFileField(verbose_name='Video track file', blank=True, to='filer.File', null=True)),
+                ('video', models.ForeignKey(verbose_name='video', to='pods.Pod')),
+            ],
+            options={
+                'verbose_name': 'Track Pod',
+                'verbose_name_plural': 'Tracks Pod',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Type',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(unique=True, max_length=100, verbose_name='Title')),
+                ('title_fr', models.CharField(max_length=100, unique=True, null=True, verbose_name='Title')),
+                ('title_en', models.CharField(max_length=100, unique=True, null=True, verbose_name='Title')),
+                ('slug', models.SlugField(help_text='Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.', unique=True, max_length=100, verbose_name='Slug')),
+                ('description', models.TextField(null=True, blank=True)),
+                ('headband', filer.fields.image.FilerImageField(verbose_name='Headband', blank=True, to='filer.Image', null=True)),
+            ],
+            options={
+                'ordering': ['title'],
+                'verbose_name': 'Type',
+                'verbose_name_plural': 'Types',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='pod',
+            name='theme',
+            field=models.ManyToManyField(to='pods.Theme', null=True, verbose_name='Themes', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='pod',
+            name='thumbnail',
+            field=filer.fields.image.FilerImageField(verbose_name='Thumbnail', blank=True, to='filer.Image', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='pod',
+            name='type',
+            field=models.ForeignKey(verbose_name='Type', to='pods.Type'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='notes',
+            name='video',
+            field=models.ForeignKey(to='pods.Pod'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='favorites',
+            name='video',
+            field=models.ForeignKey(to='pods.Pod'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='enrichpods',
+            name='video',
+            field=models.ForeignKey(verbose_name='video', to='pods.Pod'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='encodingpods',
+            name='video',
+            field=models.ForeignKey(verbose_name='Video', to='pods.Pod'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='docpods',
+            name='video',
+            field=models.ForeignKey(verbose_name='Video', to='pods.Pod'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='contributorpods',
+            name='video',
+            field=models.ForeignKey(verbose_name='video', to='pods.Pod'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='chapterpods',
+            name='video',
+            field=models.ForeignKey(verbose_name='video', to='pods.Pod'),
+            preserve_default=True,
+        ),
+    ]
