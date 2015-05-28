@@ -30,7 +30,7 @@ INSTALLED_APPS = (
     'south',
     # Pages statiques
     'django.contrib.sites',
-    'django.contrib.flatpages',    
+    'django.contrib.flatpages',
     # Applications tierces
     'ckeditor',
     'filer',
