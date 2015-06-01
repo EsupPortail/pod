@@ -271,6 +271,7 @@ VIDEO_EXT_ACCEPT = (
     '.divx',
     '.flv',
     '.m2p',
+    '.m4v',
     '.mkv',
     '.mov',
     '.mp4',
