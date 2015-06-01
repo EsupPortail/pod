@@ -223,8 +223,8 @@ from taggit.utils import require_instance_manager
 #from south.modelsinspector import add_introspection_rules
 #add_introspection_rules([], ["^pods\.models\.MyTaggableManager"])
 
-from south.modelsinspector import add_ignored_fields
-add_ignored_fields(["^pods\.models\.MyTaggableManager"])
+#from south.modelsinspector import add_ignored_fields
+#add_ignored_fields(["^pods\.models\.MyTaggableManager"])
 
 
 class MyTaggableManager(TaggableManager):
