@@ -11,7 +11,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('flatpages', '0002_auto_20150521_1550'),
+        #('flatpages', '0002_auto_20150601_1017'),
+        ('flatpages', '__first__'),
         ('filer', '__first__'),
     ]
 
