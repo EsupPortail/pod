@@ -283,6 +283,8 @@ VIDEO_EXT_ACCEPT = (
     '.wav',
     '.wma'
 )
+ENCODE_WEBM = True
+ENCODE_WAV = True
 
 #AUDIOVIDEOCOURS
 SKIP_FIRST_IMAGE = True
