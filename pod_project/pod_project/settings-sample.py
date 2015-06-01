@@ -20,6 +20,7 @@ TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = ['pod.univ.fr']
 
 # Liste des applications
+#https://docs.djangoproject.com/en/1.7/topics/migrations/#upgrading-from-south
 INSTALLED_APPS = (
     'modeltranslation', #put it in first !! http://django-modeltranslation.readthedocs.org/en/latest/installation.html#configuration
     'django.contrib.admin',
@@ -47,14 +48,6 @@ INSTALLED_APPS = (
     'pods',
     'core'
 )
-
-#https://docs.djangoproject.com/en/1.7/topics/migrations/#upgrading-from-south
-SOUTH_MIGRATION_MODULES = {
-    'taggit': 'taggit.south_migrations',
-    'filer': 'filer.migrations_django',
-    'pods': 'pods.south_migrations',
-    'core': 'core.south_migrations'
-}
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
