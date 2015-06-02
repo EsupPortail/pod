@@ -57,11 +57,7 @@ voir http://www.gnu.org/licenses/
                         <li><a href="{% url 'channels' %}">{% trans 'Channels' %}</a></li>
                         <li><a href="{% url 'channel' slug_c=channel.slug %}">{{ channel.title }}</a></li>
                     {% else %}
-                        {% if request.META.HTTP_REFERER %}
-                            <li><a href="{{ request.META.HTTP_REFERER }}">{% trans 'Videos' %}</a></li>
-                        {% else %}
                             <li><a href="{% url 'videos' %}">{% trans 'Videos' %}</a></li>
-                        {% endif %}
                     {% endif %}
                     <li class="active">{{ video.title }}</li>
                 {% endblock breadcrumbs %}
