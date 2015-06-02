@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.generic import RedirectView
 from django.contrib import admin
 admin.autodiscover()
 
@@ -12,6 +13,7 @@ sqs = SearchQuerySet().facet('owner').facet('type').facet(
 
 urlpatterns = patterns(
     '',
+    (r'^favicon\.ico$', RedirectView.as_view(url=settings.STATIC_URL+settings.TEMPLATE_THEME+'/images/favicon.ico')),
     (r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/', include(admin.site.urls)),
     # ACCOUNT

@@ -374,7 +374,9 @@ def videos(request):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None):
-    video = get_object_or_404(Pod, slug=slug)
+    from string import find
+    id = slug[:find(slug,"-")]
+    video = get_object_or_404(Pod, id=id)
     channel = None
     if slug_c:
         channel = get_object_or_404(Channel, slug=slug_c)
@@ -1005,7 +1007,7 @@ def liveSlide(request):  # affichage des slides en direct
     return render_to_response('mediacourses/liveSlide.html', c)
     """
     if request.GET.get("ip"):
-        filename = "/audiovideocours/ftp/live/%s.jpg" %request.GET.get("ip").replace(".", "_") #Select your file here. 
+        filename = "/audiovideocours/ftp/live/%s.jpg" %request.GET.get("ip").replace(".", "_") #Select your file here.
         if not os.path.isfile(filename):
             return HttpResponse("pas de fichier")
         wrapper = FileWrapper(file(filename))

@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -240,9 +240,8 @@ def encode_video(video_to_encode):
                                             "video_%s_%s.mp4" % (video.id, encod_video.output_height))
                     encode_mp4(VIDEO_ID, in_width, in_height, bufsize,
                                in_audio_rate, encod_video, videofilename, videourl)
-                    if os.access(videofilename, os.F_OK):
-                        encode_webm(
-                            VIDEO_ID, videofilename, encod_video, bufsize)
+                    if settings.ENCODE_WEBM and os.access(videofilename, os.F_OK):
+                        encode_webm(VIDEO_ID, videofilename, encod_video, bufsize)
         else:
             list_encod_audio = EncodingType.objects.filter(mediatype='audio')
             for encod_audio in list_encod_audio:
@@ -253,9 +252,8 @@ def encode_video(video_to_encode):
                                         "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
                 encode_mp3(
                     VIDEO_ID, audiofilename, audiourl, encod_audio, in_audio_rate)
-                if os.access(audiofilename, os.F_OK):
-                    encode_wav(
-                        VIDEO_ID, audiofilename, in_audio_rate, encod_audio)
+                if settings.ENCODE_WAV and os.access(audiofilename, os.F_OK):
+                    encode_wav(VIDEO_ID, audiofilename, in_audio_rate, encod_audio)
         video = None
         video = Pod.objects.get(id=VIDEO_ID)
         video.encoding_status = "DONE at %s" % time.ctime()

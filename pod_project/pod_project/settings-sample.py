@@ -31,7 +31,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Pages statiques
     'django.contrib.sites',
-    'django.contrib.flatpages',    
+    'django.contrib.flatpages',
     # Applications tierces
     'ckeditor',
     'filer',
@@ -271,6 +271,7 @@ VIDEO_EXT_ACCEPT = (
     '.divx',
     '.flv',
     '.m2p',
+    '.m4v',
     '.mkv',
     '.mov',
     '.mp4',
@@ -283,6 +284,8 @@ VIDEO_EXT_ACCEPT = (
     '.wav',
     '.wma'
 )
+ENCODE_WEBM = True
+ENCODE_WAV = True
 
 #AUDIOVIDEOCOURS
 SKIP_FIRST_IMAGE = True
