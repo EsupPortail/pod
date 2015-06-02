@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os
 import hashlib
+from string import find
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render
@@ -374,8 +375,7 @@ def videos(request):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None):
-    from string import find
-    id = slug[:find(slug,"-")]
+    id = slug[:find(slug, "-")]
     video = get_object_or_404(Pod, id=id)
     channel = None
     if slug_c:
