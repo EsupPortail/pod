@@ -46,6 +46,8 @@ DEFAULT_THUMBNAIL_OUT_SIZE_HEIGHT = 480
 VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
 DEFAULT_OVERVIEW_OUT_SIZE_HEIGHT = 64
 DEBUG = getattr(settings, 'DEBUG', True)
+ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+ENCODE_WAV=getattr(settings, 'ENCODE_WAV', True)
 
 log = logging.getLogger(__name__)
 
