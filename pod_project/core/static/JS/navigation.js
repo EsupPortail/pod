@@ -71,8 +71,8 @@ $(document).ready(function() {
     /** FORM VIDEO **/
     $('form').on('submit', function() { 
         preventUnloadPrompt = true;
-        $('#process').find('div.anim').html(ajax_image);
-        $('#process').show(); 
+        /*$('#process').find('div.anim').html(ajax_image);
+        $('#process').show(); */
         $('form').hide(); 
         return true; 
     });

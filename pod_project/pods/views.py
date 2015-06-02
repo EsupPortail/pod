@@ -740,7 +740,7 @@ def video_chapter(request, slug):
         chapterformset = ChapterInlineFormSet(
             instance=video, prefix='chapter_form')
 
-    return render_to_response("videos/video_chapterpods_formset.html",
+    return render_to_response("videos/test_enrich.html",
                               {'chapterformset': chapterformset},
                               context_instance=RequestContext(request))
 
@@ -750,6 +750,7 @@ def video_chapter(request, slug):
 @staff_member_required
 def video_enrich(request, slug):
     video = get_object_or_404(Pod, slug=slug)
+    print "----> JE PASSE"
     # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
@@ -760,37 +761,75 @@ def video_enrich(request, slug):
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot enrich this video'))
-        raise PermissionDenied
+        raise PermissionDenied   
+    list_enrichment= EnrichPods.objects.filter(video=video)
 
-    EnrichInlineFormSet = inlineformset_factory(
-        Pod, EnrichPods, form=EnrichPodsForm, extra=0, can_delete=True)
+    if request.is_ajax():   
+        print "----> JE PASSE 2"
+        print request.POST
+        #new, save, modify, delete
 
-    if request.method == "POST":
-        enrichformset = EnrichInlineFormSet(
-            request.POST, instance=video, prefix='enrich_form')
+        if request.method == "POST" and request.POST.get("action") and request.POST['action'] == 'new':
+            form_enrich= EnrichPodsForm()
 
-        if enrichformset.is_valid():
-            enrichformset.save()
+            return render_to_response("videos/enrich/form_enrich.html",
+                              {'form_enrich': form_enrich, 'video':video},
+                              context_instance=RequestContext(request))
 
-            # MAJ...
-            enrichformset = EnrichInlineFormSet(
-                instance=video, prefix='enrich_form')
-            #...
-            messages.add_message(
-                request, messages.INFO, _(u'The changes have been saved'))
-
-        else:
-            messages.add_message(
-                request, messages.ERROR, _(u'Error in the form'))
-    else:
-        enrichformset = EnrichInlineFormSet(
-            instance=video, prefix='enrich_form')
-
-    return render_to_response("videos/video_enrichpods_formset.html",
-                              {'enrichformset': enrichformset},
+        if request.method == "POST" and request.POST.get("action") and request.POST['action'] == 'modify':
+            enrich = get_object_or_404(EnrichPods, id=request.POST['id'])
+            form_enrich= EnrichPodsForm(instance=enrich)#id dans la requete ?
+            return render_to_response("videos/enrich/form_enrich.html",
+                              {'form_enrich': form_enrich, 'video': video},
                               context_instance=RequestContext(request))
 
 
+        if request.method == "POST" and request.POST.get("action") and request.POST['action'] == 'save':
+            print "----> JE PASSE 3"
+            form_enrich= EnrichPodsForm(request.POST)
+            
+
+            if form_enrich.is_valid():  # All validation rules pass
+                if verify_end_start_item(enrichf, video.duration):
+                    print form_enrich
+                    enrichf = form_enrich.save(commit=False)
+                    enrichf.video_id = video.id
+                    if list_enrichment  and overlaptest(list_enrichment, enrichf):
+                        enrichf.save()
+                        list_enrichment= EnrichPods.objects.filter(video=video)
+                        messages.add_message(
+                        request, messages.INFO, _(u'The changes have been saved'))
+
+            else:
+                messages.add_message(
+                    request, messages.ERROR, _(u'Error in the form'))
+
+        if request.method == "POST" and request.POST.get("action") and request.POST['action'] == 'delete':
+            enrich = get_object_or_404(EnrichPods, id=request.POST['id'])#recuperer avec l'id passer dans la requete ?
+            enrich.delete()
+            list_enrichment= EnrichPods.objects.filter(video=video)
+            messages.add_message(
+            request, messages.INFO, _(u'Enrich delete'))
+
+
+
+
+    return render_to_response("videos/video_enrich_new.html",
+                              {'video': video, 'list_enrichment': list_enrichment},
+                              context_instance=RequestContext(request))
+
+def overlaptest(list_enrichment,form_enrich):
+    for element in list_enrichment:
+        if form_enrich.start >= element.start and form_enrich.start <= element.end and form_enrich.end >= element.start and form_enrich.end <= element.end:
+            return False
+    return True 
+
+def verify_end_start_item(form_enrich, duration):
+    if(form_enrich.start < form_enrich.end and form_enrich.end <= duration):
+        return True
+    else:
+        return False     
+   
 @csrf_protect
 @login_required
 def video_delete(request, slug):

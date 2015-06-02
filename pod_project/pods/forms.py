@@ -247,7 +247,8 @@ class EnrichPodsForm(ModelForm):
               label_unicode = u'%s' %self.fields[myField].label
               self.fields[myField].label = mark_safe("%s <span class=\"special_class\">*</span>" %label_unicode)
     class Meta:
-      model = EnrichPods    
+      model = EnrichPods
+      exclude = ('video',)   
     
 class VideoPasswordForm(Form):
     password = CharField(label=_(u'Password'), widget=PasswordInput())

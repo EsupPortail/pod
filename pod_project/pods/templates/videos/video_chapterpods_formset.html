@@ -91,17 +91,17 @@ $(document).ready(function() {
 {% block bootstrap3_content %}
 <article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
     <ol class="breadcrumb">
-	    {% block breadcrumbs %}
+        {% block breadcrumbs %}
         {{ block.super }} 
         <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
         <li class="active"> {% trans "Chaptering video" %} {{chapterformset.instance.title}}</li>
         {% endblock breadcrumbs %}
     </ol>
     {% include "videos/video_player.html" with video=chapterformset.instance %}
-	
-	<div class="row" id="info_video">
-		<div class="col-sm-9">
-			<form method="post" action="{% url 'video_chapter' slug=chapterformset.instance.slug %}" novalidate>
+    
+    <div class="row" id="info_video">
+        <div class="col-sm-9">
+            <form method="post" action="{% url 'video_chapter' slug=chapterformset.instance.slug %}" novalidate>
                 {% csrf_token %}
                 <fieldset id="chapters">
                 <legend>{% trans "Chaptering video" %}</legend>
@@ -195,21 +195,21 @@ $(document).ready(function() {
                 <div align="center"><div class="anim"></div><!-- <progress value="22" max="100"></progress> --><span>{% trans "Sending, please wait" %}</span></p></div>
             </div>
 
-		</div>
-		<aside class="col-sm-3">
-			<div class="widget">
-				<h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Informations"%}</h4>
-				<p>{% trans '"Add" to add a new chapter and "delete" deletes the chapter' %}</p>
-				<p>{% trans 'Start video playback, pause and click the "get time from the player" to automatically fill in the beginning of the chapter button.' %}</p>
-				<p>{% trans 'Must "Save" to view the results.' %}</p>
+        </div>
+        <aside class="col-sm-3">
+            <div class="widget">
+                <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Informations"%}</h4>
+                <p>{% trans '"Add" to add a new chapter and "delete" deletes the chapter' %}</p>
+                <p>{% trans 'Start video playback, pause and click the "get time from the player" to automatically fill in the beginning of the chapter button.' %}</p>
+                <p>{% trans 'Must "Save" to view the results.' %}</p>
                     
-			</div>
+            </div>
             <div class="widget user-tools">
-			<h4 ><span class="glyphicon glyphicon-wrench"></span> {% trans "Edit the video"%}</h4>
-				{% include "videos/ownertools.html" with video=chapterformset.instance %}
-			</div>
-		</aside>
-	</div> <!--  end row -->
+            <h4 ><span class="glyphicon glyphicon-wrench"></span> {% trans "Edit the video"%}</h4>
+                {% include "videos/ownertools.html" with video=chapterformset.instance %}
+            </div>
+        </aside>
+    </div> <!--  end row -->
 </article>
 {% endblock bootstrap3_content %}
 

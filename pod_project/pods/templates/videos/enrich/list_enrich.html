@@ -1,0 +1,57 @@
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+<span id="list_enrich">
+  <br>
+    <ul>
+      {% for enrich in list_enrichment %}
+          <div class="panel panel-primary" overflow: auto>
+            <table class="table table-striped table-condensed" >
+              <div class="panel-heading"> 
+                <h3 class="panel-title">list of enrichment</h3>
+              </div>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Start</th>
+                  <th>End</th>
+               </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td id="enrich_title">{{ enrich.title }}</td>
+                  <td id="enrich_type">{{ enrich.type }}</td>
+                  <td id="enrich_start">{{ enrich.start }}</td>
+                  <td id="enrich_end">{{ enrich.end }}</td>
+                  <td>
+                      <a id = "modify-enrich" class="modify-enrich btn btn-default btn-xs" title="edit the enrich" data-id="{{enrich.id}}"/>
+                      <span class="glyphicon glyphicon-pencil"></span>
+                      <a  class="delete-enrich btn btn-danger btn-xs" title="Delete the enrich" data-id="{{enrich.id}}"/>
+                      <span class="glyphicon glyphicon-remove"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      {% endfor %}
+    </ul>
+  </br>
+</span>   
