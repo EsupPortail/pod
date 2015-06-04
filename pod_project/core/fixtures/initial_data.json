@@ -137,22 +137,6 @@
         }
     },
   {
-    "pk": 1, 
-    "model": "filer.folder", 
-    "fields": {
-        "rght": 2, 
-        "uploaded_at": "2014-03-11T14:13:36Z", 
-        "name": "root", 
-        "parent": null, 
-        "level": 0, 
-        "created_at": "2014-03-11T14:13:36Z", 
-        "modified_at": "2014-03-11T14:13:36Z", 
-        "lft": 1, 
-        "tree_id": 1, 
-        "owner": 1
-    }
-  },
-  {
       "pk": 1, 
       "model": "pods.type", 
       "fields": {

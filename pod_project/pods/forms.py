@@ -149,6 +149,7 @@ class PodForm(ModelForm):
         
     class Meta:
         model = Pod
+        fields = '__all__'
 
 
 class ContributorPodsForm(ModelForm):
@@ -166,6 +167,7 @@ class ContributorPodsForm(ModelForm):
               self.fields[myField].label = mark_safe("%s <span class=\"special_class\">*</span>" %label_unicode)
     class Meta:
       model = ContributorPods
+      fields = '__all__'
 
 class TrackPodsForm(ModelForm):
     class Media(object):
@@ -182,6 +184,7 @@ class TrackPodsForm(ModelForm):
               self.fields[myField].label = mark_safe("%s <span class=\"special_class\">*</span>" %label_unicode)
     class Meta:
       model = TrackPods
+      fields = '__all__'
 
 class DocPodsForm(ModelForm):
     class Media(object):
@@ -198,6 +201,7 @@ class DocPodsForm(ModelForm):
               self.fields[myField].label = mark_safe("%s <span class=\"special_class\">*</span>" %label_unicode)
     class Meta:
       model = DocPods
+      fields = '__all__'
 
     
 class ChapterPodsForm(ModelForm):
@@ -222,7 +226,8 @@ class ChapterPodsForm(ModelForm):
               label_unicode = u'%s' %self.fields[myField].label
               self.fields[myField].label = mark_safe("%s <span class=\"special_class\">*</span>" %label_unicode)
     class Meta:
-      model = ChapterPods   
+      model = ChapterPods
+      fields = '__all__' 
 
     
 class EnrichPodsForm(ModelForm):
@@ -247,7 +252,8 @@ class EnrichPodsForm(ModelForm):
               label_unicode = u'%s' %self.fields[myField].label
               self.fields[myField].label = mark_safe("%s <span class=\"special_class\">*</span>" %label_unicode)
     class Meta:
-      model = EnrichPods    
+      model = EnrichPods
+      fields = '__all__'
     
 class VideoPasswordForm(Form):
     password = CharField(label=_(u'Password'), widget=PasswordInput())
