@@ -573,8 +573,87 @@ class EnrichPods(models.Model):
 
     def clean(self):
         # Don't allow draft entries to have a pub_date.
-        if self.end <= self.start:
-            raise ValidationError(_("end should be greater than start"))
+        print "clean models"
+        msg = []
+        msg = self.verify_end_start_item() + self.verify_all_fields() + self.overlap()
+        if(len(msg) > 0):
+            print "no valid"
+            raise ValidationError(msg)
+
+
+    def verify_all_fields(self):
+        msg = []
+        if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
+            msg.append("Please enter a title form 2 to 100 caracteres ")
+
+        if ((self.start == "") or (self.start < 0 ) or (self.start >= self.video.duration)):      
+            msg.append("Please enter a correct start field between 0 and  %s" %(self.video.duration-1) )
+
+        if (not self.end or (self.end == "") or (self.end <=0 ) or (self.end > self.video.duration)):
+            msg.append("Please enter a correct end field between 1 and %s" %self.video.duration ) 
+        if (self.type == "image"):
+            if(not self.image):
+                print "image"
+                msg.append("Please enter a correct image ")
+
+        elif (self.type == "richtext"):        
+            if(not self.richtext):
+                msg.append("Please enter a correct richtext ")
+
+        elif (self.type == "weblink"):        
+            if(not self.weblink):
+                msg.append("Please enter a correct weblink ")
+
+        elif (self.type == "document"):        
+            if(not self.document):
+                msg.append("Please enter a correct document ")
+
+        elif (self.type == "embed"):        
+            if(not self.embed):
+                msg.append("Please enter a correct embed ")
+        else: 
+            msg.append("Please enter a type in index field")
+
+        if (len(msg) >0):
+            return msg
+        else:
+            return []
+
+    def verify_end_start_item(self):
+        msg = []
+        video = Pod.objects.get(id=self.video.id)
+        print "verify end start item"
+        if(self.start > self.end):
+            msg.append("the value of the start field is greater than the value of end field ")
+        elif(self.end > video.duration):
+            msg.append("the value of end field is greater than the video duration")
+        elif (self.start == self.end):
+            msg.append(" end field and start field can't be equal")
+            
+        print "verify end start item %s", msg    
+
+        if (len(msg) >0):
+            return msg
+        else:
+            return []
+
+    def overlap(self):
+        msg = []
+        print self.__dict__
+        instance = None
+        if self.slug:
+            instance = EnrichPods.objects.get(slug=self.slug)
+            print instance
+        list_enrichment = EnrichPods.objects.filter(video = self.video)
+        if instance:
+          list_enrichment = list_enrichment.exclude(id=instance.id)
+        if len(list_enrichment) > 0 : 
+          for element in list_enrichment:
+            if not ((self.start< element.start and self.end <= element.start) or (self.start >= element.end and self.end > element.end)):
+              msg.append("There is a overlap with the " + element.title + " enrich, please change end field and start field ") 
+          if len(msg) > 0:
+            return msg
+        return [] 
 
     def save(self, *args, **kwargs):
         newid = -1

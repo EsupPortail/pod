@@ -30,6 +30,8 @@ from django.utils.translation import ugettext_lazy as _
 from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods, ChapterPods, Favorites, Type, Discipline, Mediacourses, EnrichPods, Notes
 from djangoformsetjs.utils import formset_media_js
 from modeltranslation.forms import TranslationModelForm
+from django.forms.widgets import HiddenInput
+
 
 class ChannelForm(TranslationModelForm):
   def __init__(self, *args, **kwargs):
@@ -233,22 +235,27 @@ class EnrichPodsForm(ModelForm):
         #min="1" max="5"
     def __init__(self, *args, **kwargs):
       super(EnrichPodsForm, self).__init__(*args, **kwargs)
+      self.fields['video'].widget = HiddenInput()
+      self.fields['start'].widget.attrs['min'] = 0
+      self.fields['end'].widget.attrs['min'] = 1
+
+      try:
+        self.fields['start'].widget.attrs['max'] = self.instance.video.duration
+        self.fields['end'].widget.attrs['max'] = self.instance.video.duration
+      except:
+        self.fields['start'].widget.attrs['max'] = 36000
+        self.fields['end'].widget.attrs['max'] = 36000
+      
       for myField in self.fields:
-          try:
-            self.fields[myField].widget.attrs['min'] = 0
-            self.fields[myField].widget.attrs['max'] = self.instance.video.duration
-          except:
-            self.fields[myField].widget.attrs['min'] = 0
-            self.fields[myField].widget.attrs['max'] = 360000
-            
           self.fields[myField].widget.attrs['placeholder'] = self.fields[myField].label
+          
           if self.fields[myField].required:
               self.fields[myField].widget.attrs['class'] = 'required'
               label_unicode = u'%s' %self.fields[myField].label
               self.fields[myField].label = mark_safe("%s <span class=\"special_class\">*</span>" %label_unicode)
+    
     class Meta:
-      model = EnrichPods
-      exclude = ('video',)   
+      model = EnrichPods   
     
 class VideoPasswordForm(Form):
     password = CharField(label=_(u'Password'), widget=PasswordInput())

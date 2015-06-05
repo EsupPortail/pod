@@ -633,10 +633,16 @@ function progress() {
 
 function error(err) {
     // prints the name of the error
-    alert(err.name);
-    // prints the description that is also shown in the error console
-    console.log(err.message);
-    // this works only in some browsers
-    // line and stack are not supported by all vendors
-    console.log(err.line, err.stack);
+    if (typeof err.name === "undefined") {
+        console.log("Erreur non defini");
+    }else {
+        alert(err.name);
+        // prints the description that is also shown in the error console
+        console.log(err.message);
+        // this works only in some browsers
+        // line and stack are not supported by all vendors
+        console.log(err.line, err.stack);
+    }
+    
+    
 }

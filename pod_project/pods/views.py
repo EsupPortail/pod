@@ -33,6 +33,7 @@ from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from string import replace
+from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template.loader import render_to_string
@@ -740,7 +741,7 @@ def video_chapter(request, slug):
         chapterformset = ChapterInlineFormSet(
             instance=video, prefix='chapter_form')
 
-    return render_to_response("videos/test_enrich.html",
+    return render_to_response("videos/video_chapterpods_formset.html",
                               {'chapterformset': chapterformset},
                               context_instance=RequestContext(request))
 
@@ -751,6 +752,7 @@ def video_chapter(request, slug):
 def video_enrich(request, slug):
     video = get_object_or_404(Pod, slug=slug)
     print "----> JE PASSE"
+    
     # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
@@ -761,75 +763,125 @@ def video_enrich(request, slug):
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot enrich this video'))
-        raise PermissionDenied   
+        raise PermissionDenied
+
     list_enrichment= EnrichPods.objects.filter(video=video)
 
-    if request.is_ajax():   
+    if request.method == "POST":   
         print "----> JE PASSE 2"
         print request.POST
         #new, save, modify, delete
 
-        if request.method == "POST" and request.POST.get("action") and request.POST['action'] == 'new':
-            form_enrich= EnrichPodsForm()
+        if request.POST.get("action") and request.POST['action'] == 'new':
+            print "new"
+            form_enrich = EnrichPodsForm({"video":video})
+            if request.is_ajax():#if ajax
+                return render_to_response("videos/enrich/form_enrich.html",
+                                  {'form_enrich': form_enrich, 'video':video},
+                                  context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_enrich_new.html",
+                                  {'video': video, 'list_enrichment': list_enrichment, 'form_enrich': form_enrich},
+                                  context_instance=RequestContext(request))
 
-            return render_to_response("videos/enrich/form_enrich.html",
-                              {'form_enrich': form_enrich, 'video':video},
-                              context_instance=RequestContext(request))
 
-        if request.method == "POST" and request.POST.get("action") and request.POST['action'] == 'modify':
+        if request.POST.get("action") and request.POST['action'] == 'modify':
+            print "modify"
             enrich = get_object_or_404(EnrichPods, id=request.POST['id'])
             form_enrich= EnrichPodsForm(instance=enrich)#id dans la requete ?
-            return render_to_response("videos/enrich/form_enrich.html",
-                              {'form_enrich': form_enrich, 'video': video},
+            if request.is_ajax():#if ajax
+                return render_to_response("videos/enrich/form_enrich.html",
+                                  {'form_enrich': form_enrich, 'video': video},
+                                  context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_enrich_new.html",
+                                  {'video': video, 'list_enrichment': list_enrichment, 'form_enrich': form_enrich},
+                                  context_instance=RequestContext(request))
+
+
+        if request.POST.get("action") and request.POST['action'] == 'save':
+
+            print "----> SAVE"
+            form_enrich = None
+            print request.POST.get("enrich_id")
+            if request.POST.get("enrich_id") != "None" :
+                enrich = get_object_or_404(EnrichPods, id=request.POST.get("enrich_id"))
+                form_enrich = EnrichPodsForm(request.POST, instance=enrich)
+            else:
+                print "nouveau formulaire"
+                form_enrich = EnrichPodsForm(request.POST)
+
+            if form_enrich.is_valid() :# All validation rules pass
+                form_enrich.save()
+
+                list_enrichment = EnrichPods.objects.filter(video=video)
+                if request.is_ajax():
+                    #print list_enrichment
+                    some_data_to_dump = {
+                        'list_enrich' : render_to_string('videos/enrich/list_enrich.html', {'list_enrichment':list_enrichment, 'video':video}),
+                        'player' : render_to_string('videos/video_player.html', {'video':video})
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_enrich_new.html",
+                              {'video': video, 'list_enrichment': list_enrichment},
+                              context_instance=RequestContext(request))
+                        
+            else:
+                if request.is_ajax():
+                    some_data_to_dump = {
+                                    'errors' : 'Please correct errors',
+                                    'form':render_to_string('videos/enrich/form_enrich.html', {'video':video,'form_enrich':form_enrich})
+                                }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_enrich_new.html",
+                              {'video': video, 'list_enrichment': list_enrichment,'form_enrich': form_enrich},
                               context_instance=RequestContext(request))
 
-
-        if request.method == "POST" and request.POST.get("action") and request.POST['action'] == 'save':
-            print "----> JE PASSE 3"
-            form_enrich= EnrichPodsForm(request.POST)
-            
-
-            if form_enrich.is_valid():  # All validation rules pass
-                if verify_end_start_item(enrichf, video.duration):
-                    print form_enrich
-                    enrichf = form_enrich.save(commit=False)
-                    enrichf.video_id = video.id
-                    if list_enrichment  and overlaptest(list_enrichment, enrichf):
-                        enrichf.save()
-                        list_enrichment= EnrichPods.objects.filter(video=video)
-                        messages.add_message(
-                        request, messages.INFO, _(u'The changes have been saved'))
-
-            else:
-                messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form'))
-
-        if request.method == "POST" and request.POST.get("action") and request.POST['action'] == 'delete':
+        if request.POST.get("action") and request.POST['action'] == 'delete':
             enrich = get_object_or_404(EnrichPods, id=request.POST['id'])#recuperer avec l'id passer dans la requete ?
-            enrich.delete()
+            enrich_delete = enrich.delete()
+            print enrich_delete 
             list_enrichment= EnrichPods.objects.filter(video=video)
-            messages.add_message(
-            request, messages.INFO, _(u'Enrich delete'))
+            if request.is_ajax():
+                some_data_to_dump = {
+                    'list_enrich' : render_to_string('videos/enrich/list_enrich.html', {'list_enrichment':list_enrichment, 'video':video}),
+                    'player' : render_to_string('videos/video_player.html', {'video':video})
+                    }
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+            else:
+                return render_to_response("videos/video_enrich_new.html",
+                              {'video': video, 'list_enrichment': list_enrichment},
+                              context_instance=RequestContext(request))
 
+        if request.POST.get("action") and request.POST['action'] == 'cancel':
+            return render_to_response("videos/video_enrich_new.html",
+                              {'video': video, 'list_enrichment': list_enrichment},
+                              context_instance=RequestContext(request))
 
-
-
+    print "render to response"
     return render_to_response("videos/video_enrich_new.html",
                               {'video': video, 'list_enrichment': list_enrichment},
                               context_instance=RequestContext(request))
 
-def overlaptest(list_enrichment,form_enrich):
-    for element in list_enrichment:
-        if form_enrich.start >= element.start and form_enrich.start <= element.end and form_enrich.end >= element.start and form_enrich.end <= element.end:
-            return False
-    return True 
-
-def verify_end_start_item(form_enrich, duration):
-    if(form_enrich.start < form_enrich.end and form_enrich.end <= duration):
-        return True
+def overlaptest(video, instance):
+    msg = []
+    list_enrichment = EnrichPods.objects.filter(video=video)
+    if instance:
+        list_enrichment.exclude(id=instance.id)
+    if len(list_enrichment) > 0 : 
+        for element in list_enrichment:
+            if self.start >= element.start and self.start <= element.end and self.end >= element.start and self.end <= element.end:
+                msg.append("There is a overlap with the " + element.title + " enrich, please change end field and start field ")
+    if (len(msg) >0):
+        return msg
     else:
-        return False     
-   
+        return []
+
 @csrf_protect
 @login_required
 def video_delete(request, slug):

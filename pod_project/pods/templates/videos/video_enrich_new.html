@@ -56,31 +56,106 @@ var is_chaptering = false;
 
 /*** For the form ***/;
 var video_duration = {{video.duration}};
-var list_enrich = {{video.l}}
+
 
 $(document).ready(function() {
     //$('#form_enrich').hide();
     console.log("Youpi");
 });
+$(document).on("reset", "form", function (e) {
+    $("span#form_enrich").html("");
+    $('input#add_new_enrichment').show();
+    $('form').show();
+});
 
-$(document).on("submit", "form#form_enrich", function (e) {
-    $(".help-inline").remove();
-    console.log("FORM SUBMIT");
-    verify_fields();
-    console.log(overlaptest());
-    var data_form = $( "form#form_enrich" ).serializeArray();
-    console.log(!($("span").hasClass("help-inline")));
-    if (!($("span").hasClass("help-inline"))){
-        data_form.push({name:"action", value: "save"});
-        console.log(data_form);
-        var jqxhr = $.post(
+$(document).on("submit", "form", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    //console.log($(this).);
+    var action = $(this).find('input[name=action]').val();
+    if((action == "modify") || (action == "new")){
+        $('input#add_new_enrichment').hide();
+        $('input#modif_enrichment').hide();
+        $('input#delete_enrichment').hide();
+        $('#form_enrich').html(ajax_image);
+        if (action == "modify"){
+            var id = $(this).find('input[name=id]').val();
+            jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
+        }else{
+            jqxhr = $.post( window.location.href, {"action":"new"} );
+        }
+        jqxhr.done(function(data){
+            get_form(data);
+        });
+        $('input#modif_enrichment').show();
+        $('input#delete_enrichment').show();
+    }else if(action == "delete"){
+        $('form').show();
+        var r = confirm ("Are you sure you want to delete this enrichment ")
+        if (r){
+            var id = $(this).find('input[name=id]').val();
+            jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
+            jqxhr.done(function(data){
+                        refrech_list_and_player(data);
+                    
+                });
+
+        }
+    }else if(action == "save"){
+        $(".help-inline").remove();
+        console.log("FORM SUBMIT");
+        verify_fields();
+        verify_end_start_item();
+        console.log(overlaptest());
+        var data_form = $( "form#form_enrich" ).serializeArray();
+        console.log(!($("span").hasClass("help-inline")));
+        if (!($("span").hasClass("help-inline"))){
+            jqxhr = $.post(
                 $( "form#form_enrich" ).attr("action"),
                 data_form
-                );
-        jqxhr.done(function(data){});
+            );
+            jqxhr.done(function(data){
+            console.log(data.errors);
+            if(data.errors){
+                //if(data.form_enrich != ""){
+                //   $("#form_enrich").html(""); 
+                //   $("#form_enrich").html(data.form_enrich);
+                
+                alert(data.errors);
+                //console.log(data.form);
+                $("#form_enrich").html(data.form);
+                $("input#id_start")
+                    .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-info'>{% trans 'get time from the player'%}</a></span>");
+                $("input#id_end")
+                    .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_end' class='btn btn-info'>{% trans 'get time from the player'%}</a></span>");
+                $("img[id^='id_image']").parent('div.form-group').hide();
+                //$("textarea#[id$='-richtext']").parents('div.form-group:first').hide();
+                $("textarea#id_richtext").parents('div.form-group:first').hide();
+                $("#id_weblink").parent('div.form-group').hide();
+                $("img[id^='id_document']").parent('div.form-group').hide();
+                $("#id_embed").parent('div.form-group').hide();
+
+                var val = $("select#id_type").val();
+                if (val != '') {
+                    $("#form_enrich").find('[id^="id_' + val + '"]').parents('div.form-group:first').show();
+                }
+                
+            }else{
+                refrech_list_and_player(data);
+                console.log(data);
+            }
+            });
+            jqxhr.fail(function(){
+                alert("error post request");
+            });
+        }else{
+            alert("Please correct errors");
+        }
     }
-    return false;
+    
 });
+
+
 
 $(document).on('change', 'select#id_type', function() {
     console.log("change type");
@@ -91,21 +166,26 @@ $(document).on('change', 'select#id_type', function() {
     $("img[id^='id_document']").parent('div.form-group').hide();
     $("#id_embed").parent('div.form-group').hide();
 
+
     var val = $(this).val();
     if (val != '') {
         $("#form_enrich").find('[id^="id_' + val + '"]').parents('div.form-group:first').show();
     }
 });
-function get_form(id) {
+function refrech_list_and_player(data){
+    delete videojs.players['player_video']
+    $("#form_enrich").html("");
+    $("span#enrich_player").html("");
+    $("span#enrich_player").html(data.player);
+    $("span#list_enrich").html("");
+    $("span#list_enrich").html(data.list_enrich);
+    $('input#add_new_enrichment').show();
+    loadVideo();
+};
+function get_form(data) {
     /* show waiting message */
-    $('input#add_new_enrichment').hide();
-    var jqxhr= '';
-    if(id == -1){
-        jqxhr = $.post( window.location.href, {"action":"new"} );
-    }else{
-        jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
-    }
-    jqxhr.done(function(data) { /*alert( "success "+ data );*/ 
+    
+        $("#form_enrich").html("");
         $("#form_enrich").html(data);
         $("input#id_start")
             .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-info'>{% trans 'get time from the player'%}</a></span>");
@@ -117,27 +197,18 @@ function get_form(id) {
         $("#id_weblink").parent('div.form-group').hide();
         $("img[id^='id_document']").parent('div.form-group').hide();
         $("#id_embed").parent('div.form-group').hide();
-    });
-    jqxhr.fail(function() {  alert( "error" );  });
+
+        var val = $("select#id_type").val();
+        if (val != '') {
+            $("#form_enrich").find('[id^="id_' + val + '"]').parents('div.form-group:first').show();
+        }
+    //jqxhr.fail(function() {  alert( "error" );  });
     //jqxhr.always(function() { alert( "finished" ); /* remove waiting message */});
     //$('#form_enrich').load("video_enrich_new.html" + ' #enrich')
     //$('#form_enrich').show();
 };
 
-$(document).on('click', 'a.modify-enrich', function(event) {
-    console.log("Modify");
-    event.preventDefault();
-    get_form($(this).attr('data-id'));
 
-    
-});
-$(document).on('click', 'input#add_new_enrichment', function(event) {
-    console.log("ADD NEW");
-    event.preventDefault();
-    get_form(-1)
-
-    
-});
 /*
 $(document).on('click', 'input#save_enrichment', function(event) {
       console.log("save");
@@ -151,26 +222,7 @@ $(document).on('click', 'input#save_enrichment', function(event) {
  });
 */
 
-$(document).on('click', 'input#cancel_enrichment', function(event) {
-    console.log("cancel");
-    
-    event.preventDefault();
-    $('input#add_new_enrichment').show();
-    $("fieldset#form_enrich").html("");
 
-
-    
-});
-$(document).on('click', 'a.delete-enrich', function(event) {
-    console.log("delete");
-    event.preventDefault();
-    var id = $(this).attr('data-id');
-    $.post( window.location.href, {"action":"delete", "id": id });
-    delete videojs.players['player_video']
-    loadVideo();
-
-    
-});
 $(document).on('change','input[name$="-time"]',function() {
     $(this).parent("div.field").find("span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
@@ -198,47 +250,44 @@ function verify_fields(){
     if ((document.getElementById("id_start").value == "") || (document.getElementById("id_start").value <0 ) || (document.getElementById("id_start").value >= video_duration)){
         
         $("input#id_start")
-            .before("<span class='help-inline'>&nbsp; &nbsp; Please enter a correct start</span>");
+            .before("<span class='help-inline'>&nbsp; &nbsp; Please enter a correct start from 0 to "+ (video_duration -1) +"</span>");
     }
-    if ((document.getElementById("id_start").value == "") || (document.getElementById("id_end").value <=0 ) ||(document.getElementById("id_end").value > video_duration)){
+    if ((document.getElementById("id_end").value == "") || (document.getElementById("id_end").value <=0 ) ||(document.getElementById("id_end").value > video_duration)){
         $("input#id_end")
-            .before("<span class='help-inline'>&nbsp; &nbsp; Please enter a correct end</span>");
+            .before("<span class='help-inline'>&nbsp; &nbsp; Please enter a correct end from 1 to " + video_duration + "</span>");
     }
         
     switch (document.getElementById("id_type").value){
         case "image":
-            console.log(document.getElementById("id_image_description_txt"));
-            if(document.getElementById("id_image_thumbnail_img").src == "/static/filer/icons/nofile_48x48.png"){
+            console.log($("#id_image_description_txt").val());
+            if($("#id_image_description_txt").val() == ""){ //tester comment si il y a pas d'image ???
                 console.log("je passe image");
                 $("img#id_image_thumbnail_img")
                     .before("<span class='help-inline'>&nbsp; &nbsp; Please enter a correct image </span>");
             }else{
+
             }
             break;
         case "richtext":
             if(document.getElementById("id_richtext").value == ""){
-                console.log("je passe richtext");
                 $("textarea#id_richtext")
                     .before("<span class='help-inline'>&nbsp; &nbsp; Please enter a correct richtext</span>");
             }
             break; 
         case "weblink":
             if(document.getElementById("id_weblink").value == ""){
-                console.log("je passe weblink");
                 $("input#id_weblink")
                     .before("<span class='help-inline'>&nbsp; &nbsp; Please enter a correct weblink</span>");
             }
             break;
         case "document":
-            if(document.getElementById("id_document_thumbnail_img").alt== "pas de fichier sélectionné"){
-                console.log("je passe document");
+            if($("#id_document_thumbnail_img").val() == ""){//tester comment si il y a pas de document ???
                 $("img#id_document_thumbnail_img")
                     .before("<span class='help-inline'>&nbsp; &nbsp; Please enter a correct document</span>");
             }
             break;
         case "embed":
             if(document.getElementById("id_embed").value == ""){
-                console.log("je passe embed");
                 $("textarea#id_embed")
                     .before("<span class='help-inline'>&nbsp; &nbsp; Please enter a correct embed</span>");
             }
@@ -247,29 +296,49 @@ function verify_fields(){
             console.log("unknow type")
             $("select#id_type")
                 .before("<span class='help-inline'>&nbsp; &nbsp; Please enter a correct type</span>");
-    }      
-    
-    
-
+    }                
+};
+function verify_end_start_item(){
+    new_start = document.getElementById("id_start").value;
+    new_end = document.getElementById("id_end").value;
+    if(new_start > new_end){
+        $("#formcontent")
+            .before("<span class='help-inline'>&nbsp;&nbsp;the value of the start field is greater than the value of end field .</span>");
+    }else if(new_end > video_duration){
+        $("#formcontent")
+            .before("<span class='help-inline'>&nbsp;&nbsp;the value of end field is greater than the video duration.</span>");
+    }else if (new_start == new_end){
+        $("#formcontent")
+            .before("<span class='help-inline'>&nbsp;&nbsp;end field and start field can't be equal.</span>");
         
+    }
 };
 
 function overlaptest(){
+    var video_list_enrich=[];
+    $('ul#slides li').each(function() {
+        video_list_enrich.push({
+                            start : +$(this).attr('data-start'),
+                            end : +$(this).attr('data-end'),
+                            title : +$(this).attr('data-title'),
+                            id : +$(this).attr('data-id')
+        });
+    });
+    console.log(video_list_enrich);
+    
     new_start = document.getElementById("id_start").value;
     new_end = document.getElementById("id_end").value;
-    if((new_start < new_end) &&  (new_end <= video_duration)) {
-      /* for (enrich in list_enrichment) {
-            console.log("boucle enrich")
-            console.log(enrich)
-            if ((new_start >= enrich.start) && (new_start <= enrich.end) && (new_end >= enrich.start) && (new_end <= enrich.end)){
-                return false;
-            }
-       }*/
-       return true;
-    }else{
-        return false;
+    id = document.getElementById("id_enrich").value;
+    console.log("id : ");
+    console.log(id);
+
+    for (element in video_list_enrich){
+        console.log(video_list_enrich[element].title);
+        if (id != video_list_enrich[element].id && !((new_start< video_list_enrich[element].start && new_end <= video_list_enrich[element].start) || (new_start >= video_list_enrich[element].end &&  new_end > video_list_enrich[element].end))){
+            $("#formcontent")
+                .before("<span class='help-inline'>&nbsp;&nbsp;There is a overlap with the " + video_list_enrich[element].title + " enrich, please change end field and start field.</span>");
+        }
     }
-    
 };
 
 
@@ -297,15 +366,21 @@ function overlaptest(){
 
         <div class="row" id="info_video">
             <div class="col-sm-9">
+                <span id= "list_enrich">
                 {%include 'videos/enrich/list_enrich.html'%}
                 <!-- This button will add a new form when clicked -->
-
-                <fieldset id="form_enrich">
+                </span>
+                <span id="form_enrich">
                     <!-- place for form, it will be replace by a form : empty or to modify -->   
-                </fieldset>
-                <p>&nbsp;</p>
-                    <input type="button" id="add_new_enrichment" value="Add a new enrichment" class="btn btn-info"/>
-                <p>&nbsp;</p>
+                    {% if form_enrich %}
+                    {%include 'videos/enrich/form_enrich.html' with form_enrich=form_enrich%}
+                    {%endif%}
+                </span>         
+                <form  id = "form_new" action="{% url 'video_enrich' slug=video.slug  %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="new">
+                    <input type="submit" id="add_new_enrichment"  value="{% trans "Add a new enrichment" %}" class="btn btn-info"/>
+                </form>
             </div>
 
             <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
