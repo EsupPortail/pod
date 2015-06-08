@@ -87,10 +87,10 @@ voir http://www.gnu.org/licenses/
         });
 
         $(document).on('change', 'select[id$="-type"]', function() {
-            $(this).parents('div.form-container').find("[id$='-image']").parent('div.form-group').hide();
+            $(this).parents('div.form-container').find("[id$='-image']").parents('div.form-group').hide();
             $(this).parents('div.form-container').find("[id$='-richtext']").parents('div.form-group:first').hide();
             $(this).parents('div.form-container').find("[id$='-weblink']").parent('div.form-group').hide();
-            $(this).parents('div.form-container').find("[id$='-document']").parent('div.form-group').hide();
+            $(this).parents('div.form-container').find("[id$='-document']").parents('div.form-group').hide();
             $(this).parents('div.form-container').find("[id$='-embed']").parent('div.form-group').hide();
 
             var val = $(this).val();
@@ -189,10 +189,10 @@ voir http://www.gnu.org/licenses/
 
         function hideFormContainer() {
             $('div.form-container').each(function () {
-                $(this).find('[id$="-image"]').parent('div.form-group').hide();
+                $(this).find('[id$="-image"]').parents('div.form-group').hide();
                 $(this).find('[id$="-richtext"]').parents('div.form-group:first').hide();
                 $(this).find('[id$="-weblink"]').parent('div.form-group').hide();
-                $(this).find('[id$="-document"]').parent('div.form-group').hide();
+                $(this).find('[id$="-document"]').parents('div.form-group').hide();
                 $(this).find('[id$="-embed"]').parent('div.form-group').hide();
 
                 var val = $(this).find('select[name$="-type"]').val();

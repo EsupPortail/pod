@@ -22,7 +22,7 @@ voir http://www.gnu.org/licenses/
 from django.core.files import File
 from core.models import *
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from pods.models import *
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User, Group
@@ -34,8 +34,17 @@ import urllib3
 import shutil
 from django.core.files.temp import NamedTemporaryFile
 from core.utils import encode_video
+import os
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+    )
 class CasTestView(TestCase):
 
     def setUp(self):
@@ -52,14 +61,22 @@ class CasTestView(TestCase):
         else:
             print "not cas server used USE_CAS is set to False"
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+    )
 class LdapTestView(TestCase):
 
     def setUp(self):
         print "LdapTestView"
 
-    def test_cas(self):
-        if settings.USE_LDAP_TO_POPULATE_USER and settings.AUTH_LDAP_UID_TEST != "":
+    def test_ldap(self):
+        if settings.USE_CAS == True and settings.USE_LDAP_TO_POPULATE_USER and settings.AUTH_LDAP_UID_TEST != "":
             try:
                 l = ldap.initialize(settings.AUTH_LDAP_SERVER_URI)
                 l.protocol_version = ldap.VERSION3
@@ -90,7 +107,7 @@ class LdapTestView(TestCase):
                         try:
                             # get first value
                             print "Affiliation : %s" % attrs[settings.AUTH_USER_ATTR_MAP['affiliation']][0]
-                            if user.userprofile.affiliation in settings.AFFILIATION_STAFF:
+                            if attrs[settings.AUTH_USER_ATTR_MAP['affiliation']][0] in settings.AFFILIATION_STAFF:
                                 print "is staff : True"
                             else:
                                 print "is staff : False"
@@ -101,9 +118,17 @@ class LdapTestView(TestCase):
             except ldap.LDAPError, e:
                 print e
         else:
-            print "not ldap server used USE_LDAP_TO_POPULATE_USER is set to False or settings.AUTH_LDAP_UID_TEST is none"
+            print "not cas server used or not ldap server used USE_LDAP_TO_POPULATE_USER is set to False or settings.AUTH_LDAP_UID_TEST is none"
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+    )
 class EsTestView(TestCase):
 
     def setUp(self):
@@ -117,7 +142,15 @@ class EsTestView(TestCase):
         self.assertEqual(r.status, 200)
         print "\n   --->  test_es of EsTestView : OK ! \n info : \n %s \n" % r.data
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+    )
 class EncodingFileTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -125,10 +158,16 @@ class EncodingFileTestView(TestCase):
         remi = User.objects.create(username="remi")
         other_type = Type.objects.get(id=1)
         url = "http://pod.univ-lille1.fr/media/pod.mp4"
-        http = urllib3.PoolManager()
         tempfile = NamedTemporaryFile(delete=True)
-        with http.request('GET', url, preload_content=False) as r, open(tempfile.name, 'wb') as out_file:
-            shutil.copyfileobj(r, out_file)
+        HTTP_PROXY=getattr(settings, 'HTTP_PROXY', None)
+        if HTTP_PROXY:
+            proxy = urllib3.ProxyManager(settings.HTTP_PROXY)
+            with proxy.request('GET', url, preload_content=False) as r, open(tempfile.name, 'wb') as out_file:
+                shutil.copyfileobj(r, out_file)
+        else:
+            http = urllib3.PoolManager()
+            with http.request('GET', url, preload_content=False) as r, open(tempfile.name, 'wb') as out_file:
+                shutil.copyfileobj(r, out_file)
         pod = Pod.objects.create(
             type=other_type, title="Video", owner=remi, video="-", to_encode=False)
         pod.video.save("test.mp4", File(tempfile))
@@ -142,5 +181,8 @@ class EncodingFileTestView(TestCase):
         print "\n ---> Fin Encodage"
         self.assertTrue(
             u'video_1_240.mp4' in pod.get_encoding_240()[0].encodingFile.url)
-        self.assertTrue(
-            u'video_1_240.webm' in pod.get_encoding_240()[1].encodingFile.url)
+
+        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            self.assertTrue(
+                u'video_1_240.webm' in pod.get_encoding_240()[1].encodingFile.url)

@@ -23,7 +23,7 @@ from django.core.files import File
 from core.models import *
 import django
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from pods.models import *
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User, Group
@@ -36,12 +36,21 @@ from django.forms.models import inlineformset_factory
 from pods.forms import ChannelForm, ThemeForm, PodForm, ContributorPodsForm, ChapterPodsForm, EnrichPodsForm
 import threading
 from core.utils import encode_video
-
+import os
 """
     test view
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class ChannelsTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -111,7 +120,16 @@ class ChannelsTestView(TestCase):
         print (
             "   --->  test_channels_with_ajax_request of ChannelsTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Owner_channels_listTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -159,7 +177,16 @@ class Owner_channels_listTestView(TestCase):
         print (
             "   --->  test_owner_channels_with_ajax_request of Owner_channels_listTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class ChannelTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -216,7 +243,16 @@ class ChannelTestView(TestCase):
         print (
             "   --->  test_channel_with_ajax_request of ChannelTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Channel_edit_TestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -314,7 +350,16 @@ class Channel_edit_TestView(TestCase):
         print (
             "   --->  test_redirection_to_the_channel of Channel_edit_TestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class TypesTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -327,7 +372,9 @@ class TypesTestView(TestCase):
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
         pod.save()
         Type.objects.create(title="Type2")
@@ -350,7 +397,16 @@ class TypesTestView(TestCase):
         self.assertEqual(response.request['perpage'], 48)
         print ("   --->  test_types_with_ajax_request of TypesTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class OwnersTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -363,7 +419,9 @@ class OwnersTestView(TestCase):
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
         pod.save()
         print (" --->  SetUp of OwnersTestView : OK !")
@@ -403,7 +461,16 @@ class OwnersTestView(TestCase):
         print (
             "   --->  test_owners_with_ajax_request of OwnersTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class DisciplinesTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -442,7 +509,16 @@ class DisciplinesTestView(TestCase):
         print (
             "   --->  test_disciplines_with_ajax_request of DisciplinesTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Owner_Videos_listTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -491,7 +567,16 @@ class Owner_Videos_listTestView(TestCase):
         print (
             "   --->  test_owners_video_list_with_ajax_request of Owner_Videos_listTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Tags_TestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -517,7 +602,16 @@ class Tags_TestView(TestCase):
         self.assertEqual(pod.tags.all().count(), 2)
         print ("   --->  test_tags of Tags_TestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Video_add_favoriteTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -580,7 +674,16 @@ class Video_add_favoriteTestView(TestCase):
         print (
             "   --->  test_delete_favorite of Video_add_favoriteTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Favorites_videos_listTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -639,7 +742,16 @@ class Favorites_videos_listTestView(TestCase):
         print (
             "   --->  test_favorites_video_list_with_ajax_request of Favorites_videos_listTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class VideosTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -658,6 +770,10 @@ class VideosTestView(TestCase):
                                      duration=3, infoVideo="videotest", to_encode=False)
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
                 id=1), encodingFile="/media/videos/remi/1/video_1_240.mp4")
+            ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+            if ENCODE_WEBM:
+                EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+                id=1), encodingFile="/media/videos/remi/1/video_1_240.webm")
             pod.tags.add("videotests")
             if i % 2:
                 pod.discipline.add(d1)
@@ -698,7 +814,16 @@ class VideosTestView(TestCase):
         print (
             "   --->  test_videos_with_ajax_request of videosTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class VideoTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -723,7 +848,10 @@ class VideoTestView(TestCase):
 
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+        
+        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
 
         pod.channel.add(c)
@@ -802,7 +930,16 @@ class VideoTestView(TestCase):
         print (
             "   --->  test_video_password of VideoTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Video_edit_testCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -826,7 +963,9 @@ class Video_edit_testCase(TestCase):
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
         pod.channel.add(c)
         pod.theme.add(t)
@@ -889,7 +1028,16 @@ class Video_edit_testCase(TestCase):
         print (
             "   --->  test_save_edit_video of Video_edit_testCase : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Video_notesTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -913,7 +1061,9 @@ class Video_notesTestView(TestCase):
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
 
         pod.channel.add(c)
@@ -948,7 +1098,16 @@ class Video_notesTestView(TestCase):
         print (
             "   --->  test_video_notes_not_authenticated of Video_notesTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Video_completion_TestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -972,7 +1131,9 @@ class Video_completion_TestView(TestCase):
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
 
         pod.channel.add(c)
@@ -1058,7 +1219,16 @@ class Video_completion_TestView(TestCase):
         print (
             "   --->  test_completion_other_post_request of Video_completion_TestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Video_chapterTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1082,7 +1252,9 @@ class Video_chapterTestView(TestCase):
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
 
         pod.channel.add(c)
@@ -1130,7 +1302,16 @@ class Video_chapterTestView(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertTrue("You cannot chapter this video" in response.content)
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Video_enrichTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1154,7 +1335,10 @@ class Video_enrichTestView(TestCase):
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+
+        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
 
         pod.channel.add(c)
@@ -1204,7 +1388,16 @@ class Video_enrichTestView(TestCase):
         print (
             "   --->  test_access_to_enrich_with_other_authenticating of Video_enrichTestView : OK !")
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Video_mediacourses(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1274,7 +1467,16 @@ class Video_mediacourses(TestCase):
         self.assertEqual(response.status_code, 200)
     """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Video_mediacourses_notify(TestCase):
     fixtures = ['initial_data.json', ]
 

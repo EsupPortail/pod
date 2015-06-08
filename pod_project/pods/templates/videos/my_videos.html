@@ -49,7 +49,6 @@ voir http://www.gnu.org/licenses/
     {% endblock article_content %}
     {% block video_list %}
         {% if request.user.pod_set.all %}
-            <h3>{% trans "Edit your videos" %}</h3>
             <div id="objects_list">
             {% include "videos/videos_list.html" %}
             </div>
