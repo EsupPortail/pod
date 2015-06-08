@@ -281,11 +281,6 @@ function loadVideo() {
         }
         /*************************************************************************/
         start = decodeURIComponent($.urlParam('start'));
-        /***************************is_chaptering*********************************/
-
-        if (typeof is_chaptering != 'undefined' && is_chaptering === true ) {
-            addRangeSlider();
-        }
     });
 }
 
@@ -641,7 +636,7 @@ function progress() {
 
 function error(err) {
     // prints the name of the error
-    alert(err.name);
+    // alert(err.name);
     // prints the description that is also shown in the error console
     console.log(err.message);
     // this works only in some browsers
