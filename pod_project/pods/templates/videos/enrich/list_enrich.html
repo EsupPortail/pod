@@ -35,7 +35,7 @@ voir http://www.gnu.org/licenses/
                   <th>{% trans 'End' %}</th>
                </tr>
               </thead>
-              <tbody>
+              <tbody style="height:100px; overflow-y:auto">
                 {% for enrich in list_enrichment %}
                 <tr>
                   <td class="enrich_title">{{ enrich.title }}</td>
@@ -47,7 +47,7 @@ voir http://www.gnu.org/licenses/
                       {% csrf_token %}
                       <input type="hidden" name="action" value="modify">
                       <input type="hidden" name="id" value="{{enrich.id}}">
-                      <input type="submit" class="modif_enrichment" title="{% trans "Edit the enrich" %}" value="{% trans "modify" %}" class="btn btn-info btn-sm" />
+                      <input type="submit" title="{% trans "Edit the enrich" %}" value="{% trans "modify" %}" class="btn btn-info btn-sm" />
                     </form>
                   </td>
                   <td>
@@ -55,7 +55,7 @@ voir http://www.gnu.org/licenses/
                       {% csrf_token %}
                       <input type="hidden" name="action" value="delete">
                       <input type="hidden" name="id" value="{{enrich.id}}">
-                      <input type="submit" class="delete_enrichment" title="{% trans "Delete the enrich" %}" value="{% trans "delete" %}" class="btn btn-danger btn-sm"/>
+                      <input type="submit" title="{% trans "Delete the enrich" %}" value="{% trans "delete" %}" class="btn btn-danger btn-sm"/>
                     </form>
                   </td>
                 </tr>

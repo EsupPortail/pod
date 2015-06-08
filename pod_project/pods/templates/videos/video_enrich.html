@@ -30,8 +30,14 @@ voir http://www.gnu.org/licenses/
 {% endblock bootstrap3_title%}
 
 {% block bootstrap3_extra_head %}
+<style>
+.form-help-inline {color:red;}
+</style>
 
-<!-- media -->
+<script src="{% static "video-js/video.js" %}" ></script>
+{% include "videos/extraheadplayer.html" with video=video %}
+
+    <!-- media -->
     <script>window.__admin_media_prefix__ = '/static/admin/';</script>
     <script src="/admin/jsi18n/"></script>
     <script src="{% static 'admin/js/core.js' %}"></script>
@@ -43,16 +49,12 @@ voir http://www.gnu.org/licenses/
     <!-- form.media -->
     <script src="{% static 'filer/js/popup_handling.js' %}"></script>
     <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
-    <script src="{% static 'js/jquery.formset.js' %}"></script>
 
-
-<script src="{% static "video-js/video.js" %}" ></script>
-{% include "videos/extraheadplayer.html" with video=video %}
 
 <script>
-$("#show_messages").hide();
+
 var preventUnloadPrompt;
-var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
+//var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 var num = 0;
 var name = '';
 
@@ -95,8 +97,8 @@ $(document).on("submit", "form", function (e) {
         });
         jqxhr.fail(function($xhr) {
             console.log($xhr);
-            var data = ""; //$xhr.statusText+ " : " +$xhr.statusText;
-            show_messages("{% trans 'error post request' %} : "+data);
+            var data = $xhr.statusText+ " : " +$xhr.statusText;
+            show_messages("{% trans 'Error getting form. ' %} " + "("+data+")"+ "{% trans 'the form could not be recovered'%}");
             $('form.form_modif').show();
             $('form.form_delete').show();
             $('form#form_new').show();
@@ -112,15 +114,18 @@ $(document).on("submit", "form", function (e) {
                 refrech_list_and_player(data);
             });
             jqxhr.fail(function($xhr) {
-                var data = ""; //$xhr.statusText+ " : " +$xhr.statusText;
-                show_messages("{% trans 'error post request' %} : "+data);
+                var data = $xhr.statusText+ " : " +$xhr.statusText;
+                show_messages("{% trans 'Error deleting. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}");
             });
         }
     }else if(action == "save"){
+        $(".form-help-inline").parents('div.form-group').removeClass("has-error");
         $(".form-help-inline").remove();
+
         verify_fields();
         verify_end_start_items();
         overlaptest();
+        
         var data_form = $( "form#form_enrich" ).serializeArray();
         if (!($("span").hasClass("form-help-inline"))){
             jqxhr = $.post(
@@ -136,26 +141,20 @@ $(document).on("submit", "form", function (e) {
                 }
             });
             jqxhr.fail(function($xhr) {
-                var data = ""; //$xhr.statusText+ " : " +$xhr.statusText;
+                var data = $xhr.statusText+ " : " +$xhr.statusText;
                 //alert("{% trans 'error post request' %} "+data);
-                show_messages("{% trans 'error post request' %} : " + data);
+                show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}");
             });
         }else{
-            //alert("{% trans 'Please correct errors' %}");
-            //TODO create show modal message function
-            show_messages("{% trans 'Please correct errors' %}");
+            show_messages("{% trans 'Errors found in the form, please correct it.' %}");
         }
+        
     }
     
 });
 
 function show_messages(msg) {
-    alert(msg);
-    $("#show_messages").html(msg).show("fast","linear",function(){ 
-            $('#show_messages').delay(3000).fadeOut('slow');
-            /*$("#show_messages").delay( 2000 ).html("").hide("slow", "linear");*/ 
-        });
-    //$("#show_messages" ).html(msg).slideUp( 300 ).delay( 2000 ).fadeIn( 400 ).html("");
+    $("#show_messages").html(msg).fadeIn().delay(3000).fadeOut();
 }
 
 /*** Function show the item selected by type field ***/
@@ -275,7 +274,9 @@ function verify_fields(){
             break;
         default:
             $("select#id_type")
-                .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct type' %} </span>");
+                .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct type' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+
     }                
 };
 /***  Verify if fields end and start are correct ***/ 
@@ -283,15 +284,15 @@ function verify_end_start_items(){
     new_start = document.getElementById("id_start").value;
     new_end = document.getElementById("id_end").value;
     if(new_start > new_end){
+        /*
         $("#formcontent")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'the value of the start field is greater than the value of end field .' %} </span>");
+        */
+        show_messages("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'the value of the start field is greater than the value of end field .' %} </span>");
     }else if(new_end > video_duration){
-        $("#formcontent")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'the value of end field is greater than the video duration.' %} </span>");
+        show_messages("<span class='form-help-inline warning'>&nbsp;&nbsp;{% trans 'the value of end field is greater than the video duration.' %} </span>");
     }else if (new_start == new_end){
-        $("#formcontent")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'end field and start field cannot be equal.' %} </span>");
-        
+        show_messages("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'end field and start field cannot be equal.' %} </span>");
     }
 };
 /*** Verify if there is a overlap with over enrich***/
@@ -299,18 +300,16 @@ function overlaptest(){
     //var video_list_enrich=[];
     var new_start = document.getElementById("id_start").value;
     var new_end = document.getElementById("id_end").value;
-    var id = document.getElementById("id_enrich").value; 
-    /*
-    if(document.getElementById("id_enrich").length) {
-        id = document.getElementById("id_enrich").value;
-    }
-*/
+    var id = document.getElementById("id_enrich").value;
+    var msg = "";
     $('ul#slides li').each(function() {
         if (id != $(this).attr('data-id') && !(new_start< $(this).attr('data-start') && new_end <= $(this).attr('data-start') || new_start >= $(this).attr('data-end') &&  new_end > $(this).attr('data-end'))){
-            $("#formcontent")
-                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'There is a overlap with the " + $(this).attr('data-title') + " enrich, please change end field and start field.' %} </span>");
+            /*$("#formcontent")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'There is a overlap with the " + $(this).attr('data-title') + " enrich, please change end field and start field.' %} </span>");*/
+            msg+="<br/>"+ "<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'There is a overlap with the " + $(this).attr('data-title') + " enrich, please change end field and start field.' %} </span>";
         }
     });
+    if(msg!="") show_messages(msg);
 };
 
 
@@ -337,7 +336,7 @@ function overlaptest(){
         {% include 'videos/video_player.html' with video=video %}
         </span>
 
-        <span id="show_messages">
+        <span id="show_messages" class="alert alert-danger collapse" role="alert" >
             &nbsp;
         </span>
         <br/>
