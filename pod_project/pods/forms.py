@@ -237,7 +237,9 @@ class EnrichPodsForm(ModelForm):
       super(EnrichPodsForm, self).__init__(*args, **kwargs)
       self.fields['video'].widget = HiddenInput()
       self.fields['start'].widget.attrs['min'] = 0
+      self.fields['start'].widget.attrs['value'] = self.fields['start'].widget.attrs['min']
       self.fields['end'].widget.attrs['min'] = 1
+      self.fields['end'].widget.attrs['value'] = self.fields['end'].widget.attrs['min']
 
       try:
         self.fields['start'].widget.attrs['max'] = self.instance.video.duration
@@ -248,7 +250,6 @@ class EnrichPodsForm(ModelForm):
       
       for myField in self.fields:
           self.fields[myField].widget.attrs['placeholder'] = self.fields[myField].label
-          
           if self.fields[myField].required:
               self.fields[myField].widget.attrs['class'] = 'required'
               label_unicode = u'%s' %self.fields[myField].label

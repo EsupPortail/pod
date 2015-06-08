@@ -750,9 +750,7 @@ def video_chapter(request, slug):
 @login_required
 @staff_member_required
 def video_enrich(request, slug):
-    video = get_object_or_404(Pod, slug=slug)
-    print "----> JE PASSE"
-    
+    video = get_object_or_404(Pod, slug=slug)  
     # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
@@ -768,12 +766,8 @@ def video_enrich(request, slug):
     list_enrichment= EnrichPods.objects.filter(video=video)
 
     if request.method == "POST":   
-        print "----> JE PASSE 2"
-        print request.POST
         #new, save, modify, delete
-
         if request.POST.get("action") and request.POST['action'] == 'new':
-            print "new"
             form_enrich = EnrichPodsForm({"video":video})
             if request.is_ajax():#if ajax
                 return render_to_response("videos/enrich/form_enrich.html",
@@ -786,10 +780,9 @@ def video_enrich(request, slug):
 
 
         if request.POST.get("action") and request.POST['action'] == 'modify':
-            print "modify"
             enrich = get_object_or_404(EnrichPods, id=request.POST['id'])
-            form_enrich= EnrichPodsForm(instance=enrich)#id dans la requete ?
-            if request.is_ajax():#if ajax
+            form_enrich= EnrichPodsForm(instance=enrich)
+            if request.is_ajax():
                 return render_to_response("videos/enrich/form_enrich.html",
                                   {'form_enrich': form_enrich, 'video': video},
                                   context_instance=RequestContext(request))
@@ -800,20 +793,15 @@ def video_enrich(request, slug):
 
 
         if request.POST.get("action") and request.POST['action'] == 'save':
-
-            print "----> SAVE"
             form_enrich = None
-            print request.POST.get("enrich_id")
             if request.POST.get("enrich_id") != "None" :
                 enrich = get_object_or_404(EnrichPods, id=request.POST.get("enrich_id"))
                 form_enrich = EnrichPodsForm(request.POST, instance=enrich)
             else:
-                print "nouveau formulaire"
                 form_enrich = EnrichPodsForm(request.POST)
 
             if form_enrich.is_valid() :# All validation rules pass
                 form_enrich.save()
-
                 list_enrichment = EnrichPods.objects.filter(video=video)
                 if request.is_ajax():
                     #print list_enrichment
@@ -826,8 +814,7 @@ def video_enrich(request, slug):
                 else:
                     return render_to_response("videos/video_enrich_new.html",
                               {'video': video, 'list_enrichment': list_enrichment},
-                              context_instance=RequestContext(request))
-                        
+                              context_instance=RequestContext(request))    
             else:
                 if request.is_ajax():
                     some_data_to_dump = {
@@ -844,7 +831,6 @@ def video_enrich(request, slug):
         if request.POST.get("action") and request.POST['action'] == 'delete':
             enrich = get_object_or_404(EnrichPods, id=request.POST['id'])#recuperer avec l'id passer dans la requete ?
             enrich_delete = enrich.delete()
-            print enrich_delete 
             list_enrichment= EnrichPods.objects.filter(video=video)
             if request.is_ajax():
                 some_data_to_dump = {
@@ -863,7 +849,6 @@ def video_enrich(request, slug):
                               {'video': video, 'list_enrichment': list_enrichment},
                               context_instance=RequestContext(request))
 
-    print "render to response"
     return render_to_response("videos/video_enrich_new.html",
                               {'video': video, 'list_enrichment': list_enrichment},
                               context_instance=RequestContext(request))
