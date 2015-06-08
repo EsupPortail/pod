@@ -32,6 +32,44 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_extra_head %}
 <style>
 .form-help-inline {color:red;}
+
+
+/*** table scroll ***/
+table.scroll {
+     width: 100%; /* Optional */
+    /* border-collapse: collapse; */
+    /*border-spacing: 0;*/
+    /*border: 2px solid black;*/
+}
+
+table.scroll tbody,
+table.scroll thead { display: block; }
+
+table.scroll thead tr th { 
+    height: 30px;
+    line-height: 30px;
+    text-align: left;
+}
+
+table.scroll tbody {
+    height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+table.scroll tbody { /*border-top: 2px solid black;*/ }
+
+table.scroll tbody td, table.scroll thead th {
+     width: 20%;  /* Optional */
+    /*border-right: 1px solid black;*/
+     white-space: nowrap;
+     height: 30px;
+    line-height: 30px;
+}
+
+table.scroll tbody td:last-child, table.scroll thead th:last-child {
+    /*border-right: none;*/
+}
 </style>
 
 <script src="{% static "video-js/video.js" %}" ></script>
@@ -52,6 +90,27 @@ voir http://www.gnu.org/licenses/
 
 
 <script>
+/*** table scroll ***/
+// Change the selector if needed
+var $table = $('table.scroll'),
+    $bodyCells = $table.find('tbody tr:first').children(),
+    colWidth;
+
+// Adjust the width of thead cells when window resizes
+$(window).resize(function() {
+    // Get the tbody columns width array
+    colWidth = $bodyCells.map(function() {
+        return $(this).width();
+    }).get();
+    
+    // Set the width of thead columns
+    $table.find('thead tr').children().each(function(i, v) {
+        $(v).width(colWidth[i]);
+    });    
+}).resize(); // Trigger resize handler
+/*** end table scroll ***/
+
+
 
 var preventUnloadPrompt;
 //var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
@@ -91,13 +150,17 @@ $(document).on("submit", "form", function (e) {
             jqxhr = $.post( window.location.href, {"action":"new"} );
         }
         jqxhr.done(function(data){
-            get_form(data);
-            $('form.form_modif').show();
-            $('form.form_delete').show();
+            if(data.indexOf("form_enrich")==-1) {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+            } else {
+                get_form(data);
+                $('form.form_modif').show();
+                $('form.form_delete').show();
+            }
+            
         });
         jqxhr.fail(function($xhr) {
-            console.log($xhr);
-            var data = $xhr.statusText+ " : " +$xhr.statusText;
+            var data = $xhr.status+ " : " +$xhr.statusText;
             show_messages("{% trans 'Error getting form. ' %} " + "("+data+")"+ "{% trans 'the form could not be recovered'%}");
             $('form.form_modif').show();
             $('form.form_delete').show();
@@ -111,10 +174,14 @@ $(document).on("submit", "form", function (e) {
             var id = $(this).find('input[name=id]').val();
             jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
             jqxhr.done(function(data){
-                refrech_list_and_player(data);
+                if(data.list_enrich) {
+                    refrech_list_and_player(data);
+                } else {
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                }
             });
             jqxhr.fail(function($xhr) {
-                var data = $xhr.statusText+ " : " +$xhr.statusText;
+                var data = $xhr.status+ " : " +$xhr.statusText;
                 show_messages("{% trans 'Error deleting. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}");
             });
         }
@@ -133,15 +200,19 @@ $(document).on("submit", "form", function (e) {
                 data_form
             );
             jqxhr.done(function(data){
-                if(data.errors){  
-                    //alert(data.errors);
-                    get_form(data.form);
-                }else{
-                    refrech_list_and_player(data);
+                if(data.list_enrich || data.form) {
+                    if(data.errors){  
+                        //alert(data.errors);
+                        get_form(data.form);
+                    }else{
+                        refrech_list_and_player(data);
+                    }
+                } else {
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
                 }
             });
             jqxhr.fail(function($xhr) {
-                var data = $xhr.statusText+ " : " +$xhr.statusText;
+                var data = $xhr.status+ " : " +$xhr.statusText;
                 //alert("{% trans 'error post request' %} "+data);
                 show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}");
             });
@@ -153,8 +224,12 @@ $(document).on("submit", "form", function (e) {
     
 });
 
-function show_messages(msg) {
-    $("#show_messages").html(msg).fadeIn().delay(3000).fadeOut();
+function show_messages(msg, reload=false) {
+    if(reload==true) {
+        $("#show_messages").html(msg).fadeIn().delay(3000).fadeOut(function(){location.reload();});
+    } else {
+        $("#show_messages").html(msg).fadeIn().delay(3000).fadeOut();
+    }
 }
 
 /*** Function show the item selected by type field ***/
