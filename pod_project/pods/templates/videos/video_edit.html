@@ -186,12 +186,7 @@ var name = "";
 
 
 <fieldset>
-{% if form.instance.title %}
-<legend>{% trans "Editing the video" %} {{form.instance.title}}</legend>
-{% else %}
-<legend>{% trans "Add a new video" %}</legend>
-{% endif %}
-
+<legend></legend>
 
 {% bootstrap_form form %}
 

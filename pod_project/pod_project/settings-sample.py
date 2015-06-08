@@ -291,4 +291,6 @@ ENCODE_WAV = True
 SKIP_FIRST_IMAGE = True
 #mot de passe pour les enregistreurs multicam system
 RECORDER_SALT = "abcdefgh"
-
+#optional settings for test: 
+#if set it's used to test download and encode video in test
+#HTTP_PROXY = 'http://localhost:3128/'
