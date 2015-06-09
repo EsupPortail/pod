@@ -26,6 +26,7 @@ from core.models import FileBrowse, UserProfile
 class FileBrowseForm(ModelForm):
     class Meta:
         model = FileBrowse
+        fields = '__all__'
 
 class ProfileForm(ModelForm):
   def __init__(self, *args, **kwargs):

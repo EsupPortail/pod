@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os
 import hashlib
+from string import find
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render
@@ -374,7 +375,8 @@ def videos(request):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None):
-    video = get_object_or_404(Pod, slug=slug)
+    id = slug[:find(slug, "-")]
+    video = get_object_or_404(Pod, id=id)
     channel = None
     if slug_c:
         channel = get_object_or_404(Channel, slug=slug_c)
@@ -833,6 +835,126 @@ def video_enrich(request, slug):
             request, messages.ERROR, _(u'You cannot enrich this video'))
         raise PermissionDenied
 
+    # get all video enrich
+    list_enrichment = video.enrichpods_set.all()
+    if request.POST:  # some data sent
+        if request.POST.get("action") and request.POST['action'] == 'new':
+            form_enrich = EnrichPodsForm(
+                {"video": video, "start": 0, "end": 1})
+            if request.is_ajax():  # if ajax
+                return render_to_response("videos/enrich/form_enrich.html",
+                                          {'form_enrich': form_enrich,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_enrich.html",
+                                          {'video': video, 'list_enrichment':
+                                              list_enrichment, 'form_enrich': form_enrich},
+                                          context_instance=RequestContext(request))
+        # save
+        if request.POST.get("action") and request.POST['action'] == 'save':
+            form_enrich = None
+            if request.POST.get("enrich_id") != "None":
+                enrich = get_object_or_404(
+                    EnrichPods, id=request.POST.get("enrich_id"))
+                form_enrich = EnrichPodsForm(request.POST, instance=enrich)
+            else:
+                form_enrich = EnrichPodsForm(request.POST)
+
+            if form_enrich.is_valid():  # All validation rules pass
+                form_enrich.save()
+                list_enrichment = video.enrichpods_set.all()
+                if request.is_ajax():
+                    # print list_enrichment
+                    some_data_to_dump = {
+                        'list_enrich': render_to_string('videos/enrich/list_enrich.html', {'list_enrichment': list_enrichment, 'video': video}),
+                        'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_enrich.html",
+                                              {'video': video,
+                                                  'list_enrichment': list_enrichment},
+                                              context_instance=RequestContext(request))
+            else:
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'errors': "%s" % _('Please correct errors'),
+                        'form': render_to_string('videos/enrich/form_enrich.html', {'video': video, 'form_enrich': form_enrich})
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_enrich.html",
+                                              {'video': video, 'list_enrichment':
+                                                  list_enrichment, 'form_enrich': form_enrich},
+                                              context_instance=RequestContext(request))
+        # end save
+        # modify
+        if request.POST.get("action") and request.POST['action'] == 'modify':
+            enrich = get_object_or_404(EnrichPods, id=request.POST['id'])
+            form_enrich = EnrichPodsForm(instance=enrich)
+            if request.is_ajax():
+                return render_to_response("videos/enrich/form_enrich.html",
+                                          {'form_enrich': form_enrich,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_enrich.html",
+                                          {'video': video, 'list_enrichment':
+                                              list_enrichment, 'form_enrich': form_enrich},
+                                          context_instance=RequestContext(request))
+        # end modify
+        # delete
+        if request.POST.get("action") and request.POST['action'] == 'delete':
+            enrich = get_object_or_404(EnrichPods, id=request.POST['id'])
+            enrich_delete = enrich.delete()
+            list_enrichment = EnrichPods.objects.filter(video=video)
+            if request.is_ajax():
+                some_data_to_dump = {
+                    'list_enrich': render_to_string('videos/enrich/list_enrich.html', {'list_enrichment': list_enrichment, 'video': video}),
+                    'player': render_to_string('videos/video_player.html', {'video': video,  "csrf_token": request.COOKIES['csrftoken']})
+                }
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+            else:
+                return render_to_response("videos/video_enrich.html",
+                                          {'video': video,
+                                              'list_enrichment': list_enrichment},
+                                          context_instance=RequestContext(request))
+        # end delete
+        # cancel
+        if request.POST.get("action") and request.POST['action'] == 'cancel':
+            return render_to_response("videos/video_enrich.html",
+                                      {'video': video,
+                                          'list_enrichment': list_enrichment},
+                                      context_instance=RequestContext(request))
+        # end cancel
+
+    return render_to_response("videos/video_enrich.html",
+                              {'video': video,
+                                  'list_enrichment': list_enrichment},
+                              context_instance=RequestContext(request))
+
+"""
+@csrf_protect
+@login_required
+@staff_member_required
+def video_enrich(request, slug):
+    video = get_object_or_404(Pod, slug=slug)
+    # Add this to improve folder selection and view list
+    if not request.session.get('filer_last_folder_id'):
+        from filer.models import Folder
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
+        request.session['filer_last_folder_id'] = folder.id
+
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot enrich this video'))
+        raise PermissionDenied
+
     EnrichInlineFormSet = inlineformset_factory(
         Pod, EnrichPods, form=EnrichPodsForm, extra=0, can_delete=True)
 
@@ -860,6 +982,7 @@ def video_enrich(request, slug):
     return render_to_response("videos/video_enrichpods_formset.html",
                               {'enrichformset': enrichformset},
                               context_instance=RequestContext(request))
+"""
 
 
 @csrf_protect
@@ -1076,7 +1199,7 @@ def liveSlide(request):  # affichage des slides en direct
     return render_to_response('mediacourses/liveSlide.html', c)
     """
     if request.GET.get("ip"):
-        filename = "/audiovideocours/ftp/live/%s.jpg" %request.GET.get("ip").replace(".", "_") #Select your file here. 
+        filename = "/audiovideocours/ftp/live/%s.jpg" %request.GET.get("ip").replace(".", "_") #Select your file here.
         if not os.path.isfile(filename):
             return HttpResponse("pas de fichier")
         wrapper = FileWrapper(file(filename))

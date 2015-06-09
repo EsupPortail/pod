@@ -33,6 +33,7 @@ class PageForm(FlatpageForm):
 
     class Meta:
         model = FlatPage
+        fields = '__all__'
         widgets = {
             'content_fr': CKEditorWidget(config_name='complete'),
             'content_en': CKEditorWidget(config_name='complete'),

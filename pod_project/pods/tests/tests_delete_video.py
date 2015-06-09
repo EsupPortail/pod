@@ -22,7 +22,7 @@ voir http://www.gnu.org/licenses/
 from django.core.files import File
 from core.models import *
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from pods.models import *
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User, Group
@@ -34,12 +34,22 @@ from django.contrib.auth import authenticate
 from django.forms.models import inlineformset_factory
 import threading
 from core.utils import encode_video
+import os
 # Create your tests here.
 """
     test view delete video 
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Video_deleteTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -63,7 +73,9 @@ class Video_deleteTestView(TestCase):
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
         pod.channel.add(c)
         pod.theme.add(t)

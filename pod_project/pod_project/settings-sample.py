@@ -20,17 +20,18 @@ TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = ['pod.univ.fr']
 
 # Liste des applications
+#https://docs.djangoproject.com/en/1.7/topics/migrations/#upgrading-from-south
 INSTALLED_APPS = (
+    'modeltranslation', #put it in first !! http://django-modeltranslation.readthedocs.org/en/latest/installation.html#configuration
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'south',
     # Pages statiques
     'django.contrib.sites',
-    'django.contrib.flatpages',    
+    'django.contrib.flatpages',
     # Applications tierces
     'ckeditor',
     'filer',
@@ -42,16 +43,11 @@ INSTALLED_APPS = (
     'jquery',
     'djangoformsetjs',
     'haystack',
-    'modeltranslation',
     'bootstrap3',
     # Applications locales
     'pods',
     'core'
 )
-
-SOUTH_MIGRATION_MODULES = {
-    'taggit': 'taggit.south_migrations',
-}
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -114,6 +110,8 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = ('fr', 'en')
 
 # Fichiers statiques (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+FILE_UPLOAD_TEMP_DIR = '/var/tmp'
 
 # Fichiers dynamiques (contenu du site)
 # Attention, il faut creer le repertoire media
@@ -125,9 +123,6 @@ CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'uploads')
 EMAIL_HOST = 'smtp.univ.fr'
 EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = 'default.mail@univ.fr'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-FILE_UPLOAD_TEMP_DIR = '/var/tmp'
 
 SITE_ID = 1
 
@@ -276,6 +271,7 @@ VIDEO_EXT_ACCEPT = (
     '.divx',
     '.flv',
     '.m2p',
+    '.m4v',
     '.mkv',
     '.mov',
     '.mp4',
@@ -288,9 +284,13 @@ VIDEO_EXT_ACCEPT = (
     '.wav',
     '.wma'
 )
+ENCODE_WEBM = True
+ENCODE_WAV = True
 
 #AUDIOVIDEOCOURS
 SKIP_FIRST_IMAGE = True
 #mot de passe pour les enregistreurs multicam system
 RECORDER_SALT = "abcdefgh"
-
+#optional settings for test: 
+#if set it's used to test download and encode video in test
+#HTTP_PROXY = 'http://localhost:3128/'

@@ -1,0 +1,493 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2015 Remi Kroll et Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+
+{% load i18n %}
+{% load staticfiles %}
+{% load list %}
+{% load bootstrap3 %}
+
+{% block bootstrap3_title%}
+{% trans "Enrich video" %} "{{video.title}}"
+{% endblock bootstrap3_title%}
+
+{% block bootstrap3_extra_head %}
+<style>
+.form-help-inline {color:red;}
+
+/*** table scroll ***/
+table.scroll {
+     width: 100%; /* Optional */
+    border-collapse: collapse; 
+    border-spacing: 0;
+    /*border: 2px solid black;*/
+}
+
+table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
+    border-radius: 3px;
+    font-size: 12px;
+    line-height: 0.5;
+    padding: 5px 10px;
+}
+
+#list_enrich .panel-heading {
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 4px 15px;
+}
+
+table.scroll tbody,
+table.scroll thead { display: block; }
+
+table.scroll thead /*tr th*/ { 
+    height: 27px;
+    line-height: 27px;
+    text-align: left;
+}
+table.scroll tbody {
+    max-height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+table.scroll tbody td, table.scroll thead th {
+     width: 10%;  /* Optional */
+    /*border-right: 1px solid black;*/
+    /*white-space: nowrap;*/
+    height: 20px;
+    line-height: 20px;
+}
+
+table.scroll tbody td.enrich_title {
+    width: 60%;
+}
+
+</style>
+
+<script src="{% static "video-js/video.js" %}" ></script>
+{% include "videos/extraheadplayer.html" with video=video %}
+
+    <!-- media -->
+    <script>window.__admin_media_prefix__ = '/static/admin/';</script>
+    <script src="/admin/jsi18n/"></script>
+    <script src="{% static 'admin/js/core.js' %}"></script>
+    <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+    <script src="{% static 'admin/js/actions.js' %}"></script>
+
+    <!-- form.media -->
+    <script src="{% static 'filer/js/popup_handling.js' %}"></script>
+    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+
+<script>
+/*** table scroll ***/
+// Change the selector if needed
+
+
+$(window).load(function(){
+    var $table = $('table.scroll'),
+    $bodyCells = $table.find('tbody tr:first').children(),
+    colWidth;
+    // Adjust the width of thead cells when window resizes
+    $(window).resize(function() {
+        // Get the tbody columns width array
+        colWidth = $bodyCells.map(function() {
+            return $(this).width();
+        }).get();
+        // Set the width of thead columns
+        $table.find('thead tr').children().each(function(i, v) {
+            $(v).width(colWidth[i]);
+        });
+    }).resize(); // Trigger resize handler
+});
+
+/*** end table scroll ***/
+
+
+
+var preventUnloadPrompt;
+//var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
+var num = 0;
+var name = '';
+
+/*** For the form ***/;
+var video_duration = {{video.duration}};
+
+/*** For the Cancel button ***/
+$(document).on("reset", "#page-video form", function (e) {
+    $("span#form_enrich").html("");
+    $('form#form_new').show();
+    $('form').show();
+    $("table tr").removeClass("info");
+    $(window).resize();
+});
+
+/*** Function for all buttons expect cancel
+    When the action is modify or new, all button in the first page of enrich are hide and the form is displayed. 
+    When the action is delete, a request sent with the enrich id 
+    When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
+
+$(document).on("submit", "#page-video form", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    var action = $(this).find('input[name=action]').val();
+    if(action == "modify" || action == "new"){
+        $('form#form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
+        $(window).resize();
+        $('#form_enrich').html(ajax_image);
+
+        var elt = $(this).parents('tr');
+        if (action == "modify"){
+            var id = $(this).find('input[name=id]').val();
+            jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
+        }else{
+            jqxhr = $.post( window.location.href, {"action":"new"} );
+        }
+        jqxhr.done(function(data){
+            if(data.indexOf("form_enrich")==-1) {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+            } else {
+                get_form(data);
+                elt.addClass('info');
+                if(document.getElementById("id_start").value != 0) {
+                    myPlayer.on('play', function(){myPlayer.currentTime(document.getElementById("id_start").value);myPlayer.pause();});
+                    myPlayer.play();
+                }
+            }
+            
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            show_messages("{% trans 'Error getting form. ' %} " + "("+data+")"+ "{% trans 'the form could not be recovered'%}");
+            $('form.form_modif').show();
+            $('form.form_delete').show();
+            $('form#form_new').show();
+            $('#form_enrich').html("");
+        });
+    }else if(action == "delete"){
+        //$('form').show();
+        var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this enrichment' %}");
+        if (deleteConfirm){
+            var id = $(this).find('input[name=id]').val();
+            jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
+            jqxhr.done(function(data){
+                if(data.list_enrich) {
+                    refrech_list_and_player(data);
+                } else {
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                }
+            });
+            jqxhr.fail(function($xhr) {
+                var data = $xhr.status+ " : " +$xhr.statusText;
+                show_messages("{% trans 'Error deleting. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}");
+            });
+        }
+    }else if(action == "save"){
+        $(".form-help-inline").parents('div.form-group').removeClass("has-error");
+        $(".form-help-inline").remove();
+        verify_fields();
+        if (!($("span").hasClass("form-help-inline"))){
+            var msg = "";
+            msg += verify_end_start_items();
+            msg += overlaptest();
+            if(msg != "")
+                show_messages(msg);
+            else {
+                var data_form = $( "form#form_enrich" ).serializeArray();
+                jqxhr = $.post(
+                    $( "form#form_enrich" ).attr("action"),
+                    data_form
+                );
+                jqxhr.done(function(data){
+                    if(data.list_enrich || data.form) {
+                        if(data.errors){  
+                            //alert(data.errors);
+                            get_form(data.form);
+                        }else{
+                            refrech_list_and_player(data);
+                        }
+                    } else {
+                        show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                    }
+                });
+                jqxhr.fail(function($xhr) {
+                    var data = $xhr.status+ " : " +$xhr.statusText;
+                    //alert("{% trans 'error post request' %} "+data);
+                    show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}");
+                });
+            }
+        }else{
+            show_messages("{% trans 'Errors found in the form, please correct it.' %}");
+        }
+    }
+    
+});
+
+function show_messages(msg, reload=false) {
+    if(reload==true) {
+        $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
+    } else {
+        button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+        $("#show_messages").html(msg+button).fadeIn();
+    }
+}
+$(document).on('click', '#page-video input#close_messages', function() {
+    $("#show_messages").fadeOut();
+});
+
+/*** Function show the item selected by type field ***/
+$(document).on('change', '#page-video select#id_type', function() {
+    enrich_type();
+});
+/*** refrech the player with modification and show the list of enrich ***/
+function refrech_list_and_player(data){
+    delete videojs.players['player_video']
+    $("#form_enrich").html("");
+    $('form#form_new').show();
+    $("span#enrich_player").html(data.player);
+    $("span#list_enrich").html(data.list_enrich);
+    loadVideo();
+
+    //alert("{% trans 'The changes have been saved' %}");
+};
+/*** Display element of form enrich ***/
+function get_form(data) {    
+        //$("#form_enrich").html("");
+        //fadeIn().delay(3000).fadeOut()
+        $("#form_enrich").hide().html(data).fadeIn();
+        $("input#id_start")
+            .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-info'>{% trans 'get time from the player'%}</a><span class='timecode'></span></span>");
+        $("input#id_end")
+            .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_end' class='btn btn-info'>{% trans 'get time from the player'%}</a><span class='timecode'></span></span>");
+        enrich_type();
+};
+
+function enrich_type(){
+    $("img[id^='id_image']").parents('div.form-group').hide();
+    $("textarea#id_richtext").parents('div.form-group:first').hide();
+    $("#id_weblink").parent('div.form-group').hide();
+    $("img[id^='id_document']").parents('div.form-group').hide();
+    $("#id_embed").parent('div.form-group').hide();
+
+    var val = $("select#id_type").val();
+    if (val != '') {
+        $("#form_enrich").find('[id^="id_' + val + '"]').parents('div.form-group:first').show();
+    }
+}
+
+$(document).on('change','#page-video input#id_start',function() {
+    $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
+});
+$(document).on('change','#page-video input#id_end',function() {
+    $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
+});
+
+$(document).on('click','#page-video span.getfromvideo a',function(e) {
+    e.preventDefault();
+    if(!(typeof myPlayer === 'undefined')) {
+        if($(this).context.id == "getfromvideo_start"){
+            $("input#id_start").val(parseInt(myPlayer.currentTime()));
+            $("input#id_start").trigger('change');
+        } else {
+            $("input#id_end").val(parseInt(myPlayer.currentTime()));
+            $("input#id_end").trigger('change'); 
+        }  
+    }
+});
+
+/*** Verify if value of field respect form field ***/
+function verify_fields(){
+    if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length < 2) || (document.getElementById("id_title").length > 100)) {
+        $("input#id_title")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 caracteres.' %} </span>")
+            .parents('div.form-group').addClass('has-error');
+    }
+    if ((document.getElementById("id_start").value == "") || (document.getElementById("id_start").value < 0 ) || (document.getElementById("id_start").value >= video_duration)){
+        $("input#id_start")
+            .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct start from 0 to ' %}" + (video_duration -1) + "</span>")
+            .parents('div.form-group').addClass('has-error');
+    }
+    if ((document.getElementById("id_end").value == "") || (document.getElementById("id_end").value <=0 ) ||(document.getElementById("id_end").value > video_duration)){
+        $("input#id_end")
+            .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct end from 1 to ' %} " + video_duration + "</span>")
+            .parents('div.form-group').addClass('has-error');
+    }
+        
+    switch (document.getElementById("id_type").value){
+        case "image":
+            if($("#id_image_thumbnail_img").attr('src') == "/static/filer/icons/nofile_48x48.png"){ //check with id_image value
+                $("img#id_image_thumbnail_img")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct image' %} </span>")
+                    .parents('div.form-group').addClass('has-error');
+            }
+            break;
+        case "richtext":
+            if(document.getElementById("id_richtext").value == ""){
+                $("textarea#id_richtext")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct richtext' %} </span>")
+                    .parents('div.form-group').addClass('has-error');
+            }
+            break; 
+        case "weblink":
+            if(document.getElementById("id_weblink").value == ""){
+                $("input#id_weblink")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct weblink' %} </span>")
+                    .parents('div.form-group').addClass('has-error');
+            } else {
+                if(document.getElementById("id_weblink").value > 200){
+                    $("input#id_weblink")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Weblink field must be lower than 200 characters' %} </span>")
+                    .parents('div.form-group').addClass('has-error');
+                }
+            }
+            break;
+        case "document":
+            if($("#id_document_thumbnail_img").attr('src') == "/static/filer/icons/nofile_48x48.png"){ //check with id_document value
+                $("img#id_document_thumbnail_img")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct document' %} </span>")
+                    .parents('div.form-group').addClass('has-error');
+            }
+            break;
+        case "embed":
+            if(document.getElementById("id_embed").value == ""){
+                $("textarea#id_embed")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct embed' %} </span>")
+                    .parents('div.form-group').addClass('has-error');
+            } else {
+                if(document.getElementById("id_embed").value > 300){
+                    $("input#id_weblink")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Embed field must be lower than 300 characters' %} </span>")
+                    .parents('div.form-group').addClass('has-error');
+                }
+            }
+            break;
+        default:
+            $("select#id_type")
+                .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct type' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+
+    }            
+};
+/***  Verify if fields end and start are correct ***/ 
+function verify_end_start_items(){
+    var msg = "";
+    new_start = document.getElementById("id_start").value;
+    new_end = document.getElementById("id_end").value;
+    if(new_start > new_end){
+        msg = "{% trans 'the value of the start field is greater than the value of end field .' %}";
+    }else if(new_end > video_duration){
+        msg = "{% trans 'the value of end field is greater than the video duration.' %}";
+    }else if (new_start == new_end){
+        msg = "{% trans 'end field and start field cannot be equal.' %}";
+    }
+    return msg;
+};
+/*** Verify if there is a overlap with over enrich***/
+function overlaptest(){
+    //var video_list_enrich=[];
+    var new_start = document.getElementById("id_start").value;
+    var new_end = document.getElementById("id_end").value;
+    var id = document.getElementById("id_enrich").value;
+    var msg = "";
+    $('ul#slides li').each(function() {
+        if (id != $(this).attr('data-id') && !(new_start< $(this).attr('data-start') && new_end <= $(this).attr('data-start') || new_start >= $(this).attr('data-end') &&  new_end > $(this).attr('data-end'))){
+            var text = "{% trans 'There is a overlap with the enrich : '%}" + '"' +$(this).attr('data-title')+'". ' ;
+            text += " {% trans 'please change end field and start field' %}";
+            msg+="<br/>"+ text ;
+        }
+    });
+    return msg;
+};
+
+
+</script>
+
+{% endblock bootstrap3_extra_head %}
+
+{% block article_title %}{% trans "Enrich video" %} {{video.title}}{% endblock %}
+
+{% block mainToolbar %}
+{% endblock mainToolbar %}
+
+{% block bootstrap3_content %}
+<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+    <ol class="breadcrumb">
+        {% block breadcrumbs %}
+        {{ block.super }} 
+        <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
+        <li class="active"> {% trans "Enrich video" %} "{{video.title}}"</li>
+        {% endblock breadcrumbs %}
+    </ol>
+
+        <span id="enrich_player">
+        {% include 'videos/video_player.html' with video=video %}
+        </span>
+
+        <span id="show_messages" class="alert alert-danger collapse" role="alert" >
+            &nbsp;
+        </span>
+        <br/>
+        <div class="row" id="info_video">
+            <div class="col-sm-9">
+                <span id= "list_enrich">
+                {%include 'videos/enrich/list_enrich.html'%}
+                <!-- This button will add a new form when clicked -->
+                </span>
+                <span id="form_enrich">
+                    <!-- place for form, it will be replace by a form : empty or to modify -->   
+                    {% if form_enrich %}
+                    {%include 'videos/enrich/form_enrich.html' with form_enrich=form_enrich%}
+                    {%endif%}
+                </span>         
+                <form  id = "form_new" action="{% url 'video_enrich' slug=video.slug  %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="new">
+                    <input type="submit" id="add_new_enrichment"  value="{% trans "Add a new enrichment" %}" class="btn btn-info"/>
+                </form>
+            </div>
+
+            <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+                <aside class="col-sm-3  panel panel-info">
+                    <div class="widget user-tools">
+                        <h4>
+                            <span class="glyphicon glyphicon-wrench"></span> {% trans 'Edit the video' %}
+                        </h4>
+                        {% include 'videos/ownertools.html' with video=video %}
+                    </div>
+                    <div class="widget">
+                        <h4>
+                            <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Information' %}
+                        </h4>
+                        <p>{% trans 'The title fields is required and must contains from 2 to 100 characters.'%}
+                        <p>{% trans 'Start and end fields must contain a value in seconds. You can use the "get time from the player" button to fill it with the current time of the player in the video.' %}</p>
+                        <p>{% trans 'You cannot overlap the enrichments' %}</p>
+                        <p>{% trans 'You must "Save" to view the results.' %}</p>
+                    </div>
+                    
+                </aside>
+        </div>        
+    </article>
+{% endblock bootstrap3_content %}
+{% block box %}{% endblock box %}
