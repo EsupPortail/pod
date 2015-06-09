@@ -269,6 +269,7 @@ function refrech_list_and_player(data){
     $("span#enrich_player").html(data.player);
     $("span#list_enrich").html(data.list_enrich);
     loadVideo();
+    $(window).resize();
 
     //alert("{% trans 'The changes have been saved' %}");
 };

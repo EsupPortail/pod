@@ -127,10 +127,12 @@ $(document).on("reset", "form", function (e) {
     $("span#form_chapter").html("");
     $('form#form_new').show();
     $('form').show();
+    $("table tr").removeClass("info");
+    $(window).resize();
 });
 /*** Function for all buttons expect cancel
-    When the action is modify or new, all button in the first page of enrich are hide and the form is displayed. 
-    When the action is delete, a request sent with the enrich id 
+    When the action is modify or new, all button in the first page of chapter are hide and the form is displayed. 
+    When the action is delete, a request sent with the chapter id 
     When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
 $(document).on("submit", "form", function (e) {
     e.preventDefault();
@@ -140,7 +142,10 @@ $(document).on("submit", "form", function (e) {
         $('form#form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
+        $(window).resize();
         $('#form_chapter').html(ajax_image);
+        var elt = $(this).parents('tr');
+
         if (action == "modify"){
             var id = $(this).find('input[name=id]').val();
             jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
@@ -152,7 +157,8 @@ $(document).on("submit", "form", function (e) {
                 show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
             } else {
                 get_form(data);
-                if(document.getElementById("id_start").value != 0) {
+                elt.addClass('info');
+                if(action == "modify"){
                     myPlayer.on('play', function(){myPlayer.currentTime(document.getElementById("id_start").value);myPlayer.pause();});
                     myPlayer.play();
                 }
@@ -189,31 +195,37 @@ $(document).on("submit", "form", function (e) {
         $(".form-help-inline").parents('div.form-group').removeClass("has-error");
         $(".form-help-inline").remove();
         verify_start_title_items();
-        overlaptest();
         
-        var data_form = $( "form#form_chapter" ).serializeArray();
         if (!($("span").hasClass("form-help-inline"))){
-            jqxhr = $.post(
-                $( "form#form_chapter" ).attr("action"),
-                data_form
-            );
-            jqxhr.done(function(data){
-                if(data.list_chapter || data.form) {
-                    if(data.errors){  
-                        //alert(data.errors);
-                        get_form(data.form);
-                    }else{
-                        refrech_list_and_player(data);
+            var msg = "";
+            msg += overlaptest();
+            if(msg != "")
+                show_messages(msg);
+            else {
+                var data_form = $( "form#form_chapter" ).serializeArray();
+                jqxhr = $.post(
+                    $( "form#form_chapter" ).attr("action"),
+                    data_form
+                );
+                jqxhr.done(function(data){
+                    if(data.list_chapter || data.form) {
+                        if(data.errors){  
+                            //alert(data.errors);
+                            get_form(data.form);
+                        }else{
+                            refrech_list_and_player(data);
+                            $(window).resize();
+                        }
+                    } else {
+                        show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
                     }
-                } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
-                }
-            });
-            jqxhr.fail(function($xhr) {
-                var data = $xhr.status+ " : " +$xhr.statusText;
-                //alert("{% trans 'error post request' %} "+data);
-                show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}");
-            });
+                });
+                jqxhr.fail(function($xhr) {
+                    var data = $xhr.status+ " : " +$xhr.statusText;
+                    //alert("{% trans 'error post request' %} "+data);
+                    show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}");
+                });
+            }
         }else{
             show_messages("{% trans 'Errors found in the form, please correct it.' %}");
         }
@@ -223,11 +235,15 @@ $(document).on("submit", "form", function (e) {
 });
 function show_messages(msg, reload=false) {
     if(reload==true) {
-        $("#show_messages").html(msg).fadeIn().delay(3000).fadeOut(function(){location.reload();});
+        $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
     } else {
-        $("#show_messages").html(msg).fadeIn().delay(3000).fadeOut();
+        button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+        $("#show_messages").html(msg+button).fadeIn();
     }
 }
+$(document).on('click', '#page-video input#close_messages', function() {
+    $("#show_messages").fadeOut();
+});
 /*** refrech the player with modification and show the list of enrich ***/
 function refrech_list_and_player(data){
     delete videojs.players['player_video']
@@ -241,13 +257,15 @@ function refrech_list_and_player(data){
 
 /*** Verify if value of field respect form field ***/
 function verify_start_title_items(){
-    if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length <= 2) || (document.getElementById("id_title").length > 100)) {
+    if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length < 2) || (document.getElementById("id_title").length > 100)) {
         $("input#id_title")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 caracteres.' %} </span>");
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 caracteres.' %} </span>")
+            .parents('div.form-group').addClass('has-error');
     }
     if ((document.getElementById("id_time").value == "") || (document.getElementById("id_time").value.length < 0) || (document.getElementById("id_time").length >= video_duration)) {
         $("input#id_time")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct start field between 0 and' %}" + (video_duration -1) + "</span>");
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct start field between 0 and' %}" + (video_duration -1) + "</span>")
+            .parents('div.form-group').addClass('has-error');
     }
 };
 
@@ -258,9 +276,12 @@ function overlaptest(){
     var msg = "";
     $('ul#chapters li').each(function() {
         if ((id != $(this).attr('data-id')) && new_start == $(this).attr('data-start')) {
-            msg+="<br/>"+ "<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'There is a overlap with the " + $(this).attr('data-title') + " chapter, please change end field and start field.' %} </span>";
+            var text = "{% trans 'There is a overlap with the chapter : '%}" + '"' +$(this).attr('data-title')+'". ' ;
+            text += " {% trans 'please change end field and start field' %}";
+            msg+="<br/>"+ text ;
         }
     });
+    return msg;
     //if(msg!="") show_messages(msg);
 };
 /*** Display element of form enrich ***/
