@@ -66,6 +66,17 @@ function loadVideo() {
         myPlayer.on('progress', progress);
         myPlayer.on('timeupdate', timeupdate);
 
+        myPlayer.on('firstplay', function(){
+            $.post(
+                location,
+                {
+                    action: 'increase_view_count'
+                },
+                function(data) {
+                }
+            );
+        });
+
         myPlayer.on('fullscreenchange', function() {
             if ($('#player_video').hasClass('vjs-fullscreen')) {
                 slide_height = 96;
@@ -281,11 +292,6 @@ function loadVideo() {
         }
         /*************************************************************************/
         start = decodeURIComponent($.urlParam('start'));
-        /***************************is_chaptering*********************************/
-
-        if (typeof is_chaptering != 'undefined' && is_chaptering === true ) {
-            addRangeSlider();
-        }
     });
 }
 
@@ -425,22 +431,6 @@ function timeupdate(event) {
     var slide = false;
     var change_slide = false;
     var current_slide_type = 'None';
-    if (typeof is_chaptering == 'undefined' ) {
-        if (parseInt(t) == 1 && increase_view_count == false) {
-            increase_view_count = true;
-            $.post(
-                location,
-                {
-                    action: 'increase_view_count'
-                },
-                function(data) {
-                }
-            );
-        }
-        if (parseInt(t) !=1 && increase_view_count == true) {
-            increase_view_count = false;
-        }
-    }
 
     var i = 0;
     for (i; i < all; i++) {
@@ -583,11 +573,13 @@ function loadChapBar() {
                     });
                 }
             });
+            /*
             if (typeof is_chaptering != 'undefined' && is_chaptering == true) {
                 $('.vjs-chapbar-chap').on('click', function(e) {
                     chapbar($(this));
                 });
             }
+            */
         }
     }
 }
@@ -641,7 +633,7 @@ function progress() {
 
 function error(err) {
     // prints the name of the error
-    alert(err.name);
+    // alert(err.name);
     // prints the description that is also shown in the error console
     console.log(err.message);
     // this works only in some browsers
