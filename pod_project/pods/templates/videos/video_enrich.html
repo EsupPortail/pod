@@ -398,9 +398,9 @@ function overlaptest(){
     var msg = "";
     $('ul#slides li').each(function() {
         if (id != $(this).attr('data-id') && !(new_start< $(this).attr('data-start') && new_end <= $(this).attr('data-start') || new_start >= $(this).attr('data-end') &&  new_end > $(this).attr('data-end'))){
-            /*$("#formcontent")
-                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'There is a overlap with the " + $(this).attr('data-title') + " enrich, please change end field and start field.' %} </span>");*/
-            msg+="<br/>"+ "<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'There is a overlap with the " + $(this).attr('data-title') + " enrich, please change end field and start field.' %} </span>";
+            var text = "{% trans 'There is a overlap with the enrich : "%} + '"' +$(this).attr('data-title')+'". ' ;
+            text += " {% trans 'please change end field and start field' %}";
+            msg+="<br/>"+ "<span class='form-help-inline'>&nbsp;&nbsp;"+ text +"</span>";
         }
     });
     if(msg!="") show_messages(msg);
