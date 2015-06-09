@@ -747,12 +747,11 @@ def video_chapter(request, slug):
                               context_instance=RequestContext(request))
 
 
-
 @csrf_protect
 @login_required
 @staff_member_required
 def video_enrich(request, slug):
-    video = get_object_or_404(Pod, slug=slug)  
+    video = get_object_or_404(Pod, slug=slug)
     # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
@@ -765,95 +764,106 @@ def video_enrich(request, slug):
             request, messages.ERROR, _(u'You cannot enrich this video'))
         raise PermissionDenied
 
-    #get all video enrich
+    # get all video enrich
     list_enrichment = video.enrichpods_set.all()
-    if request.POST : #some data sent
+    if request.POST:  # some data sent
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_enrich = EnrichPodsForm({"video":video, "start":0, "end":1})
-            if request.is_ajax():#if ajax
+            form_enrich = EnrichPodsForm(
+                {"video": video, "start": 0, "end": 1})
+            if request.is_ajax():  # if ajax
                 return render_to_response("videos/enrich/form_enrich.html",
-                                  {'form_enrich': form_enrich, 'video':video},
-                                  context_instance=RequestContext(request))
+                                          {'form_enrich': form_enrich,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
             else:
                 return render_to_response("videos/video_enrich.html",
-                                  {'video': video, 'list_enrichment': list_enrichment, 'form_enrich': form_enrich},
-                                  context_instance=RequestContext(request))
-        #save
+                                          {'video': video, 'list_enrichment':
+                                              list_enrichment, 'form_enrich': form_enrich},
+                                          context_instance=RequestContext(request))
+        # save
         if request.POST.get("action") and request.POST['action'] == 'save':
             form_enrich = None
-            if request.POST.get("enrich_id") != "None" :
-                enrich = get_object_or_404(EnrichPods, id=request.POST.get("enrich_id"))
+            if request.POST.get("enrich_id") != "None":
+                enrich = get_object_or_404(
+                    EnrichPods, id=request.POST.get("enrich_id"))
                 form_enrich = EnrichPodsForm(request.POST, instance=enrich)
             else:
                 form_enrich = EnrichPodsForm(request.POST)
 
-            if form_enrich.is_valid() :# All validation rules pass
+            if form_enrich.is_valid():  # All validation rules pass
                 form_enrich.save()
                 list_enrichment = video.enrichpods_set.all()
                 if request.is_ajax():
-                    #print list_enrichment
+                    # print list_enrichment
                     some_data_to_dump = {
-                        'list_enrich' : render_to_string('videos/enrich/list_enrich.html', {'list_enrichment':list_enrichment, 'video':video}),
-                        'player' : render_to_string('videos/video_player.html', {'video':video, "csrf_token": request.COOKIES['csrftoken']})
+                        'list_enrich': render_to_string('videos/enrich/list_enrich.html', {'list_enrichment': list_enrichment, 'video': video}),
+                        'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
                     }
                     data = json.dumps(some_data_to_dump)
                     return HttpResponse(data, content_type='application/json')
                 else:
                     return render_to_response("videos/video_enrich.html",
-                              {'video': video, 'list_enrichment': list_enrichment},
-                              context_instance=RequestContext(request))    
+                                              {'video': video,
+                                                  'list_enrichment': list_enrichment},
+                                              context_instance=RequestContext(request))
             else:
                 if request.is_ajax():
                     some_data_to_dump = {
-                                    'errors' : "%s" %_('Please correct errors'),
-                                    'form':render_to_string('videos/enrich/form_enrich.html', {'video':video,'form_enrich':form_enrich})
-                                }
+                        'errors': "%s" % _('Please correct errors'),
+                        'form': render_to_string('videos/enrich/form_enrich.html', {'video': video, 'form_enrich': form_enrich})
+                    }
                     data = json.dumps(some_data_to_dump)
                     return HttpResponse(data, content_type='application/json')
                 else:
                     return render_to_response("videos/video_enrich.html",
-                              {'video': video, 'list_enrichment': list_enrichment,'form_enrich': form_enrich},
-                              context_instance=RequestContext(request))
-        #end save
-        #modify
+                                              {'video': video, 'list_enrichment':
+                                                  list_enrichment, 'form_enrich': form_enrich},
+                                              context_instance=RequestContext(request))
+        # end save
+        # modify
         if request.POST.get("action") and request.POST['action'] == 'modify':
             enrich = get_object_or_404(EnrichPods, id=request.POST['id'])
-            form_enrich= EnrichPodsForm(instance=enrich)
+            form_enrich = EnrichPodsForm(instance=enrich)
             if request.is_ajax():
                 return render_to_response("videos/enrich/form_enrich.html",
-                                  {'form_enrich': form_enrich, 'video': video},
-                                  context_instance=RequestContext(request))
+                                          {'form_enrich': form_enrich,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
             else:
                 return render_to_response("videos/video_enrich.html",
-                                  {'video': video, 'list_enrichment': list_enrichment, 'form_enrich': form_enrich},
-                                  context_instance=RequestContext(request))
-        #end modify
-        #delete
+                                          {'video': video, 'list_enrichment':
+                                              list_enrichment, 'form_enrich': form_enrich},
+                                          context_instance=RequestContext(request))
+        # end modify
+        # delete
         if request.POST.get("action") and request.POST['action'] == 'delete':
             enrich = get_object_or_404(EnrichPods, id=request.POST['id'])
             enrich_delete = enrich.delete()
-            list_enrichment= EnrichPods.objects.filter(video=video)
+            list_enrichment = EnrichPods.objects.filter(video=video)
             if request.is_ajax():
                 some_data_to_dump = {
-                    'list_enrich' : render_to_string('videos/enrich/list_enrich.html', {'list_enrichment':list_enrichment, 'video':video}),
-                    'player' : render_to_string('videos/video_player.html', {'video':video,  "csrf_token": request.COOKIES['csrftoken']})
-                    }
+                    'list_enrich': render_to_string('videos/enrich/list_enrich.html', {'list_enrichment': list_enrichment, 'video': video}),
+                    'player': render_to_string('videos/video_player.html', {'video': video,  "csrf_token": request.COOKIES['csrftoken']})
+                }
                 data = json.dumps(some_data_to_dump)
                 return HttpResponse(data, content_type='application/json')
             else:
                 return render_to_response("videos/video_enrich.html",
-                              {'video': video, 'list_enrichment': list_enrichment},
-                              context_instance=RequestContext(request))
+                                          {'video': video,
+                                              'list_enrichment': list_enrichment},
+                                          context_instance=RequestContext(request))
         # end delete
-        #cancel
+        # cancel
         if request.POST.get("action") and request.POST['action'] == 'cancel':
             return render_to_response("videos/video_enrich.html",
-                              {'video': video, 'list_enrichment': list_enrichment},
-                              context_instance=RequestContext(request))
-        #end cancel
+                                      {'video': video,
+                                          'list_enrichment': list_enrichment},
+                                      context_instance=RequestContext(request))
+        # end cancel
 
     return render_to_response("videos/video_enrich.html",
-                              {'video': video, 'list_enrichment': list_enrichment},
+                              {'video': video,
+                                  'list_enrichment': list_enrichment},
                               context_instance=RequestContext(request))
 
 """
@@ -902,6 +912,7 @@ def video_enrich(request, slug):
                               {'enrichformset': enrichformset},
                               context_instance=RequestContext(request))
 """
+
 
 @csrf_protect
 @login_required
