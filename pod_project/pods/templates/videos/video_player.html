@@ -158,7 +158,9 @@ voir http://www.gnu.org/licenses/
     {% if video.chapterpods_set.all %}
         <ul id="chapters">
             {% for chap in video.chapterpods_set.all %}
-                <li data-start="{{ chap.time }}" data-title="{{ chap.title }}">{{ chap.title }}</li>
+                <li data-start="{{ chap.time }}"
+                    data-id="{{ chap.id }}"
+                    data-title="{{ chap.title }}">{{ chap.title }}</li>
             {% endfor %}
         </ul>
     {% endif %}

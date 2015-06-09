@@ -30,6 +30,7 @@ from django.utils.translation import ugettext_lazy as _
 from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods, ChapterPods, Favorites, Type, Discipline, Mediacourses, EnrichPods, Notes
 from djangoformsetjs.utils import formset_media_js
 from modeltranslation.forms import TranslationModelForm
+from django.forms.widgets import HiddenInput
 
 class ChannelForm(TranslationModelForm):
   def __init__(self, *args, **kwargs):
@@ -208,14 +209,14 @@ class ChapterPodsForm(ModelForm):
         #min="1" max="5"
     def __init__(self, *args, **kwargs):
       super(ChapterPodsForm, self).__init__(*args, **kwargs)
+      self.fields['video'].widget = HiddenInput()
+      self.fields['time'].widget.attrs['min'] = 0
+
+      try:
+        self.fields['time'].widget.attrs['max'] = self.instance.video.duration -1
+      except:
+        self.fields['time'].widget.attrs['max'] = 36000
       for myField in self.fields:
-          try:
-            self.fields[myField].widget.attrs['min'] = 0
-            self.fields[myField].widget.attrs['max'] = self.instance.video.duration
-          except:
-            self.fields[myField].widget.attrs['min'] = 0
-            self.fields[myField].widget.attrs['max'] = 360000
-            
           self.fields[myField].widget.attrs['placeholder'] = self.fields[myField].label
           if self.fields[myField].required:
               self.fields[myField].widget.attrs['class'] = 'required'

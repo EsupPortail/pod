@@ -725,7 +725,7 @@ def video_chapter(request, slug):
         raise PermissionDenied
 
     #get all chapter video
-    list_chapter = ChapterPods.objects.filter(video=video)
+    list_chapter = video.chapterpods_set.all
     if request.POST : #some data sent
         if request.POST.get("action") and request.POST['action'] == 'new':
             form_chapter = ChapterPodsForm({"video":video})
@@ -748,7 +748,7 @@ def video_chapter(request, slug):
 
             if form_chapter.is_valid() :# All validation rules pass
                 form_chapter.save()
-                list_chapter = ChapterPods.objects.filter(video=video)
+                list_chapter = video.chapterpods_set.all
                 if request.is_ajax():
                     some_data_to_dump = {
                         'list_chapter' : render_to_string('videos/chapter/list_chapter.html', {'list_chapter':list_chapter, 'video':video}),
@@ -790,7 +790,7 @@ def video_chapter(request, slug):
         if request.POST.get("action") and request.POST['action'] == 'delete':
             chapter = get_object_or_404(ChapterPods, id=request.POST['id'])
             chapter_delete = chapter.delete()
-            list_chapter= ChapterPods.objects.filter(video=video)
+            list_chapter= video.chapterpods_set.all
             if request.is_ajax():
                 some_data_to_dump = {
                         'list_chapter' : render_to_string('videos/chapter/list_chapter.html', {'list_chapter':list_chapter, 'video':video}),
