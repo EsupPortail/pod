@@ -205,6 +205,9 @@ $(document).on("submit", "#page-video form", function (e) {
             });
         }
     }else if(action == "save"){
+        $('form#form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
         $(".form-help-inline").parents('div.form-group').removeClass("has-error");
         $(".form-help-inline").remove();
         verify_fields();
