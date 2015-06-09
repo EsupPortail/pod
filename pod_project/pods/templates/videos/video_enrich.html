@@ -64,7 +64,7 @@ table.scroll thead /*tr th*/ {
     text-align: left;
 }
 table.scroll tbody {
-    height: 100px;
+    max-height: 100px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -371,7 +371,7 @@ function verify_fields(){
                 .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct type' %} </span>")
                 .parents('div.form-group').addClass('has-error');
 
-    }                
+    }            
 };
 /***  Verify if fields end and start are correct ***/ 
 function verify_end_start_items(){
@@ -398,12 +398,12 @@ function overlaptest(){
     var msg = "";
     $('ul#slides li').each(function() {
         if (id != $(this).attr('data-id') && !(new_start< $(this).attr('data-start') && new_end <= $(this).attr('data-start') || new_start >= $(this).attr('data-end') &&  new_end > $(this).attr('data-end'))){
-            var text = "{% trans 'There is a overlap with the enrich : "%} + '"' +$(this).attr('data-title')+'". ' ;
+            var text = "{% trans 'There is a overlap with the enrich : '%}" + '"' +$(this).attr('data-title')+'". ' ;
             text += " {% trans 'please change end field and start field' %}";
             msg+="<br/>"+ "<span class='form-help-inline'>&nbsp;&nbsp;"+ text +"</span>";
         }
     });
-    if(msg!="") show_messages(msg);
+    //if(msg!="") show_messages(msg);
 };
 
 
@@ -455,6 +455,12 @@ function overlaptest(){
 
             <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
                 <aside class="col-sm-3">
+                    <div class="widget user-tools">
+                        <h4>
+                            <span class="glyphicon glyphicon-wrench"></span> {% trans 'Edit the video' %}
+                        </h4>
+                        {% include 'videos/ownertools.html' with video=video %}
+                    </div>
                     <div class="widget">
                         <h4>
                             <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Informations' %}
@@ -465,12 +471,7 @@ function overlaptest(){
                         <p>{%trans 'You cannot overlap the enrichments' %}</p>
                         <p>{%trans 'Must "Save" to view the results.' %}</p>
                     </div>
-                    <div class="widget user-tools">
-                        <h4>
-                            <span class="glyphicon glyphicon-wrench"></span> {% trans 'Edit the video' %}
-                        </h4>
-                        {% include 'videos/ownertools.html' with video=video %}
-                    </div>
+                    
                 </aside>
         </div>        
     </article>
