@@ -33,43 +33,53 @@ voir http://www.gnu.org/licenses/
 <style>
 .form-help-inline {color:red;}
 
-
 /*** table scroll ***/
 table.scroll {
      width: 100%; /* Optional */
-    /* border-collapse: collapse; */
-    /*border-spacing: 0;*/
+    border-collapse: collapse; 
+    border-spacing: 0;
     /*border: 2px solid black;*/
+}
+
+table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
+    border-radius: 3px;
+    font-size: 12px;
+    line-height: 0.5;
+    padding: 5px 10px;
+}
+
+#list_enrich .panel-heading {
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 4px 15px;
 }
 
 table.scroll tbody,
 table.scroll thead { display: block; }
 
-table.scroll thead tr th { 
-    height: 30px;
-    line-height: 30px;
+table.scroll thead /*tr th*/ { 
+    height: 27px;
+    line-height: 27px;
     text-align: left;
 }
-
 table.scroll tbody {
     height: 100px;
     overflow-y: auto;
     overflow-x: hidden;
 }
-
-table.scroll tbody { /*border-top: 2px solid black;*/ }
-
 table.scroll tbody td, table.scroll thead th {
-     width: 20%;  /* Optional */
+     width: 10%;  /* Optional */
     /*border-right: 1px solid black;*/
      white-space: nowrap;
-     height: 30px;
-    line-height: 30px;
+    height: 20px;
+    line-height: 20px;
 }
 
-table.scroll tbody td:last-child, table.scroll thead th:last-child {
-    /*border-right: none;*/
+table.scroll tbody td.enrich_title {
+    width: 60%;
 }
+
 </style>
 
 <script src="{% static "video-js/video.js" %}" ></script>
@@ -92,22 +102,25 @@ table.scroll tbody td:last-child, table.scroll thead th:last-child {
 <script>
 /*** table scroll ***/
 // Change the selector if needed
-var $table = $('table.scroll'),
+
+
+$(window).load(function(){
+    var $table = $('table.scroll'),
     $bodyCells = $table.find('tbody tr:first').children(),
     colWidth;
+    // Adjust the width of thead cells when window resizes
+    $(window).resize(function() {
+        // Get the tbody columns width array
+        colWidth = $bodyCells.map(function() {
+            return $(this).width();
+        }).get();
+        // Set the width of thead columns
+        $table.find('thead tr').children().each(function(i, v) {
+            $(v).width(colWidth[i]);
+        });
+    }).resize(); // Trigger resize handler
+});
 
-// Adjust the width of thead cells when window resizes
-$(window).resize(function() {
-    // Get the tbody columns width array
-    colWidth = $bodyCells.map(function() {
-        return $(this).width();
-    }).get();
-    
-    // Set the width of thead columns
-    $table.find('thead tr').children().each(function(i, v) {
-        $(v).width(colWidth[i]);
-    });    
-}).resize(); // Trigger resize handler
 /*** end table scroll ***/
 
 
@@ -154,8 +167,13 @@ $(document).on("submit", "form", function (e) {
                 show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
             } else {
                 get_form(data);
-                $('form.form_modif').show();
-                $('form.form_delete').show();
+                //$('form.form_modif').show();
+                //$('form.form_delete').show();
+
+                if(document.getElementById("id_start").value != 0) {
+                    myPlayer.on('play', function(){myPlayer.currentTime(document.getElementById("id_start").value);myPlayer.pause();});
+                    myPlayer.play();
+                }
             }
             
         });
@@ -250,7 +268,8 @@ function refrech_list_and_player(data){
 /*** Display element of form enrich ***/
 function get_form(data) {    
         //$("#form_enrich").html("");
-        $("#form_enrich").html(data);
+        //fadeIn().delay(3000).fadeOut()
+        $("#form_enrich").hide().html(data).fadeIn();
         $("input#id_start")
             .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-info'>{% trans 'get time from the player'%}</a><span class='timecode'></span></span>");
         $("input#id_end")
@@ -403,7 +422,7 @@ function overlaptest(){
         {% block breadcrumbs %}
         {{ block.super }} 
         <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
-        <li class="active"> {% trans "Enrich video" %} {{video.title}}</li>
+        <li class="active"> {% trans "Enrich video" %} "{{video.title}}"</li>
         {% endblock breadcrumbs %}
     </ol>
 
