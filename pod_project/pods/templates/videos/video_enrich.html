@@ -134,7 +134,7 @@ var name = '';
 var video_duration = {{video.duration}};
 
 /*** For the Cancel button ***/
-$(document).on("reset", "form", function (e) {
+$(document).on("reset", "#page-video form", function (e) {
     $("span#form_enrich").html("");
     $('form#form_new').show();
     $('form').show();
@@ -147,7 +147,7 @@ $(document).on("reset", "form", function (e) {
     When the action is delete, a request sent with the enrich id 
     When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
 
-$(document).on("submit", "form", function (e) {
+$(document).on("submit", "#page-video form", function (e) {
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
@@ -253,12 +253,12 @@ function show_messages(msg, reload=false) {
         $("#show_messages").html(msg+button).fadeIn();
     }
 }
-$(document).on('click', 'input#close_messages', function() {
+$(document).on('click', '#page-video input#close_messages', function() {
     $("#show_messages").fadeOut();
 });
 
 /*** Function show the item selected by type field ***/
-$(document).on('change', 'select#id_type', function() {
+$(document).on('change', '#page-video select#id_type', function() {
     enrich_type();
 });
 /*** refrech the player with modification and show the list of enrich ***/
@@ -297,14 +297,14 @@ function enrich_type(){
     }
 }
 
-$(document).on('change','input#id_start',function() {
+$(document).on('change','#page-video input#id_start',function() {
     $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
-$(document).on('change','input#id_end',function() {
+$(document).on('change','#page-video input#id_end',function() {
     $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
 
-$(document).on('click','span.getfromvideo a',function(e) {
+$(document).on('click','#page-video span.getfromvideo a',function(e) {
     e.preventDefault();
     if(!(typeof myPlayer === 'undefined')) {
         if($(this).context.id == "getfromvideo_start"){
@@ -469,7 +469,7 @@ function overlaptest(){
             </div>
 
             <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
-                <aside class="col-sm-3">
+                <aside class="col-sm-3  panel panel-info">
                     <div class="widget user-tools">
                         <h4>
                             <span class="glyphicon glyphicon-wrench"></span> {% trans 'Edit the video' %}
@@ -478,13 +478,12 @@ function overlaptest(){
                     </div>
                     <div class="widget">
                         <h4>
-                            <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Informations' %}
+                            <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Information' %}
                         </h4>
-                        <p>{%trans '"Add a new enrichment" to add a new enrichment and "delete" removes enrichment.' %}</p>
-                        <p>{%trans 'Click on modify button of enrichment to modify its properties.' %}</p>
-                        <p>{%trans 'Start and end fields must contain a second value. You can use the "get time from the player" button to fill it with the current time of the player in the video.' %}</p>
-                        <p>{%trans 'You cannot overlap the enrichments' %}</p>
-                        <p>{%trans 'Must "Save" to view the results.' %}</p>
+                        <p>{% trans 'The title fields is required and must contains from 2 to 100 characters.'%}
+                        <p>{% trans 'Start and end fields must contain a value in seconds. You can use the "get time from the player" button to fill it with the current time of the player in the video.' %}</p>
+                        <p>{% trans 'You cannot overlap the enrichments' %}</p>
+                        <p>{% trans 'You must "Save" to view the results.' %}</p>
                     </div>
                     
                 </aside>
