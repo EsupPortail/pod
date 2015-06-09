@@ -105,6 +105,10 @@ table.scroll tbody td.enrich_title {
 
 
 $(window).load(function(){
+    manageResize();
+});
+
+function manageResize() {
     var $table = $('table.scroll'),
     $bodyCells = $table.find('tbody tr:first').children(),
     colWidth;
@@ -119,7 +123,7 @@ $(window).load(function(){
             $(v).width(colWidth[i]);
         });
     }).resize(); // Trigger resize handler
-});
+}
 
 /*** end table scroll ***/
 
@@ -139,7 +143,7 @@ $(document).on("reset", "#page-video form", function (e) {
     $('form#form_new').show();
     $('form').show();
     $("table tr").removeClass("info");
-    $(window).resize();
+    manageResize();
 });
 
 /*** Function for all buttons expect cancel
@@ -148,6 +152,7 @@ $(document).on("reset", "#page-video form", function (e) {
     When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
 
 $(document).on("submit", "#page-video form", function (e) {
+    $('form').show();
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
@@ -155,7 +160,7 @@ $(document).on("submit", "#page-video form", function (e) {
         $('form#form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
-        $(window).resize();
+        manageResize();
         $('#form_enrich').html(ajax_image);
 
         var elt = $(this).parents('tr');
@@ -185,6 +190,7 @@ $(document).on("submit", "#page-video form", function (e) {
             $('form.form_delete').show();
             $('form#form_new').show();
             $('#form_enrich').html("");
+            manageResize();
         });
     }else if(action == "delete"){
         //$('form').show();
@@ -268,8 +274,8 @@ function refrech_list_and_player(data){
     $('form#form_new').show();
     $("span#enrich_player").html(data.player);
     $("span#list_enrich").html(data.list_enrich);
+    manageResize();
     loadVideo();
-
     //alert("{% trans 'The changes have been saved' %}");
 };
 /*** Display element of form enrich ***/
