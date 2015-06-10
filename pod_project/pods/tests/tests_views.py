@@ -1357,6 +1357,7 @@ class Video_enrichTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/video_enrich/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
+        print response.content
         response = self.client.post("/video_enrich/%s/" % pod.slug, {u'enrich_form-0-type': [u'richtext'], u'enrich_form-0-id': [u''],
                                                                      u'enrich_form-0-title': [u'dfghdfgh'], u'enrich_form-0-weblink': [u''], u'action1': [u'Enregistrer'], u'enrich_form-INITIAL_FORMS': [u'0'],
                                                                      u'enrich_form-0-document': [u''], u'enrich_form-TOTAL_FORMS': [u'1'], u'enrich_form-0-image': [u''], u'enrich_form-MAX_NUM_FORMS': [u'1000'],
@@ -1412,6 +1413,7 @@ class Video_mediacourses(TestCase):
             username='remi2', password='12345', is_active=True)
         user2.set_password('hello')
         user2.save()
+        print (" --->  SetUp of Video_mediacourses : OK !")
 
     def test_access_user_staff_mediacourses_add(self):
         self.client = Client()
@@ -1426,6 +1428,8 @@ class Video_mediacourses(TestCase):
         self.assertEqual(self.client.session['_auth_user_id'], user.pk)
         self.client.logout()
         self.assertTrue(self.client.session.get('_auth_user_id') == None)
+        print (
+            "   --->  test_access_user_staff_mediacourses_add of Video_mediacourses : OK !")
 
     def test_access_user_mediacourses_add(self):
         self.client = Client()
@@ -1442,7 +1446,9 @@ class Video_mediacourses(TestCase):
             self.assertTrue("this_is_the_login_form" in response.content)
         else:
             self.assertRedirects(
-            response, '/admin/login/?next=/mediacourses_add/%3Fmediapath%3Dabcdefg.zip', status_code=302, target_status_code=200, msg_prefix='') 
+            response, '/admin/login/?next=/mediacourses_add/%3Fmediapath%3Dabcdefg.zip', status_code=302, target_status_code=200, msg_prefix='')
+        print (
+            "   --->  test_access_user_mediacourses_add of Video_mediacourses : OK !")     
 
     def test_access_user_mediacourses_add_without_mediapath(self):
         self.client = Client()
@@ -1454,6 +1460,8 @@ class Video_mediacourses(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/mediacourses_add/")
         self.assertEqual(response.status_code, 403)
+        print (
+            "   --->  test_access_user_mediacourses_add_without_mediapath of Video_mediacourses : OK !")
     """
     def test_post_data_mediacourses_add(self):
         self.client = Client()
@@ -1486,6 +1494,7 @@ class Video_mediacourses_notify(TestCase):
         # add recorder
         recorder = Recorder.objects.create(
             name='my recorder', adress_ip='192.168.1.59', building=building)
+        print (" --->  SetUp of Video_mediacourses_notify : OK !")
 
     def test_mediacourses_notify_args(self):
         response = self.client.get("/mediacourses_notify/")
@@ -1511,6 +1520,8 @@ class Video_mediacourses_notify(TestCase):
             "/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=a81c115af212b6ae406ce1509bce8ef6")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "nok : key is not valid")
+        print (
+            "   --->  test_mediacourses_notify_args of Video_mediacourses_notify : OK !")
 
     def test_mediacourses_notify_without_good_recorder(self):
         import hashlib
@@ -1519,6 +1530,8 @@ class Video_mediacourses_notify(TestCase):
         response = self.client.get(
             "/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" % m.hexdigest())
         self.assertEqual(response.status_code, 404)
+        print (
+            "   --->  test_mediacourses_notify_without_good_recorder of Video_mediacourses_notify : OK !")
 
     def test_mediacourses_notify_good(self):
         import hashlib
@@ -1528,3 +1541,6 @@ class Video_mediacourses_notify(TestCase):
             "/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" % m.hexdigest())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "ok")
+        print (
+            "   --->  test_mediacourses_notify_good of Video_mediacourses_notify : OK !")
+

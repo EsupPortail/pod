@@ -96,14 +96,20 @@ table.scroll tbody td.chapter_title {
 
 
 <script>
+
 /*** table scroll ***/
 // Change the selector if needed
 $(window).load(function(){
+    manageResize();
+});
+
+/*** end table scroll ***/
+function manageResize() {
     var $table = $('table.scroll'),
     $bodyCells = $table.find('tbody tr:first').children(),
     colWidth;
     // Adjust the width of thead cells when window resizes
-   $(window).resize(function() {
+    $(window).resize(function() {
         // Get the tbody columns width array
         colWidth = $bodyCells.map(function() {
             return $(this).width();
@@ -113,7 +119,7 @@ $(window).load(function(){
             $(v).width(colWidth[i]);
         });
     }).resize(); // Trigger resize handler
-});
+}
 
 /*** end table scroll ***/
 var preventUnloadPrompt;
@@ -125,10 +131,12 @@ var video_duration = {{video.duration}};
 /*** For the Cancel button ***/
 $(document).on("reset", "form", function (e) {
     $("span#form_chapter").html("");
+    $('span#form_chapter').unwrap();
+    $('span#list_chapter').unwrap();
     $('form#form_new').show();
     $('form').show();
     $("table tr").removeClass("info");
-    $(window).resize();
+    manageResize
 });
 /*** Function for all buttons expect cancel
     When the action is modify or new, all button in the first page of chapter are hide and the form is displayed. 
@@ -142,7 +150,9 @@ $(document).on("submit", "form", function (e) {
         $('form#form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
-        $(window).resize();
+        $('span#form_chapter').wrapAll("<div class = 'col-sm-6' ></div>");
+        $('span#list_chapter').wrapAll("<div class = 'col-sm-6' ></div>");
+        manageResize();
         $('#form_chapter').html(ajax_image);
         var elt = $(this).parents('tr');
 
@@ -158,10 +168,6 @@ $(document).on("submit", "form", function (e) {
             } else {
                 get_form(data);
                 elt.addClass('info');
-                if(action == "modify"){
-                    myPlayer.on('play', function(){myPlayer.currentTime(document.getElementById("id_start").value);myPlayer.pause();});
-                    myPlayer.play();
-                }
             }
             
         });
@@ -172,6 +178,7 @@ $(document).on("submit", "form", function (e) {
             $('form.form_delete').show();
             $('form#form_new').show();
             $('#form_chapter').html("");
+            manageResize();
         });
     }else if(action == "delete"){
         //$('form').show();
@@ -192,6 +199,9 @@ $(document).on("submit", "form", function (e) {
             });
         }
     }else if(action == "save"){
+        $('form#form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
         $(".form-help-inline").parents('div.form-group').removeClass("has-error");
         $(".form-help-inline").remove();
         verify_start_title_items();
@@ -215,6 +225,8 @@ $(document).on("submit", "form", function (e) {
                         }else{
                             refrech_list_and_player(data);
                             $(window).resize();
+                            $('span#form_chapter').unwrap();
+                            $('span#list_chapter').unwrap();
                         }
                     } else {
                         show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
@@ -251,6 +263,7 @@ function refrech_list_and_player(data){
     $('form#form_new').show();
     $("span#chapter_player").html(data.player);
     $("span#list_chapter").html(data.list_chapter);
+    manageResize();
     loadVideo();
     //alert("{% trans 'The changes have been saved' %}");
 };
@@ -288,19 +301,20 @@ function overlaptest(){
 function get_form(data) {    
         //fadeIn().delay(3000).fadeOut()
         $("#form_chapter").hide().html(data).fadeIn();
-        $("input#id_chapter_form-0-time")
+        $("input#id_time")
             .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-info'>{% trans 'get time from the player'%}</a><span class='timecode'></span></span>");
 };
  
-$(document).on('change','input#id_start',function() {
+$(document).on('change','input#id_time',function() {
     $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
-$(document).on('click','span.getfromvideo a',function(e) {
+$(document).on('click','#page-video span.getfromvideo a',function(e) {
+    console.log("blabla");
     e.preventDefault();
     if(!(typeof myPlayer === 'undefined')) {
         if($(this).context.id == "getfromvideo_start"){
-            $("input#id_start").val(parseInt(myPlayer.currentTime()));
-            $("input#id_start").trigger('change');
+            $("input#id_time").val(parseInt(myPlayer.currentTime()));
+            $("input#id_time").trigger('change');
         }
     }
 });
@@ -335,16 +349,17 @@ $(document).on('click','span.getfromvideo a',function(e) {
         <br/>
         <div class="row" id="info_video">
             <div class="col-sm-9">
-                <span id= "list_chapter">
-                {%include 'videos/chapter/list_chapter.html'%}
-                <!-- This button will add a new form when clicked -->
-                </span>
                 <span id="form_chapter">
                     <!-- place for form, it will be replace by a form : empty or to modify -->   
                     {% if form_chapter %}
                     {%include 'videos/chapter/form_chapter.html' with form_chapter=form_chapter%}
                     {%endif%}
-                </span>         
+                </span>                                     
+                <span id= "list_chapter">
+                    {%include 'videos/chapter/list_chapter.html'%}
+                    <!-- This button will add a new form when clicked -->
+                </span>
+                   
                 <form  id = "form_new" action="{% url 'video_chapter' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
