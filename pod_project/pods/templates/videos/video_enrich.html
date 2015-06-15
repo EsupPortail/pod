@@ -426,7 +426,6 @@ function overlaptest(){
     $('ul#slides li').each(function() {
         var data_start = parseInt($(this).attr('data-start'));
         var data_end = parseInt($(this).attr('data-end'));
-        console.log($(this).attr('data-id')+" - ")
         if (id != $(this).attr('data-id') && !(new_start< data_start && new_end <= data_start || new_start >= data_end &&  new_end > data_end)){
             var text = "{% trans 'There is a overlap with the enrich : '%}" + '"' +$(this).attr('data-title')+'". ' ;
             text += " {% trans 'Please change end field and start field' %}";
