@@ -257,7 +257,7 @@ $(document).on("submit", "#page-video form", function (e) {
     
 });
 
-function show_messages(msg, reload=false) {
+function show_messages(msg, reload) {
     if(reload==true) {
         $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
     } else {
@@ -419,14 +419,17 @@ function verify_end_start_items(){
 /*** Verify if there is a overlap with over enrich***/
 function overlaptest(){
     //var video_list_enrich=[];
-    var new_start = document.getElementById("id_start").value;
-    var new_end = document.getElementById("id_end").value;
+    var new_start = parseInt(document.getElementById("id_start").value);
+    var new_end = parseInt(document.getElementById("id_end").value);
     var id = document.getElementById("id_enrich").value;
     var msg = "";
     $('ul#slides li').each(function() {
-        if (id != $(this).attr('data-id') && !(new_start< $(this).attr('data-start') && new_end <= $(this).attr('data-start') || new_start >= $(this).attr('data-end') &&  new_end > $(this).attr('data-end'))){
+        var data_start = parseInt($(this).attr('data-start'));
+        var data_end = parseInt($(this).attr('data-end'));
+        console.log($(this).attr('data-id')+" - ")
+        if (id != $(this).attr('data-id') && !(new_start< data_start && new_end <= data_start || new_start >= data_end &&  new_end > data_end)){
             var text = "{% trans 'There is a overlap with the enrich : '%}" + '"' +$(this).attr('data-title')+'". ' ;
-            text += " {% trans 'please change end field and start field' %}";
+            text += " {% trans 'Please change end field and start field' %}";
             msg+="<br/>"+ text ;
         }
     });
