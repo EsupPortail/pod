@@ -1355,21 +1355,122 @@ class Video_enrichTestView(TestCase):
         login = self.client.login(
             username='remi', password='hello')
         self.assertEqual(login, True)
+        #access to the page
         response = self.client.get("/video_enrich/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
-        response = self.client.post("/video_enrich/%s/" % pod.slug, {u'enrich_form-0-type': [u'richtext'], u'enrich_form-0-id': [u''],
-                                                                     u'enrich_form-0-title': [u'dfghdfgh'], u'enrich_form-0-weblink': [u''], u'action1': [u'Enregistrer'], u'enrich_form-INITIAL_FORMS': [u'0'],
-                                                                     u'enrich_form-0-document': [u''], u'enrich_form-TOTAL_FORMS': [u'1'], u'enrich_form-0-image': [u''], u'enrich_form-MAX_NUM_FORMS': [u'1000'],
-                                                                     u'enrich_form-0-richtext': [u'<p>fdghdfghdfhdfh</p>\r\n'], u'enrich_form-0-embed': [u''], u'enrich_form-0-video': [u'1'],
-                                                                     u'enrich_form-0-end': [u'5'], u'enrich_form-0-start': [u'1']})
-        EnrichInlineFormSet = inlineformset_factory(
-            Pod, EnrichPods, form=EnrichPodsForm, extra=0, can_delete=True)
-        enrichformset = EnrichInlineFormSet(
-            instance=Pod.objects.get(id=1), prefix='enrich_form')
-        self.assertEqual(
-            list(enrichformset.queryset), list(response.context['enrichformset'].queryset))
+        self.assertEqual(len(response.context['list_enrichment']), 0)
+        #click 'add new enrichment' button
+        response = self.client.post(
+            "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_enrich'] != "")
+        #send form with 'save' button
+        response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u'test'], u'image': [u''],
+                                                                     u'weblink': [u''], u'richtext': [u'sdfg'], u'enrich_id': [u'None'],
+                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
+                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
+        list_enrichment = pod.enrichpods_set.all()
+        self.assertEqual(len(list_enrichment), 1)
+        self.assertEqual(list_enrichment[0].title, u'test')
+        self.assertEqual(list_enrichment[0].end, 1)
+        self.assertEqual(list_enrichment[0].start, 0)
+        self.assertEqual(list_enrichment[0].video.id, 1)
+        self.assertEqual(list_enrichment[0].type, u'richtext')
+        self.assertEqual(list_enrichment[0].richtext, u'sdfg')
+        self.assertEqual(len(response.context['list_enrichment']), 1)
+        self.assertEqual(response.context['list_enrichment'][0].title, u'test')
+        #click 'modify' button
+        response = self.client.post(
+            "/video_enrich/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_enrich'] != "")
+        self.assertTrue('<input type="hidden" id = "id_enrich" name="enrich_id" value="1">' in response.content)
+        response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u'test2'], u'image': [u''],
+                                                                     u'weblink': [u''], u'richtext': [u'sdfg'], u'enrich_id': [u'1'],
+                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
+                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
+        list_enrichment = pod.enrichpods_set.all()
+        self.assertEqual(len(list_enrichment), 1)
+        self.assertEqual(list_enrichment[0].title, u'test2')
+        #cancel and delete enrich
+        response = self.client.post(
+            "/video_enrich/%s/" % pod.slug, {u'action': [u'cancel']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('"Add a new enrichment"' in response.content)
+        response = self.client.post(
+            "/video_enrich/%s/" % pod.slug, {u'action': [u'delete'],  u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(len(response.context['list_enrichment']), 0)
+        list_enrichment = pod.enrichpods_set.all()
+        self.assertEqual(len(list_enrichment), 0)
+
         print (
             "   --->  test_insert_enrich of Video_enrichTestView : OK !")
+
+    def test_insert_enrich_with_field_errors(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        #access to the page
+        response = self.client.get("/video_enrich/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_enrichment']), 0)
+        #click 'add new enrichment' button
+        response = self.client.post(
+            "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_enrich'] != "")
+        #send form with 'save' button
+        response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u'test'], u'image': [u''],
+                                                                     u'weblink': [u''], u'richtext': [u'sdfg'], u'enrich_id': [u'None'],
+                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
+                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
+        #click 'add new enrichment' button
+        response = self.client.post(
+            "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        #test to add new enrich with overlap 
+        response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u't'], u'image': [u''],
+                                                                     u'weblink': [u''], u'richtext': [u''], u'enrich_id': [u'None'],
+                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
+                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
+
+        list_enrichment = pod.enrichpods_set.all()
+        self.assertEqual(len(list_enrichment), 1)
+        print (
+            "   --->  test_insert_enrich_with_field_errors of Video_enrichTestView : OK !")
+
+    def test_insert_enrich_with_overlap_errors(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        #access to the page
+        response = self.client.get("/video_enrich/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_enrichment']), 0)
+        #click 'add new enrichment' button
+        response = self.client.post(
+            "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_enrich'] != "")
+        #send form with 'save' button
+        response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u't'], u'image': [u''],
+                                                                     u'weblink': [u''], u'richtext': [u''], u'enrich_id': [u'None'],
+                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
+                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
+
+        list_enrichment = pod.enrichpods_set.all()
+        self.assertEqual(len(list_enrichment), 0)
+        print (
+            "   --->  test_insert_enrich_with_overlap_errors of Video_enrichTestView : OK !")
 
     def test_access_to_enrich_with_other_authenticating(self):
         pod = Pod.objects.get(id=1)
@@ -1412,6 +1513,7 @@ class Video_mediacourses(TestCase):
             username='remi2', password='12345', is_active=True)
         user2.set_password('hello')
         user2.save()
+        print (" --->  SetUp of Video_mediacourses : OK !")
 
     def test_access_user_staff_mediacourses_add(self):
         self.client = Client()
@@ -1426,6 +1528,8 @@ class Video_mediacourses(TestCase):
         self.assertEqual(self.client.session['_auth_user_id'], user.pk)
         self.client.logout()
         self.assertTrue(self.client.session.get('_auth_user_id') == None)
+        print (
+            "   --->  test_access_user_staff_mediacourses_add of Video_mediacourses : OK !")
 
     def test_access_user_mediacourses_add(self):
         self.client = Client()
@@ -1443,6 +1547,8 @@ class Video_mediacourses(TestCase):
         else:
             self.assertRedirects(
             response, '/admin/login/?next=/mediacourses_add/%3Fmediapath%3Dabcdefg.zip', status_code=302, target_status_code=200, msg_prefix='') 
+        print (
+            "   --->  test_access_user_mediacourses_add of Video_mediacourses : OK !")
 
     def test_access_user_mediacourses_add_without_mediapath(self):
         self.client = Client()
@@ -1454,6 +1560,9 @@ class Video_mediacourses(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/mediacourses_add/")
         self.assertEqual(response.status_code, 403)
+
+        print (
+            "   --->  test_access_user_mediacourses_add_without_mediapath of Video_mediacourses : OK !")
     """
     def test_post_data_mediacourses_add(self):
         self.client = Client()
@@ -1486,6 +1595,7 @@ class Video_mediacourses_notify(TestCase):
         # add recorder
         recorder = Recorder.objects.create(
             name='my recorder', adress_ip='192.168.1.59', building=building)
+        print (" --->  SetUp of Video_mediacourses_notify : OK !")
 
     def test_mediacourses_notify_args(self):
         response = self.client.get("/mediacourses_notify/")
@@ -1511,6 +1621,8 @@ class Video_mediacourses_notify(TestCase):
             "/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=a81c115af212b6ae406ce1509bce8ef6")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "nok : key is not valid")
+        print (
+            "   --->  test_mediacourses_notify_args of Video_mediacourses_notify : OK !")
 
     def test_mediacourses_notify_without_good_recorder(self):
         import hashlib
@@ -1519,6 +1631,8 @@ class Video_mediacourses_notify(TestCase):
         response = self.client.get(
             "/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" % m.hexdigest())
         self.assertEqual(response.status_code, 404)
+        print (
+            "   --->  test_mediacourses_notify_args of test_mediacourses_notify_without_good_recorder : OK !")
 
     def test_mediacourses_notify_good(self):
         import hashlib
@@ -1528,3 +1642,5 @@ class Video_mediacourses_notify(TestCase):
             "/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" % m.hexdigest())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "ok")
+        print (
+            "   --->  test_mediacourses_notify_args of test_mediacourses_notify_good : OK !")
