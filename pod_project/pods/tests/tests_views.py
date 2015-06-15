@@ -1406,7 +1406,7 @@ class Video_enrichTestView(TestCase):
         print (
             "   --->  test_insert_enrich of Video_enrichTestView : OK !")
 
-    def test_insert_enrich_with_field_errors(self):
+    def test_insert_enrich_with_field_and_overlap_errors(self):
         pod = Pod.objects.get(id=1)
         self.client = Client()
         user = User.objects.get(username="remi")
@@ -1441,9 +1441,9 @@ class Video_enrichTestView(TestCase):
         list_enrichment = pod.enrichpods_set.all()
         self.assertEqual(len(list_enrichment), 1)
         print (
-            "   --->  test_insert_enrich_with_field_errors of Video_enrichTestView : OK !")
+            "   --->  test_insert_enrich_with_field_and_overlap_errors of Video_enrichTestView : OK !")
 
-    def test_insert_enrich_with_overlap_errors(self):
+    def test_insert_enrich_with_title_errors(self):
         pod = Pod.objects.get(id=1)
         self.client = Client()
         user = User.objects.get(username="remi")
@@ -1470,7 +1470,7 @@ class Video_enrichTestView(TestCase):
         list_enrichment = pod.enrichpods_set.all()
         self.assertEqual(len(list_enrichment), 0)
         print (
-            "   --->  test_insert_enrich_with_overlap_errors of Video_enrichTestView : OK !")
+            "   --->  test_insert_enrich_with_title_errors of Video_enrichTestView : OK !")
 
     def test_access_to_enrich_with_other_authenticating(self):
         pod = Pod.objects.get(id=1)
