@@ -1,0 +1,64 @@
+{% comment %}
+Copyright (C) 2015 Remi Kroll et Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load bootstrap3 %}
+{% load i18n %}
+
+<div class="panel panel-primary" overflow: auto>
+    <div class="panel-heading"> 
+      <h3 class="panel-title">{% trans 'list of subtitles' %}&nbsp;({{list_subtitles|length}})</h3>
+    </div>
+  <table class="table table-striped table-condensed scroll" id="table_list_subtitles">
+
+    <thead>
+      <tr>
+        <th>{% trans 'Kind' %}</th>
+        <th>{% trans 'Language' %}</th>
+        <th>{% trans 'Video track file' %}</th>
+     </tr>
+    </thead>
+    <tbody>
+      {% for subtitle in list_subtitles %}
+      <tr>
+        <td class="enrich_title">{{ subtitle.title }}</td>
+        <td class="enrich_type">{{ subtitle.type }}</td>
+        <td class="enrich_start">{{ subtitle.start }}</td>
+        <td>
+          <form  class = "form_modif" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="modify">
+            <input type="hidden" name="id" value="{{subtitle.id}}">
+            <input type="submit" title="{% trans "Edit the subtitle" %}" value="{% trans "modify" %}" class="btn btn-info btn-sm" />
+          </form>
+        </td>
+        <td>
+          <form  class = "form_delete" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{subtitle.id}}">
+            <input type="submit" title="{% trans "Delete the subtitle" %}" value="{% trans "delete" %}" class="btn btn-danger btn-sm"/>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+</div> 

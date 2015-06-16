@@ -1,0 +1,60 @@
+{% comment %}
+Copyright (C) 2015 Remi Kroll et Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load bootstrap3 %}
+{% load i18n %}
+
+<div class="panel panel-primary" overflow: auto>
+    <div class="panel-heading"> 
+      <h3 class="panel-title">{% trans 'list of downloads' %}&nbsp;({{list_downloads|length}})</h3>
+    </div>
+  <table class="table table-striped table-condensed scroll" id="table_list_downloads">
+
+    <thead>
+      <tr>
+        <th>{% trans 'Document' %}</th>
+     </tr>
+    </thead>
+    <tbody>
+      {% for download in list_downloads %}
+      <tr>
+        <td class="download_title">{{ download.title }}</td>
+        <td>
+          <form  class = "form_modif" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="modify">
+            <input type="hidden" name="id" value="{{download.id}}">
+            <input type="submit" title="{% trans "Edit the download" %}" value="{% trans "modify" %}" class="btn btn-info btn-sm" />
+          </form>
+        </td>
+        <td>
+          <form  class = "form_delete" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{download.id}}">
+            <input type="submit" title="{% trans "Delete the download" %}" value="{% trans "delete" %}" class="btn btn-danger btn-sm"/>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+</div> 

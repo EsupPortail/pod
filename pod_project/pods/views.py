@@ -606,7 +606,6 @@ def video_edit(request, slug=None):
                                   "video_ext_accept": video_ext_accept},
                               context_instance=RequestContext(request))
 
-
 @csrf_protect
 @login_required
 #@staff_member_required
@@ -623,90 +622,32 @@ def video_completion(request, slug):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complete this video'))
         raise PermissionDenied
-
-    ContributorInlineFormSet = inlineformset_factory(
-        Pod, ContributorPods, form=ContributorPodsForm, extra=0, can_delete=True)
-    TrackInlineFormSet = inlineformset_factory(
-        Pod, TrackPods, form=TrackPodsForm, extra=0, can_delete=True)
-    DocInlineFormSet = inlineformset_factory(
-        Pod, DocPods, form=DocPodsForm, extra=0, can_delete=True)
-
-    if request.method == "POST":
-        if request.user.is_staff:
-            contributorformset = ContributorInlineFormSet(
-                request.POST, instance=video, prefix='contributor_form')
-            trackformset = TrackInlineFormSet(
-                request.POST, instance=video, prefix='track_form')
-            docformset = DocInlineFormSet(
-                request.POST, instance=video, prefix='doc_form')
-
-            if contributorformset.is_valid() and trackformset.is_valid() and docformset.is_valid():
-                contributorformset.save()
-                trackformset.save()
-                docformset.save()
-                # MAJ...
-                contributorformset = ContributorInlineFormSet(
-                    instance=video, prefix='contributor_form')
-                trackformset = TrackInlineFormSet(
-                    instance=video, prefix='track_form')
-                docformset = DocInlineFormSet(
-                    instance=video, prefix='doc_form')
-                #...
-                messages.add_message(
-                    request, messages.INFO, _(u'The changes have been saved'))
-                referer = request.POST.get("referer")
-                # go back
-                if request.POST.get("action2") and request.POST.get("referer"):
-                    return HttpResponseRedirect("%s" % request.POST.get("referer"))
-                if request.POST.get("action3"):
-                    return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
-                # else:
-                # return
-                # HttpResponseRedirect(reverse('pods.views.video_completion',
-                # args=(video.slug,)))
-            else:
-                messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form'))
-        else:
-            contributorformset = ContributorInlineFormSet(
-                request.POST, instance=video, prefix='contributor_form')
-
-            if contributorformset.is_valid():
-                contributorformset.save()
-                # MAJ...
-                contributorformset = ContributorInlineFormSet(
-                    instance=video, prefix='contributor_form')
-                #...
-                messages.add_message(
-                    request, messages.INFO, _(u'The changes have been saved'))
-                referer = request.POST.get("referer")
-                # go back
-                if request.POST.get("action2") and request.POST.get("referer"):
-                    return HttpResponseRedirect("%s" % request.POST.get("referer"))
-                if request.POST.get("action3"):
-                    return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
-                # else:
-                # return
-                # HttpResponseRedirect(reverse('pods.views.video_completion',
-                # args=(video.slug,)))
-            else:
-                messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form'))
     else:
-        contributorformset = ContributorInlineFormSet(
-            instance=video, prefix='contributor_form')
-        trackformset = TrackInlineFormSet(instance=video, prefix='track_form')
-        docformset = DocInlineFormSet(instance=video, prefix='doc_form')
+        list_contributors = video.contributorpods_set.all()
+        list_subtitle = video.trackpods_set.all()
+        list_download = video.docpods_set.all()   
 
-    if request.user.is_staff:
-        return render_to_response("videos/video_completion_formset.html",
-                                  {'contributorformset': contributorformset,
-                                      'trackformset': trackformset, 'docformset': docformset},
-                                  context_instance=RequestContext(request))
-    else:
-        return render_to_response("videos/video_completion_formset.html",
-                                  {'contributorformset': contributorformset},
-                                  context_instance=RequestContext(request))
+    return render_to_response("videos/video_completion.html",
+                              {'video': video,
+                                  'list_contributors': list_contributors, 
+                                  'list_subtitle' : list_subtitle, 
+                                  'list_download' : list_download },
+                              context_instance=RequestContext(request))
+@csrf_protect
+@login_required
+#@staff_member_required
+def video_completion_contributor(request, slug):
+
+@csrf_protect
+@login_required
+#@staff_member_required
+def video_completion_subtitle(request, slug):
+    
+@csrf_protect
+@login_required
+#@staff_member_required
+def video_completion_download(request, slug):
+
 
 
 @csrf_protect
