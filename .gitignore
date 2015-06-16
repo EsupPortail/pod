@@ -67,3 +67,9 @@ pod_project/pods/viewsv1.py
 *.crt
 *.key
 
+
+# UNS custom files #
+####################
+pod_project/core/static/UNS/
+pod_project/core/templates/flatpages/simple.html
+pod_project/core/templates/custom/*.html
