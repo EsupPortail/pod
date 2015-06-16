@@ -637,16 +637,25 @@ def video_completion(request, slug):
 @login_required
 #@staff_member_required
 def video_completion_contributor(request, slug):
+    if not request.user.is_authenticated():
+        raise PermissionDenied
+    if request.POST:
 
 @csrf_protect
 @login_required
 #@staff_member_required
 def video_completion_subtitle(request, slug):
+    if not request.user.is_authenticated():
+        raise PermissionDenied
+    if request.POST:
     
 @csrf_protect
 @login_required
 #@staff_member_required
 def video_completion_download(request, slug):
+    if not request.user.is_authenticated():
+        raise PermissionDenied
+    if request.POST:
 
 
 
