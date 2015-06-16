@@ -225,6 +225,9 @@ $(document).on("submit", "form", function (e) {
                             get_form(data.form);
                         }else{
                             refrech_list_and_player(data);
+                            $('span#form_chapter').unwrap();
+                            $('span#list_chapter').unwrap();
+                            manageResize();
 
 
                         }
@@ -263,9 +266,6 @@ function refrech_list_and_player(data){
     $('form#form_new').show();
     $("span#chapter_player").html(data.player);
     $("span#list_chapter").html(data.list_chapter);
-    $('span#form_chapter').unwrap();
-    $('span#list_chapter').unwrap();
-    manageResize();
     loadVideo();
     //alert("{% trans 'The changes have been saved' %}");
 };
@@ -277,7 +277,7 @@ function verify_start_title_items(){
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 caracteres.' %} </span>")
             .parents('div.form-group').addClass('has-error');
     }
-    if ((document.getElementById("id_time").value == "") || (document.getElementById("id_time").value.length < 0) || (document.getElementById("id_time").length >= video_duration)) {
+    if ((parseInt(document.getElementById("id_time").value) == "") || (parseInt(document.getElementById("id_time").value) < 0) || (parseInt(document.getElementById("id_time")) >= video_duration)) {
         $("input#id_time")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct start field between 0 and' %}" + (video_duration -1) + "</span>")
             .parents('div.form-group').addClass('has-error');

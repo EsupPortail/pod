@@ -1261,9 +1261,9 @@ class Video_chapterTestView(TestCase):
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()
-        print (" --->  SetUp of Video_enrichTestView : OK !")
+        print (" --->  SetUp of Video_chapterTestView : OK !")
 
-    def test_insert_enrich(self):
+    def test_insert_chapter(self):
         pod = Pod.objects.get(id=1)
         self.client = Client()
         user = User.objects.get(username="remi")
@@ -1273,92 +1273,49 @@ class Video_chapterTestView(TestCase):
             username='remi', password='hello')
         self.assertEqual(login, True)
         #access to the page
-        response = self.client.get("/video_enrich/%s/" % pod.slug)
+        response = self.client.get("/video_chapter/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['list_enrichment']), 0)
+        self.assertEqual(len(response.context['list_chapter']), 0)
         #click 'add new enrichment' button
         response = self.client.post(
-            "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.context['form_enrich'] != "")
+        self.assertTrue(response.context['form_chapter'] != "")
         #send form with 'save' button
-        response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u'test'], u'image': [u''],
-                                                                     u'weblink': [u''], u'richtext': [u'sdfg'], u'enrich_id': [u'None'],
-                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
-                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
-        list_enrichment = pod.enrichpods_set.all()
-        self.assertEqual(len(list_enrichment), 1)
-        self.assertEqual(list_enrichment[0].title, u'test')
-        self.assertEqual(list_enrichment[0].end, 1)
-        self.assertEqual(list_enrichment[0].start, 0)
-        self.assertEqual(list_enrichment[0].video.id, 1)
-        self.assertEqual(list_enrichment[0].type, u'richtext')
-        self.assertEqual(list_enrichment[0].richtext, u'sdfg')
-        self.assertEqual(len(response.context['list_enrichment']), 1)
-        self.assertEqual(response.context['list_enrichment'][0].title, u'test')
+        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap1'], u'chapter_id': [u'None'],
+                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+        list_chapter = pod.chapterpods_set.all()
+        self.assertEqual(len(list_chapter), 1)
+        self.assertEqual(list_chapter[0].title, u'chap1')
+        self.assertEqual(list_chapter[0].time, 1)
+        self.assertEqual(list_chapter[0].video.id, 1)
+        self.assertEqual(len(response.context['list_chapter']), 1)
+        self.assertEqual(response.context['list_chapter'][0].title, u'chap1')
         #click 'modify' button
         response = self.client.post(
-            "/video_enrich/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.context['form_enrich'] != "")
-        self.assertTrue('<input type="hidden" id = "id_enrich" name="enrich_id" value="1">' in response.content)
-        response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u'test2'], u'image': [u''],
-                                                                     u'weblink': [u''], u'richtext': [u'sdfg'], u'enrich_id': [u'1'],
-                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
-                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
-        list_enrichment = pod.enrichpods_set.all()
-        self.assertEqual(len(list_enrichment), 1)
-        self.assertEqual(list_enrichment[0].title, u'test2')
+        self.assertTrue(response.context['form_chapter'] != "")
+        self.assertTrue('<input type="hidden" id = "id_chapter" name="chapter_id" value="1">' in response.content)
+        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap2'], u'chapter_id': [u'1'],
+                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+        self.assertEqual(response.status_code, 200)
+        list_chapter = pod.chapterpods_set.all()
+        self.assertEqual(len(list_chapter), 1)
+        self.assertEqual(list_chapter[0].title, u'chap2')
         #cancel and delete enrich
         response = self.client.post(
-            "/video_enrich/%s/" % pod.slug, {u'action': [u'cancel']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'cancel']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertTrue('"Add a new enrichment"' in response.content)
+        self.assertTrue('"Add a new chapter"' in response.content)
         response = self.client.post(
-            "/video_enrich/%s/" % pod.slug, {u'action': [u'delete'],  u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(len(response.context['list_enrichment']), 0)
-        list_enrichment = pod.enrichpods_set.all()
-        self.assertEqual(len(list_enrichment), 0)
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'delete'],  u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(len(response.context['list_chapter']), 0)
+        list_chapter = pod.chapterpods_set.all()
+        self.assertEqual(len(list_chapter), 0)
 
         print (
-            "   --->  test_insert_enrich of Video_enrichTestView : OK !")
-
-    def test_insert_enrich_with_field_errors(self):
-        pod = Pod.objects.get(id=1)
-        self.client = Client()
-        user = User.objects.get(username="remi")
-        user = authenticate(
-            username='remi', password='hello')
-        login = self.client.login(
-            username='remi', password='hello')
-        self.assertEqual(login, True)
-        #access to the page
-        response = self.client.get("/video_enrich/%s/" % pod.slug)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['list_enrichment']), 0)
-        #click 'add new enrichment' button
-        response = self.client.post(
-            "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.context['form_enrich'] != "")
-        #send form with 'save' button
-        response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u'test'], u'image': [u''],
-                                                                     u'weblink': [u''], u'richtext': [u'sdfg'], u'enrich_id': [u'None'],
-                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
-                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
-        #click 'add new enrichment' button
-        response = self.client.post(
-            "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        #test to add new enrich with overlap 
-        response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u't'], u'image': [u''],
-                                                                     u'weblink': [u''], u'richtext': [u''], u'enrich_id': [u'None'],
-                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
-                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
-
-        list_enrichment = pod.enrichpods_set.all()
-        self.assertEqual(len(list_enrichment), 1)
-        print (
-            "   --->  test_insert_enrich_with_field_errors of Video_enrichTestView : OK !")
+            "   --->  test_insert_chapter of Video_chapterTestView : OK !")
 
     def test_insert_chapter_with_overlap_errors(self):
         pod = Pod.objects.get(id=1)
@@ -1379,13 +1336,46 @@ class Video_chapterTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_chapter'] != "")
         #send form with 'save' button
-        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u't'], u'chapter_id': [u'None'],
-                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save']})
+        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap1'], u'chapter_id': [u'None'],
+                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+        #click 'add new enrichment' button
+        response = self.client.post(
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        #test to add new enrich with overlap 
+        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap1'], u'chapter_id': [u'None'],
+                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
 
-        list_enrichment = pod.enrichpods_set.all()
-        self.assertEqual(len(list_enrichment), 0)
+        list_chapter = pod.chapterpods_set.all()
+        self.assertEqual(len(list_chapter), 1)
         print (
-            "   --->  test_insert_enrich_with_overlap_errors of Video_enrichTestView : OK !")
+            "   --->  test_insert_chapter_with_overlap_errors of Video_chapterTestView : OK !")
+
+    def test_insert_chapter_with_title_errors(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        #access to the page
+        response = self.client.get("/video_chapter/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_chapter']), 0)
+        #click 'add new enrichment' button
+        response = self.client.post(
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_chapter'] != "")
+        #send form with 'save' button
+        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u't'], u'chapter_id': [u'None'],
+                                                                      u'time': [u'0'], u'video': [u'1'], u'action': [u'save']})
+
+        list_chapter = pod.chapterpods_set.all()
+        self.assertEqual(len(list_chapter), 0)
+        print (
+            "   --->  test_insert_chapter_with_title_errors of Video_chapterTestView : OK !")
 
     def test_acces_to_chapter_with_other_authenticating(self):
         pod = Pod.objects.get(id=1)
