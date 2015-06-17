@@ -182,25 +182,6 @@ AUTHENTICATION_BACKENDS = (
     'core.populatedCASbackend.PopulatedCASBackend'
 )
 
-# Paramètres des templates
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'core', 'templates'),
-)
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.request',
-    # Contexte locaux
-    'core.context_processors.pages_menu',
-    'core.context_processors.context_settings',
-    'pods.context_processors.items_menu_header',
-)
-
 # Constantes utilisées dans les templates
 TITLE_SITE = 'Pod'
 TITLE_ETB = 'Université'
@@ -218,6 +199,26 @@ HELP_MAIL = 'assistance@univ.fr'
 WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">' \
     'WEBTV<span class="glyphicon glyphicon-link"></span>' \
     '</a>'
+
+# Paramètres des templates
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'core', 'templates'),
+    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
+)
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.request',
+    # Contexte locaux
+    'core.context_processors.pages_menu',
+    'core.context_processors.context_settings',
+    'pods.context_processors.items_menu_header',
+)
 
 # Mettre à '' si non utilise
 FMS_LIVE_URL = 'rtmp://fms.univ.fr'
