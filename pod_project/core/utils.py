@@ -314,7 +314,7 @@ def addInfoVideo(video, msg):
             video.infoVideo = ""
         video.infoVideo += "\n%s" % msg
         video.save()
-    except Execption as e:
+    except Exception as e:
         msg = u'\nError in adding info video ***** Unexpected error :%r' % e
         msg += '\n%s' % traceback.format_exc()
         log.error(msg)

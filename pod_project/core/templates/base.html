@@ -40,11 +40,10 @@ voir http://www.gnu.org/licenses/
         <![endif]-->
         {% bootstrap_javascript jquery=True %}
         <!-- SOCIAL NETWORK BUTTONS by NOIZWAVES http://noizwaves.github.io/bootstrap-social-buttons -->
-        {% with SOCIAL_CSS=TEMPLATE_THEME|add:'/theme/social-buttons.css' %}
-            <link href="{% static SOCIAL_CSS %}" rel="stylesheet" />
-        {% endwith %}
+        <link href="{% static 'css/social-buttons.css' %}" rel="stylesheet" />
         <!--FontAwesome for Bootstrap-->
-        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
+        <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" />
+        <!--link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" /-->
         <script src="{% static 'JS/navigation.js' %}"></script>
         <script src="{% static 'JS/main.js' %}"></script>
         {% if not request.GET.is_iframe %}
@@ -76,9 +75,7 @@ voir http://www.gnu.org/licenses/
         {% if not request.GET.is_iframe %}
             <!-- select other website -->
             {% if TEMPLATE_CUSTOM != None %}
-                {% with TEMPLATE_CUSTOM|add:'/header.html' as custom_header %}
-                    {% include custom_header %}
-                {% endwith %}
+                {% include 'pre-header.html' %}
             {% endif %}
             <!-- end select other website -->
             <!-- header -->
@@ -232,9 +229,7 @@ voir http://www.gnu.org/licenses/
         {% if not request.GET.is_iframe %}
             <!-- footer -->
             {% if TEMPLATE_CUSTOM != None %}
-                {% with TEMPLATE_CUSTOM|add:'/footer.html' as custom_footer %}
-                    {% include custom_footer %}
-                {% endwith %}
+                {% include 'footer.html' %}
             {% endif %}
             <!-- footer -->
 

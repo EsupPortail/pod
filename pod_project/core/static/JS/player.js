@@ -65,8 +65,7 @@ function loadVideo() {
         myPlayer.on('durationchange', loadChapBar);
         myPlayer.on('progress', progress);
         myPlayer.on('timeupdate', timeupdate);
-
-        myPlayer.on('firstplay', function(){
+         myPlayer.on('firstplay', function(){
             $.post(
                 location,
                 {
@@ -76,7 +75,6 @@ function loadVideo() {
                 }
             );
         });
-
         myPlayer.on('fullscreenchange', function() {
             if ($('#player_video').hasClass('vjs-fullscreen')) {
                 slide_height = 96;
