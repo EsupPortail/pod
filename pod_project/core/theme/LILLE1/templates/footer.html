@@ -5,7 +5,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -21,21 +21,21 @@ voir http://www.gnu.org/licenses/
 {% load i18n %}
 {% load staticfiles %}
 <footer class="container">
-	<div class="row">
-		<div class="col-sm-4 col-xs-6"><img src="{% static  SERV_LOGO %}" alt="SEMM" id="semmLOGO" /></div>
-		<div class="col-sm-4 col-xs-12">
+    <div class="row">
+        <div class="col-sm-4 col-xs-6"><img src="{% static  SERV_LOGO %}" alt="SEMM" id="semmLOGO" /></div>
+        <div class="col-sm-4 col-xs-12">
             {% for page in PAGES_MENU_BAS %}
                 <a href="{{ page.page.url }}" title="{{ page.page.title }}" class="btn btn-block btn-link">
                     <span class="glyphicon glyphicon-chevron-right"></span> {{ page }}
                 </a>
             {% endfor %}
-		</div>
-		<div class="col-sm-4 col-xs-12">
+        </div>
+        <div class="col-sm-4 col-xs-12">
             <a href="http://lille1tv.univ-lille1.fr/" class="btn btn-block btn-link"><span class="glyphicon glyphicon-chevron-right"></span> Lille1.TV</a>
             <a href="http://semm.univ-lille1.fr" title="Service Enseignement et Multimédia" class="btn btn-block btn-link"><span class="glyphicon glyphicon-chevron-right"></span> Service Enseignement et Multimédia</a>
             <a href="http://www.univ-lille1.fr" title="Université Lille1" class="btn btn-block btn-link"><span class="glyphicon glyphicon-chevron-right"></span> Université Lille1</a>
             <a href="https://sourcesup.renater.fr/projects/lille1pod/" class="btn btn-block btn-link"><span class="glyphicon glyphicon-chevron-right"></span> Sourcesup</a>
-		</div>
-	</div>
+        </div>
+    </div>
 </footer>
 <!-- INSERER SCRIPT ANALYTICS PIWIK -->

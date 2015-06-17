@@ -9,9 +9,7 @@
 <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
 {% block extrahead %}{% endblock %}
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
-{% with ADMIN_CSS=TEMPLATE_THEME|add:"/theme/admin.css" %} 
-<link href="{% static ADMIN_CSS %}" rel="stylesheet">
-{% endwith %}
+<link href="{% static 'css/admin.css' %}" rel="stylesheet">
 </head>
 {% load i18n %}
 
