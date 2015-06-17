@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2015 Nicolas Can et Remi Kroll
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure. 
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+
+{% load i18n %}
+{% load staticfiles %}
+{% load list %}
+{% load bootstrap3 %}
+
+{% block bootstrap3_title%}
+{% trans "Chapter video" %} "{{video.title}}"
+{% endblock bootstrap3_title%}
+
+{% block bootstrap3_extra_head %}
+<style>
+.form-help-inline {color:red;}
+/*** table scroll ***/
+table.scroll {
+    width: 100%; /* Optional */
+    border-collapse: collapse;
+    border-spacing: 0;
+    
+}
+table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
+    border-radius: 3px;
+    font-size: 12px;
+    line-height: 0.5;
+    padding: 5px 10px;
+}
+
+#list_chapter .panel-heading {
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 4px 15px;
+}
+table.scroll tbody,
+table.scroll thead { display: block; }
+table.scroll thead /*tr th*/ { 
+    height: 27px;
+    line-height: 27px;
+    text-align: left;
+ }
+table.scroll tbody {
+    height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+table.scroll tbody td, table.scroll thead th {
+     width: 10%;  /* Optional */
+    /*border-right: 1px solid black;*/
+     white-space: nowrap;
+     height: 20px;
+    line-height: 20px;
+}
+table.scroll tbody td.chapter_title {
+    width: 60%;
+}
+
+</style>
+
+<script src="{% static "video-js/video.js" %}" ></script>
+{% include "videos/extraheadplayer.html" with video=video %}
+
+    <!-- media -->
+    <script>window.__admin_media_prefix__ = '/static/admin/';</script>
+    <script src="/admin/jsi18n/"></script>
+    <script src="{% static 'admin/js/core.js' %}"></script>
+    <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+    <script src="{% static 'admin/js/actions.js' %}"></script>
+
+    <!-- form.media -->
+    <script src="{% static 'filer/js/popup_handling.js' %}"></script>
+    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+
+<script>
+
+/*** table scroll ***/
+// Change the selector if needed
+$(window).load(function(){
+    manageResize();
+});
+
+/*** end table scroll ***/
+function manageResize() {
+    var $table = $('table.scroll'),
+    $bodyCells = $table.find('tbody tr:first').children(),
+    colWidth;
+    // Adjust the width of thead cells when window resizes
+    $(window).resize(function() {
+        // Get the tbody columns width array
+        colWidth = $bodyCells.map(function() {
+            return $(this).width();
+        }).get();
+        // Set the width of thead columns
+        $table.find('thead tr').children().each(function(i, v) {
+            $(v).width(colWidth[i]);
+        });
+    }).resize(); // Trigger resize handler
+}
+
+/*** end table scroll ***/
+var preventUnloadPrompt;
+//var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
+var num = 0;
+var name = '';
+/*** For the form ***/;
+var video_duration = {{video.duration}};
+/*** For the Cancel button ***/
+$(document).on("reset", "form", function (e) {
+    $("span#form_chapter").html("");
+    $('span#form_chapter').unwrap();
+    $('span#list_chapter').unwrap();
+    $('form#form_new').show();
+    $('form').show();
+    $("table tr").removeClass("info");
+    manageResize();
+    
+});
+/*** Function for all buttons expect cancel
+    When the action is modify or new, all button in the first page of chapter are hide and the form is displayed. 
+    When the action is delete, a request sent with the chapter id 
+    When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
+$(document).on("submit", "form", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    var action = $(this).find('input[name=action]').val();
+    if(action == "modify" || action == "new"){
+        $('form#form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
+        $('span#form_chapter').wrapAll("<div class = 'col-sm-6' ></div>");
+        $('span#list_chapter').wrapAll("<div class = 'col-sm-6' ></div>");
+        manageResize();
+        $('#form_chapter').html(ajax_image);
+        var elt = $(this).parents('tr');
+
+        if (action == "modify"){
+            var id = $(this).find('input[name=id]').val();
+            jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
+        }else{
+            jqxhr = $.post( window.location.href, {"action":"new"} );
+        }
+        jqxhr.done(function(data){
+            if(data.indexOf("form_chapter")==-1) {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+            } else {
+                get_form(data);
+                elt.addClass('info');
+            }
+            
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            show_messages("{% trans 'Error getting form. ' %} " + "("+data+")"+ "{% trans 'the form could not be recovered'%}");
+            $('form.form_modif').show();
+            $('form.form_delete').show();
+            $('form#form_new').show();
+            $('#form_chapter').html("");
+            manageResize();
+        });
+    }else if(action == "delete"){
+        //$('form').show();
+        var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this enrichment' %}");
+        if (deleteConfirm){
+            var id = $(this).find('input[name=id]').val();
+            jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
+            jqxhr.done(function(data){
+                if(data.list_chapter) {
+                    refrech_list_and_player(data);
+                } else {
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                }
+            });
+            jqxhr.fail(function($xhr) {
+                var data = $xhr.status+ " : " +$xhr.statusText;
+                show_messages("{% trans 'Error deleting. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}");
+            });
+        }
+    }else if(action == "save"){
+        $('form#form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
+        $(".form-help-inline").parents('div.form-group').removeClass("has-error");
+        $(".form-help-inline").remove();
+        verify_start_title_items();
+        
+        if (!($("span").hasClass("form-help-inline"))){
+            var msg = "";
+            msg += overlaptest();
+            if(msg != "")
+                show_messages(msg);
+            else {
+                var data_form = $( "form#form_chapter" ).serializeArray();
+                jqxhr = $.post(
+                    $( "form#form_chapter" ).attr("action"),
+                    data_form
+                );
+                jqxhr.done(function(data){
+                    if(data.list_chapter || data.form) {
+                        if(data.errors){  
+                            //alert(data.errors);
+                            get_form(data.form);
+                        }else{
+                            refrech_list_and_player(data);
+                            $('span#form_chapter').unwrap();
+                            $('span#list_chapter').unwrap();
+                            manageResize();
+
+
+                        }
+                    } else {
+                        show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                    }
+                });
+                jqxhr.fail(function($xhr) {
+                    var data = $xhr.status+ " : " +$xhr.statusText;
+                    //alert("{% trans 'error post request' %} "+data);
+                    show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}");
+                });
+            }
+        }else{
+            show_messages("{% trans 'Errors found in the form, please correct it.' %}");
+        }
+        
+    }
+    
+});
+function show_messages(msg, reload) {
+    if(reload==true) {
+        $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
+    } else {
+        button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+        $("#show_messages").html(msg+button).fadeIn();
+    }
+}
+$(document).on('click', '#page-video input#close_messages', function() {
+    $("#show_messages").fadeOut();
+});
+/*** refrech the player with modification and show the list of enrich ***/
+function refrech_list_and_player(data){
+    delete videojs.players['player_video']
+    $("#form_chapter").html("");
+    $('form#form_new').show();
+    $("span#chapter_player").html(data.player);
+    $("span#list_chapter").html(data.list_chapter);
+    loadVideo();
+    //alert("{% trans 'The changes have been saved' %}");
+};
+
+/*** Verify if value of field respect form field ***/
+function verify_start_title_items(){
+    if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length < 2) || (document.getElementById("id_title").length > 100)) {
+        $("input#id_title")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 caracteres.' %} </span>")
+            .parents('div.form-group').addClass('has-error');
+    }
+    if ((parseInt(document.getElementById("id_time").value) == "") || (parseInt(document.getElementById("id_time").value) < 0) || (parseInt(document.getElementById("id_time")) >= video_duration)) {
+        $("input#id_time")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct start field between 0 and' %}" + (video_duration -1) + "</span>")
+            .parents('div.form-group').addClass('has-error');
+    }
+};
+
+function overlaptest(){
+    //var video_list_enrich=[];
+    var new_start = parseInt(document.getElementById("id_time").value);
+    var id = parseInt(document.getElementById("id_chapter").value);
+    var msg = "";
+    $('ul#chapters li').each(function() {
+        if ((id != $(this).attr('data-id')) && new_start == $(this).attr('data-start')) {
+            var text = "{% trans 'There is a overlap with the chapter : '%}" + '"' +$(this).attr('data-title')+'". ' ;
+            text += " {% trans 'please change end field and start field' %}";
+            msg+="<br/>"+ text ;
+        }
+    });
+    return msg;
+    //if(msg!="") show_messages(msg);
+};
+/*** Display element of form enrich ***/
+function get_form(data) {    
+        //fadeIn().delay(3000).fadeOut()
+        $("#form_chapter").hide().html(data).fadeIn();
+        $("input#id_time")
+            .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-info'>{% trans 'get time from the player'%}</a><span class='timecode'></span></span>");
+};
+ 
+$(document).on('change','input#id_time',function() {
+    $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
+});
+$(document).on('click','#page-video span.getfromvideo a',function(e) {
+    console.log("blabla");
+    e.preventDefault();
+    if(!(typeof myPlayer === 'undefined')) {
+        if($(this).context.id == "getfromvideo_start"){
+            $("input#id_time").val(parseInt(myPlayer.currentTime()));
+            $("input#id_time").trigger('change');
+        }
+    }
+});
+/*** Verify if value of field respect form field ***/
+/*** Verify if there is a overlap with over enrich***/
+</script>
+
+{% endblock bootstrap3_extra_head %}
+
+{% block article_title %}{% trans "Chapter video" %} {{video.title}}{% endblock %}
+
+{% block mainToolbar %}
+{% endblock mainToolbar %}
+
+{% block bootstrap3_content %}
+<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+    <ol class="breadcrumb">
+        {% block breadcrumbs %}
+        {{ block.super }} 
+        <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
+        <li class="active"> {% trans "Chapter video" %} "{{video.title}}"</li>
+        {% endblock breadcrumbs %}
+    </ol>
+
+        <span id="chapter_player">
+        {% include 'videos/video_player.html' with video=video %}
+        </span>
+
+        <span id="show_messages" class="alert alert-danger collapse" role="alert" >
+            &nbsp;
+        </span>
+        <br/>
+        <div class="row" id="info_video">
+            <div class="col-sm-9">
+                <span id="form_chapter">
+                    <!-- place for form, it will be replace by a form : empty or to modify -->   
+                    {% if form_chapter %}
+                    {%include 'videos/chapter/form_chapter.html' with form_chapter=form_chapter%}
+                    {%endif%}
+                </span>                                     
+                <span id= "list_chapter">
+                    {%include 'videos/chapter/list_chapter.html'%}
+                    <!-- This button will add a new form when clicked -->
+                </span>
+                   
+                <form  id = "form_new" action="{% url 'video_chapter' slug=video.slug  %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="new">
+                    <input type="submit" id="add_new_chapter"  value="{% trans "Add a new chapter" %}" class="btn btn-info"/>
+                </form>
+            </div>
+
+            <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+                <aside class="col-sm-3">
+                    <div class="widget">
+                        <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Informations"%}</h4>
+                        <p>{% trans '"Add" to add a new chapter and "delete" deletes the chapter' %}</p>
+                        <p>{% trans 'Start video playback, pause and click the "get time from the player" to automatically fill in the beginning of the chapter button.' %}</p>
+                        <p>{% trans 'Must "Save" to view the results.' %}</p>
+                    </div>
+                    <div class="widget user-tools">
+                        <h4>
+                            <span class="glyphicon glyphicon-wrench"></span> {% trans 'Edit the video' %}
+                        </h4>
+                        {% include 'videos/ownertools.html' with video=video %}
+                    </div>
+                </aside>
+        </div>        
+    </article>
+{% endblock bootstrap3_content %}
+{% block box %}{% endblock box %}

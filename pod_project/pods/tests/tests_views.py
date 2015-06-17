@@ -1247,11 +1247,12 @@ class Video_chapterTestView(TestCase):
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
-                                 date_added=datetime.today(), owner=user, date_evt=datetime.today(), video="videos/remi/test.mp4", overview=u'videos/remi/1/overview.jpg',
+                                 date_added=datetime.today(), owner=user, date_evt=datetime.today(), video="videos/remi/test.mp4", overview="videos/remi/1/overview.jpg",
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
+
         ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
@@ -1266,26 +1267,115 @@ class Video_chapterTestView(TestCase):
         pod = Pod.objects.get(id=1)
         self.client = Client()
         user = User.objects.get(username="remi")
-        user.is_staff = False
-        user.save()
         user = authenticate(
             username='remi', password='hello')
         login = self.client.login(
             username='remi', password='hello')
         self.assertEqual(login, True)
+        #access to the page
         response = self.client.get("/video_chapter/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
-        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'chapter_form-TOTAL_FORMS': [u'1'], u'chapter_form-0-title': [u'hjkl'],
-                                                                      u'chapter_form-INITIAL_FORMS': [u'0'], u'action1': [u'Enregistrer'], u'chapter_form-MAX_NUM_FORMS': [u'1000'], u'chapter_form-0-time': [u'0'],
-                                                                      u'chapter_form-0-video': [u'1'], u'csrfmiddlewaretoken': [u'lPzdMGHrywbqLt9PfraVgYWUabjjLawg'], u'chapter_form-0-id': [u'']})
-        ChapterInlineFormSet = inlineformset_factory(
-            Pod, ChapterPods, form=ChapterPodsForm, extra=0, can_delete=True)
-        chapterformset = ChapterInlineFormSet(
-            instance=Pod.objects.get(id=1), prefix='chapter_form')
-        self.assertEqual(
-            list(chapterformset.queryset), list(response.context['chapterformset'].queryset))
+        self.assertEqual(len(response.context['list_chapter']), 0)
+        #click 'add new enrichment' button
+        response = self.client.post(
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_chapter'] != "")
+        #send form with 'save' button
+        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap1'], u'chapter_id': [u'None'],
+                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+        list_chapter = pod.chapterpods_set.all()
+        self.assertEqual(len(list_chapter), 1)
+        self.assertEqual(list_chapter[0].title, u'chap1')
+        self.assertEqual(list_chapter[0].time, 1)
+        self.assertEqual(list_chapter[0].video.id, 1)
+        self.assertEqual(len(response.context['list_chapter']), 1)
+        self.assertEqual(response.context['list_chapter'][0].title, u'chap1')
+        #click 'modify' button
+        response = self.client.post(
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_chapter'] != "")
+        self.assertTrue('<input type="hidden" id = "id_chapter" name="chapter_id" value="1">' in response.content)
+        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap2'], u'chapter_id': [u'1'],
+                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+        self.assertEqual(response.status_code, 200)
+        list_chapter = pod.chapterpods_set.all()
+        self.assertEqual(len(list_chapter), 1)
+        self.assertEqual(list_chapter[0].title, u'chap2')
+        #cancel and delete enrich
+        response = self.client.post(
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'cancel']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('"Add a new chapter"' in response.content)
+        response = self.client.post(
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'delete'],  u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(len(response.context['list_chapter']), 0)
+        list_chapter = pod.chapterpods_set.all()
+        self.assertEqual(len(list_chapter), 0)
+
         print (
             "   --->  test_insert_chapter of Video_chapterTestView : OK !")
+
+    def test_insert_chapter_with_overlap_errors(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        #access to the page
+        response = self.client.get("/video_chapter/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_chapter']), 0)
+        #click 'add new enrichment' button
+        response = self.client.post(
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_chapter'] != "")
+        #send form with 'save' button
+        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap1'], u'chapter_id': [u'None'],
+                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+        #click 'add new enrichment' button
+        response = self.client.post(
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        #test to add new enrich with overlap 
+        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap1'], u'chapter_id': [u'None'],
+                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+
+        list_chapter = pod.chapterpods_set.all()
+        self.assertEqual(len(list_chapter), 1)
+        print (
+            "   --->  test_insert_chapter_with_overlap_errors of Video_chapterTestView : OK !")
+
+    def test_insert_chapter_with_title_errors(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        #access to the page
+        response = self.client.get("/video_chapter/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_chapter']), 0)
+        #click 'add new enrichment' button
+        response = self.client.post(
+            "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_chapter'] != "")
+        #send form with 'save' button
+        response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u't'], u'chapter_id': [u'None'],
+                                                                      u'time': [u'0'], u'video': [u'1'], u'action': [u'save']})
+
+        list_chapter = pod.chapterpods_set.all()
+        self.assertEqual(len(list_chapter), 0)
+        print (
+            "   --->  test_insert_chapter_with_title_errors of Video_chapterTestView : OK !")
 
     def test_acces_to_chapter_with_other_authenticating(self):
         pod = Pod.objects.get(id=1)
@@ -1301,6 +1391,8 @@ class Video_chapterTestView(TestCase):
         response = self.client.get("/video_chapter/%s/" % pod.slug)
         self.assertEqual(response.status_code, 403)
         self.assertTrue("You cannot chapter this video" in response.content)
+        print (
+            "   --->  test_acces_to_chapter_with_other_authenticating of Video_chapterTestView : OK !")
 
 @override_settings(
     MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
@@ -1402,7 +1494,6 @@ class Video_enrichTestView(TestCase):
         self.assertEqual(len(response.context['list_enrichment']), 0)
         list_enrichment = pod.enrichpods_set.all()
         self.assertEqual(len(list_enrichment), 0)
-
         print (
             "   --->  test_insert_enrich of Video_enrichTestView : OK !")
 
@@ -1546,9 +1637,15 @@ class Video_mediacourses(TestCase):
             self.assertTrue("this_is_the_login_form" in response.content)
         else:
             self.assertRedirects(
+<<<<<<< HEAD
             response, '/admin/login/?next=/mediacourses_add/%3Fmediapath%3Dabcdefg.zip', status_code=302, target_status_code=200, msg_prefix='') 
         print (
             "   --->  test_access_user_mediacourses_add of Video_mediacourses : OK !")
+=======
+            response, '/admin/login/?next=/mediacourses_add/%3Fmediapath%3Dabcdefg.zip', status_code=302, target_status_code=200, msg_prefix='')
+        print (
+            "   --->  test_access_user_mediacourses_add of Video_mediacourses : OK !")     
+>>>>>>> remi/feature-write_up-chapter
 
     def test_access_user_mediacourses_add_without_mediapath(self):
         self.client = Client()
@@ -1560,7 +1657,10 @@ class Video_mediacourses(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/mediacourses_add/")
         self.assertEqual(response.status_code, 403)
+<<<<<<< HEAD
 
+=======
+>>>>>>> remi/feature-write_up-chapter
         print (
             "   --->  test_access_user_mediacourses_add_without_mediapath of Video_mediacourses : OK !")
     """
@@ -1632,7 +1732,11 @@ class Video_mediacourses_notify(TestCase):
             "/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" % m.hexdigest())
         self.assertEqual(response.status_code, 404)
         print (
+<<<<<<< HEAD
             "   --->  test_mediacourses_notify_args of test_mediacourses_notify_without_good_recorder : OK !")
+=======
+            "   --->  test_mediacourses_notify_without_good_recorder of Video_mediacourses_notify : OK !")
+>>>>>>> remi/feature-write_up-chapter
 
     def test_mediacourses_notify_good(self):
         import hashlib
@@ -1643,4 +1747,9 @@ class Video_mediacourses_notify(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "ok")
         print (
+<<<<<<< HEAD
             "   --->  test_mediacourses_notify_args of test_mediacourses_notify_good : OK !")
+=======
+            "   --->  test_mediacourses_notify_good of Video_mediacourses_notify : OK !")
+
+>>>>>>> remi/feature-write_up-chapter

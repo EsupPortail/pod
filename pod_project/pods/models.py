@@ -694,6 +694,38 @@ class ChapterPods(models.Model):
 
     def __str__(self):
         return u"Chapter : %s - video: %s" % (self.title, self.video)
+    def clean(self):
+        msg = []
+        msg = self.verify_start_title_items() + self.verify_overlap()
+        if(len(msg) > 0):
+            raise ValidationError(msg) 
+    def verify_start_title_items(self):
+        msg = []
+        if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
+            msg.append(_('Please enter a title form 2 to 100 caracteres '))
+
+        if ((self.time == "") or (self.time < 0 ) or (self.time >= self.video.duration)):      
+            msg.append(_('Please enter a correct start field between 0 and %(duration)s' ) %{"duration":self.video.duration-1} )
+        if len(msg) > 0:
+            return msg
+        return []    
+
+    def verify_overlap(self):
+        msg = []
+        instance = None
+        if self.slug:
+            instance = ChapterPods.objects.get(slug=self.slug)
+        list_chapter = ChapterPods.objects.filter(video = self.video)
+        if instance:
+          list_chapter = list_chapter.exclude(id=instance.id)
+        if len(list_chapter) > 0 : 
+          for element in list_chapter:
+            if self.time == element.time:
+              msg.append(_("There is a overlap with the " + element.title + " chapter, please change start time field ")) 
+          if len(msg) > 0:
+            return msg
+        return [] 
+
 
     def save(self, *args, **kwargs):
         newid = -1
