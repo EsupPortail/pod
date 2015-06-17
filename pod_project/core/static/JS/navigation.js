@@ -190,14 +190,15 @@ $(document).on('change', '#autoplay', function() {
 $(document).on('change', "#displaytime", function(e) {
     //$('#txtpartage').val(($('#displaytime:checked').val()) ? $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime())) : $('#txtpartage').val().replace(/(start=)\d+/, '$10'));
     if($('#displaytime').is(':checked')){
-        if($('#txtpartage').val().indexOf('start')>0){
-             $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime()));
-        }else {
+        if($('#txtpartage').val().indexOf('start')<0){
              $('#txtpartage').val($('#txtpartage').val()+'&start='+parseInt(myPlayer.currentTime()));
+             var valeur = $('#txtintegration').val();
+             $('#txtintegration').val(valeur.replace('/?', '/?start=' + parseInt(myPlayer.currentTime())+'&'));
         }
         $('#txtposition').val(myPlayer.currentTime().toHHMMSS()); 
     }else{
          $('#txtpartage').val($('#txtpartage').val().replace(/(&start=)\d+/, ''));
+         $('#txtintegration').val($('#txtintegration').val().replace(/(start=)\d+&/, ''));
          $('#txtposition').val("");
     }
 });
@@ -269,30 +270,36 @@ Number.prototype.toHHMMSS = function () {
 // Edit the iframe and share link code
 function writeInFrame() {
     // Iframe
-    var str = $('#txtintegration').html();
+    var str = $('#txtintegration').val();
     // Video size
     var $integration_size_option = $('#integration_size').find('OPTION:selected');
     var width = $integration_size_option.attr('data-width');
     var height = $integration_size_option.attr('data-height');
     var size = $integration_size_option.attr('value');
-    str = str.replace(/(width=")\d+("\W+height=")\d+/, '$1' + width + '$2' + height);
+    str = str.replace(/(width=)\S+/, '$1' + '\"' + width +'\"');
+    str = str.replace(/(height=)\S+/, '$1' + '\"' + height +'\"');
     str = str.replace(/(size=)\d+/, '$1' + size);
     // Autoplay
     if ($('#autoplay').is(':checked')) {
-        str = str.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
-    } else if (str.indexOf('autoplay=true') >= 0) {
-        str = str.replace('&amp;autoplay=true', '');
+            if(str.indexOf('autoplay=true') < 0){
+                str = str.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
+            }
+    } else if (str.indexOf('autoplay=true') > 0) {
+        str = str.replace('&autoplay=true', '');
     }
-    $('#txtintegration').html(str);
+    $('#txtintegration').val(str);
 
     // Share link
     var link = $('#txtpartage').val();
     link = link.replace(/(size=)\d+/, '$1' + size);
     // Autoplay
     if ($('#autoplay').is(':checked')) {
-        link = link.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
-    } else if (link.indexOf('autoplay=true') >=0) {
-        link = link.replace('&autoplay=true', '');
+        if(link.indexOf('autoplay=true') <0){
+                link = link.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
+            }
+        
+    } else if (link.indexOf('autoplay=true') >0) {
+       link = link.replace('&autoplay=true', '');
     }
     $('#txtpartage').val(link);
 }
