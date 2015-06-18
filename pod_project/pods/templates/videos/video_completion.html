@@ -56,7 +56,7 @@ table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
 }
 
 table.scroll tbody,
-table.scroll thead { display: block; }
+table.scroll thead { /*display: block;*/ }
 
 table.scroll thead /*tr th*/ { 
     height: 27px;
@@ -134,18 +134,15 @@ var num = 0;
 var name = '';
 
 $(document).on("reset", "#page-video form", function (e) {
-    var id_input = $(this).context.id
-    if(id_input == "cancel_contributor"){
-        $("span#form_contributor").html("");
-        $('form#form_new_contributor').show();
-    }
-    else if(id_input =="cancel_subtitle"){
-        $("span#form_subtitle").html("");
-        $('form#form_new_subtitle').show();
-    }else if(id_input == "cancel_download"){
-        $("span#form_download").html("");
-        $('form#form_new_download').show();
-    }
+    var id_form = $(this).attr("id")
+    console.log(id_form);
+    var form_new  = "form_new_" + id_form.substring(5,id_form.length);
+    var list = "list_" + id_form.substring(5,id_form.length);
+    console.log(list);
+    $("span#" + id_form).html("");
+    $("span#" + id_form).unwrap();
+    $("span#" + list).unwrap();
+    $("form#" + form_new).show();
     $('form').show()
     $("table tr").removeClass("info");
     manageResize();
@@ -159,25 +156,36 @@ $(document).on("submit", "#page-video form", function (e) {
     var id_input = $(this).context.id;
     var form = "form_" + id_input.substring(9,id_input.length);
     var list = "list_" + id_input.substring(9,id_input.length);
-    var href = $(this).find('form').context
-    console.log(href)
+    var href = $(this).attr("action")
     console.log(form);
+    console.log(list);
+    console.log(href);
     console.log(window.location.href);
+    console.log(window.location.origin + href)
     if(action == "modify" || action == "new"){
         $('form.form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
+        $('span#' + form).wrapAll("<div class = 'col-sm-6' ></div>");
+        $('span#' + list).wrapAll("<div class = 'col-sm-6' ></div>");
+        $("span#" + form + '.div')
+                    .before("<div class = 'row' ></div>");
+        $("form#" + "form_new_" + id_input.substring(9,id_input.length))
+                    .after("<div class = 'row' ></div>");
+
         manageResize();
         var elt = $(this).parents('tr'); 
         $('#'+form).html(ajax_image); 
         if (action == "modify"){
             var id = $(this).find('input[name=id]').val();
-            jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
+            jqxhr = $.post( window.location.origin + href, {"action":"modify", "id": id });
         }else{
-            jqxhr = $.post( window.location.href, {"action":"new"} );
+            jqxhr = $.post( window.location.origin + href, {"action":"new"} );
         }
         jqxhr.done(function(data){
+            console.log(data)
             if(data.indexOf(form)==-1) {
+                console.log("coté client")
                 show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
             } else {
                 get_form(data, form);
@@ -206,7 +214,7 @@ $(document).on("submit", "#page-video form", function (e) {
         var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this enrichment' %}");
         if (deleteConfirm){
             var id = $(this).find('input[name=id]').val();
-            jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
+            jqxhr = $.post( window.location.origin + href, {"action":"delete", "id": id });
             jqxhr.done(function(data){
                 if(data.list_data) {
                     refrech_list_and_player(data, form, list);
@@ -319,7 +327,7 @@ function get_form(data, form) {
                 {%endif%}
                 <!-- This button will add a new form when clicked -->
                 </span>
-                <span id="list_contributors">
+                <span id="list_contributor">
                     <!-- place for form, it will be replace by a form : empty or to modify -->   
                     {%include 'videos/completion/contributor/list_contributor.html'%}
 

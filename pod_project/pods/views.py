@@ -624,22 +624,25 @@ def video_completion(request,slug):
             request, messages.ERROR, _(u'You cannot complete this video'))
         raise PermissionDenied
     else:
-        list_contributors = video.contributorpods_set.all()
+        list_contributor = video.contributorpods_set.all()
+        print list_contributor
         list_subtitle = video.trackpods_set.all()
         list_download = video.docpods_set.all()   
 
     return render_to_response("videos/video_completion.html",
                               {'video': video,
-                                  'list_contributors': list_contributors, 
+                                  'list_contributor': list_contributor, 
                                   'list_subtitle' : list_subtitle, 
                                   'list_download' : list_download },
                               context_instance=RequestContext(request))
 
 @csrf_protect
-@login_required
 #@staff_member_required
 def video_completion_contributor(request, slug):
     video = get_object_or_404(Pod, slug=slug)
+    list_contributor = video.contributorpods_set.all()
+    list_subtitle = video.trackpods_set.all()
+    list_download = video.docpods_set.all() 
     if not request.user.is_authenticated():
         raise PermissionDenied
     list_contributor = video.contributorpods_set.all()
@@ -742,11 +745,15 @@ def video_completion_contributor(request, slug):
 #@staff_member_required
 def video_completion_subtitle(request, slug):
     video = get_object_or_404(Pod, slug=slug)
+    list_contributor = video.contributorpods_set.all()
+    list_subtitle = video.trackpods_set.all()
+    list_download = video.docpods_set.all() 
     if not request.user.is_authenticated():
         raise PermissionDenied
     list_subtitle = video.trackpods_set.all()
     if request.POST:
         if request.POST.get("action") and request.POST['action'] == 'new':
+            print "JE PASSE DANS LE NEW"
             form_subtitle = TrackPodsForm()
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/subtitle/form_subtitle.html",
@@ -838,12 +845,6 @@ def video_completion_subtitle(request, slug):
                                             'list_subtitle': list_subtitle},
                                             context_instance=RequestContext(request))
         # end cancel
-    return render_to_response("videos/video_completion.html",
-                              {'video': video,
-                                  'list_contributors': list_contributors, 
-                                  'list_subtitle' : list_subtitle, 
-                                  'list_download' : list_download },
-                              context_instance=RequestContext(request))
     
 @csrf_protect
 #@staff_member_required
