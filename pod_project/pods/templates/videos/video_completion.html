@@ -101,13 +101,189 @@ table.scroll tbody td.enrich_title {
 
 <script>
 
+
+/*** For the form ***/;
+var video_duration = {{video.duration}};
+
+$(window).load(function(){
+    manageResize();
+});
+/*** table scroll ***/
+// Change the selector if needed
+function manageResize() {
+    var $table = $('table.scroll'),
+    $bodyCells = $table.find('tbody tr:first').children(),
+    colWidth;
+    // Adjust the width of thead cells when window resizes
+    $(window).resize(function() {
+        // Get the tbody columns width array
+        colWidth = $bodyCells.map(function() {
+            return $(this).width();
+        }).get();
+        // Set the width of thead columns
+        $table.find('thead tr').children().each(function(i, v) {
+            $(v).width(colWidth[i]);
+        });
+    }).resize(); // Trigger resize handler
+}
+/*** end table scroll ***/
+
 var preventUnloadPrompt;
 //var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 var num = 0;
 var name = '';
 
-/*** For the form ***/;
-var video_duration = {{video.duration}};
+$(document).on("reset", "#page-video form", function (e) {
+    var id_input = $(this).context.id
+    if(id_input == "cancel_contributor"){
+        $("span#form_contributor").html("");
+        $('form#form_new_contributor').show();
+    }
+    else if(id_input =="cancel_subtitle"){
+        $("span#form_subtitle").html("");
+        $('form#form_new_subtitle').show();
+    }else if(id_input == "cancel_download"){
+        $("span#form_download").html("");
+        $('form#form_new_download').show();
+    }
+    $('form').show()
+    $("table tr").removeClass("info");
+    manageResize();
+});
+
+$(document).on("submit", "#page-video form", function (e) {
+    $('form').show();
+    e.preventDefault();
+    var jqxhr= '';
+    var action = $(this).find('input[name=action]').val();
+    var id_input = $(this).context.id;
+    var form = "form_" + id_input.substring(9,id_input.length);
+    var list = "list_" + id_input.substring(9,id_input.length);
+    var href = $(this).find('form').context
+    console.log(href)
+    console.log(form);
+    console.log(window.location.href);
+    if(action == "modify" || action == "new"){
+        $('form.form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
+        manageResize();
+        var elt = $(this).parents('tr'); 
+        $('#'+form).html(ajax_image); 
+        if (action == "modify"){
+            var id = $(this).find('input[name=id]').val();
+            jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
+        }else{
+            jqxhr = $.post( window.location.href, {"action":"new"} );
+        }
+        jqxhr.done(function(data){
+            if(data.indexOf(form)==-1) {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+            } else {
+                get_form(data, form);
+                elt.addClass('info');
+                /*
+                if(document.getElementById("id_start").value != 0) {
+                    myPlayer.play();
+                    myPlayer.currentTime(document.getElementById("id_start").value);
+                    myPlayer.pause();
+                }
+                */
+            }
+        
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            show_messages("{% trans 'Error getting form. ' %} " + "("+data+")"+ "{% trans 'the form could not be recovered'%}");
+            $('form.form_modif').show();
+            $('form.form_delete').show();
+            $('form.form_new').show();
+            $('#' + form).html("");
+            manageResize();
+        });
+    }else if(action == "delete"){
+        //$('form').show();
+        var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this enrichment' %}");
+        if (deleteConfirm){
+            var id = $(this).find('input[name=id]').val();
+            jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
+            jqxhr.done(function(data){
+                if(data.list_data) {
+                    refrech_list_and_player(data, form, list);
+                } else {
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                }
+            });
+            jqxhr.fail(function($xhr) {
+                var data = $xhr.status+ " : " +$xhr.statusText;
+                show_messages("{% trans 'Error deleting. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}");
+            });
+        }
+    }else if(action == "save"){
+        $('form.form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
+        $(".form-help-inline").parents('div.form-group').removeClass("has-error");
+        $(".form-help-inline").remove();
+        if (!($("span").hasClass("form-help-inline"))){
+            var msg = "";
+            // msg += verify_end_start_items();
+            // msg += overlaptest();
+            if(msg != "")
+                show_messages(msg);
+            else {
+                var data_form = $("form#"+form).serializeArray();
+                jqxhr = $.post(
+                    $("form#" + form).attr("action"),
+                    data_form
+                );
+                jqxhr.done(function(data){
+                    if(data.list_data || data.form) {
+                        if(data.errors){  
+                            //alert(data.errors);
+                            get_form(data.form, form);
+                        }else{
+                            refrech_list_and_player(data, form, list);
+                        }
+                    } else {
+                        show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                    }
+                });
+                jqxhr.fail(function($xhr) {
+                    var data = $xhr.status+ " : " +$xhr.statusText;
+                    //alert("{% trans 'error post request' %} "+data);
+                    show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}");
+                });
+            }
+        }else{
+            show_messages("{% trans 'Errors found in the form, please correct it.' %}");
+        }
+    }
+});
+
+function show_messages(msg, reload) {
+    if(reload==true) {
+        $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
+    } else {
+        button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+        $("#show_messages").html(msg+button).fadeIn();
+    }
+}
+function refrech_list_and_player(data, form, list){
+    delete videojs.players['player_video']
+    $("#"+form).html("");
+    $('form.form_new').show();
+    $("span#enrich_player").html(data.player);
+    $("span#"+list).html(data.list_enrich);
+    manageResize();
+    loadVideo();
+    //alert("{% trans 'The changes have been saved' %}");
+};
+function get_form(data, form) {    
+        //$("#form_enrich").html("");
+        //fadeIn().delay(3000).fadeOut()
+        $("#"+form).hide().html(data).fadeIn();
+};
 </script>
 
 {% endblock bootstrap3_extra_head %}
@@ -148,7 +324,7 @@ var video_duration = {{video.duration}};
                     {%include 'videos/completion/contributor/list_contributor.html'%}
 
                 </span>         
-                <form  id = "form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
+                <form  class = "form_new" id = "form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
                     <input type="submit" id="add_new_contributor"  value="{% trans "Add a new contributor" %}" class="btn btn-info"/>
@@ -165,7 +341,7 @@ var video_duration = {{video.duration}};
                     <!-- place for form, it will be replace by a form : empty or to modify -->   
                     {%include 'videos/completion/subtitle/list_subtitle.html'%}
                 </span>         
-                <form  id = "form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
+                <form  class = "form_new" id = "form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
                     <input type="submit" id="add_new_subtitle"  value="{% trans "Add a new subtitle" %}" class="btn btn-info"/>
@@ -183,7 +359,7 @@ var video_duration = {{video.duration}};
                     {%include 'videos/completion/download/list_download.html'%}
                     
                 </span>         
-                <form  id = "form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
+                <form  class = "form_new" id = "form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
                     <input type="submit" id="add_new_download"  value="{% trans "Add a new download" %}" class="btn btn-info"/>

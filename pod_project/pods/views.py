@@ -645,6 +645,7 @@ def video_completion_contributor(request, slug):
     list_contributor = video.contributorpods_set.all()
     if request.POST:
         if request.POST.get("action") and request.POST['action'] == 'new':
+            print "------>JE PASSE DANS LE NEW"
             form_contributor = ContributorPodsForm()
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/contributor/form_contributor.html",
@@ -718,7 +719,7 @@ def video_completion_contributor(request, slug):
             list_contributor = video.contributorpods_set.all()
             if request.is_ajax():
                 some_data_to_dump = {
-                    'list_contributor': render_to_string('videos/enrich/list_enrich.html', {'list_contributor': list_contributor, 'video': video}),
+                    'list_contributor': render_to_string('videos/completion/contributor/list_contributor.html', {'list_data': list_contributor, 'video': video}),
                     'player': render_to_string('videos/video_player.html', {'video': video,  "csrf_token": request.COOKIES['csrftoken']})
                 }
                 data = json.dumps(some_data_to_dump)
@@ -736,12 +737,6 @@ def video_completion_contributor(request, slug):
                                             'list_contributor': list_contributor},
                                             context_instance=RequestContext(request))
         # end cancel
-    return render_to_response("videos/video_completion.html",
-                              {'video': video,
-                                  'list_contributors': list_contributors, 
-                                  'list_subtitle' : list_subtitle, 
-                                  'list_download' : list_download },
-                              context_instance=RequestContext(request))
 
 @csrf_protect
 #@staff_member_required
@@ -825,7 +820,7 @@ def video_completion_subtitle(request, slug):
             list_subtitle = video.trackpods_set.all()
             if request.is_ajax():
                 some_data_to_dump = {
-                    'list_subtitle': render_to_string('videos/completion/subtitle/list_subtitle.html', {'list_subtitle': list_subtitle, 'video': video}),
+                    'list_subtitle': render_to_string('videos/completion/subtitle/list_subtitle.html', {'list_data': list_subtitle, 'video': video}),
                     'player': render_to_string('videos/video_player.html', {'video': video,  "csrf_token": request.COOKIES['csrftoken']})
                 }
                 data = json.dumps(some_data_to_dump)
@@ -932,7 +927,7 @@ def video_completion_download(request, slug):
             list_download = video.docpods_set.all()   
             if request.is_ajax():
                 some_data_to_dump = {
-                    'list_download': render_to_string('videos/completion/download/list_download.html', {'list_download': list_download, 'video': video}),
+                    'list_download': render_to_string('videos/completion/download/list_download.html', {'list_data': list_download, 'video': video}),
                     'player': render_to_string('videos/video_player.html', {'video': video,  "csrf_token": request.COOKIES['csrftoken']})
                 }
                 data = json.dumps(some_data_to_dump)
