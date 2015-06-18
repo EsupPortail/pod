@@ -54,6 +54,10 @@ $(document).ready(function() {
 
 /******* FUNCTION ********/
 function loadVideo() {
+    //reinitialize somes var :
+    currentslide = '';
+    timestamps = [];
+    
     videojs.options.flash.swf = 'video-js.swf';
     videojs('player_video').ready(function() {
         // PLAYER READY
