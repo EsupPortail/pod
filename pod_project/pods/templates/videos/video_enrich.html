@@ -26,7 +26,7 @@ voir http://www.gnu.org/licenses/
 {% load bootstrap3 %}
 
 {% block bootstrap3_title%}
-{% trans "Enrich video" %} "{{video.title}}"
+{% trans "Enrichment of the video" %} "{{video.title}}"
 {% endblock bootstrap3_title%}
 
 {% block bootstrap3_extra_head %}
@@ -288,9 +288,9 @@ function get_form(data) {
         //fadeIn().delay(3000).fadeOut()
         $("#form_enrich").hide().html(data).fadeIn();
         $("input#id_start")
-            .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-info'>{% trans 'get time from the player'%}</a><span class='timecode'></span></span>");
+            .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode'></span></span>");
         $("input#id_end")
-            .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_end' class='btn btn-info'>{% trans 'get time from the player'%}</a><span class='timecode'></span></span>");
+            .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode'></span></span>");
         enrich_type();
 };
 
@@ -426,7 +426,7 @@ function overlaptest(){
         var data_end = parseInt($(this).attr('data-end'));
         if (id != $(this).attr('data-id') && !(new_start< data_start && new_end <= data_start || new_start >= data_end &&  new_end > data_end)){
             var text = "{% trans 'There is a overlap with the enrich : '%}" + '"' +$(this).attr('data-title')+'". ' ;
-            text += " {% trans 'Please change end field and start field' %}";
+            text += " {% trans 'Please change "Start" and "End" values' %}.";
             msg+="<br/>"+ text ;
         }
     });
@@ -493,9 +493,9 @@ function overlaptest(){
                             <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Information' %}
                         </h4>
                         <p>{% trans 'The title fields is required and must contains from 2 to 100 characters.'%}
-                        <p>{% trans 'Start and end fields must contain a value in seconds. You can use the "get time from the player" button to fill it with the current time of the player in the video.' %}</p>
+                        <p>{% trans 'The fields "Start" and "End" must contain an indication value in seconds. Start playback of the video, pause the video and click on "Get time from the player" to fill in the field intitled "Start". Then do the same to fill in the field entitiled "End".' %}</p>
                         <p>{% trans 'You cannot overlap the enrichments' %}</p>
-                        <p>{% trans 'You must "Save" to view the results.' %}</p>
+                        <p>{% trans 'You must save your enrichments to view the result.' %}</p>
                     </div>
                     
                 </aside>

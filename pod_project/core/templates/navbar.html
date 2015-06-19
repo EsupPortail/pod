@@ -42,7 +42,7 @@ voir http://www.gnu.org/licenses/
 				<!-- channel -->
 				<li class="dropdown">
                     <a href="{% url 'channels'%}" class="dropdown-toggle" data-toggle="dropdown">
-                        {% trans "Channel" %}
+                        {% trans "Channels" %}
                         {% if CHANNELS %}<b class="caret"></b>{%endif%}
                     </a>
                     <ul class="dropdown-menu  multi-level">
@@ -64,7 +64,7 @@ voir http://www.gnu.org/licenses/
                         <li class="divider"></li>
                         <li>
                             <a href="{% url 'channels' %}">
-                                {% trans "Channel"%}
+                                {% trans "Channels"%}
                                 <span class="glyphicon glyphicon-list-alt pull-right"></span>
                             </a>
                         </li>
@@ -116,7 +116,7 @@ voir http://www.gnu.org/licenses/
 			</ul>
 			<a href="{% url 'video_edit' %}" class="btn btn-success navbar-btn navbar-right">
                 <span class="glyphicon glyphicon-plus"></span>
-                {% trans "Add new video" %}
+                {% trans "Add a new video" %}
             </a>
 			<form class="navbar-form navbar-right" role="search" method="get" action="{% url "haystack_search" %}">
 				<div id="searchBar" class="input-group">
