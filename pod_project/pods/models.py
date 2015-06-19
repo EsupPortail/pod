@@ -304,7 +304,7 @@ class Pod(Video):
     is_draft = models.BooleanField(verbose_name=_('Draft'), help_text=_(
         u'If you check this box, the video will be visible and accessible only by you'), default=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
-        u'The video is accessible only by those who can authenticate to the site.'), default=False)
+        u'The video is accessible only by those who are enabled to authenticate.'), default=False)
     password = models.CharField(_('password'), help_text=_(
         u'The video is available with the specified password.'), max_length=50, blank=True, null=True)
 
@@ -535,9 +535,9 @@ class EnrichPods(models.Model):
     stop_video = models.BooleanField(_('Stop video'), default=False, help_text=_(
         'The video will pause when displaying this enrichment'))
     start = models.PositiveIntegerField(
-        _('Start'), default=0, help_text=_('Start displaying enrichment in second'))
+        _('Start'), default=0, help_text=_('Start displaying enrichment in seconds'))
     end = models.PositiveIntegerField(
-        _('Stop'), default=1, help_text=_('Stop displaying enrichment in second'))
+        _('End'), default=1, help_text=_('End displaying enrichment in seconds'))
 
     ENRICH_CHOICES = (
         ("image", _("image")),

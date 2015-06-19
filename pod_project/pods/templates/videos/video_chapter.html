@@ -26,7 +26,7 @@ voir http://www.gnu.org/licenses/
 {% load bootstrap3 %}
 
 {% block bootstrap3_title%}
-{% trans "Chapter video" %} "{{video.title}}"
+{% trans "Chaptering of the video" %} "{{video.title}}"
 {% endblock bootstrap3_title%}
 
 {% block bootstrap3_extra_head %}
@@ -146,7 +146,8 @@ $(document).on("reset", "form", function (e) {
     When the action is modify or new, all button in the first page of chapter are hide and the form is displayed. 
     When the action is delete, a request sent with the chapter id 
     When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
-$(document).on("submit", "form", function (e) {
+
+$(document).on("submit", "#page-video form", function (e) {
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
@@ -294,8 +295,7 @@ function overlaptest(){
     var msg = "";
     $('ul#chapters li').each(function() {
         if ((id != $(this).attr('data-id')) && new_start == $(this).attr('data-start')) {
-            var text = "{% trans 'There is a overlap with the chapter : '%}" + '"' +$(this).attr('data-title')+'". ' ;
-            text += " {% trans 'please change end field and start field' %}";
+            var text = "{% trans 'The chapter' %}"+ '"' +$(this).attr('data-title')+'"'+ "{% trans 'start at the same time' %}.";
             msg+="<br/>"+ text ;
         }
     });
@@ -307,7 +307,7 @@ function get_form(data) {
         //fadeIn().delay(3000).fadeOut()
         $("#form_chapter").hide().html(data).fadeIn();
         $("input#id_time")
-            .before("&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-info'>{% trans 'get time from the player'%}</a><span class='timecode'></span></span>");
+            .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode'></span></span>");
 };
  
 $(document).on('change','input#id_time',function() {
@@ -329,7 +329,7 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
 
 {% endblock bootstrap3_extra_head %}
 
-{% block article_title %}{% trans "Chapter video" %} {{video.title}}{% endblock %}
+{% block article_title %}{% trans "Chaptering of the video" %} "{{video.title}}"{% endblock %}
 
 {% block mainToolbar %}
 {% endblock mainToolbar %}
@@ -340,7 +340,7 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
         {% block breadcrumbs %}
         {{ block.super }} 
         <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
-        <li class="active"> {% trans "Chapter video" %} "{{video.title}}"</li>
+        <li class="active"> {% trans "Chaptering of the video" %} "{{video.title}}"</li>
         {% endblock breadcrumbs %}
     </ol>
 
@@ -373,20 +373,26 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
             </div>
 
             <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
-                <aside class="col-sm-3">
-                    <div class="widget">
-                        <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Informations"%}</h4>
-                        <p>{% trans '"Add" to add a new chapter and "delete" deletes the chapter' %}</p>
-                        <p>{% trans 'Start video playback, pause and click the "get time from the player" to automatically fill in the beginning of the chapter button.' %}</p>
-                        <p>{% trans 'Must "Save" to view the results.' %}</p>
-                    </div>
+                <aside class="col-sm-3  panel panel-info">
                     <div class="widget user-tools">
                         <h4>
                             <span class="glyphicon glyphicon-wrench"></span> {% trans 'Edit the video' %}
                         </h4>
                         {% include 'videos/ownertools.html' with video=video %}
                     </div>
+                    <div class="widget">
+                        <h4>
+                            <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Information' %}
+                        </h4>
+                        <p>{% trans '"Add a new chapter" allows you to add a new chapter and "delete" allows you to remove the chapter' %}</p>
+                        <p>{% trans 'Start playback of the video, pause the video and click on "Get time from the player" to fill in the field intitled "Start time".' %}</p>
+                        <p>{% trans 'The chapters cannot start at the same time.' %}</p>
+                        <p>{% trans 'You must save your chapters to view the result.' %}</p>
+                    </div>
+                    
                 </aside>
+
+
         </div>        
     </article>
 {% endblock bootstrap3_content %}

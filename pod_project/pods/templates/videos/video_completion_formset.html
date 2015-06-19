@@ -176,7 +176,7 @@ voir http://www.gnu.org/licenses/
             {% if request.user.is_staff %}
                 <br />
                 <fieldset id="track">
-                    <legend>{% trans 'File of subtitles or captions' %}</legend>
+                    <legend>{% trans 'File of subtitle or caption' %}</legend>
                     <div id="trackformset" data-formset-prefix="{{ trackformset.prefix }}">
                         {{ trackformset.management_form }}
                         <div data-formset-body-track>
@@ -343,12 +343,12 @@ voir http://www.gnu.org/licenses/
                             {% trans 'Caption Maker' %}
                         </a>
                     </p>
-                    <p>{% trans 'On this website, you will need the URL of your video. You will find below. Please note that this URL is a direct access to your video, avoid to communicate outside of this site to avoid any downloading and misuse.' %}</p>
+                    <p>{% trans 'On this website, you will need the URL of your video. You will find it below. Please note that this URL is a direct access to your video, avoid to communicate outside of this site to avoid any downloading and misuse.' %}</p>
                     <input maxlength="250" value="//{{ request.get_host }}{{ contributorformset.instance.get_MP4_240_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
                 </div>
             {% else %}
                 <div class="widget" style="text-align: justify">
-                    <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans 'Informations' %}</h4>
+                    <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans 'Information' %}</h4>
                     <p>
                         {% trans 'Your current permissions do not allow you to add subtitle files or documents to download videos. Please contact us to add these rights.' %} :
                         <a href="mailto:{{ HELP_MAIL }}">{{ HELP_MAIL }}</a>
