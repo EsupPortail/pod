@@ -23,19 +23,21 @@ voir http://www.gnu.org/licenses/
 
 <div class="panel panel-primary" overflow: auto>
     <div class="panel-heading"> 
-      <h3 class="panel-title">{% trans 'list of downloads' %}&nbsp;({{list_downloads|length}})</h3>
+      <h3 class="panel-title">{% trans 'list of downloads' %}&nbsp;({{list_download|length}})</h3>
     </div>
   <table class="table table-striped table-condensed scroll" id="table_list_downloads">
 
     <thead>
       <tr>
         <th>{% trans 'Document' %}</th>
+        <th></th>
+        <th></th>
      </tr>
     </thead>
     <tbody>
-      {% for download in list_downloads %}
+      {% for download in list_download %}
       <tr>
-        <td class="download_title">{{ download.title }}</td>
+        <td class="download_document">{{ download.document }}</td>
         <td>
           <form  class = "form_modif" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
             {% csrf_token %}

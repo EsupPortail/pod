@@ -140,8 +140,10 @@ $(document).on("reset", "#page-video form", function (e) {
     var list = "list_" + id_form.substring(5,id_form.length);
     console.log(list);
     $("span#" + id_form).html("");
-    $("span#" + id_form).unwrap();
-    $("span#" + list).unwrap();
+    if(id_form != "form_contributor"){
+        $("span#" + id_form).unwrap();
+        $("span#" + list).unwrap();
+    }
     $("form#" + form_new).show();
     $('form').show()
     $("table tr").removeClass("info");
@@ -157,21 +159,18 @@ $(document).on("submit", "#page-video form", function (e) {
     var form = "form_" + id_input.substring(9,id_input.length);
     var list = "list_" + id_input.substring(9,id_input.length);
     var href = $(this).attr("action")
-    console.log(form);
-    console.log(list);
-    console.log(href);
-    console.log(window.location.href);
-    console.log(window.location.origin + href)
     if(action == "modify" || action == "new"){
         $('form.form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
-        $('span#' + form).wrapAll("<div class = 'col-sm-6' ></div>");
-        $('span#' + list).wrapAll("<div class = 'col-sm-6' ></div>");
-        $("span#" + form + '.div')
-                    .before("<div class = 'row' ></div>");
-        $("form#" + "form_new_" + id_input.substring(9,id_input.length))
-                    .after("<div class = 'row' ></div>");
+        if( form != "form_contributor"){
+            $('span#' + form).wrapAll("<div class = 'col-sm-6' ></div>");
+            $('span#' + list).wrapAll("<div class = 'col-sm-6' ></div>");
+            $("span#" + form + '.div')
+                        .before("<div class = 'row' ></div>");
+            $("form#" + "form_new_" + id_input.substring(9,id_input.length))
+                        .after("<div class = 'row' ></div>");
+        }
 
         manageResize();
         var elt = $(this).parents('tr'); 
@@ -188,6 +187,7 @@ $(document).on("submit", "#page-video form", function (e) {
                 console.log("coté client")
                 show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
             } else {
+
                 get_form(data, form);
                 elt.addClass('info');
                 /*
@@ -321,17 +321,18 @@ function get_form(data, form) {
         <br/>
         <div class="row" id="info_video">
             <div class="col-sm-9">
+                
+                <span id="list_contributor">
+                    <!-- place for form, it will be replace by a form : empty or to modify -->   
+                    {%include 'videos/completion/contributor/list_contributor.html'%}
+
+                </span> 
                 <span id= "form_contributor">
                 {% if form_contributor %}
                     {%include 'videos/completion/contributor/form_contributor.html' with form_contributor=form_contributor%}
                 {%endif%}
                 <!-- This button will add a new form when clicked -->
-                </span>
-                <span id="list_contributor">
-                    <!-- place for form, it will be replace by a form : empty or to modify -->   
-                    {%include 'videos/completion/contributor/list_contributor.html'%}
-
-                </span>         
+                </span>        
                 <form  class = "form_new" id = "form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
