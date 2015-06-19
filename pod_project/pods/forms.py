@@ -186,6 +186,7 @@ class ContributorPodsForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ContributorPodsForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
+            self.fields['video'].widget = HiddenInput()
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:
@@ -209,6 +210,7 @@ class TrackPodsForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(TrackPodsForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
+            self.fields['video'].widget = HiddenInput()
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:
@@ -232,6 +234,7 @@ class DocPodsForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(DocPodsForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
+            self.fields['video'].widget = HiddenInput()
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:

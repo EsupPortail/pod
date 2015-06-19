@@ -645,11 +645,9 @@ def video_completion_contributor(request, slug):
     list_download = video.docpods_set.all() 
     if not request.user.is_authenticated():
         raise PermissionDenied
-    list_contributor = video.contributorpods_set.all()
     if request.POST:
         if request.POST.get("action") and request.POST['action'] == 'new':
-            print "------>JE PASSE DANS LE NEW"
-            form_contributor = ContributorPodsForm()
+            form_contributor = ContributorPodsForm({"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/contributor/form_contributor.html",
                                           {'form_contributor': form_contributor,
@@ -674,9 +672,9 @@ def video_completion_contributor(request, slug):
                 form_contributor.save()
                 list_contributor = video.contributorpods_set.all()
                 if request.is_ajax():
-                    # print list_enrichment
+                    print "JE FAIS UNE REQUETE AJAX"
                     some_data_to_dump = {
-                        'list_contributor': render_to_string('videos/completion/contributor/list_contributor.html', {'list_contributor': list_contributor, 'video': video}),
+                        'list_data': render_to_string('videos/completion/contributor/list_contributor.html', {'list_contributor': list_contributor, 'video': video}),
                         'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
                     }
                     data = json.dumps(some_data_to_dump)
@@ -688,6 +686,7 @@ def video_completion_contributor(request, slug):
                                               context_instance=RequestContext(request))
             else:
                 if request.is_ajax():
+                    print "JE FAIS UNE REQUETE AJAX MAIS LE FORMULAIRE N'EST PAS VALIDE"
                     some_data_to_dump = {
                         'errors': "%s" % _('Please correct errors'),
                         'form': render_to_string('videos/completion/contributor/form_contributor.html', {'video': video, 'form_contributor': form_contributor})
@@ -740,7 +739,12 @@ def video_completion_contributor(request, slug):
                                             'list_contributor': list_contributor},
                                             context_instance=RequestContext(request))
         # end cancel
-
+    return render_to_response("videos/video_completion.html",
+                              {'video': video,
+                                  'list_contributor': list_contributor, 
+                                  'list_subtitle' : list_subtitle, 
+                                  'list_download' : list_download },
+                              context_instance=RequestContext(request))
 @csrf_protect
 #@staff_member_required
 def video_completion_subtitle(request, slug):
@@ -753,8 +757,7 @@ def video_completion_subtitle(request, slug):
     list_subtitle = video.trackpods_set.all()
     if request.POST:
         if request.POST.get("action") and request.POST['action'] == 'new':
-            print "JE PASSE DANS LE NEW"
-            form_subtitle = TrackPodsForm()
+            form_subtitle = TrackPodsForm({"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/subtitle/form_subtitle.html",
                                           {'form_subtitle': form_subtitle,
@@ -855,7 +858,8 @@ def video_completion_download(request, slug):
     list_download = video.docpods_set.all()   
     if request.POST:
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_download = DocPodsForm()
+            form_download = DocPodsForm(
+                {"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/download/form_download.html",
                                           {'form_download': form_download,

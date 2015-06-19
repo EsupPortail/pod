@@ -135,10 +135,8 @@ var name = '';
 
 $(document).on("reset", "#page-video form", function (e) {
     var id_form = $(this).attr("id")
-    console.log(id_form);
     var form_new  = "form_new_" + id_form.substring(5,id_form.length);
     var list = "list_" + id_form.substring(5,id_form.length);
-    console.log(list);
     $("span#" + id_form).html("");
     if(id_form != "form_contributor"){
         $("span#" + id_form).unwrap();
@@ -155,7 +153,7 @@ $(document).on("submit", "#page-video form", function (e) {
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
-    var id_input = $(this).context.id;
+    var id_input = $(this).attr("id");
     var form = "form_" + id_input.substring(9,id_input.length);
     var list = "list_" + id_input.substring(9,id_input.length);
     var href = $(this).attr("action")
@@ -182,9 +180,7 @@ $(document).on("submit", "#page-video form", function (e) {
             jqxhr = $.post( window.location.origin + href, {"action":"new"} );
         }
         jqxhr.done(function(data){
-            console.log(data)
             if(data.indexOf(form)==-1) {
-                console.log("coté client")
                 show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
             } else {
 
@@ -241,11 +237,12 @@ $(document).on("submit", "#page-video form", function (e) {
                 show_messages(msg);
             else {
                 var data_form = $("form#"+form).serializeArray();
-                jqxhr = $.post(
+                jqxhr = $.post( window.location.origin + href, 
                     $("form#" + form).attr("action"),
                     data_form
                 );
                 jqxhr.done(function(data){
+                    console.log(data.list_data)
                     if(data.list_data || data.form) {
                         if(data.errors){  
                             //alert(data.errors);
@@ -254,6 +251,7 @@ $(document).on("submit", "#page-video form", function (e) {
                             refrech_list_and_player(data, form, list);
                         }
                     } else {
+                        console.log("bla");
                         show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
                     }
                 });
@@ -282,7 +280,7 @@ function refrech_list_and_player(data, form, list){
     $("#"+form).html("");
     $('form.form_new').show();
     $("span#enrich_player").html(data.player);
-    $("span#"+list).html(data.list_enrich);
+    $("span#"+list).html(data.lis_data);
     manageResize();
     loadVideo();
     //alert("{% trans 'The changes have been saved' %}");

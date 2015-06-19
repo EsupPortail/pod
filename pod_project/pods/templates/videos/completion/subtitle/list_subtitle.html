@@ -32,6 +32,8 @@ voir http://www.gnu.org/licenses/
         <th>{% trans 'Kind' %}</th>
         <th>{% trans 'Language' %}</th>
         <th>{% trans 'Video track file' %}</th>
+        <th></th>
+        <th></th>
      </tr>
     </thead>
     <tbody>
@@ -41,7 +43,7 @@ voir http://www.gnu.org/licenses/
         <td class="subtitle_lang">{{ subtitle.lang }}</td>
         <td class="subtitle_src">{{ subtitle.src }}</td>
         <td>
-          <form  class = "form_modif" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
+          <form  class = "form_modif" id= "form_mod_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="modify">
             <input type="hidden" name="id" value="{{subtitle.id}}">
@@ -49,7 +51,7 @@ voir http://www.gnu.org/licenses/
           </form>
         </td>
         <td>
-          <form  class = "form_delete" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
+          <form  class = "form_delete" id= "form_del_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="id" value="{{subtitle.id}}">
