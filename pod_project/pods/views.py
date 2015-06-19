@@ -529,11 +529,11 @@ def video_add_alert(request, slug):
     subject = _("Warning subject")
     message = _("Warning body") % {'user_name': user.username, 'user_first_name': user.first_name,
             'user_last_name':user.last_name,'comment':request.POST.get('video_alert_ta'),
-            'video_title':video.title,'site_URL':settings.SITE_URL,'video_slug':video.slug,
+            'video_title':video.title,'site_URL':get_current_site(request),'video_slug':video.slug,
             'video_owner':str(video.owner),'video_owner_first_name':video.owner.first_name,
             'video_owner_lastname':video.owner.last_name,'video_date_added':str(video.date_added)}
 
-    send_mail(subject, message, settings.ALERT_VIDEO_MAIL_FROM,
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
     settings.ALERT_VIDEO_MAIL_TO, fail_silently=False) 
 
     

@@ -2733,3 +2733,53 @@ msgstr "Nouveaux médiacours ajoutés"
 
 #~ msgid "Discipline "
 #~ msgstr "Discipline"
+
+## BEGIN IM
+
+#: pods/views.py:528
+msgid "Warning subject"
+msgstr "Alerte vidéo"
+
+#: pods/views.py:529
+msgid "Warning body"
+msgstr ""
+"Cette vidéo a été signalée par %(user_name)s (%(user_first_name)s "
+"%(user_last_name)s) \n"
+"Commentaire : %(comment)s\n"
+"\n"
+"Description de la video : \n"
+" Titre : %(video_title)s \n"
+"Lien : http://%(site_URL)s/video/%(video_slug)s\n"
+"Cette vidéo a été postée par %(video_owner)s (%(video_owner_first_name)s "
+"%(video_owner_lastname)s) : %(video_date_added)s"
+
+#: pods/views.py:536
+msgid "Alerte envoyée"
+msgstr "Alerte envoyée"
+
+
+#: pods/views.py:528
+msgid "Warning subject"
+msgstr "Alerte vidéo"
+
+#: pods/templates/videos/video.html:167
+msgid "You must be logged in to alert this video"
+msgstr "Vous devez être connecté pour poster une alerte"
+
+#: pods/templates/videos/video.html:126 pods/templates/videos/video.html:127
+msgid "add an alert"
+msgstr "Ajouter une alerte"
+
+#: pods/models.py:447
+msgid "Alertes"
+msgstr ""
+
+#: pods/models.py:446
+msgid "Alerte"
+msgstr ""
+
+#: pods/models.py:421 pods/models.py:422
+msgid "Status des alertes"
+msgstr ""
+
+## END UM

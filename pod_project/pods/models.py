@@ -34,6 +34,7 @@ from datetime import datetime
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
+from django.contrib.sites.models import get_current_site
 # django-taggit
 from taggit.managers import TaggableManager, _TaggableManager, TaggableRel
 from django.core.exceptions import ValidationError
@@ -375,8 +376,11 @@ class Pod(Video):
         return self.enrichpods_set.exclude(type=None)
  
     def get_iframe_integration(self):
-        tmpStr = '<iframe src="{0:s}?is_iframe=true&size=80" width="213" height="120" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>'
-        return tmpStr.format(settings.SITE_URL_VIDEO + self.slug +"/")
+        request = None
+        full_url = ''.join(['//', get_current_site(request).domain, self.get_absolute_url()])
+        iframe_url = '<iframe src="%s?is_iframe=true&size=80" width="213" height="120" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' %full_url
+        return iframe_url
+        
 
 
 @receiver(post_save, sender=Pod)
@@ -408,18 +412,11 @@ def start_encode(video):
 @python_2_unicode_compatible
 class AlertStatus(models.Model):
 
-    #tags = MyTaggableManager(
-    #    help_text=_(
-    #        u'Separate tags with spaces, enclose the tags consist of several words in quotation marks.'),
-    #    verbose_name=_('Tags'), blank=True)
-    
-    
-
     title = models.CharField(_('title'), max_length=100, unique=True)
     
     class Meta:
-        verbose_name = _("Status des alertes")
-        verbose_name_plural = _("Status des alertes")
+        verbose_name = _("Alert status")
+        verbose_name_plural = _("Alerts status")
     
     def __unicode__(self):
         return "%s" % (self.title)
@@ -430,11 +427,6 @@ class AlertStatus(models.Model):
 @python_2_unicode_compatible
 class Alert(models.Model):
 
-    #tags = MyTaggableManager(
-    #    help_text=_(
-    #        u'Separate tags with spaces, enclose the tags consist of several words in quotation marks.'),
-    #    verbose_name=_('Tags'), blank=True)
-
     video = models.ForeignKey(Pod, verbose_name=_('Video'))    
     user = models.ForeignKey(User, verbose_name=_('User'))
     alertStatus = models.ForeignKey(AlertStatus, verbose_name=_('Status'))
@@ -443,8 +435,8 @@ class Alert(models.Model):
         'Date', default=datetime.now, editable=False)
     
     class Meta:
-        verbose_name = _("Alerte")
-        verbose_name_plural = _("Alertes")
+        verbose_name = _("Alert")
+        verbose_name_plural = _("Alerts")
         ordering = ['alertStatus']
     
     def __unicode__(self):
@@ -457,6 +449,7 @@ class Alert(models.Model):
         return self.video.get_iframe_integration()
         
     get_url_to_video.allow_tags=True 
+    
 class EncodingPods(models.Model):
     video = models.ForeignKey(Pod, verbose_name=_('Video'))
     encodingType = models.ForeignKey(

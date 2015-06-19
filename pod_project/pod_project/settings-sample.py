@@ -14,21 +14,11 @@ SECRET_KEY = 'dp7u819^$3u5rdjv62o2(k0nlg5%lg5h+^s6qf2-i2e%gr4a2)'
 
 ### DEBUT CONSTANTES AJOUTEES PAR U-MAINE ###
 
-ADMIN_ACCOUNT_ID = 1
-#Disciplines dans lesquelles sont publiées les vidéos postées par les étudiants; format[xx,yy,zz]
-TYPE_STUDENT_PUBLISH = 6
-
-#Affichage Condition générales
-SHOW_USE_CASE_MESSAGE = True
+ACCOUNT_ID_TO_ REALLOCATE_VIDEO = 1
 
 #Notification d'alerte sur les vidéos
 SHOW_ALERT = True
-ALERT_VIDEO_MAIL_TO = ['arnault.ducret@univ-lemans.fr']
-ALERT_VIDEO_MAIL_FROM = 'admin-prn@univ-lemans.fr'
-SITE_URL_VIDEO = '//pod-dev.univ-lemans.fr/video/'
-#Comme son nom l'indique...
-SITE_URL = 'pod-dev.univ-lemans.fr'
-HAS_WEBTV= True
+ALERT_VIDEO_MAIL_TO = ['alert@univ.fr']
 
 ### FIN CONSTANTES AJOUTEES PAR U-MAINE ###
 

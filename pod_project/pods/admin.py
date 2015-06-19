@@ -38,7 +38,6 @@ admin.site.register(AlertStatus, AlertStatusAdmin)
 
 class AlertAdmin(admin.ModelAdmin):
     list_display = ('id','user','video','alertStatus','commentaire','date_added','get_url_to_video')
-    #list_editable = ('alertStatus',)
     list_filter = ('alertStatus',)
     list_display_links = ('id','user','video')
     
@@ -51,7 +50,7 @@ class AlertAdmin(admin.ModelAdmin):
         for item in queryset:
             item.alertStatus_id=3
             item.save()      
-            item.video.owner_id=settings.ADMIN_ACCOUNT_ID
+            item.video.owner_id=settings.ACCOUNT_ID_TO_REALLOCATE_VIDEO
             item.video.is_draft=True
             item.video.save()
 
