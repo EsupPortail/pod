@@ -31,14 +31,16 @@ voir http://www.gnu.org/licenses/
 
 {% block bootstrap3_extra_head %}
 <style>
-.form-help-inline {color:red;}
+.form-help-inline, .special_class {color:red;}
+
 /*** table scroll ***/
 table.scroll {
-    width: 100%; /* Optional */
-    border-collapse: collapse;
+     width: 100%; /* Optional */
+    border-collapse: collapse; 
     border-spacing: 0;
-    
+    /*border: 2px solid black;*/
 }
+
 table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
     border-radius: 3px;
     font-size: 12px;
@@ -52,32 +54,36 @@ table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
     border-top-right-radius: 3px;
     padding: 4px 15px;
 }
+
 table.scroll tbody,
 table.scroll thead { display: block; }
+
 table.scroll thead /*tr th*/ { 
     height: 27px;
     line-height: 27px;
     text-align: left;
- }
+}
 table.scroll tbody {
-    height: 100px;
+    max-height: 100px;
     overflow-y: auto;
     overflow-x: hidden;
 }
-
-table.scroll tbody td, table.scroll thead th{
+table.scroll tbody td, table.scroll thead th {
      width: 10%;  /* Optional */
     /*border-right: 1px solid black;*/
-     /*white-space: nowrap;*/
-     height: 20px;
+    /*white-space: nowrap;*/
+    height: 20px;
     line-height: 20px;
 }
-table.scroll thead th {
-    white-space: nowrap;
-}
-table.scroll tbody td.chapter_title {
+
+table.scroll tbody td.enrich_title {
     width: 60%;
 }
+
+table.scroll thead th.chapter_title, table.scroll thead th.chapter_time {
+    white-space: nowrap;
+}
+
 
 </style>
 
@@ -148,6 +154,7 @@ $(document).on("reset", "form", function (e) {
     When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
 
 $(document).on("submit", "#page-video form", function (e) {
+    $('form').show();
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
@@ -155,8 +162,11 @@ $(document).on("submit", "#page-video form", function (e) {
         $('form#form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
+        //$('span#form_chapter').addClass("col-sm-6");
+        //$('span#list_chapter').addClass("col-sm-6");
         $('span#form_chapter').wrapAll("<div class = 'col-sm-6' ></div>");
         $('span#list_chapter').wrapAll("<div class = 'col-sm-6' ></div>");
+
         manageResize();
         $('#form_chapter').html(ajax_image);
         var elt = $(this).parents('tr');

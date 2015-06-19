@@ -31,7 +31,7 @@ voir http://www.gnu.org/licenses/
 
 {% block bootstrap3_extra_head %}
 <style>
-.form-help-inline {color:red;}
+.form-help-inline, .special_class {color:red;}
 
 /*** table scroll ***/
 table.scroll {
@@ -426,7 +426,7 @@ function overlaptest(){
         var data_end = parseInt($(this).attr('data-end'));
         if (id != $(this).attr('data-id') && !(new_start< data_start && new_end <= data_start || new_start >= data_end &&  new_end > data_end)){
             var text = "{% trans 'There is a overlap with the enrich : '%}" + '"' +$(this).attr('data-title')+'". ' ;
-            text += " {% trans 'Please change "Start" and "End" values' %}.";
+            text += "{% trans 'Please change Start and End values' %}.";
             msg+="<br/>"+ text ;
         }
     });
