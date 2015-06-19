@@ -258,7 +258,7 @@ TEMPLATE_VISIBLE_SETTINGS = (
 
 # Fichiers statiques du theme
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME),
+    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, "assets"),
 )
 
 # Paramètres session
