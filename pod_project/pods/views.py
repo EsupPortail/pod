@@ -41,6 +41,7 @@ from datetime import datetime
 from django.utils import formats
 from django.utils.http import urlquote
 from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
 
 import simplejson as json
 from haystack.query import SearchQuerySet
@@ -460,6 +461,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                         'theme': theme, 'share_url': share_url},
                     context_instance=RequestContext(request)
                 )
+    show_alert = getattr(settings, 'SHOW_ALERT', False);
 
     if request.user.is_authenticated():
         note, created = Notes.objects.get_or_create(
@@ -471,7 +473,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'theme': theme,
-                    'notes_form': notes_form, 'share_url': share_url},
+                    'notes_form': notes_form, 'share_url': share_url, 'show_alert': show_alert},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
@@ -480,7 +482,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         return render_to_response(
             'videos/video.html',
             {'video': video, 'channel': channel,
-                'theme': theme, 'share_url': share_url},
+                'theme': theme, 'share_url': share_url, 'show_alert': show_alert},
             context_instance=RequestContext(request)
         )
 
@@ -519,6 +521,35 @@ def video_add_favorite(request, slug):
             request, messages.ERROR, _(u'You cannot view this page'))
         raise PermissionDenied
 
+@login_required
+@csrf_protect
+def video_add_alert(request, slug):
+    user = request.user
+    video = get_object_or_404(Pod, slug=slug)
+    subject = _("Warning subject")
+    message = _("Warning body") % {'user_name': user.username, 'user_first_name': user.first_name,
+            'user_last_name':user.last_name,'comment':request.POST.get('video_alert_ta'),
+            'video_title':video.title,'site_URL':settings.SITE_URL,'video_slug':video.slug,
+            'video_owner':str(video.owner),'video_owner_first_name':video.owner.first_name,
+            'video_owner_lastname':video.owner.last_name,'video_date_added':str(video.date_added)}
+
+    send_mail(subject, message, settings.ALERT_VIDEO_MAIL_FROM,
+    settings.ALERT_VIDEO_MAIL_TO, fail_silently=False) 
+
+    
+    if request.POST :
+        msg = _(u'Alerte envoyée')
+        alerte, create = Alert.objects.get_or_create(video = video, user = request.user, 
+            alertStatus_id = 1,commentaire=request.POST.get('video_alert_ta'))
+        if request.is_ajax():
+            return HttpResponse(msg)
+        messages.add_message(request, messages.INFO, msg)
+        return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
+    else:
+        messages.add_message(request, messages.ERROR, _(u'You cannot view this page'))
+        raise PermissionDenied
+    
+    return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
 
 @login_required
 @csrf_protect

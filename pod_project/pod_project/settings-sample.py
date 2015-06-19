@@ -11,6 +11,28 @@ ADMINS = (
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'dp7u819^$3u5rdjv62o2(k0nlg5%lg5h+^s6qf2-i2e%gr4a2)'
 
+
+### DEBUT CONSTANTES AJOUTEES PAR U-MAINE ###
+
+ADMIN_ACCOUNT_ID = 1
+#Disciplines dans lesquelles sont publiées les vidéos postées par les étudiants; format[xx,yy,zz]
+TYPE_STUDENT_PUBLISH = 6
+
+#Affichage Condition générales
+SHOW_USE_CASE_MESSAGE = True
+
+#Notification d'alerte sur les vidéos
+SHOW_ALERT = True
+ALERT_VIDEO_MAIL_TO = ['arnault.ducret@univ-lemans.fr']
+ALERT_VIDEO_MAIL_FROM = 'admin-prn@univ-lemans.fr'
+SITE_URL_VIDEO = '//pod-dev.univ-lemans.fr/video/'
+#Comme son nom l'indique...
+SITE_URL = 'pod-dev.univ-lemans.fr'
+HAS_WEBTV= True
+
+### FIN CONSTANTES AJOUTEES PAR U-MAINE ###
+
+
 # Condition d'utilisation du mode DEBUG - Attention à mettre à false lors
 # d'une mise en production
 DEBUG = True

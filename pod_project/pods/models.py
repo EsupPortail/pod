@@ -373,6 +373,10 @@ class Pod(Video):
 
     def is_richmedia(self):
         return self.enrichpods_set.exclude(type=None)
+ 
+    def get_iframe_integration(self):
+        tmpStr = '<iframe src="{0:s}?is_iframe=true&size=80" width="213" height="120" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>'
+        return tmpStr.format(settings.SITE_URL_VIDEO + self.slug +"/")
 
 
 @receiver(post_save, sender=Pod)
@@ -401,8 +405,58 @@ def start_encode(video):
     t.setDaemon(True)
     t.start()
 
+@python_2_unicode_compatible
+class AlertStatus(models.Model):
+
+    #tags = MyTaggableManager(
+    #    help_text=_(
+    #        u'Separate tags with spaces, enclose the tags consist of several words in quotation marks.'),
+    #    verbose_name=_('Tags'), blank=True)
+    
+    
+
+    title = models.CharField(_('title'), max_length=100, unique=True)
+    
+    class Meta:
+        verbose_name = _("Status des alertes")
+        verbose_name_plural = _("Status des alertes")
+    
+    def __unicode__(self):
+        return "%s" % (self.title)
+        
+    def __str__(self):
+        return "%s" % (self.title)    
 
 @python_2_unicode_compatible
+class Alert(models.Model):
+
+    #tags = MyTaggableManager(
+    #    help_text=_(
+    #        u'Separate tags with spaces, enclose the tags consist of several words in quotation marks.'),
+    #    verbose_name=_('Tags'), blank=True)
+
+    video = models.ForeignKey(Pod, verbose_name=_('Video'))    
+    user = models.ForeignKey(User, verbose_name=_('User'))
+    alertStatus = models.ForeignKey(AlertStatus, verbose_name=_('Status'))
+    commentaire = models.TextField(null=True, blank=True, verbose_name=_('Commentaire'))
+    date_added = models.DateTimeField(
+        'Date', default=datetime.now, editable=False)
+    
+    class Meta:
+        verbose_name = _("Alerte")
+        verbose_name_plural = _("Alertes")
+        ordering = ['alertStatus']
+    
+    def __unicode__(self):
+        return "%s" % (self.user)
+        
+    def __str__(self):
+        return "%s" % (self.user)    
+    
+    def get_url_to_video(self):
+        return self.video.get_iframe_integration()
+        
+    get_url_to_video.allow_tags=True 
 class EncodingPods(models.Model):
     video = models.ForeignKey(Pod, verbose_name=_('Video'))
     encodingType = models.ForeignKey(
