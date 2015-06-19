@@ -33,6 +33,8 @@ voir http://www.gnu.org/licenses/
                   <th>{% trans 'Type' %}</th>
                   <th>{% trans 'Start' %}</th>
                   <th>{% trans 'End' %}</th>
+                  <th>&nbsp;</th>
+                  <th>&nbsp;</th>
                </tr>
               </thead>
               <tbody>
@@ -43,7 +45,7 @@ voir http://www.gnu.org/licenses/
                   <td class="enrich_start">{{ enrich.start }}</td>
                   <td class="enrich_end">{{ enrich.end }}</td>
                   <td>
-                    <form  class = "form_modif" action="{% url 'video_enrich' slug=video.slug  %}" method="post">
+                    <form  class="form_modif" action="{% url 'video_enrich' slug=video.slug  %}" method="post">
                       {% csrf_token %}
                       <input type="hidden" name="action" value="modify">
                       <input type="hidden" name="id" value="{{enrich.id}}">
@@ -51,7 +53,7 @@ voir http://www.gnu.org/licenses/
                     </form>
                   </td>
                   <td>
-                    <form  class = "form_delete" action="{% url 'video_enrich' slug=video.slug  %}" method="post">
+                    <form  class="form_delete" action="{% url 'video_enrich' slug=video.slug  %}" method="post">
                       {% csrf_token %}
                       <input type="hidden" name="action" value="delete">
                       <input type="hidden" name="id" value="{{enrich.id}}">

@@ -54,6 +54,10 @@ $(document).ready(function() {
 
 /******* FUNCTION ********/
 function loadVideo() {
+    //reinitialize somes var :
+    currentslide = '';
+    timestamps = [];
+    
     videojs.options.flash.swf = 'video-js.swf';
     videojs('player_video').ready(function() {
         // PLAYER READY
@@ -65,8 +69,7 @@ function loadVideo() {
         myPlayer.on('durationchange', loadChapBar);
         myPlayer.on('progress', progress);
         myPlayer.on('timeupdate', timeupdate);
-
-        myPlayer.on('firstplay', function(){
+         myPlayer.on('firstplay', function(){
             $.post(
                 location,
                 {
@@ -76,7 +79,6 @@ function loadVideo() {
                 }
             );
         });
-
         myPlayer.on('fullscreenchange', function() {
             if ($('#player_video').hasClass('vjs-fullscreen')) {
                 slide_height = 96;
