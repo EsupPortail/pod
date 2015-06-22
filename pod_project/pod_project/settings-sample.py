@@ -11,18 +11,6 @@ ADMINS = (
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'dp7u819^$3u5rdjv62o2(k0nlg5%lg5h+^s6qf2-i2e%gr4a2)'
 
-
-### DEBUT CONSTANTES AJOUTEES PAR U-MAINE ###
-
-ACCOUNT_ID_TO_ REALLOCATE_VIDEO = 1
-
-#Notification d'alerte sur les vidéos
-SHOW_ALERT = True
-ALERT_VIDEO_MAIL_TO = ['alert@univ.fr']
-
-### FIN CONSTANTES AJOUTEES PAR U-MAINE ###
-
-
 # Condition d'utilisation du mode DEBUG - Attention à mettre à false lors
 # d'une mise en production
 DEBUG = True

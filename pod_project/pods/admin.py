@@ -31,31 +31,6 @@ User._meta.ordering=["username"]
 
 from modeltranslation.admin import TranslationAdmin
 
-class AlertStatusAdmin(admin.ModelAdmin):
-    list_display = ('id','title')
-    list_editable = ('title',)
-admin.site.register(AlertStatus, AlertStatusAdmin)
-
-class AlertAdmin(admin.ModelAdmin):
-    list_display = ('id','user','video','alertStatus','commentaire','date_added','get_url_to_video')
-    list_filter = ('alertStatus',)
-    list_display_links = ('id','user','video')
-    
-    actions = ['valide_video','delete_video']
-    def valide_video(self, request, queryset):
-        for item in queryset:
-            item.alertStatus_id=2
-            item.save()
-    def delete_video(self, request, queryset):
-        for item in queryset:
-            item.alertStatus_id=3
-            item.save()      
-            item.video.owner_id=settings.ACCOUNT_ID_TO_REALLOCATE_VIDEO
-            item.video.is_draft=True
-            item.video.save()
-
-            
-admin.site.register(Alert, AlertAdmin)
 class ChannelAdmin(TranslationAdmin):
     list_display = ('title','visible',)
     prepopulated_fields = {'slug': ('title',)}
