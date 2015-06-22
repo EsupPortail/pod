@@ -442,10 +442,10 @@ class ContributorPods(models.Model):
     email_address = models.EmailField(
         _('mail'), null=True, blank=True, default="")
     ROLE_CHOICES = (
-        ("authors", _("authors")),
+        ("author", _("author")),
         ("director", _("director")),
-        ("editors", _("editors")),
-        ("designers", _("designers")),
+        ("editor", _("editor")),
+        ("designer", _("designer")),
         ("contributor", _("contributor")),
         ("actor", _("actor")),
         ("voice-over", _("voice-off")),
