@@ -248,7 +248,37 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
     }
     return false;
 });
+$(document).on('click', 'button#button_video_report', function (event) {
+    event.preventDefault();
+    if($( "#video_report_form" ).length==0){
+        alert($(this).children('span.sr-only').text());
+    } else {
+        if(expiration_date_second > 5) {
+            //show modal box with comment input and save/cancel buttons
+            $("#modal_report_form").modal({
+              show: true,
+            });
+        } else {
+            alert(expiredsession);
+            location.reload();
+        }
+    }
+    return false;
+});
 
+function show_messages(msg, reload) {
+    if($("#show_messages").length) {
+        if(reload==true) {
+            $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
+        } else {
+            button='<br/><br/><input type="button" value="Fermer" id="close_messages" class="btn btn-info btn-sm">';
+            $("#show_messages").html(msg+button).fadeIn();
+        }
+    }
+}
+$(document).on('click', 'input#close_messages', function() {
+    $("#show_messages").fadeOut();
+});
 /** END EVTS PERMANENT **/
 
 

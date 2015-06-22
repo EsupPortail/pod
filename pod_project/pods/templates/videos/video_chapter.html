@@ -242,8 +242,6 @@ $(document).on("submit", "#page-video form", function (e) {
                             $('span#form_chapter').unwrap();
                             $('span#list_chapter').unwrap();
                             manageResize();
-
-
                         }
                     } else {
                         show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
@@ -262,17 +260,8 @@ $(document).on("submit", "#page-video form", function (e) {
     }
     
 });
-function show_messages(msg, reload) {
-    if(reload==true) {
-        $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
-    } else {
-        button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
-        $("#show_messages").html(msg+button).fadeIn();
-    }
-}
-$(document).on('click', '#page-video input#close_messages', function() {
-    $("#show_messages").fadeOut();
-});
+
+
 /*** refrech the player with modification and show the list of enrich ***/
 function refrech_list_and_player(data){
     delete videojs.players['player_video']
@@ -333,8 +322,7 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
         }
     }
 });
-/*** Verify if value of field respect form field ***/
-/*** Verify if there is a overlap with over enrich***/
+
 </script>
 
 {% endblock bootstrap3_extra_head %}
