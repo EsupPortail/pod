@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -442,17 +442,17 @@ class ContributorPods(models.Model):
     email_address = models.EmailField(
         _('mail'), null=True, blank=True, default="")
     ROLE_CHOICES = (
-        (_("authors"), _("authors")),
-        (_("director"), _("director")),
-        (_("editors"), _("editors")),
-        (_("designers"), _("designers")),
-        (_("contributor"), _("contributor")),
-        (_("actor"), _("actor")),
-        (_("voice-over"), _("voice-off")),
-        (_("consultant"), _("consultant")),
-        (_("writer"), _("writer")),
-        (_("soundman"), _("soundman")),
-        (_("technician"), _("technician"))
+        ("authors", _("authors")),
+        ("director", _("director")),
+        ("editors", _("editors")),
+        ("designers", _("designers")),
+        ("contributor", _("contributor")),
+        ("actor", _("actor")),
+        ("voice-over", _("voice-off")),
+        ("consultant", _("consultant")),
+        ("writer", _("writer")),
+        ("soundman", _("soundman")),
+        ("technician", _("technician"))
     )
     role = models.CharField(_(u'role'), max_length=200, null=True,
                             blank=True, choices=ROLE_CHOICES, default=_("authors"))
@@ -574,7 +574,8 @@ class EnrichPods(models.Model):
     def clean(self):
         # Don't allow draft entries to have a pub_date.
         msg = []
-        msg = self.verify_end_start_item() + self.verify_all_fields() + self.overlap()
+        msg = self.verify_end_start_item() + self.verify_all_fields() + \
+            self.overlap()
         if(len(msg) > 0):
             raise ValidationError(msg)
 
@@ -694,38 +695,41 @@ class ChapterPods(models.Model):
 
     def __str__(self):
         return u"Chapter : %s - video: %s" % (self.title, self.video)
+
     def clean(self):
         msg = []
         msg = self.verify_start_title_items() + self.verify_overlap()
         if(len(msg) > 0):
-            raise ValidationError(msg) 
+            raise ValidationError(msg)
+
     def verify_start_title_items(self):
         msg = []
         if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
             msg.append(_('Please enter a title form 2 to 100 caracteres '))
 
-        if ((self.time == "") or (self.time < 0 ) or (self.time >= self.video.duration)):      
-            msg.append(_('Please enter a correct start field between 0 and %(duration)s' ) %{"duration":self.video.duration-1} )
+        if ((self.time == "") or (self.time < 0) or (self.time >= self.video.duration)):
+            msg.append(_('Please enter a correct start field between 0 and %(duration)s') % {
+                       "duration": self.video.duration - 1})
         if len(msg) > 0:
             return msg
-        return []    
+        return []
 
     def verify_overlap(self):
         msg = []
         instance = None
         if self.slug:
             instance = ChapterPods.objects.get(slug=self.slug)
-        list_chapter = ChapterPods.objects.filter(video = self.video)
+        list_chapter = ChapterPods.objects.filter(video=self.video)
         if instance:
-          list_chapter = list_chapter.exclude(id=instance.id)
-        if len(list_chapter) > 0 : 
-          for element in list_chapter:
-            if self.time == element.time:
-              msg.append(_("There is a overlap with the " + element.title + " chapter, please change start time field ")) 
-          if len(msg) > 0:
-            return msg
-        return [] 
-
+            list_chapter = list_chapter.exclude(id=instance.id)
+        if len(list_chapter) > 0:
+            for element in list_chapter:
+                if self.time == element.time:
+                    msg.append(
+                        _("There is a overlap with the " + element.title + " chapter, please change start time field "))
+            if len(msg) > 0:
+                return msg
+        return []
 
     def save(self, *args, **kwargs):
         newid = -1
