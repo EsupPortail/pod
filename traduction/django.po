@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-22 18:49+0200\n"
-"PO-Revision-Date: 2015-06-22 19:02+0100\n"
+"POT-Creation-Date: 2015-06-22 19:07+0200\n"
+"PO-Revision-Date: 2015-06-22 19:10+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -478,12 +478,10 @@ msgid "Close"
 msgstr "Fermer"
 
 #: core/templates/base.html:264 pods/templates/videos/video.html:165
-#| msgid "Delete the video"
 msgid "report this video"
 msgstr "Signaler cette vidéo"
 
 #: core/templates/base.html:270
-#| msgid "Please, specify a type."
 msgid "Please, specify the problem"
 msgstr "Veuillez expliquer le problème."
 
@@ -1712,15 +1710,18 @@ msgid "Recorders"
 msgstr "Enregistreurs"
 
 #: pods/models.py:870
-#| msgid "Users"
 msgid "User"
 msgstr "Utilisateur"
 
-#: pods/models.py:887
+#: pods/models.py:872
+msgid "Answer"
+msgstr "Réponse"
+
+#: pods/models.py:888
 msgid "Report"
 msgstr "Signaler"
 
-#: pods/models.py:888
+#: pods/models.py:889
 msgid "Reports"
 msgstr "Signalements"
 
@@ -2012,12 +2013,10 @@ msgid "You are no longer authenticated. Please log in again"
 msgstr "Vous n'êtes plus authentifié. Veuillez vous reconencter"
 
 #: pods/templates/videos/video.html:48
-#| msgid "Error getting form. "
 msgid "Error sending information. "
 msgstr "Erreur lors de l'envoi des informations"
 
 #: pods/templates/videos/video.html:48
-#| msgid "No data could be stored."
 msgid "No data could be given."
 msgstr "Aucune données récupérées"
 
@@ -2048,7 +2047,6 @@ msgid "You must be logged in to add this video to your favorites"
 msgstr "Vous devez être connecté pour ajouter cette vidéo à vos favoris"
 
 #: pods/templates/videos/video.html:181
-#| msgid "You must be logged in to take notes"
 msgid "You must be logged in to report inappropriate content"
 msgstr "Vous devez être connecté pour signaler cette vidéo"
 
@@ -2485,7 +2483,6 @@ msgid "There is a overlap with the enrich : "
 msgstr "Il y a un chevauchement avec l'enrichissement :"
 
 #: pods/templates/videos/video_enrich.html:429
-#| msgid "Please change \"Start\" and \"End\" values"
 msgid "Please change Start and End values"
 msgstr "Veuillez changer les valeurs de début et de fin d'affichage."
 
@@ -2609,7 +2606,6 @@ msgstr ""
 "signalement enregistré.</p><p>Cordialement</p><p>L'équipe Pod</p>"
 
 #: pods/views.py:548
-#| msgid "The video has been deleted"
 msgid "A video has just been reported"
 msgstr "Une vidéo vient d'être signalée"
 
@@ -2659,7 +2655,6 @@ msgstr ""
 "ligne le : %(video_date_added)s.</p>"
 
 #: pods/views.py:588
-#| msgid "The video has been deleted"
 msgid "This video has been reported"
 msgstr "La vidéo a été signalée"
 
