@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -29,6 +29,21 @@ voir http://www.gnu.org/licenses/
     {% include 'videos/extraheadplayer.html' %}
 {% endblock bootstrap3_extra_head %}
 
+{% block dublincore %}
+    <!- Dublin Core ->
+    <meta name="dc.title" content="{{ video.title }}" />
+    <meta name="dc.creator" content="{{ video.owner.get_full_name }}" />
+    {% if video.discipline.all %}<meta name="dc.subject" content="{% for disc in video.discipline.all %}{{ disc.title }}{% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
+    {% if video.description %}<meta name="dc.description" content="{{ video.description|striptags }}" />{% endif %}
+    {% if video.channel.all %}<meta name="dc.publisher" content="{% for chan in video.channel.all %}{{ chan.title }}{% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
+    {% if video.contributorpods_set.all %}<meta name="dc.contributor" content="{% for contrib in video.contributorpods_set.all %}{{ contrib.name }} ({% trans contrib.role %}){% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
+    {% if video.date_added %}<meta name="dc.date" content="{{ video.date_added|date:'Y/m/d' }}" />{% endif %}
+    {% if video.type %}<meta name="dc.type" content="{{ video.type }}" />{% endif %}
+    <meta name="dc.format" content="{{ video.get_mediatype|first }}" />
+    <meta name="dc.identifier" content="{{ request.build_absolute_uri }}" />
+    <!- /Dublin Core ->
+{% endblock %}
+
 {% block opengraph %}
     <meta name="description" content="{{ video.description|striptags|addslashes|linebreaksbr|truncatechars:150 }}">
 	<!-- Open Graph data -->
@@ -41,7 +56,7 @@ voir http://www.gnu.org/licenses/
         <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.jpg' %}" />
     {% endif %}
 
-	<meta property="og:description" content="{{ video.description|striptags|addslashes|linebreaksbr|truncatechars:250 }}" /> 
+	<meta property="og:description" content="{{ video.description|striptags|addslashes|linebreaksbr|truncatechars:250 }}" />
 	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
@@ -253,8 +268,8 @@ voir http://www.gnu.org/licenses/
                         <div id="downloads" class="tab-pane fade container-fluid">
                             <div class="list-group">
                                 {% if video.allow_downloading %}
-                                    {% trans 'Download the video'%} : 
-                                    
+                                    {% trans 'Download the video'%} :
+
                                     {% with mediatype=video.get_mediatype|first %}
                                         {% if mediatype == 'video' %}
                                             {% for encoding in video.encodingpods_set.all %}
@@ -276,7 +291,7 @@ voir http://www.gnu.org/licenses/
                                             {%endfor%}
                                         {%endif%}
                                     {%endwith%}
-                                
+
                                 {% endif %}
                                 {% for docpods in video.docpods_set.all %}
                                     <a href="{{ docpods.document.url }}" title="{{ docpods.document }}" target="_blank" class="list-group-item">
