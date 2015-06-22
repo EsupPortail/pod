@@ -51,7 +51,6 @@ DEFAULT_PER_PAGE = 12
 
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
 
-
 def get_pagination(page, paginator):
     try:
         page = int(page.encode('utf-8'))
@@ -377,6 +376,7 @@ def videos(request):
 def video(request, slug, slug_c=None, slug_t=None):
     id = slug[:find(slug, "-")]
     video = get_object_or_404(Pod, id=id)
+    show_report = getattr(settings, 'SHOW_REPORT', False)
     channel = None
     if slug_c:
         channel = get_object_or_404(Channel, slug=slug_c)
@@ -424,7 +424,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'form': form, 'channel': channel,
-                    'theme': theme, 'share_url': share_url},
+                    'theme': theme, 'share_url': share_url, 'show_report':show_report},
                 context_instance=RequestContext(request)
             )
         else:
@@ -439,7 +439,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                         return render_to_response(
                             'videos/video.html',
                             {'video': video, 'channel': channel,
-                                'theme': theme, 'share_url': share_url},
+                                'theme': theme, 'share_url': share_url, 'show_report':show_report},
                             context_instance=RequestContext(request)
                         )
                 else:
@@ -448,7 +448,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                     return render_to_response(
                         'videos/video.html',
                         {'video': video, 'form': form, 'channel': channel,
-                            'theme': theme, 'share_url': share_url},
+                            'theme': theme, 'share_url': share_url, 'show_report':show_report},
                         context_instance=RequestContext(request)
                     )
             else:
@@ -457,7 +457,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                 return render_to_response(
                     'videos/video.html',
                     {'video': video, 'form': form, 'channel': channel,
-                        'theme': theme, 'share_url': share_url},
+                        'theme': theme, 'share_url': share_url, 'show_report':show_report},
                     context_instance=RequestContext(request)
                 )
 
@@ -471,7 +471,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'theme': theme,
-                    'notes_form': notes_form, 'share_url': share_url},
+                    'notes_form': notes_form, 'share_url': share_url, 'show_report':show_report},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
@@ -480,7 +480,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         return render_to_response(
             'videos/video.html',
             {'video': video, 'channel': channel,
-                'theme': theme, 'share_url': share_url},
+                'theme': theme, 'share_url': share_url, 'show_report':show_report},
             context_instance=RequestContext(request)
         )
 
@@ -519,6 +519,26 @@ def video_add_favorite(request, slug):
             request, messages.ERROR, _(u'You cannot view this page'))
         raise PermissionDenied
 
+@login_required
+@csrf_protect
+def video_add_report(request, slug):
+    video = get_object_or_404(Pod, slug=slug)
+    if request.POST and request.POST.get('comment'):
+        msg = _(u'This video has been reported')
+        report, create = Report.objects.get_or_create(
+            user=request.user, video=video, comment=request.POST['comment'])
+        if create:
+            pass
+            #send email
+
+        if request.is_ajax():
+            return HttpResponse(msg)
+        messages.add_message(request, messages.INFO, msg)
+        return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
+    else:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot view this page'))
+        raise PermissionDenied
 
 @login_required
 @csrf_protect
@@ -936,54 +956,6 @@ def video_enrich(request, slug):
                               {'video': video,
                                   'list_enrichment': list_enrichment},
                               context_instance=RequestContext(request))
-
-"""
-@csrf_protect
-@login_required
-@staff_member_required
-def video_enrich(request, slug):
-    video = get_object_or_404(Pod, slug=slug)
-    # Add this to improve folder selection and view list
-    if not request.session.get('filer_last_folder_id'):
-        from filer.models import Folder
-        folder = Folder.objects.get(
-            owner=request.user, name=request.user.username)
-        request.session['filer_last_folder_id'] = folder.id
-
-    if request.user != video.owner and not request.user.is_superuser:
-        messages.add_message(
-            request, messages.ERROR, _(u'You cannot enrich this video'))
-        raise PermissionDenied
-
-    EnrichInlineFormSet = inlineformset_factory(
-        Pod, EnrichPods, form=EnrichPodsForm, extra=0, can_delete=True)
-
-    if request.method == "POST":
-        enrichformset = EnrichInlineFormSet(
-            request.POST, instance=video, prefix='enrich_form')
-
-        if enrichformset.is_valid():
-            enrichformset.save()
-
-            # MAJ...
-            enrichformset = EnrichInlineFormSet(
-                instance=video, prefix='enrich_form')
-            #...
-            messages.add_message(
-                request, messages.INFO, _(u'The changes have been saved'))
-
-        else:
-            messages.add_message(
-                request, messages.ERROR, _(u'Error in the form'))
-    else:
-        enrichformset = EnrichInlineFormSet(
-            instance=video, prefix='enrich_form')
-
-    return render_to_response("videos/video_enrichpods_formset.html",
-                              {'enrichformset': enrichformset},
-                              context_instance=RequestContext(request))
-"""
-
 
 @csrf_protect
 @login_required
