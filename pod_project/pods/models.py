@@ -869,6 +869,7 @@ class ReportVideo(models.Model):
     video = models.ForeignKey(Pod, verbose_name=_('Video'))    
     user = models.ForeignKey(User, verbose_name=_('User'))
     comment = models.TextField(null=True, blank=True, verbose_name=_('Comment'))
+    answer = models.TextField(null=True, blank=True, verbose_name=_('Answer'))
     date_added = models.DateTimeField(
         'Date', default=datetime.now, editable=False)
 
