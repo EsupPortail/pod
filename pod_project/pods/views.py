@@ -578,7 +578,7 @@ def video_add_report(request, slug):
                 
                  
 
-        email_msg = EmailMultiAlternatives("[" + settings.TITLE_SITE + "]%s" %subject, msg
+        email_msg = EmailMultiAlternatives("[" + settings.TITLE_SITE + "]  %s" %subject, msg
                                        , settings.DEFAULT_FROM_EMAIL, settings.REPORT_VIDEO_MAIL_TO)
         email_msg.attach_alternative(msg_html, "text/html")
         email_msg.send(fail_silently=False)
