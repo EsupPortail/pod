@@ -237,13 +237,14 @@ function show_messages(msg, reload, msgclass) {
     if(!msgclass||msgclass==='undefined') msgclass='alert-danger';
     $("#show_messages").attr('class','');
     $("#show_messages").attr('class','alert '+msgclass+' collapse');
-
-
     if($("#show_messages").length) {
         if(reload==true) {
             $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
         } else {
-            $("#show_messages").html(msg).fadeIn();
+            if(msgclass=='alert-info')
+                $("#show_messages").html(msg).fadeIn().delay(3000).fadeOut();
+            else
+                $("#show_messages").html(msg).fadeIn();
         }
     }
 }

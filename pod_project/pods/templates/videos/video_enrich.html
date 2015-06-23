@@ -77,9 +77,11 @@ table.scroll tbody td, table.scroll thead th {
 }
 
 table.scroll tbody td.enrich_title {
-    width: 60%;
+    width: 40%;
 }
-
+table.scroll tbody td.enrich_type {
+    width: 20%;
+}
 </style>
 
 <script src="{% static "video-js/video.js" %}" ></script>
@@ -230,6 +232,8 @@ $(document).on("submit", "#page-video form", function (e) {
                             get_form(data.form);
                         }else{
                             refrech_list_and_player(data);
+                            $(window).scrollTop(360);
+                            show_messages("{% trans 'Changes have been saved.' %}", false, 'alert-info');
                         }
                     } else {
                         show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
