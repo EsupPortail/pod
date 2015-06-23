@@ -214,40 +214,6 @@ $(document).on('click', "#share a", function() {
 });
 
 /** end video share embed **/
-$(document).on('click', 'button#button_video_favorite', function (event) {
-    event.preventDefault();
-    if($( "#video_favorite_form" ).length==0){
-        alert($(this).children('span.sr-only').text());
-    } else {
-        if(expiration_date_second > 5) {
-        var spanchild = $(this).children("span");
-        var jqxhr = $.post( 
-            $( "#video_favorite_form" ).attr('action'), 
-            $( "#video_favorite_form" ).serialize(), 
-            function(data) {
-                var alert_text='<div class="alert alert-info" id="myAlert"><a href="#" class="close" data-dismiss="alert">&times;</a>'+data+'</div>';
-                $('body').append(alert_text);
-                $("#myAlert").on('closed.bs.alert', function () {
-                    $(this).remove();
-                });
-                $("#myAlert").alert();
-                if(spanchild.attr('id')=="fav") spanchild.attr('id', 'mark-as-fav');
-                else spanchild.attr('id', 'fav');
-                window.setTimeout(function() { $("#myAlert").alert('close'); }, 3000);
-            });
-        jqxhr.fail(function(data) {
-            alert('Error '+data);
-            //$('#player').after('<article class="messages"></article>');
-            //$('article.messages').html("Error").delay(3000).fadeOut('slow', function(){$(this).remove();});
-            //$(".alert").alert('close')
-        });
-        } else {
-            alert(expiredsession);
-            location.reload();
-        }
-    }
-    return false;
-});
 $(document).on('click', 'button#button_video_report', function (event) {
     event.preventDefault();
     if($(this).parent('form').length==0){
@@ -274,7 +240,8 @@ function show_messages(msg, reload, msgclass) {
         if(reload==true) {
             $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
         } else {
-            $("#show_messages").html(msg).fadeIn();
+            $("#show_messages").html(msg);//.fadeIn();
+            $("#show_messages").alert();
         }
     }
 }

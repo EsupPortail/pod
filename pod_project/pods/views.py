@@ -512,7 +512,9 @@ def video_add_favorite(request, slug):
             favorite.delete()
             msg = _(u'The video has been removed to your Favorites')
         if request.is_ajax():
-            return HttpResponse(msg)
+            some_data_to_dump = { 'msg' : "%s." %msg }
+            data = json.dumps(some_data_to_dump)
+            return HttpResponse(data, content_type='application/json')
         messages.add_message(request, messages.INFO, msg)
         return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
     else:
