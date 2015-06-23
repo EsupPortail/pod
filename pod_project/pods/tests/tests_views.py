@@ -684,6 +684,66 @@ class Video_add_favoriteTestView(TestCase):
     },
     LANGUAGE_CODE = 'en'
     )
+class Video_add_reportTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        user = User.objects.create(
+            username='testuser', password='12345', is_active=True, is_staff=False)
+        user.set_password('hello')
+        user.save()
+        user2 = User.objects.create(
+            username='testuser2', password='12345', is_active=True, is_staff=False)
+        user2.set_password('hello')
+        user2.save()
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
+                                 date_added=datetime.today(), owner=user2, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                 allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
+                                 duration=3, infoVideo="videotest", to_encode=False)
+        pod.save()
+        print (" --->  SetUp of Video_add_reportTestView : OK !")
+
+    def test_add_report(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        self.user = User.objects.get(username="testuser")
+        self.user = authenticate(username='testuser', password='hello')
+        login = self.client.login(username='testuser', password='hello')
+        self.assertEqual(login, True)
+        response = self.client.post(
+            "/video_add_report/%s/" % pod.slug, {'submit': ['true']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 403)
+        response = self.client.post(
+            "/video_add_report/%s/" % pod.slug, {'comment': ['message']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        reportVideo = ReportVideo.objects.get(video=pod)
+        self.assertEqual(reportVideo.user, self.user)
+        self.assertEqual(reportVideo.comment, "message")
+        print (
+            "   --->  test_add_report of Video_add_reportTestView : OK !")
+
+    def test_add_report_with_not_authentificate(self):
+        pod = Pod.objects.get(id=1)
+        response = self.client.post(
+            "/video_add_report/%s/" % pod.slug, {'comment': ['message']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response, reverse('account_login') + '?next=/video_add_report/%s/' % pod.slug, status_code=302, target_status_code=200, msg_prefix='')
+        print (
+            "   --->  test_add_report_with_not_authentificate of Video_add_reportTestView : OK !")
+
+    
+
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class Favorites_videos_listTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1637,15 +1697,9 @@ class Video_mediacourses(TestCase):
             self.assertTrue("this_is_the_login_form" in response.content)
         else:
             self.assertRedirects(
-<<<<<<< HEAD
-            response, '/admin/login/?next=/mediacourses_add/%3Fmediapath%3Dabcdefg.zip', status_code=302, target_status_code=200, msg_prefix='') 
-        print (
-            "   --->  test_access_user_mediacourses_add of Video_mediacourses : OK !")
-=======
             response, '/admin/login/?next=/mediacourses_add/%3Fmediapath%3Dabcdefg.zip', status_code=302, target_status_code=200, msg_prefix='')
         print (
             "   --->  test_access_user_mediacourses_add of Video_mediacourses : OK !")     
->>>>>>> remi/feature-write_up-chapter
 
     def test_access_user_mediacourses_add_without_mediapath(self):
         self.client = Client()
@@ -1657,10 +1711,6 @@ class Video_mediacourses(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/mediacourses_add/")
         self.assertEqual(response.status_code, 403)
-<<<<<<< HEAD
-
-=======
->>>>>>> remi/feature-write_up-chapter
         print (
             "   --->  test_access_user_mediacourses_add_without_mediapath of Video_mediacourses : OK !")
     """
@@ -1732,11 +1782,7 @@ class Video_mediacourses_notify(TestCase):
             "/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" % m.hexdigest())
         self.assertEqual(response.status_code, 404)
         print (
-<<<<<<< HEAD
-            "   --->  test_mediacourses_notify_args of test_mediacourses_notify_without_good_recorder : OK !")
-=======
             "   --->  test_mediacourses_notify_without_good_recorder of Video_mediacourses_notify : OK !")
->>>>>>> remi/feature-write_up-chapter
 
     def test_mediacourses_notify_good(self):
         import hashlib
@@ -1747,9 +1793,4 @@ class Video_mediacourses_notify(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "ok")
         print (
-<<<<<<< HEAD
-            "   --->  test_mediacourses_notify_args of test_mediacourses_notify_good : OK !")
-=======
             "   --->  test_mediacourses_notify_good of Video_mediacourses_notify : OK !")
-
->>>>>>> remi/feature-write_up-chapter

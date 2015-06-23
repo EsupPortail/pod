@@ -115,3 +115,11 @@ admin.site.register(Notes)
 admin.site.register(Mediacourses)
 admin.site.register(Building)
 admin.site.register(Recorder)
+
+
+#Report Video
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'video', 'comment', 'answer', 'date_added', 'get_iframe_url_to_video')
+    list_filter = ('date_added',)
+    list_display_links = ('id','user','video')
+admin.site.register(ReportVideo, ReportAdmin)

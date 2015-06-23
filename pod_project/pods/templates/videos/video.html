@@ -27,6 +27,84 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_extra_head %}
     <script src="{% static 'video-js/video.js' %}"></script>
     {% include 'videos/extraheadplayer.html' %}
+<script>
+    $(document).on('submit', 'form#video_report_form', function (event) {
+        $('form').show();
+        $('form#video_report_form').hide();
+        event.preventDefault();
+        if(expiration_date_second > 5) {
+            var comment = $(this).find('#commentreport').val();
+            var jqxhr = $.post( $(this).attr("action"), {"comment":comment });
+            jqxhr.done(function(data){
+                if(data.msg) {
+                    button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+                    show_messages(data.msg+button, true, 'alert-danger');
+                } else {
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", true, 'alert-danger');
+                }
+            });
+            jqxhr.fail(function($xhr) {
+                var data = $xhr.status+ " : " +$xhr.statusText;
+                button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+                show_messages("{% trans 'Error sending information. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}"+button, false, 'alert-danger');
+            });
+            $('form#video_report_form').show();
+            $('#modal_report_form').modal('hide');
+            $(this).find('#commentreport').val("");
+        } else {
+            alert(expiredsession);
+            location.reload();
+        }
+        return false;
+    });
+
+$(document).on('click', 'button#button_video_favorite', function (event) {
+    event.preventDefault();
+    if($( "#video_favorite_form" ).length==0){
+        alert($(this).children('span.sr-only').text());
+    } else {
+        if(expiration_date_second > 5) {
+        var spanchild = $(this).children("span");
+        var jqxhr = $.post( 
+            $( "#video_favorite_form" ).attr('action'), 
+            $( "#video_favorite_form" ).serialize(), 
+            function(data) {
+                if(data.msg) {
+                    button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+                    $("#show_messages").html(data.msg+button, false, 'alert-info').fadeIn();
+                } else {
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", true, 'alert-danger');
+                }
+                if(spanchild.attr('id')=="fav") spanchild.attr('id', 'mark-as-fav');
+                else spanchild.attr('id', 'fav');
+                //window.setTimeout(function() { $("#show_messages").alert('close'); }, 3000);
+                /*
+                var alert_text='<div class="alert alert-info" id="myAlert"><a href="#" class="close" data-dismiss="alert">&times;</a>'+data+'</div>';
+                $('body').append(alert_text);
+                $("#myAlert").on('closed.bs.alert', function () {
+                    $(this).remove();
+                });
+                $("#myAlert").alert();
+                if(spanchild.attr('id')=="fav") spanchild.attr('id', 'mark-as-fav');
+                else spanchild.attr('id', 'fav');
+                window.setTimeout(function() { $("#myAlert").alert('close'); }, 3000);
+                */
+            });
+        jqxhr.fail(function(data) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+            show_messages("{% trans 'Error sending information. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}"+button, false, 'alert-danger');
+        });
+        } else {
+            alert(expiredsession);
+            location.reload();
+        }
+    }
+    return false;
+});
+
+</script>
+
 {% endblock bootstrap3_extra_head %}
 
 {% block dublincore %}
@@ -63,6 +141,9 @@ voir http://www.gnu.org/licenses/
 {% block mainToolbar %}{% endblock mainToolbar %}
 
 {% block bootstrap3_content %}
+    <span id="show_messages" class="alert alert-info collapse" role="alert" >
+            &nbsp;
+    </span>
     <article id="page-video" class="container{% if request.GET.is_iframe %} embed{% endif %}" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
         {% if not request.GET.is_iframe %}
             <ol class="breadcrumb">
@@ -119,16 +200,16 @@ voir http://www.gnu.org/licenses/
                             {{ video.date_evt }}
                         {% endif %}
                         {% if request.user.is_authenticated %}
-                            <form method="post" action="{% url 'video_add_favorite' slug=video.slug %}" id="video_favorite_form">
+                            <form method="post" action="{% url 'video_add_favorite' slug=video.slug %}" id="video_favorite_form" style="display:inline-block;">
                                 {% csrf_token %}
                                 <!-- if marked as fav, display #fav. Else #mark-as-fav -->
                                 {% if video.id in request.user.favorites_set.all|only_video %}
-                                    <button type="submit" class="btn btn-link" id="button_video_favorite">
+                                    <button type="submit" class="btn btn-default" id="button_video_favorite" title="{% trans 'favorite' %}">
                                         <span id="fav" class="glyphicon glyphicon-star"></span>
                                         <span class="sr-only">{% trans 'favorite' %}</span>
                                     </button>
                                 {% else %}
-                                    <button type="submit" class="btn btn-link" id="button_video_favorite">
+                                    <button type="submit" class="btn btn-default" id="button_video_favorite" title="{% trans 'add to favorite' %}">
                                         <span id="mark-as-fav" class="glyphicon glyphicon-star"></span>
                                         <span class="sr-only">{% trans 'add to favorite' %}</span>
                                     </button>
@@ -137,11 +218,30 @@ voir http://www.gnu.org/licenses/
                                     <input type="submit" value="{% trans 'Send' %}" />
                                 </noscript>
                             </form>
+                            {% if show_report %}
+                            <form method="post" action="{% url 'video_add_report' slug=video.slug %}" style="display:inline-block;">
+                                {% csrf_token %}
+                                    <button type="submit" class="btn btn-default" id="button_video_report" title="{% trans 'report this content' %}">
+                                        <span id="mark-as-report" class="glyphicon glyphicon-flag"></span>
+                                        <span class="sr-only">{% trans 'report this video' %}</span>
+                                    </button>
+                                <noscript>
+                                    <textarea rows="5" name="comment" ></textarea>
+                                    <input type="submit" value="{% trans 'Send' %}" />
+                                </noscript>
+                            </form>
+                            {%endif%}
                         {% else %}
                             <button class="btn btn-link" id="button_video_favorite">
                                 <span class="glyphicon glyphicon-star"></span>
                                 <span class="sr-only">{% trans 'You must be logged in to add this video to your favorites' %}</span>
                             </button>
+                            {% if show_report %}
+                            <button class="btn btn-link" id="button_video_report">
+                                <span class="glyphicon glyphicon-flag"></span>
+                                <span class="sr-only">{% trans 'You must be logged in to report inappropriate content' %}.</span>
+                            </button>
+                            {% endif %}
                         {% endif %}
                     </small>
                 </h3><!-- end h3 title -->

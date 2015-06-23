@@ -135,6 +135,7 @@ var preventUnloadPrompt;
 //var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 var num = 0;
 var name = '';
+var button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
 /*** For the form ***/;
 var video_duration = {{video.duration}};
 /*** For the Cancel button ***/
@@ -179,7 +180,7 @@ $(document).on("submit", "#page-video form", function (e) {
         }
         jqxhr.done(function(data){
             if(data.indexOf("form_chapter")==-1) {
-                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", true, 'alert-danger');
             } else {
                 get_form(data);
                 elt.addClass('info');
@@ -188,7 +189,7 @@ $(document).on("submit", "#page-video form", function (e) {
         });
         jqxhr.fail(function($xhr) {
             var data = $xhr.status+ " : " +$xhr.statusText;
-            show_messages("{% trans 'Error getting form. ' %} " + "("+data+")"+ "{% trans 'the form could not be recovered'%}");
+            show_messages("{% trans 'Error getting form. ' %} " + "("+data+")"+ "{% trans 'the form could not be recovered'%}"+button, false, 'alert-danger');
             $('form.form_modif').show();
             $('form.form_delete').show();
             $('form#form_new').show();
@@ -205,12 +206,12 @@ $(document).on("submit", "#page-video form", function (e) {
                 if(data.list_chapter) {
                     refrech_list_and_player(data);
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
                 }
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error deleting. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}");
+                show_messages("{% trans 'Error deleting. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}"+button, false, 'alert-danger');
             });
         }
     }else if(action == "save"){
@@ -224,9 +225,9 @@ $(document).on("submit", "#page-video form", function (e) {
         if (!($("span").hasClass("form-help-inline"))){
             var msg = "";
             msg += overlaptest();
-            if(msg != "")
-                show_messages(msg);
-            else {
+            if(msg != "") {
+                show_messages(msg+button, false, 'alert-info');
+            } else {
                 var data_form = $( "form#form_chapter" ).serializeArray();
                 jqxhr = $.post(
                     $( "form#form_chapter" ).attr("action"),
@@ -242,37 +243,25 @@ $(document).on("submit", "#page-video form", function (e) {
                             $('span#form_chapter').unwrap();
                             $('span#list_chapter').unwrap();
                             manageResize();
-
-
                         }
                     } else {
-                        show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                        show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
                     }
                 });
                 jqxhr.fail(function($xhr) {
                     var data = $xhr.status+ " : " +$xhr.statusText;
-                    //alert("{% trans 'error post request' %} "+data);
-                    show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}");
+                    show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}"+button, false, 'alert-danger');
                 });
             }
         }else{
-            show_messages("{% trans 'Errors found in the form, please correct it.' %}");
+            show_messages("{% trans 'Errors found in the form, please correct it.' %}"+button, false, 'alert-danger');
         }
         
     }
     
 });
-function show_messages(msg, reload) {
-    if(reload==true) {
-        $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
-    } else {
-        button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
-        $("#show_messages").html(msg+button).fadeIn();
-    }
-}
-$(document).on('click', '#page-video input#close_messages', function() {
-    $("#show_messages").fadeOut();
-});
+
+
 /*** refrech the player with modification and show the list of enrich ***/
 function refrech_list_and_player(data){
     delete videojs.players['player_video']
@@ -305,7 +294,7 @@ function overlaptest(){
     var msg = "";
     $('ul#chapters li').each(function() {
         if ((id != $(this).attr('data-id')) && new_start == $(this).attr('data-start')) {
-            var text = "{% trans 'The chapter' %}"+ '"' +$(this).attr('data-title')+'"'+ "{% trans 'start at the same time' %}.";
+            var text = "{% trans 'The chapter' %}  "+ '"' +$(this).attr('data-title')+'"'+ "  {% trans 'start at the same time' %}.";
             msg+="<br/>"+ text ;
         }
     });
@@ -333,8 +322,7 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
         }
     }
 });
-/*** Verify if value of field respect form field ***/
-/*** Verify if there is a overlap with over enrich***/
+
 </script>
 
 {% endblock bootstrap3_extra_head %}
@@ -358,9 +346,6 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
         {% include 'videos/video_player.html' with video=video %}
         </span>
 
-        <span id="show_messages" class="alert alert-danger collapse" role="alert" >
-            &nbsp;
-        </span>
         <br/>
         <div class="row" id="info_video">
             <div class="col-sm-9">

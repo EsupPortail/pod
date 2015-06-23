@@ -34,6 +34,7 @@ from datetime import datetime
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
+from django.contrib.sites.models import get_current_site
 # django-taggit
 from taggit.managers import TaggableManager, _TaggableManager, TaggableRel
 from django.core.exceptions import ValidationError
@@ -373,6 +374,12 @@ class Pod(Video):
 
     def is_richmedia(self):
         return self.enrichpods_set.exclude(type=None)
+
+    def get_iframe_admin_integration(self):
+        request = None
+        full_url = ''.join(['//', get_current_site(request).domain, self.get_absolute_url()])
+        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' %full_url
+        return iframe_url
 
 
 @receiver(post_save, sender=Pod)
@@ -859,3 +866,29 @@ class Recorder(models.Model):
     class Meta:
         verbose_name = _("Recorder")
         verbose_name_plural = _("Recorders")
+
+############# REPORT VIDEO
+@python_2_unicode_compatible
+class ReportVideo(models.Model):
+    video = models.ForeignKey(Pod, verbose_name=_('Video'))    
+    user = models.ForeignKey(User, verbose_name=_('User'))
+    comment = models.TextField(null=True, blank=True, verbose_name=_('Comment'))
+    answer = models.TextField(null=True, blank=True, verbose_name=_('Answer'))
+    date_added = models.DateTimeField(
+        'Date', default=datetime.now, editable=False)
+
+    def __unicode__(self):
+        return "%s - %s" % (self.video, self.user)
+
+    def __str__(self):
+        return "%s - %s" % (self.video, self.user)
+
+    def get_iframe_url_to_video(self):
+        return self.video.get_iframe_admin_integration()
+        
+    get_iframe_url_to_video.allow_tags=True 
+
+    class Meta:
+        verbose_name = _("Report")
+        verbose_name_plural = _("Reports")
+

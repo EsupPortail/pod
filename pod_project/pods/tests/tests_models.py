@@ -31,6 +31,7 @@ from filer.models.imagemodels import Image
 from django.test import Client
 from django.test.client import RequestFactory
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from datetime import date, timedelta
 import os
 # Create your tests here.
 """
@@ -736,3 +737,78 @@ class RecoderTestCase(TestCase):
 
         print (
             "   --->  test_delete_object of RecoderTestCase : OK !")
+
+"""              
+    test reportVideo object
+"""
+
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
+class ReportVideoTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type,  title="Video1", slug="tralala", owner=remi)
+        ReportVideo.objects.create(video=pod, user=remi)
+        ReportVideo.objects.create(video=pod, user=remi, comment="violation des droits", answer="accepte")
+
+
+        print (" --->  SetUp of ReportVideoTestCase : OK !")
+
+    """
+        test_attributs_with_not_comment
+    """
+
+    def test_attributs_with_not_comment(self):
+        reportVideo = ReportVideo.objects.get(id=1)
+        self.assertEqual(reportVideo.video.id, 1)
+        self.assertEqual(reportVideo.__unicode__(), "%s - %s" %
+                         (reportVideo.video, reportVideo.user))
+        self.assertEqual(reportVideo.user.username, "Remi")
+        date = datetime.today()
+        self.assertEqual(reportVideo.date_added.year, date.year)
+        self.assertEqual(reportVideo.date_added.month, date.month)
+        self.assertEqual(reportVideo.date_added.day, date.day)
+        self.assertEqual(reportVideo.comment, None)
+        self.assertEqual(reportVideo.answer, None)
+        yesterday = datetime.today() - timedelta(1)
+        reportVideo.date= yesterday
+        self.assertFalse(reportVideo.date_added.day ==  yesterday.day)
+
+        print (
+            "   --->  test_attributs_with_not_comment of ReportVideoTestCase : OK !")
+
+    """
+        test_attributs_with_comment
+    """
+    def test_attributs_with_comment(self):
+        reportVideo = ReportVideo.objects.get(id=2)
+        self.assertEqual(reportVideo.video.id, 1)
+        self.assertEqual(reportVideo.__unicode__(), "%s - %s" %
+                         (reportVideo.video, reportVideo.user))
+        self.assertEqual(reportVideo.user.username, "Remi")
+        date = datetime.today()
+        self.assertEqual(reportVideo.date_added.year, date.year)
+        self.assertEqual(reportVideo.date_added.month, date.month)
+        self.assertEqual(reportVideo.date_added.day, date.day)
+        self.assertEqual(reportVideo.comment, "violation des droits")
+        self.assertEqual(reportVideo.answer, "accepte")
+        self.assertEqual(reportVideo.get_iframe_url_to_video(), reportVideo.video.get_iframe_admin_integration())
+
+        print (
+            "   --->  test_attributs_with_comment of ReportVideoTestCase : OK !")
+
+    """
+        test delete object
+    """
