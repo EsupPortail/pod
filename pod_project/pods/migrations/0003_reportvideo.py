@@ -29,4 +29,14 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.AddField(
+            model_name='reportvideo',
+            name='answer',
+            field=models.TextField(null=True, verbose_name='Answer', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='reportvideo',
+            unique_together=set([('video', 'user')]),
+        ),
     ]
