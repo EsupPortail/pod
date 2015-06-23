@@ -250,7 +250,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
 });
 $(document).on('click', 'button#button_video_report', function (event) {
     event.preventDefault();
-    if($( "#video_report_form" ).length==0){
+    if($(this).parent('form').length==0){
         alert($(this).children('span.sr-only').text());
     } else {
         if(expiration_date_second > 5) {
