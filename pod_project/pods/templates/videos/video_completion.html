@@ -48,13 +48,24 @@ table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
     padding: 5px 10px;
 }
 
-#list_enrich .panel-heading {
+#list_contributor .panel-heading {
     border-bottom: 1px solid transparent;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     padding: 4px 15px;
 }
-
+#list_subtitle .panel-heading {
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 4px 15px;
+}
+#list_download .panel-heading {
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 4px 15px;
+}
 table.scroll tbody,
 table.scroll thead { /*display: block;*/ }
 
@@ -153,11 +164,34 @@ $(document).on("submit", "#page-video form", function (e) {
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
-    var id_input = $(this).attr("id");
-    var form = "form_" + id_input.substring(9,id_input.length);
-    var list = "list_" + id_input.substring(9,id_input.length);
-    var href = $(this).attr("action")
-    if(action == "modify" || action == "new"){
+    var class_form = $(this).attr("class");
+    var id_form =  $(this).attr("id");
+    var form='';
+    var list='';
+    var name_form='';
+    if(id_form === undefined){
+        console.log ("JE SUIS PAS UN BOUTON ADD OU SAVE")
+        var form_input=$(this).find('input[type=submit]').attr("class")
+        console.log(form_input);
+        form="form_" + form_input.substring(4,form_input.length-20);
+        list="list_" + form.substring(5,form.length);
+        name_form=list.substring(5, list.length);
+    }else{
+        if(action == "save"){
+            console.log("SAVE");
+            name_form=id_form.substring(5, id_form.length);
+            console.log(name_form);
+        }else{
+        name_form=id_form.substring(9, id_form.length);
+        }
+        form="form_" + name_form;
+        list="list_" + name_form;
+    }
+    console.log(list);
+    console.log(form);
+    console.log(name_form);
+    var href = $(this).attr("action");
+    /*if(action == "modify" || action == "new"){
         $('form.form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
@@ -166,7 +200,7 @@ $(document).on("submit", "#page-video form", function (e) {
             $('span#' + list).wrapAll("<div class = 'col-sm-6' ></div>");
             $("span#" + form + '.div')
                         .before("<div class = 'row' ></div>");
-            $("form#" + "form_new_" + id_input.substring(9,id_input.length))
+            $("form#" + "form_new_" + name_form)
                         .after("<div class = 'row' ></div>");
         }
 
@@ -186,13 +220,7 @@ $(document).on("submit", "#page-video form", function (e) {
 
                 get_form(data, form);
                 elt.addClass('info');
-                /*
-                if(document.getElementById("id_start").value != 0) {
-                    myPlayer.play();
-                    myPlayer.currentTime(document.getElementById("id_start").value);
-                    myPlayer.pause();
-                }
-                */
+                
             }
         
         });
@@ -237,10 +265,11 @@ $(document).on("submit", "#page-video form", function (e) {
                 show_messages(msg);
             else {
                 var data_form = $("form#"+form).serializeArray();
-                jqxhr = $.post( window.location.origin + href, 
-                    $("form#" + form).attr("action"),
-                    data_form
-                );
+                console.log(form);
+
+                var href = $("form#" + form).attr("action");
+                jqxhr = $.post(window.location.origin + href,  data_form);
+                console.log(jqxhr);
                 jqxhr.done(function(data){
                     console.log(data.list_data)
                     if(data.list_data || data.form) {
@@ -252,7 +281,7 @@ $(document).on("submit", "#page-video form", function (e) {
                         }
                     } else {
                         console.log("bla");
-                        show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                        //show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
                     }
                 });
                 jqxhr.fail(function($xhr) {
@@ -264,7 +293,7 @@ $(document).on("submit", "#page-video form", function (e) {
         }else{
             show_messages("{% trans 'Errors found in the form, please correct it.' %}");
         }
-    }
+    }*/
 });
 
 function show_messages(msg, reload) {
@@ -280,7 +309,7 @@ function refrech_list_and_player(data, form, list){
     $("#"+form).html("");
     $('form.form_new').show();
     $("span#enrich_player").html(data.player);
-    $("span#"+list).html(data.lis_data);
+    $("span#"+list).html(data.list_data);
     manageResize();
     loadVideo();
     //alert("{% trans 'The changes have been saved' %}");
@@ -331,10 +360,10 @@ function get_form(data, form) {
                 {%endif%}
                 <!-- This button will add a new form when clicked -->
                 </span>        
-                <form  class = "form_new" id = "form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
+                <form  class = "form_new" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
-                    <input type="submit" id="add_new_contributor"  value="{% trans "Add a new contributor" %}" class="btn btn-info"/>
+                    <input type="submit" id="add_new_contributor"  value="{% trans "Add a new contributor" %}" class="new_contributor btn btn-info"/>
                 </form>
                 <span id= "form_subtitle">
                 &nbsp;
@@ -348,10 +377,10 @@ function get_form(data, form) {
                     <!-- place for form, it will be replace by a form : empty or to modify -->   
                     {%include 'videos/completion/subtitle/list_subtitle.html'%}
                 </span>         
-                <form  class = "form_new" id = "form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
+                <form  class = "form_new" id="form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
-                    <input type="submit" id="add_new_subtitle"  value="{% trans "Add a new subtitle" %}" class="btn btn-info"/>
+                    <input type="submit" id="add_new_subtitle"  value="{% trans "Add a new subtitle" %}" class="new_subtitle btn btn-info"/>
                 </form>
                 <span id= "form_download">
                 &nbsp;
@@ -366,10 +395,10 @@ function get_form(data, form) {
                     {%include 'videos/completion/download/list_download.html'%}
                     
                 </span>         
-                <form  class = "form_new" id = "form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
+                <form  class = "form_new"  id="form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
-                    <input type="submit" id="add_new_download"  value="{% trans "Add a new download" %}" class="btn btn-info"/>
+                    <input type="submit" id="add_new_download"  value="{% trans "Add a new download" %}" class="new_download btn btn-info"/>
                 </form>
 
 

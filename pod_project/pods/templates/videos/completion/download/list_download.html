@@ -39,19 +39,19 @@ voir http://www.gnu.org/licenses/
       <tr>
         <td class="download_document">{{ download.document }}</td>
         <td>
-          <form  class = "form_modif" id= "form_mod_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
+          <form  class = "form_modif" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="modify">
             <input type="hidden" name="id" value="{{download.id}}">
-            <input type="submit" title="{% trans "Edit the download" %}" value="{% trans "modify" %}" class="btn btn-info btn-sm" />
+            <input type="submit" title="{% trans "Edit the download" %}" value="{% trans "modify" %}" class="edt_download btn btn-info btn-sm" />
           </form>
         </td>
         <td>
-          <form  class = "form_delete" id= "form_del_download"  action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
+          <form  class = "form_delete" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="id" value="{{download.id}}">
-            <input type="submit" title="{% trans "Delete the download" %}" value="{% trans "delete" %}" class="btn btn-danger btn-sm"/>
+            <input type="submit" title="{% trans "Delete the download" %}" value="{% trans "delete" %}" class="del_download btn btn-danger btn-sm"/>
           </form>
         </td>
       </tr>

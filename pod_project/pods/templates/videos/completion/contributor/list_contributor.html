@@ -45,19 +45,19 @@ voir http://www.gnu.org/licenses/
         <td class="contributor_role">{{ contributor.role }}</td>
         <td class="contributor_weblink">{{ contributor.weblink }}</td>
         <td>
-          <form  class = "form_modif" id= "form_mod_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
+          <form  class = "form_modif" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="modify">
             <input type="hidden" name="id" value="{{contributor.id}}">
-            <input type="submit" title="{% trans "Edit the contributor" %}" value="{% trans "modify" %}" class="btn btn-info btn-sm" />
-          </form>
+            <input type="submit" title="{% trans "Edit the contributor" %}" value="{% trans "modify" %}" class="edt_contributor btn btn-info btn-sm" />
+          </form>                                                                                        
         </td>
         <td>
-          <form  class = "form_delete" id= "form_del_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
+          <form  class = "form_delete" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="id" value="{{contributor.id}}">
-            <input type="submit" title="{% trans "Delete the contributor" %}" value="{% trans "delete" %}" class="btn btn-danger btn-sm"/>
+            <input type="submit" title="{% trans "Delete the contributor" %}" value="{% trans "delete" %}" class="del_contributor btn btn-danger btn-sm"/>
           </form>
         </td>
       </tr>

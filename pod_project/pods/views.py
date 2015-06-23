@@ -609,6 +609,7 @@ def video_edit(request, slug=None):
 @csrf_protect
 #@staff_member_required
 def video_completion(request,slug):
+    print "-> JE PASSE video_completion"
     # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
@@ -639,6 +640,8 @@ def video_completion(request,slug):
 @csrf_protect
 #@staff_member_required
 def video_completion_contributor(request, slug):
+    print "-> JE PASSE video_completion_contributor"
+    print request
     video = get_object_or_404(Pod, slug=slug)
     list_contributor = video.contributorpods_set.all()
     list_subtitle = video.trackpods_set.all()
@@ -646,6 +649,8 @@ def video_completion_contributor(request, slug):
     if not request.user.is_authenticated():
         raise PermissionDenied
     if request.POST:
+        print "-> JE PASSE video_completion_contributor POST"
+        print request.POST
         if request.POST.get("action") and request.POST['action'] == 'new':
             form_contributor = ContributorPodsForm({"video": video})
             if request.is_ajax():  # if ajax
@@ -661,6 +666,7 @@ def video_completion_contributor(request, slug):
         # save
         if request.POST.get("action") and request.POST['action'] == 'save':
             form_contributor = None
+            print "-> JE PASSE DANS POST SAVE"
             if request.POST.get("contributor_id") != "None":
                 contributor = get_object_or_404(
                     ContributorPods, id=request.POST.get("contributor_id"))
