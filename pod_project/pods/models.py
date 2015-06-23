@@ -378,7 +378,7 @@ class Pod(Video):
     def get_iframe_admin_integration(self):
         request = None
         full_url = ''.join(['//', get_current_site(request).domain, self.get_absolute_url()])
-        iframe_url = '<iframe src="%s?is_iframe=true&size=80" width="213" height="120" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' %full_url
+        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' %full_url
         return iframe_url
 
 

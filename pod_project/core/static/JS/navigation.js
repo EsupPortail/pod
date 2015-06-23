@@ -266,13 +266,15 @@ $(document).on('click', 'button#button_video_report', function (event) {
     return false;
 });
 
-function show_messages(msg, reload) {
+function show_messages(msg, reload, msgclass) {
+    if(!msgclass||msgclass=='undefined') msgclass='alert-danger';
+    $("#show_messages").attr('class','');
+    $("#show_messages").attr('class','alert '+msgclass+' collapse');
     if($("#show_messages").length) {
         if(reload==true) {
             $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
         } else {
-            button='<br/><br/><input type="button" value="Fermer" id="close_messages" class="btn btn-info btn-sm">';
-            $("#show_messages").html(msg+button).fadeIn();
+            $("#show_messages").html(msg).fadeIn();
         }
     }
 }

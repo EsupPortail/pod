@@ -38,15 +38,15 @@ voir http://www.gnu.org/licenses/
             jqxhr.done(function(data){
                 if(data.msg) {
                     button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
-                    $("#show_messages").html(data.msg+button).fadeIn();
+                    $("#show_messages").html(data.msg+button, false, 'alert-info').fadeIn();
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", true, 'alert-danger');
                 }
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error sending information. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}");
-
+                button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+                show_messages("{% trans 'Error sending information. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}"+button, false, 'alert-danger');
             });
             $('form#video_report_form').show();
             $('#modal_report_form').modal('hide');
