@@ -1424,20 +1424,20 @@ msgid "mail"
 msgstr "courriel"
 
 #: pods/models.py:445 pods/models.py:458
-msgid "authors"
-msgstr "auteurs"
+msgid "author"
+msgstr "auteur"
 
 #: pods/models.py:446
 msgid "director"
 msgstr "directeur"
 
 #: pods/models.py:447
-msgid "editors"
-msgstr "éditeurs"
+msgid "editor"
+msgstr "éditeur"
 
 #: pods/models.py:448
-msgid "designers"
-msgstr "concepteurs"
+msgid "designer"
+msgstr "concepteur"
 
 #: pods/models.py:449
 msgid "contributor"
