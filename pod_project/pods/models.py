@@ -891,4 +891,5 @@ class ReportVideo(models.Model):
     class Meta:
         verbose_name = _("Report")
         verbose_name_plural = _("Reports")
+        unique_together = ('video', 'user',)
 

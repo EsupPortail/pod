@@ -233,15 +233,17 @@ $(document).on('click', 'button#button_video_report', function (event) {
 });
 
 function show_messages(msg, reload, msgclass) {
-    if(!msgclass||msgclass=='undefined') msgclass='alert-danger';
+
+    if(!msgclass||msgclass==='undefined') msgclass='alert-danger';
     $("#show_messages").attr('class','');
     $("#show_messages").attr('class','alert '+msgclass+' collapse');
+
+
     if($("#show_messages").length) {
         if(reload==true) {
             $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
         } else {
-            $("#show_messages").html(msg);//.fadeIn();
-            $("#show_messages").alert();
+            $("#show_messages").html(msg).fadeIn();
         }
     }
 }
