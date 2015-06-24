@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-23 17:42+0200\n"
-"PO-Revision-Date: 2015-06-24 14:30+0100\n"
+"PO-Revision-Date: 2015-06-24 14:40+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -116,6 +116,14 @@ msgstr "Date de mise en ligne"
 #: core/models.py:161
 msgid "Date of event"
 msgstr "Date de l'évènement"
+
+#: core/models.py:165
+msgid "View count"
+msgstr "Nombre de vues"
+
+#: core/models.py:167
+msgid "Encoding in progress"
+msgstr "Encodage en cours"
 
 #: core/models.py:169
 msgid "Encoding status"

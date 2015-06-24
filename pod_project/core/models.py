@@ -162,9 +162,11 @@ class Video(models.Model):
     description = RichTextField(
         _('Description'), config_name='complete', blank=True)
 
-    view_count = models.PositiveIntegerField(default=0, editable=False)
+    view_count = models.PositiveIntegerField(
+        _('View count'), default=0, editable=False)
 
-    encoding_in_progress = models.BooleanField(default=False, editable=False)
+    encoding_in_progress = models.BooleanField(
+        _('Encoding in progress'), default=False, editable=False)
     encoding_status = models.CharField(
         _('Encoding status'), max_length=250, editable=False, blank=True, null=True)
 
