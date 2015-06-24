@@ -1291,7 +1291,7 @@ msgstr "Français"
 
 #: pods/forms.py:128
 msgid "Filetype not allowed! Filetypes allowed: "
-msgstr "Type de fichier non admis! Les types de fichiers acceptés: "
+msgstr "Type de fichier non admis ! Les types de fichiers acceptés sont : "
 
 #: pods/forms.py:134
 msgid "Date of the event"
