@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-23 17:42+0200\n"
-"PO-Revision-Date: 2015-06-24 11:57+0100\n"
+"PO-Revision-Date: 2015-06-24 12:12+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -142,6 +142,14 @@ msgstr "video"
 #: core/models.py:223 pods/models.py:829 pods/models.py:846
 msgid "name"
 msgstr "nom"
+
+#: core/models.py:246
+msgid "encoding type"
+msgstr "réglage d'encodage"
+
+#: core/models.py:247
+msgid "encoding types"
+msgstr "réglages d'encodage"
 
 #: core/models.py:225
 msgid "bitrate_audio"

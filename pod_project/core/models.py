@@ -242,6 +242,10 @@ class EncodingType(models.Model):
     mediatype = models.CharField(
         _('mediatype'), max_length=5, choices=TYPE_CHOICES, default="video")
 
+    class Meta:
+        verbose_name = _("encoding type")
+        verbose_name_plural = _("encoding types")
+
     def __str__(self):
         return "%s %s %s" % (self.mediatype, self.name, self.output_height)
 
