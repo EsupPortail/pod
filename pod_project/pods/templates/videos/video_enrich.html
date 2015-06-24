@@ -236,7 +236,7 @@ $(document).on("submit", "#page-video form", function (e) {
                             show_messages("{% trans 'Changes have been saved.' %}", false, 'alert-info');
                         }
                     } else {
-                        show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
+                        show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} "+button, true, 'alert-danger');
                     }
                 });
                 jqxhr.fail(function($xhr) {

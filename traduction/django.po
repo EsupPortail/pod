@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-24 15:40+0200\n"
-"PO-Revision-Date: 2015-06-24 15:41+0100\n"
+"PO-Revision-Date: 2015-06-24 15:46+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2033,8 +2033,8 @@ msgstr "Supprimer la vidéo"
 #: pods/templates/videos/video_enrich.html:175
 #: pods/templates/videos/video_enrich.html:201
 #: pods/templates/videos/video_enrich.html:239
-msgid "You are no longer authenticated. Please log in again"
-msgstr "Vous n'êtes plus authentifié. Veuillez vous reconencter"
+msgid "You are no longer authenticated. Please log in again."
+msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnecter."
 
 #: pods/templates/videos/video.html:51 pods/templates/videos/video.html:98
 msgid "Error sending information. "
