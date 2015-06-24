@@ -74,7 +74,7 @@ class Channel(models.Model):
                                    null=True, blank=True)
     visible = models.BooleanField(verbose_name=_('Visible'),
                                   help_text=_(
-                                      u'If checked, the channel appear in a list of available channels on the platform'),
+                                      u'If checked, the channel appear in a list of available channels on the platform.'),
                                   default=False)
 
     class Meta:
@@ -303,7 +303,7 @@ class Pod(Video):
     #tags = TaggableManager(help_text=_(u'Séparez les tags par des espaces, mettez les tags constituées de plusieurs mots entre guillemets.'), verbose_name=_('Tags'), blank=True)
 
     is_draft = models.BooleanField(verbose_name=_('Draft'), help_text=_(
-        u'If you check this box, the video will be visible and accessible only by you'), default=True)
+        u'If you check this box, the video will be visible and accessible only by you.'), default=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
         u'The video is accessible only by those who are enabled to authenticate.'), default=False)
     password = models.CharField(_('password'), help_text=_(
@@ -590,37 +590,37 @@ class EnrichPods(models.Model):
     def verify_all_fields(self):
         msg = []
         if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
-            msg.append(_('Please enter a title form 2 to 100 caracteres '))
+            msg.append(_('Please enter a title form 2 to 100 caracteres.'))
 
         if ((self.start == "") or (self.start < 0) or (self.start >= self.video.duration)):
-            msg.append(_('Please enter a correct start field between 0 and %(duration)s') % {
+            msg.append(_('Please enter a correct start field between 0 and %(duration)s.') % {
                        "duration": self.video.duration - 1})
 
         if (not self.end or (self.end == "") or (self.end <= 0) or (self.end > self.video.duration)):
-            msg.append(_('Please enter a correct end field between 1 and %(duration)s') % {
+            msg.append(_('Please enter a correct end field between 1 and %(duration)s.') % {
                        "duration": self.video.duration})
 
         if (self.type == "image"):
             if(not self.image):
-                msg.append(_('Please enter a correct image '))
+                msg.append(_('Please enter a correct image.'))
 
         elif (self.type == "richtext"):
             if(not self.richtext):
-                msg.append(_('Please enter a correct richtext '))
+                msg.append(_('Please enter a correct richtext.'))
 
         elif (self.type == "weblink"):
             if(not self.weblink):
-                msg.append(_('Please enter a correct weblink '))
+                msg.append(_('Please enter a correct weblink.'))
 
         elif (self.type == "document"):
             if(not self.document):
-                msg.append(_('Please enter a correct document '))
+                msg.append(_('Please enter a correct document.'))
 
         elif (self.type == "embed"):
             if(not self.embed):
-                msg.append(_('Please enter a correct embed '))
+                msg.append(_('Please enter a correct embed.'))
         else:
-            msg.append(_('Please enter a type in index field'))
+            msg.append(_('Please enter a type in index field.'))
 
         if (len(msg) > 0):
             return msg
@@ -632,12 +632,12 @@ class EnrichPods(models.Model):
         video = Pod.objects.get(id=self.video.id)
         if(self.start > self.end):
             msg.append(
-                _('the value of the start field is greater than the value of end field '))
+                _('The value of the start field is greater than the value of end field.'))
         elif(self.end > video.duration):
             msg.append(
-                _('the value of end field is greater than the video duration'))
+                _('The value of end field is greater than the video duration.'))
         elif (self.start == self.end):
-            msg.append(_('end field and start field can\'t be equal'))
+            msg.append(_('End field and start field can\'t be equal.'))
 
         if (len(msg) > 0):
             return msg
@@ -656,7 +656,7 @@ class EnrichPods(models.Model):
             for element in list_enrichment:
                 if not ((self.start < element.start and self.end <= element.start) or (self.start >= element.end and self.end > element.end)):
                     msg.append(_("There is a overlap with the " + element.title +
-                                 " enrich, please change end field and start field "))
+                                 " enrichment, please change end field and start field."))
             if len(msg) > 0:
                 return msg
         return []
@@ -690,7 +690,7 @@ class ChapterPods(models.Model):
                             editable=False)
 
     time = models.PositiveIntegerField(
-        _('Start time'), default=0, help_text=_('Start time in second of the chapter'))
+        _('Start time'), default=0, help_text=_('Start time in second of the chapter.'))
 
     class Meta:
         verbose_name = _("Chapter")
@@ -713,10 +713,10 @@ class ChapterPods(models.Model):
     def verify_start_title_items(self):
         msg = []
         if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
-            msg.append(_('Please enter a title form 2 to 100 caracteres '))
+            msg.append(_('Please enter a title form 2 to 100 caracteres.'))
 
         if ((self.time == "") or (self.time < 0) or (self.time >= self.video.duration)):
-            msg.append(_('Please enter a correct start field between 0 and %(duration)s') % {
+            msg.append(_('Please enter a correct start field between 0 and %(duration)s.') % {
                        "duration": self.video.duration - 1})
         if len(msg) > 0:
             return msg
@@ -734,7 +734,7 @@ class ChapterPods(models.Model):
             for element in list_chapter:
                 if self.time == element.time:
                     msg.append(
-                        _("There is a overlap with the " + element.title + " chapter, please change start time field "))
+                        _("There is a overlap with the " + element.title + " chapter, please change start time field."))
             if len(msg) > 0:
                 return msg
         return []
