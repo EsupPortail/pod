@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-23 17:42+0200\n"
-"PO-Revision-Date: 2015-06-24 12:12+0100\n"
+"PO-Revision-Date: 2015-06-24 14:22+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1432,12 +1432,12 @@ msgid "Format"
 msgstr "format"
 
 #: pods/models.py:429
-msgid "Encoding Pod"
-msgstr ""
+msgid "encoding"
+msgstr "encodage"
 
 #: pods/models.py:430
-msgid "Encodings Pod"
-msgstr ""
+msgid "encodings"
+msgstr "encodages"
 
 #: pods/models.py:448
 msgid "lastname / firstname"

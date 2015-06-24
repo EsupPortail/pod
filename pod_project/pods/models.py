@@ -377,8 +377,9 @@ class Pod(Video):
 
     def get_iframe_admin_integration(self):
         request = None
-        full_url = ''.join(['//', get_current_site(request).domain, self.get_absolute_url()])
-        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' %full_url
+        full_url = ''.join(
+            ['//', get_current_site(request).domain, self.get_absolute_url()])
+        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % full_url
         return iframe_url
 
 
@@ -426,8 +427,8 @@ class EncodingPods(models.Model):
         _('Format'), max_length=12, choices=FORMAT_CHOICES, default="video/mp4")
 
     class Meta:
-        verbose_name = _("Encoding Pod")
-        verbose_name_plural = _("Encodings Pod")
+        verbose_name = _("encoding")
+        verbose_name_plural = _("encodings")
 
     def __unicode__(self):
         return u"Video:%s - EncodingType:%s - EncodingFile:%s" % (self.video, self.encodingType, self.encodingFile)
@@ -867,12 +868,15 @@ class Recorder(models.Model):
         verbose_name = _("Recorder")
         verbose_name_plural = _("Recorders")
 
-############# REPORT VIDEO
+# REPORT VIDEO
+
+
 @python_2_unicode_compatible
 class ReportVideo(models.Model):
-    video = models.ForeignKey(Pod, verbose_name=_('Video'))    
+    video = models.ForeignKey(Pod, verbose_name=_('Video'))
     user = models.ForeignKey(User, verbose_name=_('User'))
-    comment = models.TextField(null=True, blank=True, verbose_name=_('Comment'))
+    comment = models.TextField(
+        null=True, blank=True, verbose_name=_('Comment'))
     answer = models.TextField(null=True, blank=True, verbose_name=_('Answer'))
     date_added = models.DateTimeField(
         'Date', default=datetime.now, editable=False)
@@ -885,11 +889,10 @@ class ReportVideo(models.Model):
 
     def get_iframe_url_to_video(self):
         return self.video.get_iframe_admin_integration()
-        
-    get_iframe_url_to_video.allow_tags=True 
+
+    get_iframe_url_to_video.allow_tags = True
 
     class Meta:
         verbose_name = _("Report")
         verbose_name_plural = _("Reports")
         unique_together = ('video', 'user',)
-
