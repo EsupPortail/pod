@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-23 17:42+0200\n"
-"PO-Revision-Date: 2015-06-24 11:40+0100\n"
+"PO-Revision-Date: 2015-06-24 11:53+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -226,7 +226,7 @@ msgstr "Nom"
 #: core/templates/admin/filer/folder/directory_table.html:29
 #, python-format
 msgid "Change '%(item_label)s' folder details"
-msgstr ""
+msgstr "Modifier les informations du dossier '%(item_label)s'"
 
 #: core/templates/admin/filer/folder/directory_table.html:23
 msgid "Folder Icon"
@@ -235,27 +235,27 @@ msgstr "dossier"
 #: core/templates/admin/filer/folder/directory_table.html:27
 #: core/templates/admin/filer/folder/directory_table.html:55
 msgid "Change"
-msgstr ""
+msgstr "Modifier"
 
 #: core/templates/admin/filer/folder/directory_table.html:29
 #, python-format
 msgid "1 folder"
 msgid_plural "%(counter)s folders"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 dossier"
+msgstr[1] "%(counter)s dossiers"
 
 #: core/templates/admin/filer/folder/directory_table.html:29
 #, python-format
 msgid "1 file"
 msgid_plural "%(counter)s files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 fichier"
+msgstr[1] "%(counter)s fichiers"
 
 #: core/templates/admin/filer/folder/directory_table.html:36
 #: core/templates/admin/filer/folder/directory_table.html:44
 #: core/templates/admin/filer/folder/directory_table.html:61
 msgid "Select this file"
-msgstr ""
+msgstr "Sélectionner ce fichier"
 
 #: core/templates/admin/filer/folder/directory_table.html:40
 #: core/templates/admin/filer/folder/directory_table.html:46
@@ -263,12 +263,12 @@ msgstr ""
 #: core/templates/admin/filer/folder/directory_table.html:63
 #, python-format
 msgid "Change '%(item_label)s' details"
-msgstr ""
+msgstr "Modifier les informations de '%(item_label)s'"
 
 #: core/templates/admin/filer/folder/directory_table.html:54
 #, python-format
 msgid "Delete '%(item_label)s'"
-msgstr ""
+msgstr "Supprimer '%(item_label)s'"
 
 #: core/templates/admin/filer/folder/directory_table.html:54
 #: pods/templates/channels/channel_edit.html:130
@@ -294,23 +294,23 @@ msgstr "Permissions"
 
 #: core/templates/admin/filer/folder/directory_table.html:71
 msgid "disabled"
-msgstr ""
+msgstr "désactivé"
 
 #: core/templates/admin/filer/folder/directory_table.html:71
 msgid "enabled"
-msgstr ""
+msgstr "activé"
 
 #: core/templates/admin/filer/folder/directory_table.html:75
 msgid "Move to clipboard"
-msgstr ""
+msgstr "Déplacer vers le presse-papier"
 
 #: core/templates/admin/filer/folder/directory_table.html:83
 msgid "there are no files or subfolders"
-msgstr ""
+msgstr "il n’y a aucun fichier ni sous-dossier"
 
 #: core/templates/admin/filer/folder/directory_table.html:90
 msgid "previous"
-msgstr ""
+msgstr "précédent"
 
 #: core/templates/admin/filer/folder/directory_table.html:94
 #, python-format
@@ -319,10 +319,13 @@ msgid ""
 "            Page %(number)s of %(num_pages)s.\n"
 "            "
 msgstr ""
+"\n"
+"            Page %(number)s sur %(num_pages)s.\n"
+"            "
 
 #: core/templates/admin/filer/folder/directory_table.html:100
 msgid "next"
-msgstr ""
+msgstr "suivant"
 
 #: core/templates/admin/filer/image/change_form.html:9
 msgid "History"
