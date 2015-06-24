@@ -655,8 +655,8 @@ class EnrichPods(models.Model):
         if len(list_enrichment) > 0:
             for element in list_enrichment:
                 if not ((self.start < element.start and self.end <= element.start) or (self.start >= element.end and self.end > element.end)):
-                    msg.append(_("There is a overlap with the " + element.title +
-                                 " enrichment, please change end field and start field."))
+                    msg.append(_("There is an overlap with the enrichment " + element.title +
+                                 ", please change start and/or end values."))
             if len(msg) > 0:
                 return msg
         return []
@@ -734,7 +734,7 @@ class ChapterPods(models.Model):
             for element in list_chapter:
                 if self.time == element.time:
                     msg.append(
-                        _("There is a overlap with the " + element.title + " chapter, please change start time field."))
+                        _("There is an overlap with the chapter " + element.title + ", please change start and/or end values."))
             if len(msg) > 0:
                 return msg
         return []

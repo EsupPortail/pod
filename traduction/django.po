@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-24 15:40+0200\n"
-"PO-Revision-Date: 2015-06-24 15:46+0100\n"
+"POT-Creation-Date: 2015-06-24 16:28+0200\n"
+"PO-Revision-Date: 2015-06-24 16:41+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1668,8 +1668,8 @@ msgstr ""
 msgid "End field and start field can't be equal."
 msgstr "Le commencement et la fin ne peuvent être équivalent."
 
-#: pods/models.py:658 pods/models.py:737
-msgid "There is a overlap with the "
+#: pods/models.py:658 pods/templates/videos/video_enrich.html:413
+msgid "There is an overlap with the enrichment "
 msgstr "Il y a un chevauchement avec l'enrichissement "
 
 #: pods/models.py:693 pods/templates/videos/chapter/list_chapter.html:32
@@ -1690,6 +1690,10 @@ msgstr "Chapitre"
 #: pods/models.py:697
 msgid "Chapters"
 msgstr "Chapitres"
+
+#: pods/models.py:737
+msgid "There is an overlap with the chapter "
+msgstr "Il y a un chevauchement avec le chapitre "
 
 #: pods/models.py:767
 msgid "Favorite"
@@ -2032,8 +2036,9 @@ msgstr "Supprimer la vidéo"
 #: pods/templates/videos/video_chapter.html:248
 #: pods/templates/videos/video_enrich.html:175
 #: pods/templates/videos/video_enrich.html:201
-#: pods/templates/videos/video_enrich.html:239
-msgid "You are no longer authenticated. Please log in again."
+#, fuzzy
+#| msgid "You are no longer authenticated. Please log in again."
+msgid "You are no longer authenticated. Please log in again"
 msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnecter."
 
 #: pods/templates/videos/video.html:51 pods/templates/videos/video.html:98
@@ -2453,6 +2458,10 @@ msgstr "Etes-vous sûr de vouloir supprimer cet enrichissement"
 msgid "Changes have been saved."
 msgstr "Les modifications ont été enregistrées."
 
+#: pods/templates/videos/video_enrich.html:239
+msgid "You are no longer authenticated. Please log in again."
+msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnecter."
+
 #: pods/templates/videos/video_enrich.html:324
 msgid "Please enter a correct start from 0 to "
 msgstr "Veuillez renseigner un commencement entre 0 et "
@@ -2505,13 +2514,9 @@ msgstr "la valeur de fin d'enrichissement est supérieur à la durée de la vid�
 msgid "end field and start field cannot be equal."
 msgstr "le commencement et la fin ne peuvent être équivalent"
 
-#: pods/templates/videos/video_enrich.html:413
-msgid "There is a overlap with the enrich : "
-msgstr "Il y a un chevauchement avec l'enrichissement :"
-
 #: pods/templates/videos/video_enrich.html:414
-msgid "Please change Start and End values"
-msgstr "Veuillez changer les valeurs de début et de fin d'affichage."
+msgid ", please change start and/or end values."
+msgstr ", veuillez modifier les valeurs de début et/ou de fin."
 
 #: pods/templates/videos/video_enrich.html:426
 #: pods/templates/videos/video_enrich.html:437
@@ -2772,13 +2777,16 @@ msgstr ""
 msgid "New mediacourse added"
 msgstr "Nouveaux médiacours ajoutés"
 
+#~ msgid "There is a overlap with the enrich : "
+#~ msgstr "Il y a un chevauchement avec l'enrichissement :"
+
+#~ msgid "Please change Start and End values"
+#~ msgstr "Veuillez changer les valeurs de début et de fin d'affichage."
+
 #, fuzzy
 #~| msgid "Please enter a title from 2 to 100 characters."
 #~ msgid "Please enter a title from 2 to 100 caracteres."
 #~ msgstr "Veuillez renseigner un titre contenant entre 2 et 100 caractères."
-
-#~ msgid " enrichment, please change end field and start field."
-#~ msgstr ", veuillez changer les valeurs de début et de fin."
 
 #~ msgid "voice-over"
 #~ msgstr "narrateur"

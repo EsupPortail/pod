@@ -410,8 +410,8 @@ function overlaptest(){
         var data_start = parseInt($(this).attr('data-start'));
         var data_end = parseInt($(this).attr('data-end'));
         if (id != $(this).attr('data-id') && !(new_start< data_start && new_end <= data_start || new_start >= data_end &&  new_end > data_end)){
-            var text = "{% trans 'There is a overlap with the enrich : '%}" + '"' +$(this).attr('data-title')+'". ' ;
-            text += "{% trans 'Please change Start and End values' %}.";
+            var text = "{% trans 'There is an overlap with the enrichment '%}" + '"' +$(this).attr('data-title')+'"' ;
+            text += "{% trans ', please change start and/or end values.' %}.";
             msg+="<br/>"+ text ;
         }
     });
