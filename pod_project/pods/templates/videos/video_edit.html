@@ -133,7 +133,7 @@ var name = "";
 {{ block.super }}
 
 {% if form.instance.title %}
-<li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li> <li class="active">{% trans "Editing the video" %} {{form.instance.title}} </li>
+<li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li> <li class="active">{% trans "Editing the video" %} "{{form.instance.title}}"</li>
 {% else %}
 <li class="active">{% trans "Add a new video" %}</li>
 {% endif %}
@@ -161,7 +161,7 @@ var name = "";
 
 {% block article_title %}
 {% if form.instance.title %}
-{% trans "Editing the video" %} {{form.instance.title}}
+{% trans "Editing the video" %} "{{form.instance.title}}"
 {% else %}
 {% trans "Add a new video" %}
 {% endif %}
@@ -201,7 +201,7 @@ CKEDITOR.addCss('p{margin-left: auto; margin-right: auto;}');
         {% bootstrap_icon "save" %} {% trans "Save" %}
     </button>
     <button type="submit" class="btn btn-success" value="{% trans "Save and back to the previous page" %}" name="action2">
-        {% bootstrap_icon "save" %} {% trans "Save and back to the previous page" %}
+        {% bootstrap_icon "save" %} {% trans "Save and return to the previous page" %}
     </button>
     <button type="submit" class="btn btn-success" value="{% trans "Save and watch the video" %}" name="action3">
         {% bootstrap_icon "save" %} {% trans "Save and watch the video" %}

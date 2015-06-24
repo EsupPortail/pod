@@ -23,13 +23,23 @@ from filer.models.imagemodels import Image
 from django.core.files import File
 from core.models import FileBrowse
 from django.contrib.auth.models import User, Group
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.contrib.auth import authenticate
-
+from django.conf import settings
+import os
 
 # Create your tests here.
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class User_ProfileTestView(TestCase):
     fixtures = ['initial_data.json', ]
 

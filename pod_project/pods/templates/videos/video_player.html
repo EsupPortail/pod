@@ -121,32 +121,32 @@ voir http://www.gnu.org/licenses/
         <div class="vjs-slide">&nbsp;</div>
         <div class="vjs-title">&nbsp;</div>
         <ul id="slides">
-            {% for chap in video.enrichpods_set.all %}
+            {% for enrich in video.enrichpods_set.all %}
                 <li
-                    data-start="{{ chap.start }}"
-                    data-end="{{ chap.end }}"
-                    data-id="{{ chap.id }}"
-                    data-type="{{ chap.type }}"
-                    data-title="{{ chap.title }}"
-                    data-stop-video="{{ chap.stop_video }}"
+                    data-start="{{ enrich.start }}"
+                    data-end="{{ enrich.end }}"
+                    data-id="{{ enrich.id }}"
+                    data-type="{{ enrich.type }}"
+                    data-title="{{ enrich.title }}"
+                    data-stop-video="{{ enrich.stop_video }}"
                 >
-                    {% if chap.type %}
+                    {% if enrich.type %}
                         <div class="content" >
                             <noscript>
-                                {% if chap.type == 'image' %}
-                                    <img src="{{ chap.image.url }}" alt="{{ chap.title }}" />
+                                {% if enrich.type == 'image' %}
+                                    <img src="{{ enrich.image.url }}" alt="{{ enrich.title }}" />
                                 {% endif %}
-                                {% if chap.type == 'richtext' %}
-                                    <div id="caption_texte" >{{ chap.richtext|safe }}</div>
+                                {% if enrich.type == 'richtext' %}
+                                    <div id="caption_texte" >{{ enrich.richtext|safe }}</div>
                                 {% endif %}
-                                {% if chap.type == 'weblink' %}
-                                    <object type="text/html" data="{{ chap.weblink }}" title="{{ chap.title }}"></object>
+                                {% if enrich.type == 'weblink' %}
+                                    <object type="text/html" data="{{ enrich.weblink }}" title="{{ enrich.title }}"></object>
                                 {% endif %}
-                                {% if chap.type == 'document' %}
-                                    <object type="text/html" data="{{ chap.document.url }}" title="{{ chap.title }}"></object>
+                                {% if enrich.type == 'document' %}
+                                    <object type="text/html" data="{{ enrich.document.url }}" title="{{ enrich.title }}"></object>
                                 {% endif %}
-                                {% if chap.type == 'embed' %}
-                                    <div id="caption_embed">{{ chap.embed|safe }}</div>
+                                {% if enrich.type == 'embed' %}
+                                    <div id="caption_embed">{{ enrich.embed|safe }}</div>
                                 {% endif %}
                             </noscript>
                         </div>
@@ -158,7 +158,9 @@ voir http://www.gnu.org/licenses/
     {% if video.chapterpods_set.all %}
         <ul id="chapters">
             {% for chap in video.chapterpods_set.all %}
-                <li data-start="{{ chap.time }}" data-title="{{ chap.title }}">{{ chap.title }}</li>
+                <li data-start="{{ chap.time }}"
+                    data-id="{{ chap.id }}"
+                    data-title="{{ chap.title }}">{{ chap.title }}</li>
             {% endfor %}
         </ul>
     {% endif %}

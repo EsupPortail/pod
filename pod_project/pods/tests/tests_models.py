@@ -22,10 +22,8 @@ voir http://www.gnu.org/licenses/
 from django.core.files import File
 from core.models import *
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from pods.models import *
-import urllib3
-import shutil
 from django.core.files.temp import NamedTemporaryFile
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User, Group
@@ -33,13 +31,22 @@ from filer.models.imagemodels import Image
 from django.test import Client
 from django.test.client import RequestFactory
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from datetime import date, timedelta
+import os
 # Create your tests here.
 """
     test the channel
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+    )
 class ChannelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -106,7 +113,16 @@ class ChannelTestCase(TestCase):
 	test the theme
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class ThemeTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -161,7 +177,16 @@ class ThemeTestCase(TestCase):
 	test the type
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class TypeTestCase(TestCase):
 
     def setUp(self):
@@ -212,7 +237,16 @@ class TypeTestCase(TestCase):
 	test the discipline
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class DisciplineTestCase(TestCase):
 
     def setUp(self):
@@ -263,7 +297,16 @@ class DisciplineTestCase(TestCase):
 	test the NextAutoIncrement
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class NextAutoIncrementTestCase(TestCase):
 
     def setUp(self):
@@ -290,20 +333,23 @@ class NextAutoIncrementTestCase(TestCase):
 	test the objet pod and Video
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class VideoTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
         remi = User.objects.create_user("Remi")
         other_type = Type.objects.get(id=1)
-        url = "http://pod.univ-lille1.fr/media/"
-        # url = "http://fms.univ-lille1.fr/vod/videos/media/videos/ncan/730/video_730_240.mp4"
-        http = urllib3.PoolManager()
-        tempfile = NamedTemporaryFile(delete=True)
-        with http.request('GET', url, preload_content=False) as r, open(tempfile.name, 'wb') as out_file:
-            shutil.copyfileobj(r, out_file)
-        pod = Pod.objects.create(
+        Pod.objects.create(
             type=other_type, title="Video1", owner=remi, video="", to_encode=False)
         Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
                            date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video="/media/videos/remi/test.mp4", allow_downloading=True, view_count=2, description="fl",
@@ -420,7 +466,16 @@ class VideoTestCase(TestCase):
 	test the favorites object
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class FavoritesTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -462,7 +517,16 @@ class FavoritesTestCase(TestCase):
 	test the objet Notes
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class NotesTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -511,7 +575,16 @@ class NotesTestCase(TestCase):
 	test the MediaCourses
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class MediaCoursesTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -567,7 +640,16 @@ class MediaCoursesTestCase(TestCase):
 	test building object
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class BuildingTestCase(TestCase):
 
     def setUp(self):
@@ -601,7 +683,16 @@ class BuildingTestCase(TestCase):
 	test recorder object
 """
 
-
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
 class RecoderTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -646,3 +737,78 @@ class RecoderTestCase(TestCase):
 
         print (
             "   --->  test_delete_object of RecoderTestCase : OK !")
+
+"""              
+    test reportVideo object
+"""
+
+@override_settings(
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE = 'en'
+    )
+class ReportVideoTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type,  title="Video1", slug="tralala", owner=remi)
+        ReportVideo.objects.create(video=pod, user=remi)
+        ReportVideo.objects.create(video=pod, user=remi, comment="violation des droits", answer="accepte")
+
+
+        print (" --->  SetUp of ReportVideoTestCase : OK !")
+
+    """
+        test_attributs_with_not_comment
+    """
+
+    def test_attributs_with_not_comment(self):
+        reportVideo = ReportVideo.objects.get(id=1)
+        self.assertEqual(reportVideo.video.id, 1)
+        self.assertEqual(reportVideo.__unicode__(), "%s - %s" %
+                         (reportVideo.video, reportVideo.user))
+        self.assertEqual(reportVideo.user.username, "Remi")
+        date = datetime.today()
+        self.assertEqual(reportVideo.date_added.year, date.year)
+        self.assertEqual(reportVideo.date_added.month, date.month)
+        self.assertEqual(reportVideo.date_added.day, date.day)
+        self.assertEqual(reportVideo.comment, None)
+        self.assertEqual(reportVideo.answer, None)
+        yesterday = datetime.today() - timedelta(1)
+        reportVideo.date= yesterday
+        self.assertFalse(reportVideo.date_added.day ==  yesterday.day)
+
+        print (
+            "   --->  test_attributs_with_not_comment of ReportVideoTestCase : OK !")
+
+    """
+        test_attributs_with_comment
+    """
+    def test_attributs_with_comment(self):
+        reportVideo = ReportVideo.objects.get(id=2)
+        self.assertEqual(reportVideo.video.id, 1)
+        self.assertEqual(reportVideo.__unicode__(), "%s - %s" %
+                         (reportVideo.video, reportVideo.user))
+        self.assertEqual(reportVideo.user.username, "Remi")
+        date = datetime.today()
+        self.assertEqual(reportVideo.date_added.year, date.year)
+        self.assertEqual(reportVideo.date_added.month, date.month)
+        self.assertEqual(reportVideo.date_added.day, date.day)
+        self.assertEqual(reportVideo.comment, "violation des droits")
+        self.assertEqual(reportVideo.answer, "accepte")
+        self.assertEqual(reportVideo.get_iframe_url_to_video(), reportVideo.video.get_iframe_admin_integration())
+
+        print (
+            "   --->  test_attributs_with_comment of ReportVideoTestCase : OK !")
+
+    """
+        test delete object
+    """
