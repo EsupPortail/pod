@@ -470,6 +470,37 @@ class ContributorPods(models.Model):
         verbose_name = _("Contributor Pod")
         verbose_name_plural = _("Contributors Pod")
 
+    def clean(self):
+        # Don't allow draft entries to have a pub_date.
+        msg = []
+        msg = self.verify_attributs() + self.verify_not_same_contributor()
+        if(len(msg) > 0):
+            raise ValidationError(msg)
+    def verify_attributs(self):
+        msg = []
+        if not self.name  or self.name == "" or len(self.name) < 2 or len(self.name) > 200:
+            msg.append(_('please enter a name between 2 to 200 caracteres.'))
+        if len(self.weblink)> 200:
+            msg.append(_('you cannot enter a weblink with more than 200 caracteres.'))
+        if not self.role:
+            msg.append(_('please enter a role. '))
+        if (len(msg) > 0):
+            return msg
+        else:
+            return []
+    def verify_not_same_contributor(self):
+        msg = []
+        instance = None
+        list_contributorpods = ContributorPods.objects.filter(video=self.video)
+        if instance:
+            list_contributorpods = list_contributorpods.exclude(id=instance.id)
+        if len(list_contributorpods) > 0:
+            for element in list_contributorpods:
+                if self.name == element.name and self.role == element.role:
+                    msg.append(_("there is already a contributor with this same name and role in the list."))
+                    return msg        
+        return []
+
     def __unicode__(self):
         return u"Video:%s - Name:%s - Role:%s" % (self.video, self.name, self.role)
 
@@ -503,6 +534,38 @@ class TrackPods(models.Model):
         verbose_name = _("Track Pod")
         verbose_name_plural = _("Tracks Pod")
 
+    def clean(self):
+        # Don't allow draft entries to have a pub_date.
+        msg = []
+        msg = self.verify_attributs() + self.verify_not_same_trackpod()
+        if(len(msg) > 0):
+            raise ValidationError(msg)
+
+    def verify_attributs(self):
+        msg = []
+        if not self.kind or (self.kind != "subtitles" and self.kind != "captions"):
+            msg.append(_('Please enter a correct kind.'))
+        if not self.lang or (self.lang in settings.PREF_LANG_CHOICES or self.lang in settings.ALL_LANG_CHOICES):
+            msg.append(_('Please enter a correct lang.'))
+        if (len(msg) > 0):
+            return msg
+        else:
+            return []
+
+    def verify_not_same_trackpod(self):
+        msg = []
+        instance = None
+        list_trackpods = TrackPods.objects.filter(video=self.video)
+        if instance:
+            list_trackpods = list_trackpods.exclude(id=instance.id)
+        if len(list_trackpods) > 0:
+            for element in list_trackpods:
+                if self.kind == element.kind and self.lang == element.lang:
+                    msg.append(_("there is already a subtitle with this same kind and language in the list."))
+                    return msg        
+        return []
+
+
     def __unicode__(self):
         return u"%s - File: %s - Video: %s" % (self.kind, self.src, self.video)
 
@@ -524,6 +587,36 @@ class DocPods(models.Model):
 
     def __str__(self):
         return u"Document: %s - video: %s" % (self.document, self.video)
+    def clean(self):
+        # Don't allow draft entries to have a pub_date.
+        msg = []
+        msg = self.verify_document() + self.verify_not_same_document()
+        if(len(msg) > 0):
+            raise ValidationError(msg)
+
+    def verify_document(self):
+        msg = []
+        if not self.document:
+            msg.append(_('please enter a document '))
+
+        if (len(msg) > 0):
+            return msg
+        else:
+            return []
+
+    def verify_not_same_document(self):
+        msg = []
+        instance = None
+        list_docpods = DocPods.objects.filter(video=self.video)
+        if instance:
+            list_docpods = list_docpods.exclude(id=instance.id)
+        if len(list_docpods) > 0:
+            for element in list_docpods:
+                if self.document == element.document:
+                    msg.append(_("this document is already contained in the list."))
+            if len(msg) > 0:
+                return msg
+        return []
 
     def icon(self):
         return self.document.name.split('.')[-1]
@@ -589,37 +682,37 @@ class EnrichPods(models.Model):
     def verify_all_fields(self):
         msg = []
         if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
-            msg.append(_('Please enter a title form 2 to 100 caracteres '))
+            msg.append(_('please enter a title form 2 to 100 caracteres. '))
 
         if ((self.start == "") or (self.start < 0) or (self.start >= self.video.duration)):
-            msg.append(_('Please enter a correct start field between 0 and %(duration)s') % {
+            msg.append(_('please enter a correct start field between 0 and %(duration)s') % {
                        "duration": self.video.duration - 1})
 
         if (not self.end or (self.end == "") or (self.end <= 0) or (self.end > self.video.duration)):
-            msg.append(_('Please enter a correct end field between 1 and %(duration)s') % {
+            msg.append(_('please enter a correct end field between 1 and %(duration)s') % {
                        "duration": self.video.duration})
 
         if (self.type == "image"):
             if(not self.image):
-                msg.append(_('Please enter a correct image '))
+                msg.append(_('please enter a correct image. '))
 
         elif (self.type == "richtext"):
             if(not self.richtext):
-                msg.append(_('Please enter a correct richtext '))
+                msg.append(_('please enter a correct richtext. '))
 
         elif (self.type == "weblink"):
             if(not self.weblink):
-                msg.append(_('Please enter a correct weblink '))
+                msg.append(_('please enter a correct weblink. '))
 
         elif (self.type == "document"):
             if(not self.document):
-                msg.append(_('Please enter a correct document '))
+                msg.append(_('please enter a correct document. '))
 
         elif (self.type == "embed"):
             if(not self.embed):
-                msg.append(_('Please enter a correct embed '))
+                msg.append(_('please enter a correct embed. '))
         else:
-            msg.append(_('Please enter a type in index field'))
+            msg.append(_('please enter a type in index field.'))
 
         if (len(msg) > 0):
             return msg
@@ -631,12 +724,12 @@ class EnrichPods(models.Model):
         video = Pod.objects.get(id=self.video.id)
         if(self.start > self.end):
             msg.append(
-                _('the value of the start field is greater than the value of end field '))
+                _('the value of the start field is greater than the value of end field. '))
         elif(self.end > video.duration):
             msg.append(
-                _('the value of end field is greater than the video duration'))
+                _('the value of end field is greater than the video duration.'))
         elif (self.start == self.end):
-            msg.append(_('end field and start field can\'t be equal'))
+            msg.append(_('End field and start field can\'t be equal.'))
 
         if (len(msg) > 0):
             return msg
@@ -654,8 +747,8 @@ class EnrichPods(models.Model):
         if len(list_enrichment) > 0:
             for element in list_enrichment:
                 if not ((self.start < element.start and self.end <= element.start) or (self.start >= element.end and self.end > element.end)):
-                    msg.append(_("There is a overlap with the " + element.title +
-                                 " enrich, please change end field and start field "))
+                    msg.append(_("there is a overlap with the " + element.title +
+                                 " enrich, please change end field and start field. "))
             if len(msg) > 0:
                 return msg
         return []
@@ -689,7 +782,7 @@ class ChapterPods(models.Model):
                             editable=False)
 
     time = models.PositiveIntegerField(
-        _('Start time'), default=0, help_text=_('Start time in second of the chapter'))
+        _('Start time'), default=0, help_text=_('Start time in second of the chapter.'))
 
     class Meta:
         verbose_name = _("Chapter")
@@ -712,10 +805,10 @@ class ChapterPods(models.Model):
     def verify_start_title_items(self):
         msg = []
         if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
-            msg.append(_('Please enter a title form 2 to 100 caracteres '))
+            msg.append(_('please enter a title form 2 to 100 caracteres. '))
 
         if ((self.time == "") or (self.time < 0) or (self.time >= self.video.duration)):
-            msg.append(_('Please enter a correct start field between 0 and %(duration)s') % {
+            msg.append(_('please enter a correct start field between 0 and %(duration)s') % {
                        "duration": self.video.duration - 1})
         if len(msg) > 0:
             return msg
@@ -733,7 +826,7 @@ class ChapterPods(models.Model):
             for element in list_chapter:
                 if self.time == element.time:
                     msg.append(
-                        _("There is a overlap with the " + element.title + " chapter, please change start time field "))
+                        _("there is a overlap with the " + element.title + " chapter, please change start time field. "))
             if len(msg) > 0:
                 return msg
         return []
