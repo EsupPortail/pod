@@ -306,7 +306,7 @@ RECORDER_SALT = "abcdefgh"
 # if set it's used to test download and encode video in test
 #HTTP_PROXY = 'http://localhost:3128/'
 
-#Notification d'alerte sur les vidéos
+#Signalement des vidéos
 SHOW_REPORT = True
 REPORT_VIDEO_MAIL_TO = ['alert@univ.fr']
 
