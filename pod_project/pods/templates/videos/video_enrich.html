@@ -218,7 +218,7 @@ $(document).on("submit", "#page-video form", function (e) {
             msg += verify_end_start_items();
             msg += overlaptest();
             if(msg != "") {
-                show_messages(msg+button, false, 'alert-info');
+                show_messages(msg+button, false, 'alert-danger');
             } else {
                 var data_form = $( "form#form_enrich" ).serializeArray();
                 jqxhr = $.post(
