@@ -37,7 +37,7 @@ voir http://www.gnu.org/licenses/
             {% bootstrap_field field %}
         {% endfor %}
         {% if form_subtitle.instance %}
-        <input type="hidden" id = "id_enrich" name="enrich_id" value="{{form_subtitle.instance.id}}">
+        <input type="hidden" id = "id_subtitle" name="subtitle_id" value="{{form_subtitle.instance.id}}">
         {% endif %}
         <input type="hidden" name="action" value="save">
         <input type="submit" id="save_subtitle" value="{% trans "save"%}" class="btn btn-info" />
