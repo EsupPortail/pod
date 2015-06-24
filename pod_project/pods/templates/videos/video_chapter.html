@@ -180,7 +180,7 @@ $(document).on("submit", "#page-video form", function (e) {
         }
         jqxhr.done(function(data){
             if(data.indexOf("form_chapter")==-1) {
-                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", true, 'alert-danger');
+                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'alert-danger');
             } else {
                 get_form(data);
                 elt.addClass('info');
@@ -206,7 +206,7 @@ $(document).on("submit", "#page-video form", function (e) {
                 if(data.list_chapter) {
                     refrech_list_and_player(data);
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} "+button, true, 'alert-danger');
                 }
             });
             jqxhr.fail(function($xhr) {
@@ -245,7 +245,7 @@ $(document).on("submit", "#page-video form", function (e) {
                             manageResize();
                         }
                     } else {
-                        show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
+                        show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} "+button, true, 'alert-danger');
                     }
                 });
                 jqxhr.fail(function($xhr) {

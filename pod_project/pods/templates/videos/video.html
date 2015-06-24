@@ -42,7 +42,7 @@ voir http://www.gnu.org/licenses/
                     $("#button_video_report").attr('disabled','disabled');
                     $("#mark-as-report").attr('style','color: #ee7d19');
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", true, 'alert-danger');
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'alert-danger');
                 }
             });
             jqxhr.fail(function($xhr) {
@@ -67,15 +67,15 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
     } else {
         if(expiration_date_second > 5) {
         var spanchild = $(this).children("span");
-        var jqxhr = $.post( 
-            $( "#video_favorite_form" ).attr('action'), 
-            $( "#video_favorite_form" ).serialize(), 
+        var jqxhr = $.post(
+            $( "#video_favorite_form" ).attr('action'),
+            $( "#video_favorite_form" ).serialize(),
             function(data) {
                 if(data.msg) {
                     button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
                     $("#show_messages").html(data.msg+button, false, 'alert-info').fadeIn();
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", true, 'alert-danger');
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'alert-danger');
                 }
                 if(spanchild.attr('id')=="fav") spanchild.attr('id', 'mark-as-fav');
                 else spanchild.attr('id', 'fav');
