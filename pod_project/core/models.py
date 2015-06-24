@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -114,8 +114,8 @@ def create_user_profile(sender, instance, created, **kwargs):
         # creation du profil
         try:
             UserProfile.objects.create(user=instance)
-        except  Exception as e:
-            msg = u'\n Create user profile ***** Unexpected error :%r' % e
+        except Exception as e:
+            msg = u'\n Create user profile ***** Error:%r' % e
             msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
             print msg
@@ -125,8 +125,8 @@ def create_user_profile(sender, instance, created, **kwargs):
             if not instance.groups.filter(name='can delete file').exists():
                 g = Group.objects.get(name='can delete file')
                 g.user_set.add(instance)
-        except  Exception as e:
-            msg = u'\n Create folder and add group to user ***** Unexpected error :%r' % e
+        except Exception as e:
+            msg = u'\n Create folder and add group to user ***** Error:%r' % e
             msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
             print msg
