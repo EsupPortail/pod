@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -36,7 +36,7 @@ voir http://www.gnu.org/licenses/
 /*** table scroll ***/
 table.scroll {
      width: 100%; /* Optional */
-    border-collapse: collapse; 
+    border-collapse: collapse;
     border-spacing: 0;
     /*border: 2px solid black;*/
 }
@@ -58,7 +58,7 @@ table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
 table.scroll tbody,
 table.scroll thead { display: block; }
 
-table.scroll thead /*tr th*/ { 
+table.scroll thead /*tr th*/ {
     height: 27px;
     line-height: 27px;
     text-align: left;
@@ -147,11 +147,11 @@ $(document).on("reset", "form", function (e) {
     $('form').show();
     $("table tr").removeClass("info");
     manageResize();
-    
+
 });
 /*** Function for all buttons expect cancel
-    When the action is modify or new, all button in the first page of chapter are hide and the form is displayed. 
-    When the action is delete, a request sent with the chapter id 
+    When the action is modify or new, all button in the first page of chapter are hide and the form is displayed.
+    When the action is delete, a request sent with the chapter id
     When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
 
 $(document).on("submit", "#page-video form", function (e) {
@@ -185,7 +185,7 @@ $(document).on("submit", "#page-video form", function (e) {
                 get_form(data);
                 elt.addClass('info');
             }
-            
+
         });
         jqxhr.fail(function($xhr) {
             var data = $xhr.status+ " : " +$xhr.statusText;
@@ -221,7 +221,7 @@ $(document).on("submit", "#page-video form", function (e) {
         $(".form-help-inline").parents('div.form-group').removeClass("has-error");
         $(".form-help-inline").remove();
         verify_start_title_items();
-        
+
         if (!($("span").hasClass("form-help-inline"))){
             var msg = "";
             msg += overlaptest();
@@ -235,7 +235,7 @@ $(document).on("submit", "#page-video form", function (e) {
                 );
                 jqxhr.done(function(data){
                     if(data.list_chapter || data.form) {
-                        if(data.errors){  
+                        if(data.errors){
                             //alert(data.errors);
                             get_form(data.form);
                         }else{
@@ -256,9 +256,9 @@ $(document).on("submit", "#page-video form", function (e) {
         }else{
             show_messages("{% trans 'Errors found in the form, please correct it.' %}"+button, false, 'alert-danger');
         }
-        
+
     }
-    
+
 });
 
 
@@ -277,7 +277,7 @@ function refrech_list_and_player(data){
 function verify_start_title_items(){
     if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length < 2) || (document.getElementById("id_title").length > 100)) {
         $("input#id_title")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 caracteres.' %} </span>")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 characters.' %} </span>")
             .parents('div.form-group').addClass('has-error');
     }
     if ((parseInt(document.getElementById("id_time").value) == "") || (parseInt(document.getElementById("id_time").value) < 0) || (parseInt(document.getElementById("id_time")) >= video_duration)) {
@@ -302,13 +302,13 @@ function overlaptest(){
     //if(msg!="") show_messages(msg);
 };
 /*** Display element of form enrich ***/
-function get_form(data) {    
+function get_form(data) {
         //fadeIn().delay(3000).fadeOut()
         $("#form_chapter").hide().html(data).fadeIn();
         $("input#id_time")
             .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-xs'>{% trans 'Get time from the player'%}</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
 };
- 
+
 $(document).on('change','input#id_time',function() {
     $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
@@ -336,7 +336,7 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
 <article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
     <ol class="breadcrumb">
         {% block breadcrumbs %}
-        {{ block.super }} 
+        {{ block.super }}
         <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
         <li class="active"> {% trans "Chaptering of the video" %} "{{video.title}}"</li>
         {% endblock breadcrumbs %}
@@ -350,16 +350,16 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
         <div class="row" id="info_video">
             <div class="col-sm-9">
                 <span id="form_chapter">
-                    <!-- place for form, it will be replace by a form : empty or to modify -->   
+                    <!-- place for form, it will be replace by a form : empty or to modify -->
                     {% if form_chapter %}
                     {%include 'videos/chapter/form_chapter.html' with form_chapter=form_chapter%}
                     {%endif%}
-                </span>                                     
+                </span>
                 <span id= "list_chapter">
                     {%include 'videos/chapter/list_chapter.html'%}
                     <!-- This button will add a new form when clicked -->
                 </span>
-                   
+
                 <form  id = "form_new" action="{% url 'video_chapter' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
@@ -384,11 +384,11 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
                         <p>{% trans 'The chapters cannot start at the same time.' %}</p>
                         <p>{% trans 'You must save your chapters to view the result.' %}</p>
                     </div>
-                    
+
                 </aside>
 
 
-        </div>        
+        </div>
     </article>
 {% endblock bootstrap3_content %}
 {% block box %}{% endblock box %}
