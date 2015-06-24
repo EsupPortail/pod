@@ -42,4 +42,10 @@ class Migration(migrations.Migration):
             field=models.BooleanField(default=False, help_text='The video is accessible only by those who are enabled to authenticate.', verbose_name='Restricted access'),
             preserve_default=True,
         ),
+        migrations.AlterField(
+            model_name='contributorpods',
+            name='role',
+            field=models.CharField(default='authors', choices=[('author', 'author'), ('director', 'director'), ('editor', 'editor'), ('designer', 'designer'), ('contributor', 'contributor'), ('actor', 'actor'), ('voice-over', 'voice-off'), ('consultant', 'consultant'), ('writer', 'writer'), ('soundman', 'soundman'), ('technician', 'technician')], max_length=200, blank=True, null=True, verbose_name='role'),
+            preserve_default=True,
+        ),
     ]
