@@ -191,7 +191,7 @@ $(document).on("submit", "#page-video form", function (e) {
     console.log(form);
     console.log(name_form);
     var href = $(this).attr("action");
-    /*if(action == "modify" || action == "new"){
+    if(action == "modify" || action == "new"){
         $('form.form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
@@ -293,7 +293,7 @@ $(document).on("submit", "#page-video form", function (e) {
         }else{
             show_messages("{% trans 'Errors found in the form, please correct it.' %}");
         }
-    }*/
+    }
 });
 
 function show_messages(msg, reload) {
