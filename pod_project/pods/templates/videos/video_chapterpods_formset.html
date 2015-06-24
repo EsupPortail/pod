@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -47,7 +47,7 @@ voir http://www.gnu.org/licenses/
 <script type="text/javascript" src="{{ STATIC_URL }}filer/js/popup_handling.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}ckeditor/ckeditor/ckeditor.js"></script>
 <script src="{{ STATIC_URL }}js/jquery.formset.js"></script>
-        
+
 
 <script>
 var preventUnloadPrompt;
@@ -92,23 +92,23 @@ $(document).ready(function() {
 <article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
     <ol class="breadcrumb">
 	    {% block breadcrumbs %}
-        {{ block.super }} 
+        {{ block.super }}
         <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
         <li class="active"> {% trans "Chaptering video" %} {{chapterformset.instance.title}}</li>
         {% endblock breadcrumbs %}
     </ol>
     {% include "videos/video_player.html" with video=chapterformset.instance %}
-	
+
 	<div class="row" id="info_video">
 		<div class="col-sm-9">
 			<form method="post" action="{% url 'video_chapter' slug=chapterformset.instance.slug %}" novalidate>
                 {% csrf_token %}
                 <fieldset id="chapters">
                 <legend>{% trans "Chaptering video" %}</legend>
-                
+
                 <div id="chapterformset" data-formset-prefix="{{ chapterformset.prefix }}">
                     {{ chapterformset.management_form }}
-                
+
                     <div data-formset-body-chapter>
                         <!-- New forms will be inserted in here -->
                         {% for form in chapterformset %}
@@ -129,12 +129,12 @@ $(document).ready(function() {
                                     {% bootstrap_field field %}
                                 {% endif %}
                                 {% endfor %}
-                                <span class="getfromvideo"><a href="#" class="btn btn-info">{% trans "get time from the player"%}</a></span>
+                                <span class="getfromvideo"><a href="#" class="btn btn-info">{% trans "Get time from the player"%}</a></span>
                                 <button type="button" data-formset-delete-button-chapter class="btn btn-danger">{% trans "Delete"%}</button>
                             </div>
                         {% endfor %}
                     </div>
-                
+
                     <!-- The empty form template. By wrapping this in a <script> tag, the
                     __prefix__ placeholder can easily be replaced in both attributes and
                     any scripts -->
@@ -157,17 +157,17 @@ $(document).ready(function() {
                                     {% bootstrap_field field %}
                                 {% endif %}
                                 {% endfor %}
-                                <span class="getfromvideo"><a href="#"  class="btn btn-info">{% trans "get time from the player"%}</a></span>
+                                <span class="getfromvideo"><a href="#"  class="btn btn-info">{% trans "Get time from the player"%}</a></span>
                                 <button type="button" data-formset-delete-button-chapter  class="btn btn-danger">{% trans "Delete"%}</button>
                             </div>
                         {% endescapescript %}
                     </script>
-                
+
                     <!-- This button will add a new form when clicked -->
                     <p>&nbsp;</p>
                     <button type="button" data-formset-add-chapter class="btn btn-info">{% trans "Add"%}</button>
                     <p>&nbsp;</p>
-                
+
                 </div>
                 {% buttons %}
                     <button type="submit" class="btn btn-success" value="{% trans "Save" %}" name="action1">
@@ -179,8 +179,8 @@ $(document).ready(function() {
                     <a href="/" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Home" %}</a>
                     {% endif %}
                     <!--
-                    <button type="submit" class="btn btn-success" value="{% trans "Save and back to the previous page" %}" name="action2">
-                        {% bootstrap_icon "save" %} {% trans "Save and back to the previous page" %}
+                    <button type="submit" class="btn btn-success" value="{% trans "Save and go back to previous page" %}" name="action2">
+                        {% bootstrap_icon "save" %} {% trans "Save and go back to previous page" %}
                     </button>
                     <button type="submit" class="btn btn-success" value="{% trans "Save and watch the video" %}" name="action3">
                         {% bootstrap_icon "save" %} {% trans "Save and watch the video" %}
@@ -192,17 +192,17 @@ $(document).ready(function() {
 
             <!-- DIV PROCESS -->
             <div id="process" class="loader" >
-                <div align="center"><div class="anim"></div><!-- <progress value="22" max="100"></progress> --><span>{% trans "Sending, please wait" %}</span></p></div>
+                <div align="center"><div class="anim"></div><!-- <progress value="22" max="100"></progress> --><span>{% trans "Sending, please wait." %}</span></p></div>
             </div>
 
 		</div>
 		<aside class="col-sm-3">
 			<div class="widget">
 				<h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Informations"%}</h4>
-				<p>{% trans '"Add" to add a new chapter and "delete" deletes the chapter' %}</p>
+				<p>{% trans 'Use "Add" to add a new chapter and "delete" to delete a chapter' %}</p>
 				<p>{% trans 'Start video playback, pause and click the "get time from the player" to automatically fill in the beginning of the chapter button.' %}</p>
-				<p>{% trans 'Must "Save" to view the results.' %}</p>
-                    
+				<p>{% trans 'You must "Save" to view the results.' %}</p>
+
 			</div>
             <div class="widget user-tools">
 			<h4 ><span class="glyphicon glyphicon-wrench"></span> {% trans "Edit the video"%}</h4>

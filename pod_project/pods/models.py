@@ -305,7 +305,7 @@ class Pod(Video):
     is_draft = models.BooleanField(verbose_name=_('Draft'), help_text=_(
         u'If you check this box, the video will be visible and accessible only by you.'), default=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
-        u'The video is accessible only by those who are enabled to authenticate.'), default=False)
+        u'The video is only accessible to authenticated users.'), default=False)
     password = models.CharField(_('password'), help_text=_(
         u'The video is available with the specified password.'), max_length=50, blank=True, null=True)
 
@@ -541,11 +541,11 @@ class EnrichPods(models.Model):
 
     #is_chapter = models.BooleanField(_('Is chapter ?'), default=False, help_text=_('Is chapter ?'))
     stop_video = models.BooleanField(_('Stop video'), default=False, help_text=_(
-        'The video will pause when displaying this enrichment'))
+        'The video will pause when displaying this enrichment.'))
     start = models.PositiveIntegerField(
-        _('Start'), default=0, help_text=_('Start displaying enrichment in seconds'))
+        _('Start'), default=0, help_text=_('Start of enrichment display in seconds'))
     end = models.PositiveIntegerField(
-        _('End'), default=1, help_text=_('End displaying enrichment in seconds'))
+        _('End'), default=1, help_text=_('End of enrichment display in seconds'))
 
     ENRICH_CHOICES = (
         ("image", _("image")),
@@ -852,7 +852,7 @@ class Recorder(models.Model):
     slide = models.BooleanField(default=1)
     gmapurl = models.CharField(max_length=250, blank=True, null=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
-        u'Live is accessible only by those who can authenticate on the website.'), default=False)
+        u'Live is accessible only to authenticated users.'), default=False)
     building = models.ForeignKey('Building', verbose_name=_('Building'))
 
     def __unicode__(self):

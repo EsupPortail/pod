@@ -52,6 +52,7 @@ DEFAULT_PER_PAGE = 12
 
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
 
+
 def get_pagination(page, paginator):
     try:
         page = int(page.encode('utf-8'))
@@ -157,7 +158,7 @@ def channel_edit(request, slug_c):
         # return HttpResponseForbidden("<h1>Vous n'avez pas accès à cette
         # ressource</h1>")
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot edit this channel'))
+            request, messages.ERROR, _(u'You cannot edit this channel.'))
         raise PermissionDenied
 
     ThemeInlineFormSet = inlineformset_factory(
@@ -174,7 +175,7 @@ def channel_edit(request, slug_c):
             channel = channel_form.save()
             formset = formset.save()
             messages.add_message(
-                request, messages.INFO, _(u'The changes have been saved'))
+                request, messages.INFO, _(u'The changes have been saved.'))
 
             referer = request.POST.get("referer")
             # go back
@@ -184,7 +185,7 @@ def channel_edit(request, slug_c):
                 return HttpResponseRedirect(reverse('pods.views.channel', args=(channel.slug,)))
         else:
             messages.add_message(
-                request, messages.ERROR, _(u'Error in the form'))
+                request, messages.ERROR, _(u'Error in the form.'))
 
     formset = ThemeInlineFormSet(instance=channel)   # MAJ...
     return render_to_response("channels/channel_edit.html",
@@ -393,7 +394,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                 pass
             else:
                 messages.add_message(
-                    request, messages.ERROR, _(u'You cannot watch this video'))
+                    request, messages.ERROR, _(u'You cannot watch this video.'))
                 raise PermissionDenied
 
     if video.is_restricted:
@@ -408,7 +409,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                 video.view_count += 1
                 video.save()
             if request.is_ajax():
-                return HttpResponse(_(u'The changes have been saved'))
+                return HttpResponse(_(u'The changes have been saved.'))
 
     # Video url to share
     share_url = request.get_host() + request.get_full_path()
@@ -425,7 +426,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'form': form, 'channel': channel,
-                    'theme': theme, 'share_url': share_url, 'show_report':show_report},
+                    'theme': theme, 'share_url': share_url, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
         else:
@@ -440,7 +441,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                         return render_to_response(
                             'videos/video.html',
                             {'video': video, 'channel': channel,
-                                'theme': theme, 'share_url': share_url, 'show_report':show_report},
+                                'theme': theme, 'share_url': share_url, 'show_report': show_report},
                             context_instance=RequestContext(request)
                         )
                 else:
@@ -449,16 +450,16 @@ def video(request, slug, slug_c=None, slug_t=None):
                     return render_to_response(
                         'videos/video.html',
                         {'video': video, 'form': form, 'channel': channel,
-                            'theme': theme, 'share_url': share_url, 'show_report':show_report},
+                            'theme': theme, 'share_url': share_url, 'show_report': show_report},
                         context_instance=RequestContext(request)
                     )
             else:
                 messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form'))
+                    request, messages.ERROR, _(u'Error in the form.'))
                 return render_to_response(
                     'videos/video.html',
                     {'video': video, 'form': form, 'channel': channel,
-                        'theme': theme, 'share_url': share_url, 'show_report':show_report},
+                        'theme': theme, 'share_url': share_url, 'show_report': show_report},
                     context_instance=RequestContext(request)
                 )
 
@@ -472,7 +473,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'theme': theme,
-                    'notes_form': notes_form, 'share_url': share_url, 'show_report':show_report},
+                    'notes_form': notes_form, 'share_url': share_url, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
@@ -481,7 +482,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         return render_to_response(
             'videos/video.html',
             {'video': video, 'channel': channel,
-                'theme': theme, 'share_url': share_url, 'show_report':show_report},
+                'theme': theme, 'share_url': share_url, 'show_report': show_report},
             context_instance=RequestContext(request)
         )
 
@@ -505,22 +506,23 @@ def download_video(video, get_request):
 def video_add_favorite(request, slug):
     video = get_object_or_404(Pod, slug=slug)
     if request.POST:
-        msg = _(u'The video has been added to your Favorites')
+        msg = _(u'The video has been added to your favorites.')
         favorite, create = Favorites.objects.get_or_create(
             user=request.user, video=video)
         if not create:
             favorite.delete()
-            msg = _(u'The video has been removed to your Favorites')
+            msg = _(u'The video has been removed from your favorites.')
         if request.is_ajax():
-            some_data_to_dump = { 'msg' : "%s." %msg }
+            some_data_to_dump = {'msg': "%s." % msg}
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
         messages.add_message(request, messages.INFO, msg)
         return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot view this page'))
+            request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
+
 
 @login_required
 @csrf_protect
@@ -528,67 +530,63 @@ def video_add_report(request, slug):
     video = get_object_or_404(Pod, slug=slug)
     if request.POST and request.POST.get('comment'):
         report = ReportVideo.objects.create(
-            user=request.user, video=video, comment='%s' %request.POST['comment'])
+            user=request.user, video=video, comment='%s' % request.POST['comment'])
 
         subject = _(u'Video report confirmation')
 
-        msg = _("\nYou just report the video: \"%(title)s\" with this comment : \n\"%(comment)s\".\n"
-                     "\nAn email has just been sent to us and your request recorded."
-                     "\nBest regards."
-                     "\nThe Pod team.") %{'title':video.title, 'comment': '%s' %request.POST['comment']}
+        msg = _("\nYou just report the video: \"%(title)s\" with this comment: \n\"%(comment)s\".\n"
+                "\nAn email has just been sent to us and your request recorded."
+                "\nBest regards."
+                "\nThe Pod team.") % {'title': video.title, 'comment': '%s' % request.POST['comment']}
 
-        
-        msg_html = _("<p>You just report the video: \"%(title)s\" with this comment :<br/> \"%(comment)s\".</p>"
-                "<p>An email has just been sent to us and your request recorded.</p>"
-                "<p>Best regards</p>"
-                "<p>The Pod team</p>") %{'title':video.title, 'comment':'%s' %request.POST['comment'].replace("\n", "<br/>")}
-           
-        email_msg = EmailMultiAlternatives("[" + settings.TITLE_SITE + "]  %s" %subject, msg, settings.DEFAULT_FROM_EMAIL, ['%s'%request.user.email]) #
+        msg_html = _("<p>You just report the video: \"%(title)s\" with this comment:<br/> \"%(comment)s\".</p>"
+                     "<p>An email has just been sent to us and your request recorded.</p>"
+                     "<p>Best regards</p>"
+                     "<p>The Pod team</p>") % {'title': video.title, 'comment': '%s' % request.POST['comment'].replace("\n", "<br/>")}
+
+        email_msg = EmailMultiAlternatives(
+            "[" + settings.TITLE_SITE + "]  %s" % subject, msg, settings.DEFAULT_FROM_EMAIL, ['%s' % request.user.email])
         email_msg.attach_alternative(msg_html, "text/html")
         email_msg.send(fail_silently=False)
-        
+
         subject = _(u'A video has just been reported')
 
-        msg = _(u'The video intitled "%(video_title)s" has just been reported by %(user_firstname)s %(user_lastname)s <%(user_email)s>.\n'\
-                'here is the comment posted : \n'\
-                '%(comment)s\n'\
-                'here is some more information about the video :\n'\
-                'Description : %(description)s.\n'\
-                'url : %(url)s.\n'\
-                'Video posted by : %(owner_firstname)s %(owner_lastname)s <%(owner_email)s>.\n'\
-                'Video added on : %(video_date_added)s.\n' ) % {
-                    'video_title':video.title, 'user_firstname':request.user.first_name, 'user_lastname': request.user.last_name,
-                    'user_email':request.user.email, 'comment': request.POST['comment'], 'description':video.description,
-                    'url' : ''.join(['http://', get_current_site(request).domain, video.get_absolute_url()]),
-                    'owner_firstname':video.owner.first_name, 'owner_lastname':video.owner.last_name, 'owner_email':video.owner.email,
-                    'video_date_added': video.date_added }
-                
+        msg = _(u'The video intitled "%(video_title)s" has just been reported by %(user_firstname)s %(user_lastname)s <%(user_email)s>.\n'
+                'here is the comment posted: \n'
+                '%(comment)s\n'
+                'here is some more information about the video:\n'
+                'Description: %(description)s.\n'
+                'url: %(url)s.\n'
+                'Video posted by: %(owner_firstname)s %(owner_lastname)s <%(owner_email)s>.\n'
+                'Video added on: %(video_date_added)s.\n') % {
+                    'video_title': video.title, 'user_firstname': request.user.first_name, 'user_lastname': request.user.last_name,
+                    'user_email': request.user.email, 'comment': request.POST['comment'], 'description': video.description,
+                    'url': ''.join(['http://', get_current_site(request).domain, video.get_absolute_url()]),
+                    'owner_firstname': video.owner.first_name, 'owner_lastname': video.owner.last_name, 'owner_email': video.owner.email,
+                    'video_date_added': video.date_added}
 
-        msg_html = _(u'<p>The video intitled "%(video_title)s" has just been reported by %(user_firstname)s %(user_lastname)s &lt;<a href=\"mailto:%(user_email)s\">%(user_email)s</a>&gt;.</p>'\
-                '<p>here is the comment posted : <br/>'\
-                '%(comment)s</p>'\
-                '<p>here is some more information about the video :<br/>'\
-                'Description : %(description)s<br/>'\
-                'url : <a href=\"%(url)s\">%(url)s</a><br/>'\
-                'Video posted by : %(owner_firstname)s %(owner_lastname)s &lt;<a href=\"mailto:%(owner_email)s\">%(owner_email)s&gt;</a>.<br/>'\
-                'Video added on : %(video_date_added)s.</p>' ) %{
-                    'video_title':video.title, 'user_firstname':request.user.first_name, 'user_lastname': request.user.last_name,
-                    'user_email':request.user.email, 'comment': request.POST['comment'].replace("\n", "<br/>"), 'description':video.description,
-                    'url' : ''.join(['http://', get_current_site(request).domain, video.get_absolute_url()]),
-                    'owner_firstname':video.owner.first_name, 'owner_lastname':video.owner.last_name, 'owner_email':video.owner.email,
-                    'video_date_added':video.date_added }
-                
-                 
+        msg_html = _(u'<p>The video intitled "%(video_title)s" has just been reported by %(user_firstname)s %(user_lastname)s &lt;<a href=\"mailto:%(user_email)s\">%(user_email)s</a>&gt;.</p>'
+                     '<p>here is the comment posted: <br/>'
+                     '%(comment)s</p>'
+                     '<p>here is some more information about the video:<br/>'
+                     'Description: %(description)s<br/>'
+                     'url: <a href=\"%(url)s\">%(url)s</a><br/>'
+                     'Video posted by: %(owner_firstname)s %(owner_lastname)s &lt;<a href=\"mailto:%(owner_email)s\">%(owner_email)s&gt;</a>.<br/>'
+                     'Video added on: %(video_date_added)s.</p>') % {
+            'video_title': video.title, 'user_firstname': request.user.first_name, 'user_lastname': request.user.last_name,
+            'user_email': request.user.email, 'comment': request.POST['comment'].replace("\n", "<br/>"), 'description': video.description,
+            'url': ''.join(['http://', get_current_site(request).domain, video.get_absolute_url()]),
+            'owner_firstname': video.owner.first_name, 'owner_lastname': video.owner.last_name, 'owner_email': video.owner.email,
+            'video_date_added': video.date_added}
 
-        email_msg = EmailMultiAlternatives("[" + settings.TITLE_SITE + "]  %s" %subject, msg
-                                       , settings.DEFAULT_FROM_EMAIL, settings.REPORT_VIDEO_MAIL_TO)
+        email_msg = EmailMultiAlternatives(
+            "[" + settings.TITLE_SITE + "]  %s" % subject, msg, settings.DEFAULT_FROM_EMAIL, settings.REPORT_VIDEO_MAIL_TO)
         email_msg.attach_alternative(msg_html, "text/html")
         email_msg.send(fail_silently=False)
-        
-        
+
         if request.is_ajax():
-            msg = _(u'This video has been reported')
-            some_data_to_dump = { 'msg' : "%s." %msg }
+            msg = _(u'This video has been reported.')
+            some_data_to_dump = {'msg': "%s" % msg}
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
 
@@ -596,8 +594,9 @@ def video_add_report(request, slug):
         return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot view this page'))
+            request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
+
 
 @login_required
 @csrf_protect
@@ -611,13 +610,13 @@ def video_notes(request, slug):
             note.note = notes_form.cleaned_data["note"]
             note.save()
             messages.add_message(
-                request, messages.INFO, _(u'The changes have been saved'))
+                request, messages.INFO, _(u'The changes have been saved.'))
             if request.is_ajax():
-                return HttpResponse(_(u'The changes have been saved'))
+                return HttpResponse(_(u'The changes have been saved.'))
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot view this page'))
+            request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
 
 
@@ -637,7 +636,7 @@ def video_edit(request, slug=None):
         video = get_object_or_404(Pod, slug=slug)
         if request.user != video.owner and not request.user.is_superuser:
             messages.add_message(
-                request, messages.ERROR, _(u'You cannot edit this video'))
+                request, messages.ERROR, _(u'You cannot edit this video.'))
             raise PermissionDenied
         video_form = PodForm(request, instance=video)
 
@@ -662,7 +661,7 @@ def video_edit(request, slug=None):
             # Without this next line the tags won't be saved.
             video_form.save_m2m()
             messages.add_message(
-                request, messages.INFO, _(u'The changes have been saved'))
+                request, messages.INFO, _(u'The changes have been saved.'))
             # Without this next line the tags does not appear in search engine
             vid.save()
 
@@ -676,7 +675,7 @@ def video_edit(request, slug=None):
                 return HttpResponseRedirect(reverse('pods.views.video_edit', args=(vid.slug,)))
         else:
             messages.add_message(
-                request, messages.ERROR, _(u'Error in the form'))
+                request, messages.ERROR, _(u'Error in the form.'))
 
     video_ext_accept = replace(' | '.join(settings.VIDEO_EXT_ACCEPT), ".", "")
 
@@ -700,7 +699,7 @@ def video_completion(request, slug):
     video = get_object_or_404(Pod, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot complete this video'))
+            request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
 
     ContributorInlineFormSet = inlineformset_factory(
@@ -732,7 +731,7 @@ def video_completion(request, slug):
                     instance=video, prefix='doc_form')
                 #...
                 messages.add_message(
-                    request, messages.INFO, _(u'The changes have been saved'))
+                    request, messages.INFO, _(u'The changes have been saved.'))
                 referer = request.POST.get("referer")
                 # go back
                 if request.POST.get("action2") and request.POST.get("referer"):
@@ -745,7 +744,7 @@ def video_completion(request, slug):
                 # args=(video.slug,)))
             else:
                 messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form'))
+                    request, messages.ERROR, _(u'Error in the form.'))
         else:
             contributorformset = ContributorInlineFormSet(
                 request.POST, instance=video, prefix='contributor_form')
@@ -757,7 +756,7 @@ def video_completion(request, slug):
                     instance=video, prefix='contributor_form')
                 #...
                 messages.add_message(
-                    request, messages.INFO, _(u'The changes have been saved'))
+                    request, messages.INFO, _(u'The changes have been saved.'))
                 referer = request.POST.get("referer")
                 # go back
                 if request.POST.get("action2") and request.POST.get("referer"):
@@ -770,7 +769,7 @@ def video_completion(request, slug):
                 # args=(video.slug,)))
             else:
                 messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form'))
+                    request, messages.ERROR, _(u'Error in the form.'))
     else:
         contributorformset = ContributorInlineFormSet(
             instance=video, prefix='contributor_form')
@@ -792,109 +791,116 @@ def video_completion(request, slug):
 @login_required
 def video_chapter(request, slug):
     video = get_object_or_404(Pod, slug=slug)
-     # Add this to improve folder selection and view list
+    # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
         folder = Folder.objects.get(
             owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
-    
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot chapter this video'))
+            request, messages.ERROR, _(u'You cannot chapter this video.'))
         raise PermissionDenied
 
-    #get all chapter video
+    # get all chapter video
     list_chapter = video.chapterpods_set.all()
-    if request.POST : #some data sent
+    if request.POST:  # some data sent
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_chapter = ChapterPodsForm({"video":video})
-            if request.is_ajax():#if ajax
+            form_chapter = ChapterPodsForm({"video": video})
+            if request.is_ajax():  # if ajax
                 return render_to_response("videos/chapter/form_chapter.html",
-                                  {'form_chapter': form_chapter, 'video':video},
-                                  context_instance=RequestContext(request))
+                                          {'form_chapter': form_chapter,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
             else:
                 return render_to_response("videos/video_chapter.html",
-                                  {'video': video, 'list_chapter': list_chapter, 'form_chapter': form_chapter},
-                                  context_instance=RequestContext(request))
-        #save
+                                          {'video': video, 'list_chapter': list_chapter,
+                                              'form_chapter': form_chapter},
+                                          context_instance=RequestContext(request))
+        # save
         if request.POST.get("action") and request.POST['action'] == 'save':
             form_chapter = None
-            if request.POST.get("chapter_id") != "None" :
-                chapter = get_object_or_404(ChapterPods, id=request.POST.get("chapter_id"))
+            if request.POST.get("chapter_id") != "None":
+                chapter = get_object_or_404(
+                    ChapterPods, id=request.POST.get("chapter_id"))
                 form_chapter = ChapterPodsForm(request.POST, instance=chapter)
             else:
                 form_chapter = ChapterPodsForm(request.POST)
 
-            if form_chapter.is_valid() :# All validation rules pass
+            if form_chapter.is_valid():  # All validation rules pass
                 form_chapter.save()
                 list_chapter = video.chapterpods_set.all()
                 if request.is_ajax():
                     some_data_to_dump = {
-                        'list_chapter' : render_to_string('videos/chapter/list_chapter.html', {'list_chapter':list_chapter, 'video':video}),
-                        'player' : render_to_string('videos/video_player.html', {'video':video, "csrf_token": request.COOKIES['csrftoken']})
+                        'list_chapter': render_to_string('videos/chapter/list_chapter.html', {'list_chapter': list_chapter, 'video': video}),
+                        'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
                     }
                     data = json.dumps(some_data_to_dump)
                     return HttpResponse(data, content_type='application/json')
                 else:
                     return render_to_response("videos/video_chapter.html",
-                              {'video': video, 'list_chapter': list_chapter},
-                              context_instance=RequestContext(request))    
+                                              {'video': video,
+                                                  'list_chapter': list_chapter},
+                                              context_instance=RequestContext(request))
             else:
                 if request.is_ajax():
                     some_data_to_dump = {
-                                    'errors' : "%s" %_('Please correct errors'),
-                                    'form':render_to_string('videos/chapter/form_chapter.html', {'video':video,'form_chapter':form_chapter})
-                                }
+                        'errors': "%s" % _('Please correct errors.'),
+                        'form': render_to_string('videos/chapter/form_chapter.html', {'video': video, 'form_chapter': form_chapter})
+                    }
                     data = json.dumps(some_data_to_dump)
                     return HttpResponse(data, content_type='application/json')
                 else:
                     return render_to_response("videos/video_chapter.html",
-                              {'video': video, 'list_chapter': list_chapter,'form_chapter': form_chapter},
-                              context_instance=RequestContext(request))
-        #end save
-        #modify
+                                              {'video': video, 'list_chapter': list_chapter,
+                                                  'form_chapter': form_chapter},
+                                              context_instance=RequestContext(request))
+        # end save
+        # modify
         if request.POST.get("action") and request.POST['action'] == 'modify':
             chapter = get_object_or_404(ChapterPods, id=request.POST['id'])
-            form_chapter= ChapterPodsForm(instance=chapter)
+            form_chapter = ChapterPodsForm(instance=chapter)
             if request.is_ajax():
                 return render_to_response("videos/chapter/form_chapter.html",
-                                  {'form_chapter': form_chapter, 'video': video},
-                                  context_instance=RequestContext(request))
+                                          {'form_chapter': form_chapter,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
             else:
                 return render_to_response("videos/video_chapter.html",
-                                  {'video': video, 'list_chapter': list_chapter, 'form_chapter': form_chapter},
-                                  context_instance=RequestContext(request))
-        #end modify
-        #delete
+                                          {'video': video, 'list_chapter': list_chapter,
+                                              'form_chapter': form_chapter},
+                                          context_instance=RequestContext(request))
+        # end modify
+        # delete
         if request.POST.get("action") and request.POST['action'] == 'delete':
             chapter = get_object_or_404(ChapterPods, id=request.POST['id'])
             chapter_delete = chapter.delete()
-            list_chapter= video.chapterpods_set.all()
+            list_chapter = video.chapterpods_set.all()
             if request.is_ajax():
                 some_data_to_dump = {
-                        'list_chapter' : render_to_string('videos/chapter/list_chapter.html', {'list_chapter':list_chapter, 'video':video}),
-                        'player' : render_to_string('videos/video_player.html', {'video':video, "csrf_token": request.COOKIES['csrftoken']})
-                    }
+                    'list_chapter': render_to_string('videos/chapter/list_chapter.html', {'list_chapter': list_chapter, 'video': video}),
+                    'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
+                }
                 data = json.dumps(some_data_to_dump)
                 return HttpResponse(data, content_type='application/json')
             else:
                 return render_to_response("videos/video_chapter.html",
-                              {'video': video, 'list_chapter': list_chapter},
-                              context_instance=RequestContext(request))
+                                          {'video': video,
+                                              'list_chapter': list_chapter},
+                                          context_instance=RequestContext(request))
         # end delete
-        #cancel
+        # cancel
         if request.POST.get("action") and request.POST['action'] == 'cancel':
             return render_to_response("videos/video_chapter.html",
-                              {'video': video, 'list_chapter': list_chapter},
-                              context_instance=RequestContext(request))
-        #end cancel
+                                      {'video': video,
+                                          'list_chapter': list_chapter},
+                                      context_instance=RequestContext(request))
+        # end cancel
 
     return render_to_response("videos/video_chapter.html",
                               {'video': video, 'list_chapter': list_chapter},
                               context_instance=RequestContext(request))
-
 
 
 @csrf_protect
@@ -911,7 +917,7 @@ def video_enrich(request, slug):
 
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot enrich this video'))
+            request, messages.ERROR, _(u'You cannot enrich this video.'))
         raise PermissionDenied
 
     # get all video enrich
@@ -959,7 +965,7 @@ def video_enrich(request, slug):
             else:
                 if request.is_ajax():
                     some_data_to_dump = {
-                        'errors': "%s" % _('Please correct errors'),
+                        'errors': "%s" % _('Please correct errors.'),
                         'form': render_to_string('videos/enrich/form_enrich.html', {'video': video, 'form_enrich': form_enrich})
                     }
                     data = json.dumps(some_data_to_dump)
@@ -1016,13 +1022,14 @@ def video_enrich(request, slug):
                                   'list_enrichment': list_enrichment},
                               context_instance=RequestContext(request))
 
+
 @csrf_protect
 @login_required
 def video_delete(request, slug):
     video = get_object_or_404(Pod, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
-            request, messages.ERROR, _(u'You can\'t delete this video'))
+            request, messages.ERROR, _(u'You cannot delete this video.'))
         raise PermissionDenied
     """
     from django.contrib.admin.util import NestedObjects
@@ -1038,7 +1045,7 @@ def video_delete(request, slug):
     if request.method == "POST":
         video.delete()
         messages.add_message(
-            request, messages.INFO, _(u'The video has been deleted'))
+            request, messages.INFO, _(u'The video has been deleted.'))
         return HttpResponseRedirect(reverse('pods.views.videos'))
 
     return render_to_response("videos/video_delete.html",
@@ -1060,7 +1067,7 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
                 pass
             else:
                 messages.add_message(
-                    request, messages.ERROR, _(u'You cannot watch this video'))
+                    request, messages.ERROR, _(u'You cannot watch this video.'))
                 raise PermissionDenied
     if video.is_restricted:
         if not request.user.is_authenticated():
@@ -1118,7 +1125,7 @@ def mediacourses(request):
     mediapath = request.GET.get('mediapath')
     if not mediapath and not request.user.is_superuser:
         messages.add_message(
-            request, messages.ERROR, _(u'Mediapath should be indicated'))
+            request, messages.ERROR, _(u'Mediapath should be indicated.'))
         raise PermissionDenied
 
     form = MediacoursesForm(request, initial={'mediapath': mediapath})
@@ -1146,7 +1153,7 @@ def mediacourses(request):
             messages.add_message(request, messages.INFO, message)
             return HttpResponseRedirect(reverse('pods.views.owner_videos_list'))
         else:
-            message = _('Error in the form')
+            message = _('Error in the form.')
             messages.add_message(request, messages.ERROR, message)
 
     return render_to_response("mediacourses/mediacourses_add.html",
@@ -1199,7 +1206,7 @@ def mediacourses_notify(request):  # post mediacourses notification
         formatted_date_notify = formats.date_format(
             date_notify, "SHORT_DATE_FORMAT")
         link_url = ''.join([request.build_absolute_uri(reverse('mediacourses')), "?mediapath=", request.GET.get(
-            'mediapath'), "&course_title=%s" % _("recording"), " %s" % formatted_date_notify.replace("/", "-")])
+            'mediapath'), "&course_title=%s" % _("Recording"), " %s" % formatted_date_notify.replace("/", "-")])
 
         text_msg = _("Hello, \n\na new mediacourse has just be added on the video website \"%(title_site)s\" from the recorder \"%(recorder)s\"."
                      "\nTo add it, just click on link below.\n\n%(link_url)s\nif you cannot click on link, just copy-paste it in your browser."

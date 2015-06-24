@@ -7,15 +7,15 @@
 	{% else %}
 		<!-- Modif NC Lille1 retrait file missing -->
 		<!--
-		<img id="{{ thumb_id }}" src="{{ filer_static_prefix }}icons/missingfile_48x48.png" alt="{% trans 'file missing' %}" />
-		&nbsp;<span id="{{ span_id }}">{% trans 'file missing' %}</span>
+		<img id="{{ thumb_id }}" src="{{ filer_static_prefix }}icons/missingfile_48x48.png" alt="{% trans 'File missing' %}" />
+		&nbsp;<span id="{{ span_id }}">{% trans 'File missing' %}</span>
 		-->
-		<img id="{{ thumb_id }}" src="{{ filer_static_prefix }}icons/file_48x48.png" alt="{% trans 'file missing' %}" />
-		&nbsp;<span id="{{ span_id }}">{% trans 'thumbnail missing' %}</span>
+		<img id="{{ thumb_id }}" src="{{ filer_static_prefix }}icons/file_48x48.png" alt="{% trans 'File missing' %}" />
+		&nbsp;<span id="{{ span_id }}">{% trans 'Thumbnail missing' %}</span>
 		<!-- fin modif nc lille1 -->
 	{% endif %}
 {% else %}
-	<img id="{{ thumb_id }}" src="{{ filer_static_prefix }}icons/nofile_48x48.png" class="quiet" alt="{% trans 'no file selected' %}" />
+	<img id="{{ thumb_id }}" src="{{ filer_static_prefix }}icons/nofile_48x48.png" class="quiet" alt="{% trans 'No file selected' %}" />
 	&nbsp;<span id="{{ span_id }}"></span>
 {% endif %}
 <a href="{{ lookup_url }}" class="related-lookup" id="lookup_id_{{ lookup_name }}" title="{% trans 'Lookup' %}" onclick="return showRelatedObjectLookupPopup(this);">

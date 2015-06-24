@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -21,7 +21,7 @@ voir http://www.gnu.org/licenses/
 {%endcomment%}
 {% load i18n %}
 
-{% block bootstrap3_title %}{{ block.super }}{% trans "Page not found" %}{% endblock %}
+{% block bootstrap3_title %}{{ block.super }}{% trans "Page not found." %}{% endblock %}
 
 {% block bootstrap3_extra_head %}
 <style>
@@ -31,7 +31,7 @@ voir http://www.gnu.org/licenses/
 
 
 {% block breadcrumbs %}
-    {{ block.super }} <li class="active">{% trans "Page not found" %}</li>
+    {{ block.super }} <li class="active">{% trans "Page not found." %}</li>
 {%endblock%}
 
 {% block mainToolbar %}
@@ -41,13 +41,13 @@ voir http://www.gnu.org/licenses/
 {% endblock stats %}
 
 {% block article_title %}
-    {% trans "Page not found" %}&nbsp;&nbsp;<span frown>:(</span>
+    {% trans "Page not found." %}&nbsp;&nbsp;<span frown>:(</span>
 {% endblock %}
 
 {% block article %}
     {% block article_content %}
     <div>
-       <p>{% trans "The requested address was not found on this server" %}</p>
+       <p>{% trans "The requested address was not found on this server." %}</p>
        <p><a href="/" id="home">[ {% trans "Home" %} ]</a></p>
     </div>
     {% endblock article_content %}
@@ -60,7 +60,7 @@ voir http://www.gnu.org/licenses/
     <aside class="col-sm-3">
     {% block box_info %}
     {% endblock box_info %}
-    
+
     {% block box_discipline %}{{ block.super }}{% endblock box_discipline %}
     {% block box_tags %}{{ block.super }}{% endblock box_tags %}
     {% block box_note %} {% endblock box_note %}
