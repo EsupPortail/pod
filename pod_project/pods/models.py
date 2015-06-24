@@ -590,7 +590,7 @@ class EnrichPods(models.Model):
     def verify_all_fields(self):
         msg = []
         if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
-            msg.append(_('Please enter a title form 2 to 100 caracteres.'))
+            msg.append(_('Please enter a title from 2 to 100 characters.'))
 
         if ((self.start == "") or (self.start < 0) or (self.start >= self.video.duration)):
             msg.append(_('Please enter a correct start field between 0 and %(duration)s.') % {
@@ -713,7 +713,7 @@ class ChapterPods(models.Model):
     def verify_start_title_items(self):
         msg = []
         if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
-            msg.append(_('Please enter a title form 2 to 100 caracteres.'))
+            msg.append(_('Please enter a title from 2 to 100 characters.'))
 
         if ((self.time == "") or (self.time < 0) or (self.time >= self.video.duration)):
             msg.append(_('Please enter a correct start field between 0 and %(duration)s.') % {
