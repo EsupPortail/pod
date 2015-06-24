@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-23 17:42+0200\n"
-"PO-Revision-Date: 2015-06-23 17:45+0100\n"
-"Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
+"PO-Revision-Date: 2015-06-24 11:40+0100\n"
+"Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.8.1\n"
 
 #: core/models.py:68
 msgid "order"
@@ -1286,8 +1286,8 @@ msgid "Zulu"
 msgstr ""
 
 #: pod_project/settings-sample.py:103 pod_project/settings.py:107
-msgid "Francais"
-msgstr "Francais"
+msgid "Français"
+msgstr "Français"
 
 #: pods/forms.py:128
 msgid "Filetype not allowed! Filetypes allowed: "
