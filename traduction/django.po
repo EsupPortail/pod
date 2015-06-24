@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-24 16:28+0200\n"
-"PO-Revision-Date: 2015-06-24 18:58+0100\n"
+"PO-Revision-Date: 2015-06-24 19:01+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -217,9 +217,9 @@ msgstr "Documentation"
 msgid "Change password"
 msgstr "Changer votre mot de passe"
 
-#: core/templates/admin/base.html:38
+#: core/templates/header.html:114 core/templates/admin/base.html:38
 msgid "Log out"
-msgstr "Deconnexion"
+msgstr "Déconnexion"
 
 #: core/templates/admin/base_site.html:4
 msgid "Django site admin"
@@ -551,10 +551,6 @@ msgstr "Mes favoris"
 #: core/templates/header.html:107
 msgid "Expire session "
 msgstr "Expiration de votre session"
-
-#: core/templates/header.html:114
-msgid "Logout"
-msgstr "Deconnexion"
 
 #: core/templates/header.html:122 core/templates/registration/login.html:89
 msgid "Log in"
