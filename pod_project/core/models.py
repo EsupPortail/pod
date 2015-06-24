@@ -84,9 +84,9 @@ class PagesMenuBas(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     image = FilerImageField(null=True, blank=True, verbose_name=_('Avatar'),
-                            help_text=_('This field allows you to add a photo ID. The picture will be displayed with yours videos.'))
+                            help_text=_('This field allows you to add a photo ID. The picture will be displayed with your videos.'))
     description = models.TextField(_('Description'), max_length=100, blank=True,
-                                   help_text=_('This field allows you to write a few words about yourself. The text will be displayed with yours videos.'))
+                                   help_text=_('This field allows you to write a few words about yourself. The text will be displayed with your videos.'))
     url = models.URLField(_('Web link'), blank=True,
                           help_text=_('This field allows you to add an url.'))
 
