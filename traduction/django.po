@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-24 16:28+0200\n"
-"PO-Revision-Date: 2015-06-25 16:05+0100\n"
+"PO-Revision-Date: 2015-06-25 16:11+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1627,7 +1627,7 @@ msgstr ""
 #, python-format
 msgid "Please enter a correct end field between 1 and %(duration)s."
 msgstr ""
-"Veuillez renseigner une valeur de fin d'enrichissement comprise entre 0 et "
+"Veuillez renseigner une valeur de fin d'enrichissement comprise entre 1 et "
 "%(duration)s."
 
 #: pods/models.py:605
