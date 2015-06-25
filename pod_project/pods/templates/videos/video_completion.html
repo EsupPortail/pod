@@ -31,7 +31,7 @@ voir http://www.gnu.org/licenses/
 
 {% block bootstrap3_extra_head %}
 <style>
-.form-help-inline {color:red;}
+.form-help-inline, .special_class {color:red;}
 
 /*** table scroll ***/
 table.scroll {
@@ -67,7 +67,7 @@ table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
     padding: 4px 15px;
 }
 table.scroll tbody,
-table.scroll thead { /*display: block;*/ }
+table.scroll thead { display: block }
 
 table.scroll thead /*tr th*/ { 
     height: 27px;
@@ -86,6 +86,11 @@ table.scroll tbody td, table.scroll thead th {
     height: 20px;
     line-height: 20px;
 }
+table.scroll tbody td.contributor_name {
+    width: 18%;
+}
+
+
 
 /*table.scroll tbody td.enrich_title {
     width: 60%;
@@ -143,6 +148,7 @@ var preventUnloadPrompt;
 //var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 var num = 0;
 var name = '';
+var button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
 
 $(document).on("reset", "#page-video form", function (e) {
     var id_form = $(this).attr("id")
@@ -251,12 +257,10 @@ $(document).on("submit", "#page-video form", function (e) {
         $('form.form_delete').hide();
         $(".form-help-inline").parents('div.form-group').removeClass("has-error");
         $(".form-help-inline").remove();
+        msg = verify_fields(form);
         if (!($("span").hasClass("form-help-inline"))){
-            var msg = "";
-            // msg += verify_end_start_items();
-            // msg += overlaptest();
             if(msg != "")
-                show_messages(msg);
+                show_messages(msg+button, true, 'alert-danger');
             else {
                 var data_form = $("form#"+form).serializeArray();
                 console.log(form);
@@ -294,14 +298,6 @@ $(document).on("submit", "#page-video form", function (e) {
     }
 });
 
-function show_messages(msg, reload) {
-    if(reload==true) {
-        $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
-    } else {
-        button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
-        $("#show_messages").html(msg+button).fadeIn();
-    }
-}
 function refrech_list_and_player(data, form, list){
     delete videojs.players['player_video']
     $("#"+form).html("");
@@ -318,6 +314,43 @@ function get_form(data, form) {
         //fadeIn().delay(3000).fadeOut()
         $("#"+form).hide().html(data).fadeIn();
 };
+function verify_fields(form){
+    var msg = "";
+    if(form = "form_contributor"){
+        if ((document.getElementById("id_name").value == "") || (document.getElementById("id_name").value.length < 2) || (document.getElementById("id_name").length > 200)) {
+        $("input#id_name")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a name from 2 to 100 caracteres.' %} </span>")
+            .parents('div.form-group').addClass('has-error');
+        }
+        if (document.getElementById("id_weblink").value.length >= 200) {
+            $("input#id_weblink")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'You cannot enter a weblink with more than 200 caracteres.' %}" + "</span>")
+                .parents('div.form-group').addClass('has-error');
+        }
+        if(document.getElementById("id_role").value = " "){
+            $("input#id_role")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a role.' %}" + "</span>")
+                .parents('div.form-group').addClass('has-error');
+        }
+        var id = parseInt(document.getElementById("id_contributor").value);
+        var new_role = document.getElementById("id_role").value;
+        var new_name = document.getElementById("id_name").value;
+        $('table#table_list_contributors.tbody.tr td').each(function() {
+            if (id != $(this).find('input[name=id]').value  && $(this).find('class=contributor_name').value == new_name && $(this).find('class=contributor_role').value == new_role){
+               var text = "{% trans 'There is already a contributor with this same name and role in the list.' %}.";
+               msg+="<br/>"+ text ;
+               return msg;  
+            }
+        });      
+       
+    }else if(form = "form_subtitle"){
+
+    }else if(form = "form_download"){
+
+    }
+    return msg;
+
+}
 </script>
 
 {% endblock bootstrap3_extra_head %}
@@ -336,7 +369,6 @@ function get_form(data, form) {
         <li class="active"> {% trans "Completion video" %} "{{video.title}}"</li>
         {% endblock breadcrumbs %}
     </ol>
-
         <span id="enrich_player">
         {% include 'videos/video_player.html' with video=video %}
         </span>
@@ -347,11 +379,9 @@ function get_form(data, form) {
         <br/>
         <div class="row" id="info_video">
             <div class="col-sm-9">
-                
                 <span id="list_contributor">
                     <!-- place for form, it will be replace by a form : empty or to modify -->   
                     {%include 'videos/completion/contributor/list_contributor.html'%}
-
                 </span> 
                 <span id= "form_contributor">
                 {% if form_contributor %}
