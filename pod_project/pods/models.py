@@ -498,7 +498,7 @@ class TrackPods(models.Model):
         ("", settings.PREF_LANG_CHOICES), ("-----------", settings.ALL_LANG_CHOICES))
     lang = models.CharField(_('Language'), max_length=2, choices=LANG_CHOICES)
     src = FilerFileField(
-        null=True, blank=True, verbose_name=_("Video track file"))
+        null=True, blank=True, verbose_name=_("sub-heading file"))
 
     class Meta:
         verbose_name = _("Track Pod")

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:36+0200\n"
-"PO-Revision-Date: 2015-06-25 17:46+0100\n"
+"PO-Revision-Date: 2015-06-25 18:04+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1528,8 +1528,8 @@ msgid "Kind"
 msgstr "Genre"
 
 #: pods/models.py:501
-msgid "Video track file"
-msgstr "Fichier "
+msgid "sub-heading file"
+msgstr "fichier de sous-titres"
 
 #: pods/models.py:504
 msgid "Track Pod"
@@ -2301,8 +2301,8 @@ msgid "Completion of the video"
 msgstr "Complétion de la vidéo"
 
 #: pods/templates/videos/video_completion_formset.html:179
-msgid "File of subtitle or caption"
-msgstr "Fichier de sous-titres ou de légendes"
+msgid "Sub-heading file(s)"
+msgstr "Fichier(s) de sous-titres ou de légendes"
 
 #: pods/templates/videos/video_completion_formset.html:244
 msgid "Document(s) to download"
