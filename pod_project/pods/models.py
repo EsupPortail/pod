@@ -690,7 +690,7 @@ class ChapterPods(models.Model):
                             editable=False)
 
     time = models.PositiveIntegerField(
-        _('Start time'), default=0, help_text=_('Start time in second of the chapter.'))
+        _('Start time'), default=0, help_text=_('Start time of the chapter, in seconds.'))
 
     class Meta:
         verbose_name = _("Chapter")

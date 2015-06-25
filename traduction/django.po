@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-24 16:28+0200\n"
-"PO-Revision-Date: 2015-06-25 15:32+0100\n"
+"PO-Revision-Date: 2015-06-25 15:41+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1676,8 +1676,8 @@ msgid "Start time"
 msgstr "Début de la vidéo"
 
 #: pods/models.py:693
-msgid "Start time in second of the chapter."
-msgstr "Debut d'affichage du chapitre en seconde"
+msgid "Start time of the chapter, in seconds."
+msgstr "Début d'affichage du chapitre, en secondes."
 
 #: pods/models.py:696 pods/templates/search/search.html:140
 #: pods/templates/search/search.html:142
