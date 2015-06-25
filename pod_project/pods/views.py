@@ -693,7 +693,7 @@ def video_completion(request,slug):
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
         folder = Folder.objects.get(
-            owner=request.user.id, name=request.user.username)
+            owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
     video = get_object_or_404(Pod, slug=slug)

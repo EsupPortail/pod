@@ -26,7 +26,7 @@ voir http://www.gnu.org/licenses/
 {% load bootstrap3 %}
 
 {% block bootstrap3_title%}
-{% trans "Enrich video" %} "{{video.title}}"
+{% trans "Completion video" %} "{{video.title}}"
 {% endblock bootstrap3_title%}
 
 {% block bootstrap3_extra_head %}
@@ -40,6 +40,8 @@ table.scroll {
     border-spacing: 0;
     /*border: 2px solid black;*/
 }
+#accordeon li, #accordeon ul{list-style: none;}    
+#accordeon li.contenuTitre{display: none;}   
 
 table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
     border-radius: 3px;
@@ -87,7 +89,7 @@ table.scroll tbody td, table.scroll thead th {
     line-height: 20px;
 }
 table.scroll tbody td.contributor_name {
-    width: 18%;
+    width: 20%;
 }
 
 
@@ -98,7 +100,6 @@ table.scroll tbody td.contributor_name {
 
 </style>
 
-<script src="{% static "video-js/video.js" %}" ></script>
 {% include "videos/extraheadplayer.html" with video=video %}
 
     <!-- media -->
@@ -122,6 +123,36 @@ table.scroll tbody td.contributor_name {
 var video_duration = {{video.duration}};
 
 $(window).load(function(){
+  // On déclare des variables        
+    var accordion_head = $('#accordeon li a.titre');
+    var accordion_body = $('#accordeon li.contenuTitre');
+
+    //On attribut la classe "active" au premier .titre de la liste et on ouvre par effet de slide .contenuTitre qui suit .active :
+    accordion_head.first().addClass('active').parent().next().slideDown('normal');
+
+    // Lorsqu'on clique sur .titre
+    accordion_head.on('click', function(event) {
+        console.log("onclick");
+        // On annule l'effet naturel du lien
+        event.preventDefault();
+
+        // On vérifie la présence de la classe "active"
+        if ($(this).attr('class') != 'titre active'){
+
+            // On ferme par effet de slide tous les li qui contiennent la classe .contenuTitre
+            accordion_body.slideUp('normal');
+
+            // On ouvre celui qui suit directement le lien (.titre) sur lequel on a cliqué
+            $(this).parent().next().stop(true,true).slideToggle('normal');
+
+            // On enlève la classe .active de tous les liens
+            accordion_head.removeClass('active');
+
+            // On rajoute la classe .active au lien sur lequel on a cliqué
+            $(this).addClass('active');
+            manageResize();
+        }
+    });
     manageResize();
 });
 /*** table scroll ***/
@@ -187,9 +218,6 @@ $(document).on("submit", "#page-video form", function (e) {
     }
     form="form_" + name_form;
     list="list_" + name_form;
-    console.log(list);
-    console.log(form);
-    console.log(name_form);
     var href = $(this).attr("action");
     if(action == "modify" || action == "new"){
         $('form.form_new').hide();
@@ -214,7 +242,6 @@ $(document).on("submit", "#page-video form", function (e) {
             jqxhr = $.post( window.location.origin + href, {"action":"new"} );
         }
         jqxhr.done(function(data){
-            console.log(data.form);
             if(data.indexOf(form)==-1) {
                 show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
             } else {
@@ -240,7 +267,6 @@ $(document).on("submit", "#page-video form", function (e) {
             jqxhr = $.post( window.location.origin + href, {"action":"delete", "id": id });
             jqxhr.done(function(data){
                 if(data.list_data) {
-                    console.log("la liste data est presente")
                     refrech_list_and_player(data, form, list);
                 } else {
                     show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
@@ -260,16 +286,12 @@ $(document).on("submit", "#page-video form", function (e) {
         msg = verify_fields(form);
         if (!($("span").hasClass("form-help-inline"))){
             if(msg != "")
-                show_messages(msg+button, true, 'alert-danger');
+                show_messages(msg+button, false, 'alert-danger');
             else {
                 var data_form = $("form#"+form).serializeArray();
-                console.log(form);
-
                 var href = $("form#" + form).attr("action");
                 jqxhr = $.post(window.location.origin + href,  data_form);
-                console.log(jqxhr);
                 jqxhr.done(function(data){
-                    console.log(data.list_data)
                     if(data.list_data || data.form) {
                         if(data.errors){  
                             //alert(data.errors);
@@ -282,31 +304,27 @@ $(document).on("submit", "#page-video form", function (e) {
                             }
                         }
                     } else {
-                        console.log("bla");
                         //show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
                     }
                 });
                 jqxhr.fail(function($xhr) {
                     var data = $xhr.status+ " : " +$xhr.statusText;
-                    //alert("{% trans 'error post request' %} "+data);
-                    show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}");
+                    show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}"+button, false, 'alert-danger');
                 });
             }
         }else{
-            show_messages("{% trans 'Errors found in the form, please correct it.' %}");
+            show_messages("{% trans 'Errors found in the form, please correct it.' %}"+button, false, 'alert-danger');
         }
     }
 });
 
 function refrech_list_and_player(data, form, list){
-    delete videojs.players['player_video']
     $("#"+form).html("");
     $('form.form_new').show();
     $('form').show()
     $("span#enrich_player").html(data.player);
     $("span#"+list).html(data.list_data);
     manageResize();
-    loadVideo();
     //alert("{% trans 'The changes have been saved' %}");
 };
 function get_form(data, form) {    
@@ -316,7 +334,7 @@ function get_form(data, form) {
 };
 function verify_fields(form){
     var msg = "";
-    if(form = "form_contributor"){
+    if(form == "form_contributor"){
         if ((document.getElementById("id_name").value == "") || (document.getElementById("id_name").value.length < 2) || (document.getElementById("id_name").length > 200)) {
         $("input#id_name")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a name from 2 to 100 caracteres.' %} </span>")
@@ -327,30 +345,60 @@ function verify_fields(form){
                 .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'You cannot enter a weblink with more than 200 caracteres.' %}" + "</span>")
                 .parents('div.form-group').addClass('has-error');
         }
-        if(document.getElementById("id_role").value = " "){
-            $("input#id_role")
+        if(document.getElementById("id_role").value == ""){
+            $("select#id_role")
                 .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a role.' %}" + "</span>")
                 .parents('div.form-group').addClass('has-error');
         }
         var id = parseInt(document.getElementById("id_contributor").value);
         var new_role = document.getElementById("id_role").value;
         var new_name = document.getElementById("id_name").value;
-        $('table#table_list_contributors.tbody.tr td').each(function() {
-            if (id != $(this).find('input[name=id]').value  && $(this).find('class=contributor_name').value == new_name && $(this).find('class=contributor_role').value == new_role){
+        $('#table_list_contributors tbody > tr').each(function() {
+            console.log("id:");
+            console.log($(this).find('td.contributor_name').value);
+            /*if (id != $(this).find('input[name=id]').value  && $(this).find('class=contributor_name').value == new_name && $(this).find('class=contributor_role').value == new_role){
                var text = "{% trans 'There is already a contributor with this same name and role in the list.' %}.";
                msg+="<br/>"+ text ;
                return msg;  
-            }
+            }*/
         });      
        
-    }else if(form = "form_subtitle"){
+    }else if(form == "form_subtitle"){
+        if(document.getElementById("id_kind").value == "" || (document.getElementById("id_kind").value !="subtitles" && document.getElementById("id_kind").value !="captions")){
+            $("input#id_kind")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct kind.' %} </span>")
+            .parents('div.form-group').addClass('has-error');
+        }
+        if(document.getElementById("id_lang").value == "" || (document.getElementById("id_lang").value !="subtitles" && document.getElementById("id_lang").value !="captions")){
+            $("input#id_lang")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct lang.' %} </span>")
+            .parents('div.form-group').addClass('has-error');
+        }
+        var kind = document.getElementById("id_kind").value;
+        var lang = document.getElementById("id_lang").value;
+        var id = parseInt(document.getElementById("id_subtitle").value);
+        var msg = "";
+        console.log("balala");
+        $('video#player_video track').each(function() {
+            console.log($(this));
+            if (id != $(this).attr('id') && kind == $(this).attr('kind') && lang == $(this).attr('lang')) {
+                var text = "{% trans 'There is already a subtitle with this same kind and language in the list.' %}.";
+                msg+="<br/>"+ text ;
+                return msg;
+            }
+        });
 
-    }else if(form = "form_download"){
-
+    }else if(form == "form_download"){
+        if($("img#id_document_thumbnail_img").attr('src') == "/static/filer/icons/nofile_48x48.png" ){
+            $("img#id_document_thumbnail_img")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a document.' %} </span>")
+            .parents('div.form-group').addClass('has-error');
+        }
     }
     return msg;
 
 }
+
 </script>
 
 {% endblock bootstrap3_extra_head %}
@@ -369,71 +417,74 @@ function verify_fields(form){
         <li class="active"> {% trans "Completion video" %} "{{video.title}}"</li>
         {% endblock breadcrumbs %}
     </ol>
-        <span id="enrich_player">
-        {% include 'videos/video_player.html' with video=video %}
-        </span>
-
-        <span id="show_messages" class="alert alert-danger collapse" role="alert" >
-            &nbsp;
-        </span>
         <br/>
         <div class="row" id="info_video">
             <div class="col-sm-9">
-                <span id="list_contributor">
-                    <!-- place for form, it will be replace by a form : empty or to modify -->   
-                    {%include 'videos/completion/contributor/list_contributor.html'%}
-                </span> 
-                <span id= "form_contributor">
-                {% if form_contributor %}
-                    {%include 'videos/completion/contributor/form_contributor.html' with form_contributor=form_contributor%}
-                {%endif%}
-                <!-- This button will add a new form when clicked -->
-                </span>        
-                <form  class = "form_new" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="new">
-                    <input type="submit" id="add_new_contributor"  value="{% trans "Add a new contributor" %}" class="new_contributor btn btn-info"/>
+                <ul id="accordeon"> 
+                    <!-- Le lien qui sert de bouton pour ouvrir le dropdown -->
+                    <li><a href="#"  class="titre" >Contributors</a></li>
+                    <li class="contenuTitre">
+                        &nbsp;
+                        <span id="list_contributor">
+                            <!-- place for form, it will be replace by a form : empty or to modify -->   
+                            {%include 'videos/completion/contributor/list_contributor.html'%}
+                        </span> 
+                        <span id= "form_contributor">
+                        {% if form_contributor %}
+                            {%include 'videos/completion/contributor/form_contributor.html' with form_contributor=form_contributor%}
+                        {%endif%}
+                        <!-- This button will add a new form when clicked -->
+                        </span>        
+                        <form  class = "form_new" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="new">
+                            <input type="submit" id="add_new_contributor"  value="{% trans "Add a new contributor" %}" class="new_contributor btn btn-info"/>
 
-                </form>
-                &nbsp;
-                <span id= "form_subtitle">
-                
-                {% if form_subtitle %}
-                    {%include 'videos/completion/subtitle/form_subtitle.html' with form_subtitle=form_subtitle %}
-                {%endif%}
-                <!-- This button will add a new form when clicked -->
-                </span>
-                &nbsp;
-                <span id="list_subtitle">
-                    <!-- place for form, it will be replace by a form : empty or to modify -->   
-                    {%include 'videos/completion/subtitle/list_subtitle.html'%}
-                </span>         
-                <form  class = "form_new" id="form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="new">
-                    <input type="submit" id="add_new_subtitle"  value="{% trans "Add a new subtitle" %}" class="new_subtitle btn btn-info"/>
-                </form>
-                &nbsp;
-                <span id= "form_download">
-                {% if form_download %}
-                    {%include 'videos/completion/download/form_download.html' with form_download=form_download %}
-                {%endif%}
-                <!-- This button will add a new form when clicked -->
-                </span>
-                &nbsp;
-                <span id="list_download">              
-                    <!-- place for form, it will be replace by a form : empty or to modify -->   
-                    {%include 'videos/completion/download/list_download.html'%}
-                    
-                </span>         
-                <form  class = "form_new"  id="form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="new">
-                    <input type="submit" id="add_new_download"  value="{% trans "Add a new download" %}" class="new_download btn btn-info"/>
-                </form>
-
-
-
+                        </form>
+                    </li>
+                    &nbsp;
+                    <li><a href="#"  class="titre" >Subtitle</a></li>
+                    <li class="contenuTitre">
+                        <span id= "form_subtitle">
+                        
+                        {% if form_subtitle %}
+                            {%include 'videos/completion/subtitle/form_subtitle.html' with form_subtitle=form_subtitle %}
+                        {%endif%}
+                        <!-- This button will add a new form when clicked -->
+                        </span>
+                        &nbsp;
+                        <span id="list_subtitle">
+                            <!-- place for form, it will be replace by a form : empty or to modify -->   
+                            {%include 'videos/completion/subtitle/list_subtitle.html'%}
+                        </span>    
+                        <form  class = "form_new" id="form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="new">
+                            <input type="submit" id="add_new_subtitle"  value="{% trans "Add a new subtitle" %}" class="new_subtitle btn btn-info"/>
+                        </form>
+                    </li>
+                    &nbsp;
+                    <li><a href="#"  class="titre" >Download</a></li>
+                    <li class="contenuTitre">  
+                        <span id= "form_download">
+                        {% if form_download %}
+                            {%include 'videos/completion/download/form_download.html' with form_download=form_download %}
+                        {%endif%}
+                        <!-- This button will add a new form when clicked -->
+                        </span>
+                        &nbsp;
+                        <span id="list_download">              
+                            <!-- place for form, it will be replace by a form : empty or to modify -->   
+                            {%include 'videos/completion/download/list_download.html'%}
+                            
+                        </span>         
+                        <form  class = "form_new"  id="form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="new">
+                            <input type="submit" id="add_new_download"  value="{% trans "Add a new download" %}" class="new_download btn btn-info"/>
+                        </form>
+                    </li>
+                </ul>
             </div>
 
             <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">

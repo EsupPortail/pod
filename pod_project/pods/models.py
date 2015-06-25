@@ -479,7 +479,7 @@ class ContributorPods(models.Model):
     def verify_attributs(self):
         msg = []
         if not self.name  or self.name == "" or len(self.name) < 2 or len(self.name) > 200:
-            msg.append(_('please enter a name between 2 to 200 caracteres.'))
+            msg.append(_('please enter a name from 2 to 200 caracteres.'))
         if len(self.weblink)> 200:
             msg.append(_('you cannot enter a weblink with more than 200 caracteres.'))
         if not self.role:
