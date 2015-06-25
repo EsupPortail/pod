@@ -1073,7 +1073,7 @@ class Video_edit_testCase(TestCase):
         self.user = authenticate(username='remi', password='hello')
         login = self.client.login(username='remi', password='hello')
         self.assertEqual(login, True)
-        response = self.client.post('/video_edit/%s/' % pod.slug, {u'password': [u''], u'description': [u'<p>sdfsdf</p>\r\n'], u'title': [u'Bunny'], u'tags': [u''], u'action2': [u'Save and back to the previous page'], u'date_evt': [
+        response = self.client.post('/video_edit/%s/' % pod.slug, {u'password': [u''], u'description': [u'<p>sdfsdf</p>\r\n'], u'title': [u'Bunny'], u'tags': [u''], u'action2': [u'Save and back to previous page'], u'date_evt': [
                                     u''], u'video': [u''], u'date_added': [u'20/04/2015'], u'allow_downloading': [u'on'], u'type': [u'1'], u'referer': [
             u'/channels/']})
         self.assertEqual(response.status_code, 302)

@@ -282,7 +282,7 @@ function verify_start_title_items(){
     }
     if ((parseInt(document.getElementById("id_time").value) == "") || (parseInt(document.getElementById("id_time").value) < 0) || (parseInt(document.getElementById("id_time")) >= video_duration)) {
         $("input#id_time")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct start field between 0 and' %}" + (video_duration -1) + "</span>")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct start field between 0 and' %} " + (video_duration -1) + "</span>")
             .parents('div.form-group').addClass('has-error');
     }
 };

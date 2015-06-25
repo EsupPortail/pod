@@ -265,7 +265,7 @@ function refrech_list_and_player(data){
     manageResize();
     loadVideo();
 
-    //alert("{% trans 'The changes have been saved' %}");
+    //alert("{% trans 'The changes have been saved.' %}");
 };
 /*** Display element of form enrich ***/
 function get_form(data) {
@@ -380,7 +380,7 @@ function verify_fields(){
             break;
         default:
             $("select#id_type")
-                .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct type.' %} </span>")
+                .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a type in index field.' %} </span>")
                 .parents('div.form-group').addClass('has-error');
 
     }
