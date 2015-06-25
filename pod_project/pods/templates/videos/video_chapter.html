@@ -294,7 +294,7 @@ function overlaptest(){
     var msg = "";
     $('ul#chapters li').each(function() {
         if ((id != $(this).attr('data-id')) && new_start == $(this).attr('data-start')) {
-            var text = "{% trans 'The chapter' %}  "+ '"' +$(this).attr('data-title')+'"'+ "  {% trans 'start at the same time' %}.";
+            var text = "{% trans 'The chapter' %}  "+ '"' +$(this).attr('data-title')+'"'+ "  {% trans 'starts at the same time.' %}";
             msg+="<br/>"+ text ;
         }
     });

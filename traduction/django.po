@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-24 16:28+0200\n"
-"PO-Revision-Date: 2015-06-25 15:53+0100\n"
+"PO-Revision-Date: 2015-06-25 16:05+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2207,8 +2207,8 @@ msgid "The chapter"
 msgstr "Le chapitre"
 
 #: pods/templates/videos/video_chapter.html:297
-msgid "start at the same time"
-msgstr "commence en même temps"
+msgid "starts at the same time."
+msgstr "commence en même temps."
 
 #: pods/templates/videos/video_chapter.html:309
 #: pods/templates/videos/video_enrich.html:276
