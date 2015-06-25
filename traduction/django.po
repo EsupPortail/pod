@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-24 16:28+0200\n"
-"PO-Revision-Date: 2015-06-25 15:52+0100\n"
+"PO-Revision-Date: 2015-06-25 15:53+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2378,11 +2378,11 @@ msgstr "Veuillez indiquer un titre."
 
 #: pods/templates/videos/video_edit.html:113
 msgid "Your title should contain more than two characters."
-msgstr "Votre titre doit contenir plus de deux caratères."
+msgstr "Votre titre doit contenir plus de deux caractères."
 
 #: pods/templates/videos/video_edit.html:114
 msgid "Your title should contain less than two hundred fifty characters."
-msgstr "Votre titre doit contenir moins de deux cents cinquante caratères."
+msgstr "Votre titre doit contenir moins de deux cents cinquante caractères."
 
 #: pods/templates/videos/video_edit.html:117
 msgid "Please, specify a type."
