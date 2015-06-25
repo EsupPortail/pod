@@ -1,0 +1,85 @@
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure.
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load staticfiles %}
+<script>
+    $(document).ready(function() {
+        $('DIV.jump-menu BUTTON').click(function() {
+            $(this).closest('FORM').attr('action', $('#acces_direct').val());
+        });
+    });
+</script>
+<div id="acces" class="container-fluid visible-lg visible-md">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6">
+                <a href="/">
+                    <img src="{% static LOGO_ETB %}" alt="{{ TITLE_ETB }}" title="{{ TITLE_ETB }}" />
+                </a>
+            </div>
+            <div class="jump-menu text-right col-xs-6">
+                <form class="form-inline" method="GET">
+                    <div class="form-group">
+                        <label class="sr-only">Service Communs</label>
+                        <select id="acces_direct" class="form-control input-sm">
+                            <option value="http://www.univ-lille1.fr" selected>Université Lille1</option>
+                            <optgroup label="UFR et Faculté">
+                                <option value="http://ses.univ-lille1.fr/">Faculté des Sciences Economiques et Sociales</option>
+                                <option value="http://sm-wimereux.univ-lille1.fr/">Station Marine de Wimereux</option>
+                                <option value="http://biologie.univ-lille1.fr/">UFR Biologie</option>
+                                <option value="http://chimie.univ-lille1.fr/">UFR Chimie</option>
+                                <option value="http://geographie.univ-lille1.fr/">UFR Géographie</option>
+                                <option value="http://ieea.univ-lille1.fr/">UFR IEEA</option>
+                                <option value="http://mathematiques.univ-lille1.fr/">UFR Mathématiques</option>
+                                <option value="http://physique.univ-lille1.fr/">UFR Physique</option>
+                                <option value="http://sciences-de-la-terre.univ-lille1.fr">UFR Sciences de la Terre</option>
+                            </optgroup>
+                            <optgroup label="Ecoles et Instituts">
+                                <option value="http://cueep.univ-lille1.fr/cueep/">CUEEP</option>
+                                <option value="http://www.iae.univ-lille1.fr/">IAE</option>
+                                <option value="http://www-iut.univ-lille1.fr/">IUT A</option>
+                                <option value="http://www.polytech-lille.fr/">Polytech'Lille</option>
+                                <option value="http://www.telecom-lille1.eu/">TELECOM Lille 1</option>
+                            </optgroup>
+                            <optgroup label="Services">
+                                <option value="http://doc.univ-lille1.fr/">Bibliothèque universitaire</option>
+                                <option value="http://cri.univ-lille1.fr">Centre de Ressources Informatiques</option>
+                                <option value="http://ci.univ-lille1.fr/">Centre international</option>
+                                <option value="http://ofip.univ-lille1.fr/">OFIP</option>
+                                <option value="http://pass-pro.univ-lille1.fr">Pass'Pro</option>
+                                <option value="http://suaio.univ-lille1.fr">SUAIO</option>
+                                <option value="http://suaps.univ-lille1.fr/">SUAPS</option>
+                                <option value="http://www.univ-lille1.fr/sudes">SUDES</option>
+                                <option value="http://sup.univ-lille1.fr">SUP - Service Universitaire de Pédagogie</option>
+                                <option value="http://semm.univ-lille1.fr">SEMM - Service Enseignement et Multimédia</option>
+                            </optgroup>
+                            <optgroup label="Divers">
+                                <option value="http://culture.univ-lille1.fr/">Espace Culture</option>
+                                <option value="http://lille1tv.univ-lille1.fr/">Lille1.tv</option>
+                                <option value="http://patrimoine-artistique.univ-lille1.fr">Patrimoine artistique</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <button class="btn btn-default btn-sm">OK</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

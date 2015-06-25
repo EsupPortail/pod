@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -34,6 +34,7 @@ from datetime import datetime
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
+from django.contrib.sites.models import get_current_site
 # django-taggit
 from taggit.managers import TaggableManager, _TaggableManager, TaggableRel
 from django.core.exceptions import ValidationError
@@ -224,7 +225,7 @@ from taggit.utils import require_instance_manager
 #add_introspection_rules([], ["^pods\.models\.MyTaggableManager"])
 
 #from south.modelsinspector import add_ignored_fields
-#add_ignored_fields(["^pods\.models\.MyTaggableManager"])
+# add_ignored_fields(["^pods\.models\.MyTaggableManager"])
 
 
 class MyTaggableManager(TaggableManager):
@@ -304,7 +305,7 @@ class Pod(Video):
     is_draft = models.BooleanField(verbose_name=_('Draft'), help_text=_(
         u'If you check this box, the video will be visible and accessible only by you'), default=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
-        u'The video is accessible only by those who can authenticate to the site.'), default=False)
+        u'The video is accessible only by those who are enabled to authenticate.'), default=False)
     password = models.CharField(_('password'), help_text=_(
         u'The video is available with the specified password.'), max_length=50, blank=True, null=True)
 
@@ -374,6 +375,12 @@ class Pod(Video):
     def is_richmedia(self):
         return self.enrichpods_set.exclude(type=None)
 
+    def get_iframe_admin_integration(self):
+        request = None
+        full_url = ''.join(['//', get_current_site(request).domain, self.get_absolute_url()])
+        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' %full_url
+        return iframe_url
+
 
 @receiver(post_save, sender=Pod)
 def launch_encode(sender, instance, created, **kwargs):
@@ -442,17 +449,17 @@ class ContributorPods(models.Model):
     email_address = models.EmailField(
         _('mail'), null=True, blank=True, default="")
     ROLE_CHOICES = (
-        (_("authors"), _("authors")),
-        (_("director"), _("director")),
-        (_("editors"), _("editors")),
-        (_("designers"), _("designers")),
-        (_("contributor"), _("contributor")),
-        (_("actor"), _("actor")),
-        (_("voice-over"), _("voice-off")),
-        (_("consultant"), _("consultant")),
-        (_("writer"), _("writer")),
-        (_("soundman"), _("soundman")),
-        (_("technician"), _("technician"))
+        ("author", _("author")),
+        ("director", _("director")),
+        ("editor", _("editor")),
+        ("designer", _("designer")),
+        ("contributor", _("contributor")),
+        ("actor", _("actor")),
+        ("voice-over", _("voice-off")),
+        ("consultant", _("consultant")),
+        ("writer", _("writer")),
+        ("soundman", _("soundman")),
+        ("technician", _("technician"))
     )
     role = models.CharField(_(u'role'), max_length=200, null=True,
                             blank=True, choices=ROLE_CHOICES, default=_("authors"))
@@ -535,9 +542,9 @@ class EnrichPods(models.Model):
     stop_video = models.BooleanField(_('Stop video'), default=False, help_text=_(
         'The video will pause when displaying this enrichment'))
     start = models.PositiveIntegerField(
-        _('Start'), default=0, help_text=_('Start displaying enrichment in second'))
+        _('Start'), default=0, help_text=_('Start displaying enrichment in seconds'))
     end = models.PositiveIntegerField(
-        _('Stop'), default=0, help_text=_('Stop displaying enrichment in second'))
+        _('End'), default=1, help_text=_('End displaying enrichment in seconds'))
 
     ENRICH_CHOICES = (
         ("image", _("image")),
@@ -573,8 +580,85 @@ class EnrichPods(models.Model):
 
     def clean(self):
         # Don't allow draft entries to have a pub_date.
-        if self.end <= self.start:
-            raise ValidationError(_("end should be greater than start"))
+        msg = []
+        msg = self.verify_end_start_item() + self.verify_all_fields() + \
+            self.overlap()
+        if(len(msg) > 0):
+            raise ValidationError(msg)
+
+    def verify_all_fields(self):
+        msg = []
+        if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
+            msg.append(_('Please enter a title form 2 to 100 caracteres '))
+
+        if ((self.start == "") or (self.start < 0) or (self.start >= self.video.duration)):
+            msg.append(_('Please enter a correct start field between 0 and %(duration)s') % {
+                       "duration": self.video.duration - 1})
+
+        if (not self.end or (self.end == "") or (self.end <= 0) or (self.end > self.video.duration)):
+            msg.append(_('Please enter a correct end field between 1 and %(duration)s') % {
+                       "duration": self.video.duration})
+
+        if (self.type == "image"):
+            if(not self.image):
+                msg.append(_('Please enter a correct image '))
+
+        elif (self.type == "richtext"):
+            if(not self.richtext):
+                msg.append(_('Please enter a correct richtext '))
+
+        elif (self.type == "weblink"):
+            if(not self.weblink):
+                msg.append(_('Please enter a correct weblink '))
+
+        elif (self.type == "document"):
+            if(not self.document):
+                msg.append(_('Please enter a correct document '))
+
+        elif (self.type == "embed"):
+            if(not self.embed):
+                msg.append(_('Please enter a correct embed '))
+        else:
+            msg.append(_('Please enter a type in index field'))
+
+        if (len(msg) > 0):
+            return msg
+        else:
+            return []
+
+    def verify_end_start_item(self):
+        msg = []
+        video = Pod.objects.get(id=self.video.id)
+        if(self.start > self.end):
+            msg.append(
+                _('the value of the start field is greater than the value of end field '))
+        elif(self.end > video.duration):
+            msg.append(
+                _('the value of end field is greater than the video duration'))
+        elif (self.start == self.end):
+            msg.append(_('end field and start field can\'t be equal'))
+
+        if (len(msg) > 0):
+            return msg
+        else:
+            return []
+
+    def overlap(self):
+        msg = []
+        instance = None
+        if self.slug:
+            instance = EnrichPods.objects.get(slug=self.slug)
+        list_enrichment = EnrichPods.objects.filter(video=self.video)
+        if instance:
+            list_enrichment = list_enrichment.exclude(id=instance.id)
+        if len(list_enrichment) > 0:
+            for element in list_enrichment:
+                if not ((self.start < element.start and self.end <= element.start) or (self.start >= element.end and self.end > element.end)):
+                    msg.append(_("There is a overlap with the " + element.title +
+                                 " enrich, please change end field and start field "))
+            if len(msg) > 0:
+                return msg
+        return []
 
     def save(self, *args, **kwargs):
         newid = -1
@@ -618,6 +702,41 @@ class ChapterPods(models.Model):
 
     def __str__(self):
         return u"Chapter : %s - video: %s" % (self.title, self.video)
+
+    def clean(self):
+        msg = []
+        msg = self.verify_start_title_items() + self.verify_overlap()
+        if(len(msg) > 0):
+            raise ValidationError(msg)
+
+    def verify_start_title_items(self):
+        msg = []
+        if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
+            msg.append(_('Please enter a title form 2 to 100 caracteres '))
+
+        if ((self.time == "") or (self.time < 0) or (self.time >= self.video.duration)):
+            msg.append(_('Please enter a correct start field between 0 and %(duration)s') % {
+                       "duration": self.video.duration - 1})
+        if len(msg) > 0:
+            return msg
+        return []
+
+    def verify_overlap(self):
+        msg = []
+        instance = None
+        if self.slug:
+            instance = ChapterPods.objects.get(slug=self.slug)
+        list_chapter = ChapterPods.objects.filter(video=self.video)
+        if instance:
+            list_chapter = list_chapter.exclude(id=instance.id)
+        if len(list_chapter) > 0:
+            for element in list_chapter:
+                if self.time == element.time:
+                    msg.append(
+                        _("There is a overlap with the " + element.title + " chapter, please change start time field "))
+            if len(msg) > 0:
+                return msg
+        return []
 
     def save(self, *args, **kwargs):
         newid = -1
@@ -747,3 +866,30 @@ class Recorder(models.Model):
     class Meta:
         verbose_name = _("Recorder")
         verbose_name_plural = _("Recorders")
+
+############# REPORT VIDEO
+@python_2_unicode_compatible
+class ReportVideo(models.Model):
+    video = models.ForeignKey(Pod, verbose_name=_('Video'))    
+    user = models.ForeignKey(User, verbose_name=_('User'))
+    comment = models.TextField(null=True, blank=True, verbose_name=_('Comment'))
+    answer = models.TextField(null=True, blank=True, verbose_name=_('Answer'))
+    date_added = models.DateTimeField(
+        'Date', default=datetime.now, editable=False)
+
+    def __unicode__(self):
+        return "%s - %s" % (self.video, self.user)
+
+    def __str__(self):
+        return "%s - %s" % (self.video, self.user)
+
+    def get_iframe_url_to_video(self):
+        return self.video.get_iframe_admin_integration()
+        
+    get_iframe_url_to_video.allow_tags=True 
+
+    class Meta:
+        verbose_name = _("Report")
+        verbose_name_plural = _("Reports")
+        unique_together = ('video', 'user',)
+

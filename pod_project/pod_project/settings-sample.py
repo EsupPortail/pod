@@ -11,18 +11,21 @@ ADMINS = (
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'dp7u819^$3u5rdjv62o2(k0nlg5%lg5h+^s6qf2-i2e%gr4a2)'
 
-# Condition d'utilisation du mode DEBUG - Attention à mettre à false lors d'une mise en production
+# Condition d'utilisation du mode DEBUG - Attention à mettre à false lors
+# d'une mise en production
 DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
-#Mettre url de production
+# Mettre url de production
 ALLOWED_HOSTS = ['pod.univ.fr']
 
 # Liste des applications
-#https://docs.djangoproject.com/en/1.7/topics/migrations/#upgrading-from-south
+# https://docs.djangoproject.com/en/1.7/topics/migrations/#upgrading-from-south
 INSTALLED_APPS = (
-    'modeltranslation', #put it in first !! http://django-modeltranslation.readthedocs.org/en/latest/installation.html#configuration
+    # put it in first !!
+    # http://django-modeltranslation.readthedocs.org/en/latest/installation.html#configuration
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,7 +39,8 @@ INSTALLED_APPS = (
     'ckeditor',
     'filer',
     'easy_thumbnails',
-    #https://bitbucket.org/cpcc/django-cas -> application modifiée pour ajout gateway et double authentification
+    # https://bitbucket.org/cpcc/django-cas -> application modifiée pour ajout
+    # gateway et double authentification
     'django_cas_gateway',
     'taggit',
     'taggit_templatetags',
@@ -156,13 +160,14 @@ CAS_LOGOUT_COMPLETELY = True
 CAS_RETRY_LOGIN = True
 CAS_VERSION = '3'
 
-#LDAP
+# LDAP
 USE_LDAP_TO_POPULATE_USER = True
 AUTH_LDAP_SERVER_URI = 'ldap://ldap.univ.fr'
 AUTH_LDAP_BIND_DN = ''
 AUTH_LDAP_BIND_PASSWORD = ''
 AUTH_LDAP_SCOPE = 'ONELEVEL'
-AUTH_LDAP_USER_SEARCH = ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)") #('ldap', 'parameters')
+# ('ldap', 'parameters')
+AUTH_LDAP_USER_SEARCH = ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)")
 AUTH_LDAP_UID_TEST = ""
 
 AUTH_USER_ATTR_MAP = {
@@ -177,9 +182,28 @@ AUTHENTICATION_BACKENDS = (
     'core.populatedCASbackend.PopulatedCASBackend'
 )
 
+# Constantes utilisées dans les templates
+TITLE_SITE = 'Pod'
+TITLE_ETB = 'Université'
+DEFAULT_IMG = 'images/default.png'
+FILTER_USER_MENU = ('[a-d]', '[e-h]', '[i-l]', '[m-p]', '[q-t]', '[u-z]')
+TEMPLATE_THEME = 'LILLE1'
+
+LOGO_SITE = 'images/logo_compact.png'
+LOGO_COMPACT_SITE = 'images/logo_black_compact.png'
+LOGO_ETB = 'images/lille1_top-01.png'
+LOGO_PLAYER = 'images/logo_white_compact.png'
+SERV_LOGO = 'images/semm.png'
+
+HELP_MAIL = 'assistance@univ.fr'
+WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">' \
+    'WEBTV<span class="glyphicon glyphicon-link"></span>' \
+    '</a>'
+
 # Paramètres des templates
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'core', 'templates'),
+    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -196,33 +220,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'pods.context_processors.items_menu_header',
 )
 
-# Constantes utilisées dans les templates
-TITLE_SITE = 'Pod'
-TITLE_ETB = 'Université'
-DEFAULT_IMG = 'images/default.png'
-FILTER_USER_MENU = ('[a-d]', '[e-h]', '[i-l]', '[m-p]', '[q-t]', '[u-z]')
-TEMPLATE_THEME = 'LILLE1'
-
-LOGO_SITE = TEMPLATE_THEME + '/theme/logo_compact.png'
-LOGO_COMPACT_SITE = TEMPLATE_THEME + '/theme/logo_black_compact.png'
-LOGO_ETB = TEMPLATE_THEME + '/theme/lille1_top-01.png'
-LOGO_PLAYER = TEMPLATE_THEME + '/theme/logo_white_compact.png'
-SERV_LOGO = TEMPLATE_THEME + '/theme/semm.png'
-
-HELP_MAIL = 'assistance@univ.fr'
-WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">' \
-    'WEBTV<span class="glyphicon glyphicon-link"></span>' \
-    '</a>'
-
-#Mettre à '' si non utilise
+# Mettre à '' si non utilise
 FMS_LIVE_URL = 'rtmp://fms.univ.fr'
 FMS_ROOT_URL = 'http://root.univ.fr'
 
 BOOTSTRAP3 = {
     'jquery_url': os.path.join(STATIC_URL, 'js/jquery.js'),
-    'base_url': os.path.join(STATIC_URL, TEMPLATE_THEME, 'bootstrap/'),
+    'base_url': os.path.join(STATIC_URL, 'bootstrap/'),
     'css_url': None,
-    'theme_url': os.path.join(STATIC_URL, TEMPLATE_THEME, 'theme/pod.css'),
+    'theme_url': os.path.join(STATIC_URL, 'css/pod.css'),
     'javascript_url': None,
     'horizontal_label_class': 'col-md-2',
     'horizontal_field_class': 'col-md-4'
@@ -230,7 +236,7 @@ BOOTSTRAP3 = {
 
 # Nom du dossier contenant les templates personnalisés (header.html et footer.html)
 # Mettre à None si vous n'avez pas l'intention d'utiliser ces fichiers
-TEMPLATE_CUSTOM = 'custom' #None
+TEMPLATE_CUSTOM = 'custom'  # None
 
 # Constantes utilisables depuis les templates
 TEMPLATE_VISIBLE_SETTINGS = (
@@ -248,6 +254,11 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'TITLE_ETB',
     'TITLE_SITE',
     'WEBTV'
+)
+
+# Fichiers statiques du theme
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, "assets"),
 )
 
 # Paramètres session
@@ -287,8 +298,17 @@ VIDEO_EXT_ACCEPT = (
 ENCODE_WEBM = True
 ENCODE_WAV = True
 
-#AUDIOVIDEOCOURS
+# AUDIOVIDEOCOURS
 SKIP_FIRST_IMAGE = True
-#mot de passe pour les enregistreurs multicam system
+# mot de passe pour les enregistreurs multicam system
 RECORDER_SALT = "abcdefgh"
+# optional settings for test:
+# if set it's used to test download and encode video in test
+#HTTP_PROXY = 'http://localhost:3128/'
+
+#Signalement des vidéos
+SHOW_REPORT = True
+REPORT_VIDEO_MAIL_TO = ['alert@univ.fr']
+
+
 
