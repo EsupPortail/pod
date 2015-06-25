@@ -549,7 +549,7 @@ def video_add_report(request, slug):
         email_msg.attach_alternative(msg_html, "text/html")
         email_msg.send(fail_silently=False)
 
-        subject = _(u'A video has just been reported')
+        subject = _(u'A video has just been reported.')
 
         msg = _(u'The video intitled "%(video_title)s" has just been reported by %(user_firstname)s %(user_lastname)s <%(user_email)s>.\n'
                 'here is the comment posted: \n'
@@ -1219,7 +1219,7 @@ def mediacourses_notify(request):  # post mediacourses notification
         admin_emails = User.objects.filter(
             is_superuser=True).values_list('email', flat=True)
         subject = "[" + settings.TITLE_SITE + \
-            "] %s" % _('New mediacourse added')
+            "] %s" % _('New mediacourse added.')
 
         email_msg = EmailMultiAlternatives(
             subject, text_msg, settings.DEFAULT_FROM_EMAIL, admin_emails)

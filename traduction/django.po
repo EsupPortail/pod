@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-24 16:28+0200\n"
-"PO-Revision-Date: 2015-06-25 15:10+0100\n"
+"PO-Revision-Date: 2015-06-25 15:32+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -77,7 +77,7 @@ msgstr "Profils"
 #: core/models.py:149 pods/models.py:313 pods/models.py:415 pods/models.py:516
 #: pods/models.py:876
 msgid "Video"
-msgstr "Video"
+msgstr "Vidéo"
 
 #: core/models.py:151
 msgid "allow downloading"
@@ -536,7 +536,7 @@ msgstr "Administration"
 
 #: core/templates/header.html:85
 msgid "My Videos"
-msgstr "Mes videos"
+msgstr "Mes vidéos"
 
 #: core/templates/header.html:93 pods/templates/channels/my_channels.html:24
 #: pods/templates/channels/my_channels.html:30
@@ -2584,13 +2584,13 @@ msgid ""
 "\"%(comment)s\".</p><p>An email has just been sent to us and your request "
 "recorded.</p><p>Best regards</p><p>The Pod team</p>"
 msgstr ""
-"<p>Vous venez de signaler cette video : \"%(title)s\" avec ce commentaire :"
+"<p>Vous venez de signaler cette vidéo : \"%(title)s\" avec ce commentaire :"
 "<br/> \"%(comment)s\".</p><p>Un courriel vient de nous être envoyé et votre "
 "signalement enregistré.</p><p>Cordialement</p><p>L'équipe Pod</p>"
 
 #: pods/views.py:550
-msgid "A video has just been reported"
-msgstr "Une vidéo vient d'être signalée"
+msgid "A video has just been reported."
+msgstr "Une vidéo vient d'être signalée."
 
 #: pods/views.py:552
 #, python-format
@@ -2612,9 +2612,9 @@ msgstr ""
 "Voici les informations concernant la vidéo :\n"
 "Description : %(description)s.\n"
 "url : %(url)s.\n"
-"Video mise en ligne par : %(owner_firstname)s %(owner_lastname)s <"
+"Vidéo mise en ligne par : %(owner_firstname)s %(owner_lastname)s <"
 "%(owner_email)s>.\n"
-"Video mise en ligne le : %(video_date_added)s.\n"
+"Vidéo mise en ligne le : %(video_date_added)s.\n"
 
 #: pods/views.py:567
 #, python-format
@@ -2700,7 +2700,7 @@ msgid ""
 msgstr ""
 "Bonjour, \n"
 "\n"
-"Un nouvel enregistrement est arrivé sur la plateforme \"%(title_site)s\" "
+"un nouvel enregistrement est arrivé sur la plateforme \"%(title_site)s\" "
 "depuis l'enregistreur \"%(recorder)s\".\n"
 "Pour l'ajouter, veuillez cliquer sur le lien suivant.\n"
 "\n"
@@ -2718,29 +2718,20 @@ msgid ""
 "href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on link, "
 "just copy-paste it in your browser.</i><p><p>Regards</p>"
 msgstr ""
-"Bonjour, <p>Un nouvel enregistrement est arrivé sur la plateforme "
+"Bonjour, <p>un nouvel enregistrement est arrivé sur la plateforme "
 "\"%(title_site)s\" depuis l'enregistreur \"%(recorder)s\".<br/>Pour "
 "l'ajouter, veuillez cliquer sur le lien suivant.</p><a href=\"%(link_url)s\">"
 "%(link_url)s</a><br/><i>Si le lien n'est pas actif, il faut le copier-coller "
 "dans la barre d'adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
 #: pods/views.py:1215
-msgid "New mediacourse added"
-msgstr "Nouveaux médiacours ajoutés"
-
-#~ msgid "There is a overlap with the enrich : "
-#~ msgstr "Il y a un chevauchement avec l'enrichissement :"
-
-#~ msgid "Please change Start and End values"
-#~ msgstr "Veuillez changer les valeurs de début et de fin d'affichage."
+msgid "New mediacourse added."
+msgstr "Nouveaux médiacours ajoutés."
 
 #, fuzzy
 #~| msgid "Please enter a title from 2 to 100 characters."
 #~ msgid "Please enter a title from 2 to 100 caracteres."
 #~ msgstr "Veuillez renseigner un titre contenant entre 2 et 100 caractères."
-
-#~ msgid "voice-over"
-#~ msgstr "narrateur"
 
 #~ msgid "error post request"
 #~ msgstr "Erreur lors de la requête"
@@ -2749,19 +2740,6 @@ msgstr "Nouveaux médiacours ajoutés"
 #~| msgid "Chaptering video"
 #~ msgid "Chapter video"
 #~ msgstr "Chapitrer la vidéo"
-
-#, fuzzy
-#~| msgid "please change end field and start field"
-#~ msgid "Please change end field and start field"
-#~ msgstr "Veuillez changer les valeurs de début et de fin."
-
-#, fuzzy
-#~| msgid "There is a overlap with the enrich : "
-#~ msgid "There is a overlap with the chapter : "
-#~ msgstr "Il y a un chevauchement avec l'enrichissement :"
-
-#~ msgid "please change end field and start field."
-#~ msgstr "veuillez changer les valeurs de début et de fin."
 
 #~ msgid "Creation date"
 #~ msgstr "Date d'ajout"
