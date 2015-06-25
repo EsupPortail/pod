@@ -351,7 +351,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 </li>
                                 {% if video.contributorpods_set.all %}
                                     <li class="list-group-item">
-                                    {% trans 'Contributor(s): (writers, directors, editors, designers... of the video)' %} :
+                                    {% trans 'Contributor(s): writers, directors, editors, designers…' %} :
                                     <br />
                                     {% for contrib in video.contributorpods_set.all %}
                                         {% if contrib.email_address %}

@@ -112,7 +112,7 @@ voir http://www.gnu.org/licenses/
         <form method="post" action="{% url 'video_completion' slug=contributorformset.instance.slug %}" novalidate>
             {% csrf_token %}
             <fieldset id="contributor">
-                <legend>{% trans 'Contributor(s): (writers, directors, editors, designers... of the video)' %}</legend>
+                <legend>{% trans 'Contributor(s): writers, directors, editors, designers…' %}</legend>
                 <div id="contributorformset" data-formset-prefix="{{ contributorformset.prefix }}">
                     {{ contributorformset.management_form }}
                     <div data-formset-body-contributor>

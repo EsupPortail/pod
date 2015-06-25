@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:36+0200\n"
-"PO-Revision-Date: 2015-06-25 18:04+0100\n"
+"PO-Revision-Date: 2015-06-25 18:10+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2093,11 +2093,8 @@ msgstr "Mise en ligne le"
 
 #: pods/templates/videos/video.html:354
 #: pods/templates/videos/video_completion_formset.html:115
-msgid ""
-"Contributor(s): (writers, directors, editors, designers... of the video)"
-msgstr ""
-"Contributeur(s): (scénaristes, réalisateurs, éditeurs, concepteurs ... de la "
-"vidéo)"
+msgid "Contributor(s): writers, directors, editors, designers…"
+msgstr "Contributeur(s) : scénaristes, réalisateurs, éditeurs, concepteurs…"
 
 #: pods/templates/videos/video.html:380
 msgid "Download the video"
