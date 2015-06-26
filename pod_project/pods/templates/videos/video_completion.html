@@ -40,8 +40,8 @@ table.scroll {
     border-spacing: 0;
     /*border: 2px solid black;*/
 }
-#accordeon li, #accordeon ul{list-style: none;}    
-#accordeon li.contenuTitre{display: none;}   
+#accordeon li, #accordeon div{list-style: none;}
+/*#accordeon li.contenuTitre{display: none;}   */
 
 table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
     border-radius: 3px;
@@ -69,7 +69,7 @@ table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
     padding: 4px 15px;
 }
 table.scroll tbody,
-table.scroll thead { display: block }
+table.scroll thead { /*display: block */}
 
 table.scroll thead /*tr th*/ { 
     height: 27px;
@@ -123,6 +123,8 @@ table.scroll tbody td.contributor_name {
 var video_duration = {{video.duration}};
 
 $(window).load(function(){
+    manageResize();
+    $('li.contenuTitre').css('display','none');
   // On déclare des variables        
     var accordion_head = $('#accordeon li a.titre');
     var accordion_body = $('#accordeon li.contenuTitre');
@@ -132,32 +134,28 @@ $(window).load(function(){
 
     // Lorsqu'on clique sur .titre
     accordion_head.on('click', function(event) {
-        console.log("onclick");
         // On annule l'effet naturel du lien
         event.preventDefault();
-
         // On vérifie la présence de la classe "active"
         if ($(this).attr('class') != 'titre active'){
-
             // On ferme par effet de slide tous les li qui contiennent la classe .contenuTitre
             accordion_body.slideUp('normal');
-
             // On ouvre celui qui suit directement le lien (.titre) sur lequel on a cliqué
             $(this).parent().next().stop(true,true).slideToggle('normal');
-
             // On enlève la classe .active de tous les liens
             accordion_head.removeClass('active');
-
             // On rajoute la classe .active au lien sur lequel on a cliqué
             $(this).addClass('active');
-            manageResize();
+            
         }
+
     });
     manageResize();
 });
 /*** table scroll ***/
 // Change the selector if needed
 function manageResize() {
+    console.log("je passe dans managerResize")
     var $table = $('table.scroll'),
     $bodyCells = $table.find('tbody tr:first').children(),
     colWidth;
@@ -176,7 +174,6 @@ function manageResize() {
 /*** end table scroll ***/
 
 var preventUnloadPrompt;
-//var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 var num = 0;
 var name = '';
 var button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
@@ -197,8 +194,8 @@ $(document).on("reset", "#page-video form", function (e) {
 });
 
 $(document).on("submit", "#page-video form", function (e) {
-    $('form').show();
     e.preventDefault();
+    $('form').show();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
     var class_form = $(this).attr("class");
@@ -231,7 +228,6 @@ $(document).on("submit", "#page-video form", function (e) {
             $("form#" + "form_new_" + name_form)
                         .after("<div class = 'row' ></div>");
         }
-
         manageResize();
         var elt = $(this).parents('tr'); 
         $('#'+form).html(ajax_image); 
@@ -243,7 +239,7 @@ $(document).on("submit", "#page-video form", function (e) {
         }
         jqxhr.done(function(data){
             if(data.indexOf(form)==-1) {
-                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", true, 'alert-danger');
             } else {
                 get_form(data, form);
                 elt.addClass('info');      
@@ -252,7 +248,7 @@ $(document).on("submit", "#page-video form", function (e) {
         });
         jqxhr.fail(function($xhr) {
             var data = $xhr.status+ " : " +$xhr.statusText;
-            show_messages("{% trans 'Error getting form. ' %} " + "("+data+")"+ "{% trans 'the form could not be recovered'%}");
+            show_messages("{% trans 'Error getting form. ' %} " + "("+data+")"+ "{% trans 'the form could not be recovered'%}"+button, false, 'alert-danger');
             $('form.form_modif').show();
             $('form.form_delete').show();
             $('form.form_new').show();
@@ -260,21 +256,20 @@ $(document).on("submit", "#page-video form", function (e) {
             manageResize();
         });
     }else if(action == "delete"){
-        //$('form').show();
         var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this enrichment' %}");
         if (deleteConfirm){
             var id = $(this).find('input[name=id]').val();
             jqxhr = $.post( window.location.origin + href, {"action":"delete", "id": id });
             jqxhr.done(function(data){
                 if(data.list_data) {
-                    refrech_list_and_player(data, form, list);
+                    refrech_list(data, form, list);
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
                 }
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error deleting. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}");
+                show_messages("{% trans 'Error deleting. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}"+button, false, 'alert-danger');
             });
         }
     }else if(action == "save"){
@@ -297,14 +292,15 @@ $(document).on("submit", "#page-video form", function (e) {
                             //alert(data.errors);
                             get_form(data.form, form);
                         }else{
-                            refrech_list_and_player(data, form, list);
+                            refrech_list(data, form, list);
                             if( name_form != "contributor"){
                                 $("span#"+form).unwrap();
                                 $("span#"+list).unwrap();
+                                manageResize();
                             }
                         }
                     } else {
-                        //show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", reload=true);
+                       show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
                     }
                 });
                 jqxhr.fail(function($xhr) {
@@ -317,20 +313,19 @@ $(document).on("submit", "#page-video form", function (e) {
         }
     }
 });
-
-function refrech_list_and_player(data, form, list){
+/*** refrech the list  ***/
+function refrech_list(data, form, list){
     $("#"+form).html("");
     $('form.form_new').show();
     $('form').show()
     $("span#enrich_player").html(data.player);
     $("span#"+list).html(data.list_data);
     manageResize();
-    //alert("{% trans 'The changes have been saved' %}");
 };
 function get_form(data, form) {    
-        //$("#form_enrich").html("");
-        //fadeIn().delay(3000).fadeOut()
         $("#"+form).hide().html(data).fadeIn();
+        manageResize();
+
 };
 function verify_fields(form){
     var msg = "";
@@ -362,7 +357,6 @@ function verify_fields(form){
                return msg;  
             }*/
         });      
-       
     }else if(form == "form_subtitle"){
         if(document.getElementById("id_kind").value == "" || (document.getElementById("id_kind").value !="subtitles" && document.getElementById("id_kind").value !="captions")){
             $("input#id_kind")
@@ -378,7 +372,6 @@ function verify_fields(form){
         var lang = document.getElementById("id_lang").value;
         var id = parseInt(document.getElementById("id_subtitle").value);
         var msg = "";
-        console.log("balala");
         $('video#player_video track').each(function() {
             console.log($(this));
             if (id != $(this).attr('id') && kind == $(this).attr('kind') && lang == $(this).attr('lang')) {
@@ -387,7 +380,6 @@ function verify_fields(form){
                 return msg;
             }
         });
-
     }else if(form == "form_download"){
         if($("img#id_document_thumbnail_img").attr('src') == "/static/filer/icons/nofile_48x48.png" ){
             $("img#id_document_thumbnail_img")
@@ -396,9 +388,7 @@ function verify_fields(form){
         }
     }
     return msg;
-
 }
-
 </script>
 
 {% endblock bootstrap3_extra_head %}
@@ -419,74 +409,68 @@ function verify_fields(form){
     </ol>
         <br/>
         <div class="row" id="info_video">
-            <div class="col-sm-9">
-                <ul id="accordeon"> 
-                    <!-- Le lien qui sert de bouton pour ouvrir le dropdown -->
-                    <li><a href="#"  class="titre" >Contributors</a></li>
-                    <li class="contenuTitre">
-                        &nbsp;
-                        <span id="list_contributor">
-                            <!-- place for form, it will be replace by a form : empty or to modify -->   
-                            {%include 'videos/completion/contributor/list_contributor.html'%}
-                        </span> 
-                        <span id= "form_contributor">
-                        {% if form_contributor %}
-                            {%include 'videos/completion/contributor/form_contributor.html' with form_contributor=form_contributor%}
-                        {%endif%}
-                        <!-- This button will add a new form when clicked -->
-                        </span>        
-                        <form  class = "form_new" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="action" value="new">
-                            <input type="submit" id="add_new_contributor"  value="{% trans "Add a new contributor" %}" class="new_contributor btn btn-info"/>
+            <div id="accordeon" class="col-sm-9"> 
+                <!-- Le lien qui sert de bouton pour ouvrir le dropdown -->
+                <li><a href="#"  class="titre" >Contributors</a></li>
+                <li class="contenuTitre">
+                    &nbsp;
+                    <span id="list_contributor">
+                        <!-- place for form, it will be replace by a form : empty or to modify -->   
+                        {%include 'videos/completion/contributor/list_contributor.html'%}
+                    </span> 
+                    <span id= "form_contributor">
+                    {% if form_contributor %}
+                        {%include 'videos/completion/contributor/form_contributor.html' with form_contributor=form_contributor%}
+                    {%endif%}
+                    <!-- This button will add a new form when clicked -->
+                    </span>        
+                    <form  class = "form_new" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="new">
+                        <input type="submit" value="{% trans "Add a new contributor" %}" class="new_contributor btn btn-info"/>
 
-                        </form>
-                    </li>
+                    </form>
+                </li>
+                &nbsp;
+                <li><a href="#"  class="titre" >Subtitle</a></li>
+                <li class="contenuTitre">
+                    <span id= "form_subtitle">
+                    {% if form_subtitle %}
+                        {%include 'videos/completion/subtitle/form_subtitle.html' with form_subtitle=form_subtitle %}
+                    {%endif%}
+                    <!-- This button will add a new form when clicked -->
+                    </span>
                     &nbsp;
-                    <li><a href="#"  class="titre" >Subtitle</a></li>
-                    <li class="contenuTitre">
-                        <span id= "form_subtitle">
-                        
-                        {% if form_subtitle %}
-                            {%include 'videos/completion/subtitle/form_subtitle.html' with form_subtitle=form_subtitle %}
-                        {%endif%}
-                        <!-- This button will add a new form when clicked -->
-                        </span>
-                        &nbsp;
-                        <span id="list_subtitle">
-                            <!-- place for form, it will be replace by a form : empty or to modify -->   
-                            {%include 'videos/completion/subtitle/list_subtitle.html'%}
-                        </span>    
-                        <form  class = "form_new" id="form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="action" value="new">
-                            <input type="submit" id="add_new_subtitle"  value="{% trans "Add a new subtitle" %}" class="new_subtitle btn btn-info"/>
-                        </form>
-                    </li>
+                    <span id="list_subtitle">
+                        <!-- place for form, it will be replace by a form : empty or to modify -->   
+                        {%include 'videos/completion/subtitle/list_subtitle.html'%}
+                    </span>    
+                    <form  class = "form_new" id="form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="new">
+                        <input type="submit" value="{% trans "Add a new subtitle" %}" class="new_subtitle btn btn-info"/>
+                    </form>
+                </li>
+                &nbsp;
+                <li><a href="#"  class="titre" >Download</a></li>
+                <li class="contenuTitre">  
+                    <span id= "form_download">
+                    {% if form_download %}
+                        {%include 'videos/completion/download/form_download.html' with form_download=form_download %}
+                    {%endif%}
+                    </span>
                     &nbsp;
-                    <li><a href="#"  class="titre" >Download</a></li>
-                    <li class="contenuTitre">  
-                        <span id= "form_download">
-                        {% if form_download %}
-                            {%include 'videos/completion/download/form_download.html' with form_download=form_download %}
-                        {%endif%}
-                        <!-- This button will add a new form when clicked -->
-                        </span>
-                        &nbsp;
-                        <span id="list_download">              
-                            <!-- place for form, it will be replace by a form : empty or to modify -->   
-                            {%include 'videos/completion/download/list_download.html'%}
-                            
-                        </span>         
-                        <form  class = "form_new"  id="form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="action" value="new">
-                            <input type="submit" id="add_new_download"  value="{% trans "Add a new download" %}" class="new_download btn btn-info"/>
-                        </form>
-                    </li>
-                </ul>
+                    <span id="list_download">              
+                        <!-- place for form, it will be replace by a form : empty or to modify -->   
+                        {%include 'videos/completion/download/list_download.html'%}    
+                    </span>         
+                    <form  class = "form_new"  id="form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="new">
+                        <input type="submit" value="{% trans "Add a new download" %}" class="new_download btn btn-info"/>
+                    </form>
+                </li>
             </div>
-
             <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
                 <aside class="col-sm-3  panel panel-info">
                     <div class="widget user-tools">
@@ -504,7 +488,6 @@ function verify_fields(form){
                         <p>{% trans 'You cannot overlap the enrichments' %}</p>
                         <p>{% trans 'You must "Save" to view the results.' %}</p>
                     </div>
-                    
                 </aside>
         </div>        
     </article>

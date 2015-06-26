@@ -688,7 +688,6 @@ def video_edit(request, slug=None):
 @csrf_protect
 #@staff_member_required
 def video_completion(request,slug):
-    print "-> JE PASSE video_completion"
     # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
@@ -705,7 +704,6 @@ def video_completion(request,slug):
         raise PermissionDenied
     else:
         list_contributor = video.contributorpods_set.all()
-        print list_contributor
         list_subtitle = video.trackpods_set.all()
         list_download = video.docpods_set.all()   
 
@@ -719,7 +717,6 @@ def video_completion(request,slug):
 @csrf_protect
 #@staff_member_required
 def video_completion_contributor(request, slug):
-    print "-> JE PASSE video_completion_contributor"
     video = get_object_or_404(Pod, slug=slug)
     list_contributor = video.contributorpods_set.all()
     list_subtitle = video.trackpods_set.all()
@@ -727,8 +724,6 @@ def video_completion_contributor(request, slug):
     if not request.user.is_authenticated():
         raise PermissionDenied
     if request.POST:
-        print "-> JE PASSE video_completion_contributor POST"
-        print request.POST
         if request.POST.get("action") and request.POST['action'] == 'new':
             form_contributor = ContributorPodsForm({"video": video})
             if request.is_ajax():  # if ajax
@@ -744,7 +739,6 @@ def video_completion_contributor(request, slug):
         # save
         if request.POST.get("action") and request.POST['action'] == 'save':
             form_contributor = None
-            print "-> JE PASSE DANS POST SAVE"
             if request.POST.get("contributor_id") != "None":
                 contributor = get_object_or_404(
                     ContributorPods, id=request.POST.get("contributor_id"))
@@ -756,7 +750,6 @@ def video_completion_contributor(request, slug):
                 form_contributor.save()
                 list_contributor = video.contributorpods_set.all()
                 if request.is_ajax():
-                    print "JE FAIS UNE REQUETE AJAX"
                     some_data_to_dump = {
                         'list_data': render_to_string('videos/completion/contributor/list_contributor.html', {'list_contributor': list_contributor, 'video': video}),
                         'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
@@ -770,7 +763,6 @@ def video_completion_contributor(request, slug):
                                               context_instance=RequestContext(request))
             else:
                 if request.is_ajax():
-                    print "JE FAIS UNE REQUETE AJAX MAIS LE FORMULAIRE N'EST PAS VALIDE"
                     some_data_to_dump = {
                         'errors': "%s" % _('Please correct errors'),
                         'form': render_to_string('videos/completion/contributor/form_contributor.html', {'video': video, 'form_contributor': form_contributor})
@@ -794,7 +786,8 @@ def video_completion_contributor(request, slug):
                                           context_instance=RequestContext(request))
             else:
                 return render_to_response("videos/video_completion.html",
-                                              {'video': video,
+                                              {'video': video, 
+                                              'form_contributor': form_contributor,
                                                 'list_contributor': list_contributor},
                                               context_instance=RequestContext(request))
         # end modify
@@ -804,7 +797,6 @@ def video_completion_contributor(request, slug):
             contributor_delete = contributor.delete()
             list_contributor = video.contributorpods_set.all()
             if request.is_ajax():
-                print "requete ajax delete"
                 some_data_to_dump = {
                     'list_data': render_to_string('videos/completion/contributor/list_contributor.html', {'list_contributor': list_contributor, 'video': video}),
                     'player': render_to_string('videos/video_player.html', {'video': video,  "csrf_token": request.COOKIES['csrftoken']})
@@ -833,7 +825,6 @@ def video_completion_contributor(request, slug):
 @csrf_protect
 #@staff_member_required
 def video_completion_subtitle(request, slug):
-    print "-> JE PASSE video_completion_subtitle"
     video = get_object_or_404(Pod, slug=slug)
     list_contributor = video.contributorpods_set.all()
     list_subtitle = video.trackpods_set.all()
@@ -855,7 +846,6 @@ def video_completion_subtitle(request, slug):
                                           context_instance=RequestContext(request))
         # save
         if request.POST.get("action") and request.POST['action'] == 'save':
-            print "-> JE PASSE video_completion_subtitle save"
             form_subtitle = None
             if request.POST.get("subtitle_id") != "None":
                 subtitle = get_object_or_404(
@@ -865,12 +855,9 @@ def video_completion_subtitle(request, slug):
                 form_subtitle = TrackPodsForm(request.POST)
 
             if form_subtitle.is_valid():  # All validation rules pass
-                print "-> JE PASSE video_completion_subtitle save is_valid"
                 form_subtitle.save()
                 list_subtitle = video.trackpods_set.all()
                 if request.is_ajax():
-                    # print list_enrichment
-                    print "-> JE PASSE video_completion_subtitle save is_ajax"
                     some_data_to_dump = {
                         'list_data': render_to_string('videos/completion/subtitle/list_subtitle.html', {'list_subtitle': list_subtitle, 'video': video}),
                         'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
@@ -908,6 +895,7 @@ def video_completion_subtitle(request, slug):
             else:
                 return render_to_response("videos/video_completion.html",
                                               {'video': video,
+                                              'form_subtitle': form_subtitle,
                                                 'list_subtitle': list_subtitle},
                                               context_instance=RequestContext(request))
         # end modify
@@ -938,7 +926,7 @@ def video_completion_subtitle(request, slug):
         # end cancel
     return render_to_response("videos/video_completion.html",
                              {'video': video,
-                               'list_contributors': list_contributors, 
+                               'list_contributor': list_contributor, 
                                'list_subtitle' : list_subtitle, 
                                'list_download' : list_download },
                             context_instance=RequestContext(request))
@@ -980,7 +968,6 @@ def video_completion_download(request, slug):
                 form_download.save()
                 list_download = video.docpods_set.all()   
                 if request.is_ajax():
-                    # print list_enrichment
                     some_data_to_dump = {
                         'list_data': render_to_string('videos/completion/download/list_download.html', {'list_download': list_download, 'video': video}),
                         'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
@@ -1018,6 +1005,7 @@ def video_completion_download(request, slug):
             else:
                 return render_to_response("videos/video_completion.html",
                                               {'video': video,
+                                              'form_download': form_download,
                                                 'list_download': list_download},
                                               context_instance=RequestContext(request))
         # end modify
@@ -1048,7 +1036,7 @@ def video_completion_download(request, slug):
         # end cancel
     return render_to_response("videos/video_completion.html",
                               {'video': video,
-                                  'list_contributors': list_contributors, 
+                                  'list_contributor': list_contributor, 
                                   'list_subtitle' : list_subtitle, 
                                   'list_download' : list_download },
                               context_instance=RequestContext(request))
@@ -1210,7 +1198,6 @@ def video_enrich(request, slug):
                 form_enrich.save()
                 list_enrichment = video.enrichpods_set.all()
                 if request.is_ajax():
-                    # print list_enrichment
                     some_data_to_dump = {
                         'list_enrich': render_to_string('videos/enrich/list_enrich.html', {'list_enrichment': list_enrichment, 'video': video}),
                         'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})

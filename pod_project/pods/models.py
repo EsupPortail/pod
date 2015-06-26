@@ -476,6 +476,7 @@ class ContributorPods(models.Model):
         msg = self.verify_attributs() + self.verify_not_same_contributor()
         if(len(msg) > 0):
             raise ValidationError(msg)
+
     def verify_attributs(self):
         msg = []
         if not self.name  or self.name == "" or len(self.name) < 2 or len(self.name) > 200:
@@ -483,21 +484,21 @@ class ContributorPods(models.Model):
         if len(self.weblink)> 200:
             msg.append(_('you cannot enter a weblink with more than 200 caracteres.'))
         if not self.role:
-            msg.append(_('please enter a role. '))
+            msg.append(_('please enter a role.'))
         if (len(msg) > 0):
             return msg
         else:
             return []
+
     def verify_not_same_contributor(self):
         msg = []
-        instance = None
         list_contributorpods = ContributorPods.objects.filter(video=self.video)
-        if instance:
-            list_contributorpods = list_contributorpods.exclude(id=instance.id)
+        if self.id != None:
+            list_contributorpods = list_contributorpods.exclude(id=self.id)
         if len(list_contributorpods) > 0:
             for element in list_contributorpods:
                 if self.name == element.name and self.role == element.role:
-                    msg.append(_("there is already a contributor with this same name and role in the list."))
+                    msg.append(_("there is already a contributor with the same name and role in the list."))
                     return msg        
         return []
 
@@ -544,9 +545,9 @@ class TrackPods(models.Model):
     def verify_attributs(self):
         msg = []
         if not self.kind or (self.kind != "subtitles" and self.kind != "captions"):
-            msg.append(_('Please enter a correct kind.'))
+            msg.append(_('please enter a correct kind.'))
         if not self.lang or (self.lang in settings.PREF_LANG_CHOICES or self.lang in settings.ALL_LANG_CHOICES):
-            msg.append(_('Please enter a correct lang.'))
+            msg.append(_('please enter a correct lang.'))
         if (len(msg) > 0):
             return msg
         else:
@@ -554,14 +555,13 @@ class TrackPods(models.Model):
 
     def verify_not_same_trackpod(self):
         msg = []
-        instance = None
         list_trackpods = TrackPods.objects.filter(video=self.video)
-        if instance:
-            list_trackpods = list_trackpods.exclude(id=instance.id)
+        if self.id != None:
+            list_trackpods = list_trackpods.exclude(id=self.id)
         if len(list_trackpods) > 0:
             for element in list_trackpods:
                 if self.kind == element.kind and self.lang == element.lang:
-                    msg.append(_("there is already a subtitle with this same kind and language in the list."))
+                    msg.append(_("there is already a subtitle with the same kind and language in the list."))
                     return msg        
         return []
 
@@ -588,7 +588,6 @@ class DocPods(models.Model):
     def __str__(self):
         return u"Document: %s - video: %s" % (self.document, self.video)
     def clean(self):
-        # Don't allow draft entries to have a pub_date.
         msg = []
         msg = self.verify_document() + self.verify_not_same_document()
         if(len(msg) > 0):
@@ -606,10 +605,9 @@ class DocPods(models.Model):
 
     def verify_not_same_document(self):
         msg = []
-        instance = None
         list_docpods = DocPods.objects.filter(video=self.video)
-        if instance:
-            list_docpods = list_docpods.exclude(id=instance.id)
+        if self.id != None:
+            list_docpods = list_docpods.exclude(id=self.id)
         if len(list_docpods) > 0:
             for element in list_docpods:
                 if self.document == element.document:
