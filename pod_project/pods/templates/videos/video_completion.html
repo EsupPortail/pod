@@ -69,7 +69,7 @@ table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
     padding: 4px 15px;
 }
 table.scroll tbody,
-table.scroll thead { /*display: block*/ }
+table.scroll thead { display: block }
 
 table.scroll thead /*tr th*/ { 
     height: 27px;
@@ -149,6 +149,7 @@ $(window).load(function(){
             $(this).children().removeClass('glyphicon glyphicon-chevron-up');
             $(this).children().addClass('glyphicon glyphicon-chevron-down')           
         }
+        manageResize();
 
     });
     manageResize();
