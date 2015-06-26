@@ -13,7 +13,8 @@ sqs = SearchQuerySet().facet('owner').facet('type').facet(
 
 urlpatterns = patterns(
     '',
-    (r'^favicon\.ico$', RedirectView.as_view(url=settings.STATIC_URL+settings.TEMPLATE_THEME+'/images/favicon.ico')),
+    (r'^favicon\.ico$', RedirectView.as_view(
+        url=settings.STATIC_URL + '/images/favicon.ico')),
     (r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/', include(admin.site.urls)),
     # ACCOUNT
@@ -81,6 +82,8 @@ urlpatterns = patterns(
         'pods.views.video_delete', name='video_delete'),
     url(r'^video_add_favorite/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_add_favorite', name='video_add_favorite'),
+    url(r'^video_add_report/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video_add_report', name='video_add_report'),
     url(r'^video_completion/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_completion', name='video_completion'),
     url(r'^video_chapter/(?P<slug>[\-\d\w]+)/$',

@@ -30,6 +30,7 @@ voir http://www.gnu.org/licenses/
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{{ TITLE_SITE }} - {% block bootstrap3_title %}{% endblock %}</title>
+        {% block dublincore %}{% endblock %}
         <link rel="icon" href="/favicon.ico" />
         {% bootstrap_css %}
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -40,11 +41,10 @@ voir http://www.gnu.org/licenses/
         <![endif]-->
         {% bootstrap_javascript jquery=True %}
         <!-- SOCIAL NETWORK BUTTONS by NOIZWAVES http://noizwaves.github.io/bootstrap-social-buttons -->
-        {% with SOCIAL_CSS=TEMPLATE_THEME|add:'/theme/social-buttons.css' %}
-            <link href="{% static SOCIAL_CSS %}" rel="stylesheet" />
-        {% endwith %}
+        <link href="{% static 'css/social-buttons.css' %}" rel="stylesheet" />
         <!--FontAwesome for Bootstrap-->
-        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
+        <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" />
+        <!--link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" /-->
         <script src="{% static 'JS/navigation.js' %}"></script>
         <script src="{% static 'JS/main.js' %}"></script>
         {% if not request.GET.is_iframe %}
@@ -76,9 +76,7 @@ voir http://www.gnu.org/licenses/
         {% if not request.GET.is_iframe %}
             <!-- select other website -->
             {% if TEMPLATE_CUSTOM != None %}
-                {% with TEMPLATE_CUSTOM|add:'/header.html' as custom_header %}
-                    {% include custom_header %}
-                {% endwith %}
+                {% include 'pre-header.html' %}
             {% endif %}
             <!-- end select other website -->
             <!-- header -->
@@ -232,9 +230,7 @@ voir http://www.gnu.org/licenses/
         {% if not request.GET.is_iframe %}
             <!-- footer -->
             {% if TEMPLATE_CUSTOM != None %}
-                {% with TEMPLATE_CUSTOM|add:'/footer.html' as custom_footer %}
-                    {% include custom_footer %}
-                {% endwith %}
+                {% include 'footer.html' %}
             {% endif %}
             <!-- footer -->
 
@@ -260,5 +256,34 @@ voir http://www.gnu.org/licenses/
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
         {% endif %}
+        {% if show_report %}
+        <div class="modal fade" id="modal_report_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        
+                        <div class="modal-header">
+                            <h3>{% trans 'report this video' %}</h3>
+                        </div>
+                        <form method="post" action="{% url 'video_add_report' slug=video.slug %}" id="video_report_form" >
+                        {% csrf_token %}
+                        <div class="modal-body" >
+                            <div class="form-group">
+                            <label for="commentreport">{% trans 'Please, specify the problem' %} :</label><br/>
+                            <textarea rows="5" name="comment" id="commentreport" class="form-control" placeholder="message"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+                                <button type="submit" class="btn btn-default" >{% trans 'Send' %}</button>
+                        </div>
+                        </form>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+        </div>
+        {%endif%}
+        
+        <span id="show_messages" class="alert alert-danger collapse" role="alert" >
+            &nbsp;
+        </span>
     </body>
 </html>

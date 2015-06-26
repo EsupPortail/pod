@@ -190,14 +190,15 @@ $(document).on('change', '#autoplay', function() {
 $(document).on('change', "#displaytime", function(e) {
     //$('#txtpartage').val(($('#displaytime:checked').val()) ? $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime())) : $('#txtpartage').val().replace(/(start=)\d+/, '$10'));
     if($('#displaytime').is(':checked')){
-        if($('#txtpartage').val().indexOf('start')>0){
-             $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime()));
-        }else {
+        if($('#txtpartage').val().indexOf('start')<0){
              $('#txtpartage').val($('#txtpartage').val()+'&start='+parseInt(myPlayer.currentTime()));
+             var valeur = $('#txtintegration').val();
+             $('#txtintegration').val(valeur.replace('/?', '/?start=' + parseInt(myPlayer.currentTime())+'&'));
         }
         $('#txtposition').val(myPlayer.currentTime().toHHMMSS()); 
     }else{
          $('#txtpartage').val($('#txtpartage').val().replace(/(&start=)\d+/, ''));
+         $('#txtintegration').val($('#txtintegration').val().replace(/(start=)\d+&/, ''));
          $('#txtposition').val("");
     }
 });
@@ -213,33 +214,16 @@ $(document).on('click', "#share a", function() {
 });
 
 /** end video share embed **/
-$(document).on('click', 'button#button_video_favorite', function (event) {
+$(document).on('click', 'button#button_video_report', function (event) {
     event.preventDefault();
-    if($( "#video_favorite_form" ).length==0){
+    if($(this).parent('form').length==0){
         alert($(this).children('span.sr-only').text());
     } else {
         if(expiration_date_second > 5) {
-        var spanchild = $(this).children("span");
-        var jqxhr = $.post( 
-            $( "#video_favorite_form" ).attr('action'), 
-            $( "#video_favorite_form" ).serialize(), 
-            function(data) {
-                var alert_text='<div class="alert alert-info" id="myAlert"><a href="#" class="close" data-dismiss="alert">&times;</a>'+data+'</div>';
-                $('body').append(alert_text);
-                $("#myAlert").on('closed.bs.alert', function () {
-                    $(this).remove();
-                });
-                $("#myAlert").alert();
-                if(spanchild.attr('id')=="fav") spanchild.attr('id', 'mark-as-fav');
-                else spanchild.attr('id', 'fav');
-                window.setTimeout(function() { $("#myAlert").alert('close'); }, 3000);
+            //show modal box with comment input and save/cancel buttons
+            $("#modal_report_form").modal({
+              show: true,
             });
-        jqxhr.fail(function(data) {
-            alert('Error '+data);
-            //$('#player').after('<article class="messages"></article>');
-            //$('article.messages').html("Error").delay(3000).fadeOut('slow', function(){$(this).remove();});
-            //$(".alert").alert('close')
-        });
         } else {
             alert(expiredsession);
             location.reload();
@@ -248,6 +232,25 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
     return false;
 });
 
+function show_messages(msg, reload, msgclass) {
+
+    if(!msgclass||msgclass==='undefined') msgclass='alert-danger';
+    $("#show_messages").attr('class','');
+    $("#show_messages").attr('class','alert '+msgclass+' collapse');
+    if($("#show_messages").length) {
+        if(reload==true) {
+            $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
+        } else {
+            if(msgclass=='alert-info')
+                $("#show_messages").html(msg).fadeIn().delay(3000).fadeOut();
+            else
+                $("#show_messages").html(msg).fadeIn();
+        }
+    }
+}
+$(document).on('click', 'input#close_messages', function() {
+    $("#show_messages").fadeOut();
+});
 /** END EVTS PERMANENT **/
 
 
@@ -269,30 +272,36 @@ Number.prototype.toHHMMSS = function () {
 // Edit the iframe and share link code
 function writeInFrame() {
     // Iframe
-    var str = $('#txtintegration').html();
+    var str = $('#txtintegration').val();
     // Video size
     var $integration_size_option = $('#integration_size').find('OPTION:selected');
     var width = $integration_size_option.attr('data-width');
     var height = $integration_size_option.attr('data-height');
     var size = $integration_size_option.attr('value');
-    str = str.replace(/(width=")\d+("\W+height=")\d+/, '$1' + width + '$2' + height);
+    str = str.replace(/(width=)\S+/, '$1' + '\"' + width +'\"');
+    str = str.replace(/(height=)\S+/, '$1' + '\"' + height +'\"');
     str = str.replace(/(size=)\d+/, '$1' + size);
     // Autoplay
     if ($('#autoplay').is(':checked')) {
-        str = str.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
-    } else if (str.indexOf('autoplay=true') >= 0) {
-        str = str.replace('&amp;autoplay=true', '');
+            if(str.indexOf('autoplay=true') < 0){
+                str = str.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
+            }
+    } else if (str.indexOf('autoplay=true') > 0) {
+        str = str.replace('&autoplay=true', '');
     }
-    $('#txtintegration').html(str);
+    $('#txtintegration').val(str);
 
     // Share link
     var link = $('#txtpartage').val();
     link = link.replace(/(size=)\d+/, '$1' + size);
     // Autoplay
     if ($('#autoplay').is(':checked')) {
-        link = link.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
-    } else if (link.indexOf('autoplay=true') >=0) {
-        link = link.replace('&autoplay=true', '');
+        if(link.indexOf('autoplay=true') <0){
+                link = link.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
+            }
+        
+    } else if (link.indexOf('autoplay=true') >0) {
+       link = link.replace('&autoplay=true', '');
     }
     $('#txtpartage').val(link);
 }

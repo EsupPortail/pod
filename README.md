@@ -21,9 +21,9 @@
 
 > La plateforme est prévue en multilingue et chaque utilisateur authentifié peut également gérer son profil en ajoutant une photo, une description et un lien web.
 
-> 2 types d'authentification sont possibles : via le service central d'authentification CAS et via l'authentification locale gérée par la plateforme.
+> Deux types d'authentification sont possibles : via le service central d'authentification CAS et via l'authentification locale gérée par la plateforme.
 
-> Développée en python à l'aide du framework Django, elle utilise ffmpeg pour encoder les fichiers et elasticsearch comme moteur de recherche. "Full HTML5", son affichage est responsive et donc s'adapte aux différents types de terminaux web.
+> Développée en python à l'aide du framework Django, elle utilise ffmpeg pour encoder les fichiers et elasticsearch comme moteur de recherche. "Full HTML5", son affichage est responsive et s'adapte ainsi aux différents types de terminaux web.
 
 -------------------------
 
