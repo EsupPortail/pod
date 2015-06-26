@@ -69,7 +69,7 @@ table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
     padding: 4px 15px;
 }
 table.scroll tbody,
-table.scroll thead { /*display: block */}
+table.scroll thead { /*display: block*/ }
 
 table.scroll thead /*tr th*/ { 
     height: 27px;
@@ -91,12 +91,6 @@ table.scroll tbody td, table.scroll thead th {
 table.scroll tbody td.contributor_name {
     width: 20%;
 }
-
-
-
-/*table.scroll tbody td.enrich_title {
-    width: 60%;
-}*/
 
 </style>
 
@@ -131,22 +125,29 @@ $(window).load(function(){
 
     //On attribut la classe "active" au premier .titre de la liste et on ouvre par effet de slide .contenuTitre qui suit .active :
     accordion_head.first().addClass('active').parent().next().slideDown('normal');
+    accordion_head.first().children().removeClass('glyphicon glyphicon-chevron-down');
+    accordion_head.first().children().addClass('glyphicon glyphicon-chevron-up'); 
 
-    // Lorsqu'on clique sur .titre
+    // when click on .titre
     accordion_head.on('click', function(event) {
         // On annule l'effet naturel du lien
         event.preventDefault();
         // On vérifie la présence de la classe "active"
         if ($(this).attr('class') != 'titre active'){
             // On ferme par effet de slide tous les li qui contiennent la classe .contenuTitre
-            accordion_body.slideUp('normal');
+            /*accordion_body.slideUp('normal');*/
             // On ouvre celui qui suit directement le lien (.titre) sur lequel on a cliqué
-            $(this).parent().next().stop(true,true).slideToggle('normal');
+            $(this).parent().next().slideToggle('normal');
             // On enlève la classe .active de tous les liens
-            accordion_head.removeClass('active');
-            // On rajoute la classe .active au lien sur lequel on a cliqué
             $(this).addClass('active');
+            $(this).children().removeClass('glyphicon glyphicon-chevron-down');
+            $(this).children().addClass('glyphicon glyphicon-chevron-up');  
             
+        }else if($(this).attr('class') == 'titre active'){
+            $(this).parent().next().slideUp('normal');
+            $(this).removeClass('active');
+            $(this).children().removeClass('glyphicon glyphicon-chevron-up');
+            $(this).children().addClass('glyphicon glyphicon-chevron-down')           
         }
 
     });
@@ -298,6 +299,8 @@ $(document).on("submit", "#page-video form", function (e) {
                                 $("span#"+list).unwrap();
                                 manageResize();
                             }
+                            $(window).scrollTop(100);
+                            show_messages("{% trans 'Changes have been saved.' %}", false, 'alert-info');
                         }
                     } else {
                        show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
@@ -411,7 +414,7 @@ function verify_fields(form){
         <div class="row" id="info_video">
             <div id="accordeon" class="col-sm-9"> 
                 <!-- Le lien qui sert de bouton pour ouvrir le dropdown -->
-                <li><a href="#"  class="titre" >Contributors</a></li>
+                <li><a href="#"  title="{% trans "click to view contributors section" %}" class = "titre" >{% trans "Contributor(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down" /> </a></li>
                 <li class="contenuTitre">
                     &nbsp;
                     <span id="list_contributor">
@@ -432,7 +435,7 @@ function verify_fields(form){
                     </form>
                 </li>
                 &nbsp;
-                <li><a href="#"  class="titre" >Subtitle</a></li>
+                <li><a href="#" title="{% trans "click to view subtitle section" %}" class="titre" >{% trans "Subtitle(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down"/></a></li>
                 <li class="contenuTitre">
                     <span id= "form_subtitle">
                     {% if form_subtitle %}
@@ -452,7 +455,7 @@ function verify_fields(form){
                     </form>
                 </li>
                 &nbsp;
-                <li><a href="#"  class="titre" >Download</a></li>
+                <li><a href="#" title="{% trans "click to view download section" %}" class="titre" >{% trans "Download(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down" /></a></li>
                 <li class="contenuTitre">  
                     <span id= "form_download">
                     {% if form_download %}

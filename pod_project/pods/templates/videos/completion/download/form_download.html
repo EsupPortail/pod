@@ -23,6 +23,7 @@ voir http://www.gnu.org/licenses/
 <form  id="form_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post" >
     {% csrf_token %}
     <div id="formcontent" class="form-container">
+        &nbsp;
         {% if form_download.errors or form_download.non_field_errors %}
             {% trans "Your form contains errors" %}: <br/>
             {% for error in form_download.non_field_errors %}
