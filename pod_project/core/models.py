@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -84,9 +84,9 @@ class PagesMenuBas(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     image = FilerImageField(null=True, blank=True, verbose_name=_('Avatar'),
-                            help_text=_('This field allows you to add a photo ID. The picture will be displayed with yours videos.'))
+                            help_text=_('This field allows you to add a photo ID. The picture will be displayed with your videos.'))
     description = models.TextField(_('Description'), max_length=100, blank=True,
-                                   help_text=_('This field allows you to write a few words about yourself. The text will be displayed with yours videos.'))
+                                   help_text=_('This field allows you to write a few words about yourself. The text will be displayed with your videos.'))
     url = models.URLField(_('Web link'), blank=True,
                           help_text=_('This field allows you to add an url.'))
 
@@ -114,8 +114,8 @@ def create_user_profile(sender, instance, created, **kwargs):
         # creation du profil
         try:
             UserProfile.objects.create(user=instance)
-        except  Exception as e:
-            msg = u'\n Create user profile ***** Unexpected error :%r' % e
+        except Exception as e:
+            msg = u'\n Create user profile ***** Error:%r' % e
             msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
             print msg
@@ -125,8 +125,8 @@ def create_user_profile(sender, instance, created, **kwargs):
             if not instance.groups.filter(name='can delete file').exists():
                 g = Group.objects.get(name='can delete file')
                 g.user_set.add(instance)
-        except  Exception as e:
-            msg = u'\n Create folder and add group to user ***** Unexpected error :%r' % e
+        except Exception as e:
+            msg = u'\n Create folder and add group to user ***** Error:%r' % e
             msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
             print msg
@@ -162,9 +162,11 @@ class Video(models.Model):
     description = RichTextField(
         _('Description'), config_name='complete', blank=True)
 
-    view_count = models.PositiveIntegerField(default=0, editable=False)
+    view_count = models.PositiveIntegerField(
+        _('View count'), default=0, editable=False)
 
-    encoding_in_progress = models.BooleanField(default=False, editable=False)
+    encoding_in_progress = models.BooleanField(
+        _('Encoding in progress'), default=False, editable=False)
     encoding_status = models.CharField(
         _('Encoding status'), max_length=250, editable=False, blank=True, null=True)
 
@@ -241,6 +243,10 @@ class EncodingType(models.Model):
     )
     mediatype = models.CharField(
         _('mediatype'), max_length=5, choices=TYPE_CHOICES, default="video")
+
+    class Meta:
+        verbose_name = _("encoding type")
+        verbose_name_plural = _("encoding types")
 
     def __str__(self):
         return "%s %s %s" % (self.mediatype, self.name, self.output_height)
