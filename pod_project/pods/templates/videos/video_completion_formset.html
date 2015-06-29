@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -112,7 +112,7 @@ voir http://www.gnu.org/licenses/
         <form method="post" action="{% url 'video_completion' slug=contributorformset.instance.slug %}" novalidate>
             {% csrf_token %}
             <fieldset id="contributor">
-                <legend>{% trans 'Contributor(s): (writers, directors, editors, designers... of the video)' %}</legend>
+                <legend>{% trans 'Contributor(s): writers, directors, editors, designers…' %}</legend>
                 <div id="contributorformset" data-formset-prefix="{{ contributorformset.prefix }}">
                     {{ contributorformset.management_form }}
                     <div data-formset-body-contributor>
@@ -176,7 +176,7 @@ voir http://www.gnu.org/licenses/
             {% if request.user.is_staff %}
                 <br />
                 <fieldset id="track">
-                    <legend>{% trans 'File of subtitle or caption' %}</legend>
+                    <legend>{% trans 'Sub-heading file(s)' %}</legend>
                     <div id="trackformset" data-formset-prefix="{{ trackformset.prefix }}">
                         {{ trackformset.management_form }}
                         <div data-formset-body-track>
@@ -310,8 +310,8 @@ voir http://www.gnu.org/licenses/
                 <button type="submit" class="btn btn-success" value="{% trans 'Save' %}" name="action1">
                     {% bootstrap_icon 'save' %} {% trans 'Save' %}
                 </button>
-                <button type="submit" class="btn btn-success" value="{% trans 'Save and back to the previous page' %}" name="action2">
-                    {% bootstrap_icon 'save' %} {% trans 'Save and back to the previous page' %}
+                <button type="submit" class="btn btn-success" value="{% trans 'Save and go back to previous page' %}" name="action2">
+                    {% bootstrap_icon 'save' %} {% trans 'Save and back to previous page' %}
                 </button>
                 <button type="submit" class="btn btn-success" value="{% trans 'Save and watch the video' %}" name="action3">
                     {% bootstrap_icon 'save' %} {% trans 'Save and watch the video' %}
@@ -322,7 +322,7 @@ voir http://www.gnu.org/licenses/
         <div id="process" class="loader">
             <div align="center">
                 <div class="anim"></div>
-                <span>{% trans 'Sending, please wait' %}</span>
+                <span>{% trans 'Sending, please wait.' %}</span>
             </div>
         </div>
     {% endblock article_content %}
@@ -350,7 +350,7 @@ voir http://www.gnu.org/licenses/
                 <div class="widget" style="text-align: justify">
                     <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans 'Information' %}</h4>
                     <p>
-                        {% trans 'Your current permissions do not allow you to add subtitle files or documents to download videos. Please contact us to add these rights.' %} :
+                        {% trans 'Your current permissions do not allow you to add subtitle files or documents to videos. Please contact us to add these rights.' %} :
                         <a href="mailto:{{ HELP_MAIL }}">{{ HELP_MAIL }}</a>
                     </p>
                 </div>

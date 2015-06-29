@@ -100,7 +100,7 @@ USE_TZ = True
 
 from django.utils.translation import ugettext_lazy as _
 LANGUAGES = (
-    ('fr', _('Francais')),
+    ('fr', _('Français')),
     ('en', _('English'))
 )
 DEFAULT_LANGUAGE = 1
@@ -258,7 +258,7 @@ TEMPLATE_VISIBLE_SETTINGS = (
 
 # Fichiers statiques du theme
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, "assets"),
+    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'assets'),
 )
 
 # Paramètres session
@@ -306,9 +306,6 @@ RECORDER_SALT = "abcdefgh"
 # if set it's used to test download and encode video in test
 #HTTP_PROXY = 'http://localhost:3128/'
 
-#Notification d'alerte sur les vidéos
+# Signalement des vidéos
 SHOW_REPORT = True
 REPORT_VIDEO_MAIL_TO = ['alert@univ.fr']
-
-
-
