@@ -314,17 +314,17 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
 
 /*** Verify if value of field respect form field ***/
 function verify_fields(){
-    if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length < 2) || (document.getElementById("id_title").length > 100)) {
+    if ( document.getElementById("id_title").value == "" || document.getElementById("id_title").value.length < 2 || document.getElementById("id_title").value.length > 100 ) {
         $("input#id_title")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 characters.' %} </span>")
             .parents('div.form-group').addClass('has-error');
     }
-    if ((document.getElementById("id_start").value == "") || (document.getElementById("id_start").value < 0 ) || (document.getElementById("id_start").value >= video_duration)){
+    if ( document.getElementById("id_start").value == "" || document.getElementById("id_start").value < 0 || document.getElementById("id_start").value >= video_duration ){
         $("input#id_start")
             .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct start from 0 to ' %}" + (video_duration -1) + "</span>")
             .parents('div.form-group').addClass('has-error');
     }
-    if ((document.getElementById("id_end").value == "") || (document.getElementById("id_end").value <=0 ) ||(document.getElementById("id_end").value > video_duration)){
+    if ( document.getElementById("id_end").value == "" || document.getElementById("id_end").value <= 0 || document.getElementById("id_end").value > video_duration ){
         $("input#id_end")
             .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct end from 1 to ' %} " + video_duration + "</span>")
             .parents('div.form-group').addClass('has-error');
