@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -36,7 +36,7 @@ voir http://www.gnu.org/licenses/
 /*** table scroll ***/
 table.scroll {
      width: 100%; /* Optional */
-    border-collapse: collapse; 
+    border-collapse: collapse;
     border-spacing: 0;
     /*border: 2px solid black;*/
 }
@@ -58,7 +58,7 @@ table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
 table.scroll tbody,
 table.scroll thead { display: block; }
 
-table.scroll thead /*tr th*/ { 
+table.scroll thead /*tr th*/ {
     height: 27px;
     line-height: 27px;
     text-align: left;
@@ -147,8 +147,8 @@ $(document).on("reset", "#page-video form", function (e) {
 });
 
 /*** Function for all buttons expect cancel
-    When the action is modify or new, all button in the first page of enrich are hide and the form is displayed. 
-    When the action is delete, a request sent with the enrich id 
+    When the action is modify or new, all button in the first page of enrich are hide and the form is displayed.
+    When the action is delete, a request sent with the enrich id
     When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
 
 $(document).on("submit", "#page-video form", function (e) {
@@ -177,7 +177,7 @@ $(document).on("submit", "#page-video form", function (e) {
                 get_form(data);
                 elt.addClass('info');
             }
-            
+
         });
         jqxhr.fail(function($xhr) {
             var data = $xhr.status+ " : " +$xhr.statusText;
@@ -227,7 +227,7 @@ $(document).on("submit", "#page-video form", function (e) {
                 );
                 jqxhr.done(function(data){
                     if(data.list_enrich || data.form) {
-                        if(data.errors){  
+                        if(data.errors){
                             //alert(data.errors);
                             get_form(data.form);
                         }else{
@@ -248,7 +248,7 @@ $(document).on("submit", "#page-video form", function (e) {
             show_messages("{% trans 'Errors found in the form, please correct it.' %}"+button, false, 'alert-danger');
         }
     }
-    
+
 });
 
 /*** Function show the item selected by type field ***/
@@ -268,7 +268,7 @@ function refrech_list_and_player(data){
     //alert("{% trans 'The changes have been saved' %}");
 };
 /*** Display element of form enrich ***/
-function get_form(data) {    
+function get_form(data) {
         //$("#form_enrich").html("");
         //fadeIn().delay(3000).fadeOut()
         $("#form_enrich").hide().html(data).fadeIn();
@@ -307,14 +307,14 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
             $("input#id_start").trigger('change');
         } else {
             $("input#id_end").val(parseInt(myPlayer.currentTime()));
-            $("input#id_end").trigger('change'); 
-        }  
+            $("input#id_end").trigger('change');
+        }
     }
 });
 
 /*** Verify if value of field respect form field ***/
 function verify_fields(){
-    if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length < 2) || (document.getElementById("id_title").length > 100)) {
+    if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length < 2) || (document.getElementById("id_title").value.length > 100)) {
         $("input#id_title")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 caracteres.' %} </span>")
             .parents('div.form-group').addClass('has-error');
@@ -329,7 +329,7 @@ function verify_fields(){
             .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct end from 1 to ' %} " + video_duration + "</span>")
             .parents('div.form-group').addClass('has-error');
     }
-        
+
     switch (document.getElementById("id_type").value){
         case "image":
             if($("#id_image_thumbnail_img").attr('src') == "/static/filer/icons/nofile_48x48.png"){ //check with id_image value
@@ -344,7 +344,7 @@ function verify_fields(){
                     .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct richtext' %} </span>")
                     .parents('div.form-group').addClass('has-error');
             }
-            break; 
+            break;
         case "weblink":
             if(document.getElementById("id_weblink").value == ""){
                 $("input#id_weblink")
@@ -383,9 +383,9 @@ function verify_fields(){
                 .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct type' %} </span>")
                 .parents('div.form-group').addClass('has-error');
 
-    }            
+    }
 };
-/***  Verify if fields end and start are correct ***/ 
+/***  Verify if fields end and start are correct ***/
 function verify_end_start_items(){
     var msg = "";
     new_start = parseInt(document.getElementById("id_start").value);
@@ -432,7 +432,7 @@ function overlaptest(){
 <article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
     <ol class="breadcrumb">
         {% block breadcrumbs %}
-        {{ block.super }} 
+        {{ block.super }}
         <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
         <li class="active"> {% trans "Enrich video" %} "{{video.title}}"</li>
         {% endblock breadcrumbs %}
@@ -449,11 +449,11 @@ function overlaptest(){
                 <!-- This button will add a new form when clicked -->
                 </span>
                 <span id="form_enrich">
-                    <!-- place for form, it will be replace by a form : empty or to modify -->   
+                    <!-- place for form, it will be replace by a form : empty or to modify -->
                     {% if form_enrich %}
                     {%include 'videos/enrich/form_enrich.html' with form_enrich=form_enrich%}
                     {%endif%}
-                </span>         
+                </span>
                 <form  id = "form_new" action="{% url 'video_enrich' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
@@ -478,9 +478,9 @@ function overlaptest(){
                         <p>{% trans 'You cannot overlap the enrichments' %}</p>
                         <p>{% trans 'You must save your enrichments to view the result.' %}</p>
                     </div>
-                    
+
                 </aside>
-        </div>        
+        </div>
     </article>
 {% endblock bootstrap3_content %}
 {% block box %}{% endblock box %}
