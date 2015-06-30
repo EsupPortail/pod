@@ -313,7 +313,6 @@ $(document).on('change','input#id_time',function() {
     $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
 $(document).on('click','#page-video span.getfromvideo a',function(e) {
-    console.log("blabla");
     e.preventDefault();
     if(!(typeof myPlayer === 'undefined')) {
         if($(this).context.id == "getfromvideo_start"){
