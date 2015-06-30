@@ -275,7 +275,7 @@ function refrech_list_and_player(data){
 
 /*** Verify if value of field respect form field ***/
 function verify_start_title_items(){
-    if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length < 2) || (document.getElementById("id_title").length > 100)) {
+    if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length < 2) || (document.getElementById("id_title").value.length > 100)) {
         $("input#id_title")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 caracteres.' %} </span>")
             .parents('div.form-group').addClass('has-error');
