@@ -275,12 +275,12 @@ function refrech_list_and_player(data){
 
 /*** Verify if value of field respect form field ***/
 function verify_start_title_items(){
-    if ((document.getElementById("id_title").value == "") || (document.getElementById("id_title").value.length < 2) || (document.getElementById("id_title").length > 100)) {
+    if ( document.getElementById("id_title").value == "" || document.getElementById("id_title").value.length < 2 || document.getElementById("id_title").value.length > 100 ) {
         $("input#id_title")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 caracteres.' %} </span>")
             .parents('div.form-group').addClass('has-error');
     }
-    if ((parseInt(document.getElementById("id_time").value) === "") || (parseInt(document.getElementById("id_time").value) < 0) || (parseInt(document.getElementById("id_time")) >= video_duration)) {
+    if ( document.getElementById("id_time").value == "" || document.getElementById("id_time").value < 0 || document.getElementById("id_time").value >= video_duration ) {
         $("input#id_time")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct start field between 0 and' %}" + (video_duration -1) + "</span>")
             .parents('div.form-group').addClass('has-error');
@@ -313,7 +313,6 @@ $(document).on('change','input#id_time',function() {
     $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
 $(document).on('click','#page-video span.getfromvideo a',function(e) {
-    console.log("blabla");
     e.preventDefault();
     if(!(typeof myPlayer === 'undefined')) {
         if($(this).context.id == "getfromvideo_start"){
