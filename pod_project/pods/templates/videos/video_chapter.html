@@ -280,7 +280,7 @@ function verify_start_title_items(){
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 caracteres.' %} </span>")
             .parents('div.form-group').addClass('has-error');
     }
-    if ((document.getElementById("id_time").value == "") || (parseInt(document.getElementById("id_time").value) < 0) || (parseInt(document.getElementById("id_time").value) >= video_duration)) {
+    if ((document.getElementById("id_time").value == "") || (document.getElementById("id_time").value < 0) || (document.getElementById("id_time").value >= video_duration)) {
         $("input#id_time")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct start field between 0 and' %}" + (video_duration -1) + "</span>")
             .parents('div.form-group').addClass('has-error');
