@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:36+0200\n"
-"PO-Revision-Date: 2015-07-01 17:38+0200\n"
+"PO-Revision-Date: 2015-07-01 18:22+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1549,7 +1549,7 @@ msgstr "Documents"
 
 #: pods/models.py:543
 msgid "Stop video"
-msgstr "Stop video"
+msgstr "Arrêter la lecture"
 
 #: pods/models.py:544
 msgid "The video will pause when displaying this enrichment."
@@ -2722,4 +2722,3 @@ msgstr ""
 #: pods/views.py:1222
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
-
