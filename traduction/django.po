@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:36+0200\n"
-"PO-Revision-Date: 2015-06-25 18:10+0100\n"
+"PO-Revision-Date: 2015-07-01 17:38+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.8.1\n"
+"X-Generator: Poedit 1.8.2\n"
 
 #: core/models.py:68
 msgid "order"
@@ -2723,103 +2723,3 @@ msgstr ""
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
 
-#, fuzzy
-#~| msgid "Save and back to previous page"
-#~ msgid "Save and back to the previous page"
-#~ msgstr "Enregistrer et revenir à la page précédente"
-
-#, fuzzy
-#~| msgid "Please enter a correct image."
-#~ msgid "Please enter a correct type."
-#~ msgstr "Veuillez renseigner une image."
-
-#, fuzzy
-#~| msgid "The changes have been saved."
-#~ msgid "The changes have been saved"
-#~ msgstr "Les modifications ont été enregistrées."
-
-#, fuzzy
-#~| msgid "Please enter a title from 2 to 100 characters."
-#~ msgid "Please enter a title from 2 to 100 caracteres."
-#~ msgstr "Veuillez renseigner un titre contenant entre 2 et 100 caractères."
-
-#~ msgid "error post request"
-#~ msgstr "Erreur lors de la requête"
-
-#, fuzzy
-#~| msgid "Chaptering video"
-#~ msgid "Chapter video"
-#~ msgstr "Chapitrer la vidéo"
-
-#~ msgid "Creation date"
-#~ msgstr "Date d'ajout"
-
-#~ msgid "Add new video"
-#~ msgstr "Ajouter une nouvelle vidéo"
-
-#~ msgid "Stop"
-#~ msgstr "Fin"
-
-#~ msgid ""
-#~ "Start and end fields must contain a value in seconds. You can use the "
-#~ "\"get time from the player\" button to fill it with the current time of "
-#~ "the player in the video."
-#~ msgstr ""
-#~ "Les champs début et fin doivent contenir une valeur en seconde. Vous "
-#~ "pouvez utiliser le bouton \"récupérer le temps depuis le lecteur\" pour "
-#~ "le remplir avec la position du lecteur dans la vidéo."
-
-#~ msgid ""
-#~ "\"Add a new enrichment\" to add a new enrichment and \"delete\" removes "
-#~ "enrichment."
-#~ msgstr ""
-#~ "\"Ajouter un nouvel enrichissement\" permet d'ajouter un nouvel "
-#~ "enrichissement et \"supprimer\" supprime l'enrichissement."
-
-#~ msgid "Click on modify button of enrichment to modify its properties."
-#~ msgstr "Cliquer sur le bouton modifier pour changer ses propriétés."
-
-#~ msgid ""
-#~ "Please ensure that each enrich contains a title, timecode start, end, and "
-#~ "the end timecode is higher than at the beginning."
-#~ msgstr ""
-#~ "Veuillez vous assurer que chaque enrichissement contient un titre, un "
-#~ "début, une fin et que le timecode de fin est plus élevé que celui du "
-#~ "début."
-
-#~ msgid "Error in enrich"
-#~ msgstr "Erreur dans l'enrichissement"
-
-#~ msgid "\"Add\" to add a new enrichment and \"delete\" removes enrichment."
-#~ msgstr ""
-#~ "\"Ajouter\" permet d'ajouter un nouvel enrichissement et \"supprimer\" "
-#~ "supprime l'enrichissement."
-
-#~ msgid "Click on a display range of enrichment to modify its properties."
-#~ msgstr ""
-#~ "Cliquer sur une plage d'affichage de l'enrichissement (barre jaune sur la "
-#~ "barre de lecture) pour modifier ses propriétés."
-
-#~ msgid ""
-#~ "Use the yellow tabs on the play bar to set the display enrichment beach."
-#~ msgstr ""
-#~ "Utilisez les ergots jaunes de la barre de lecture pour définir la plage "
-#~ "d'affichage de l'enrichissement."
-
-#~ msgid "end should be greater than start"
-#~ msgstr "la fin doit être supérieur au début"
-
-#~ msgid "Run the selected action"
-#~ msgstr "lancer cette action"
-
-#~ msgid "Go"
-#~ msgstr "Ok"
-
-#~ msgid "Click here to select the objects across all pages"
-#~ msgstr "Cliquez ici pour sélectionner les objets dans toutes les pages"
-
-#~ msgid "Edit your videos"
-#~ msgstr "Modifier vos vidéos"
-
-#~ msgid "Discipline "
-#~ msgstr "Discipline"
