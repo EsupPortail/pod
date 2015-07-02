@@ -41,16 +41,17 @@ import os
     test view
 """
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class ChannelsTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -74,7 +75,7 @@ class ChannelsTestView(TestCase):
         pod.theme.add(t)
         pod.channel.add(Channel.objects.get(id=1))
         pod.save()
-        print (" --->  SetUp of ChannelsTestView : OK !")
+        print(" --->  SetUp of ChannelsTestView : OK !")
 
     def test_channels_with_paginator(self):
         channels = list(Channel.objects.all())
@@ -108,7 +109,7 @@ class ChannelsTestView(TestCase):
             response.context[u"channels"].__dict__["number"], paginator.page(2).number)
         self.assertEqual(
             response.context["video_count"], 1)
-        print (
+        print(
             "   --->  test_channels_with_paginator of ChannelsTestView : OK !")
 
     def test_channels_with_ajax_request(self):
@@ -117,19 +118,20 @@ class ChannelsTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request[u'REQUEST_METHOD'], 'GET')
         self.assertEqual(response.request['perpage'], 24)
-        print (
+        print(
             "   --->  test_channels_with_ajax_request of ChannelsTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Owner_channels_listTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -146,7 +148,7 @@ class Owner_channels_listTestView(TestCase):
             Channel.objects.create(title="ChannelTest" + str(i), visible=True,
                                    color="Black", owner=remi, style="italic", description="blabla")
             i += 1
-        print (" --->  SetUp of Owner_channels_listTestView : OK !")
+        print(" --->  SetUp of Owner_channels_listTestView : OK !")
 
     def test_owner_channels_list(self):
         self.client = Client()
@@ -160,7 +162,7 @@ class Owner_channels_listTestView(TestCase):
         liste = list(response.context["CHANNELS"])
         self.assertEqual(liste, channels)
         self.assertEqual(response.context["video_count"], 0)
-        print (
+        print(
             "   --->  test_owner_channels_list of Owner_channels_listTestView : OK !")
 
     def test_owner_channels_with_ajax_request(self):
@@ -174,19 +176,20 @@ class Owner_channels_listTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request[u'REQUEST_METHOD'], 'GET')
         self.assertEqual(response.request['perpage'], 48)
-        print (
+        print(
             "   --->  test_owner_channels_with_ajax_request of Owner_channels_listTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class ChannelTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -206,7 +209,7 @@ class ChannelTestView(TestCase):
         pod.channel.add(Channel.objects.get(id=1))
         pod.save()
         pod.theme.add(t)
-        print (" --->  SetUp of ChannelTestView : OK !")
+        print(" --->  SetUp of ChannelTestView : OK !")
 
     def test_channel_without_theme_in_argument(self):
         c = Channel.objects.get(id=1)
@@ -217,7 +220,7 @@ class ChannelTestView(TestCase):
             response.context[u"channel"], Channel.objects.get(id=1))
         self.assertEqual(
             response.context[u"theme"], None)
-        print (
+        print(
             "   --->  test_channel_without_theme_in_argument of ChannelTestView : OK !")
 
     def test_channel_with_theme_in_argument(self):
@@ -230,7 +233,7 @@ class ChannelTestView(TestCase):
             response.context[u"channel"], Channel.objects.get(id=1))
         self.assertEqual(
             response.context[u"theme"], Theme.objects.get(channel=Channel.objects.get(id=1)))
-        print (
+        print(
             "   --->  test_channel_with_theme_in_argument of ChannelTestView : OK !")
 
     def test_channel_with_ajax_request(self):
@@ -240,19 +243,20 @@ class ChannelTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request[u'REQUEST_METHOD'], 'GET')
         self.assertEqual(response.request['perpage'], 48)
-        print (
+        print(
             "   --->  test_channel_with_ajax_request of ChannelTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Channel_edit_TestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -267,7 +271,7 @@ class Channel_edit_TestView(TestCase):
         user2.save()
         Channel.objects.create(title="ChannelTest1", visible=True,
                                color="Black", owner=self.user, style="italic", description="blabla")
-        print (" --->  SetUp of Channel_edit_TestView : OK !")
+        print(" --->  SetUp of Channel_edit_TestView : OK !")
 
     def test_channel_edit_get_request(self):
         channel = Channel.objects.get(id=1)
@@ -285,7 +289,7 @@ class Channel_edit_TestView(TestCase):
             response.context['formset'].instance, formset.instance)
         self.assertEqual(response.context['referer'], None)
         self.assertEqual(response.context['form'].instance, channel)
-        print (
+        print(
             "   --->  test_channel_edit_get_request of Channel_edit_TestView : OK !")
 
     def test_channel_edit_post_request(self):
@@ -298,10 +302,10 @@ class Channel_edit_TestView(TestCase):
         response = self.client.post('/%s/edit' % channel.slug, {u'style': [u'italicdss'], u'description': [u'<p>blabladsvvvv</p>\r\n'], u'action1': [u'Enregistrer'], u'referer': [
                                     u'/%s/edit' % channel.slug], u'themes-TOTAL_FORMS': [u'0'], u'headband': [u''], u'themes-INITIAL_FORMS': [u'0']})
         self.assertEqual(response.status_code, 200)
-        self.assertTrue("The changes have been saved" in response.content)
+        self.assertTrue("The changes have been saved." in response.content)
         channel = Channel.objects.get(id=1)
         self.assertEqual(channel.description, u'<p>blabladsvvvv</p>\r\n')
-        print (
+        print(
             "   --->  test_channel_edit_post_request of Channel_edit_TestView : OK !")
 
     def test_channel_edit_user(self):
@@ -313,9 +317,9 @@ class Channel_edit_TestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get('/%s/edit' % channel.slug)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue("You cannot edit this channel" in response.content)
+        self.assertTrue("You cannot edit this channel." in response.content)
         self.assertFalse(channel.description == u'<p>ba</p>\r\n')
-        print (
+        print(
             "   --->  test_channel_edit_user of Channel_edit_TestView : OK !")
 
     def test_redirection_to_previous_page(self):
@@ -331,7 +335,7 @@ class Channel_edit_TestView(TestCase):
         self.assertTrue(channel.description, u'<p>bl</p>\r\n')
         self.assertRedirects(
             response, u'/channels/', status_code=302, target_status_code=200, msg_prefix='')
-        print (
+        print(
             "   --->  test_redirection_to_previous_page of Channel_edit_TestView : OK !")
 
     def test_redirection_to_the_channel(self):
@@ -347,19 +351,20 @@ class Channel_edit_TestView(TestCase):
         self.assertTrue(channel.description, u'<p>bl</p>\r\n')
         self.assertRedirects(
             response, u'/%s/' % channel.slug, status_code=302, target_status_code=200, msg_prefix='')
-        print (
+        print(
             "   --->  test_redirection_to_the_channel of Channel_edit_TestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class TypesTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -372,13 +377,13 @@ class TypesTestView(TestCase):
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
         pod.save()
         Type.objects.create(title="Type2")
-        print (" --->  SetUp of TypesTestView : OK !")
+        print(" --->  SetUp of TypesTestView : OK !")
 
     def test_types(self):
         types = list(Type.objects.all())
@@ -387,7 +392,7 @@ class TypesTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(liste, types)
         self.assertEqual(response.context["video_count"], 1)
-        print ("   --->  test_types of TypesTestView : OK !")
+        print("   --->  test_types of TypesTestView : OK !")
 
     def test_types_with_ajax_request(self):
         response = self.client.get(
@@ -395,18 +400,19 @@ class TypesTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request[u'REQUEST_METHOD'], 'GET')
         self.assertEqual(response.request['perpage'], 48)
-        print ("   --->  test_types_with_ajax_request of TypesTestView : OK !")
+        print("   --->  test_types_with_ajax_request of TypesTestView : OK !")
+
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class OwnersTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -419,12 +425,12 @@ class OwnersTestView(TestCase):
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
         pod.save()
-        print (" --->  SetUp of OwnersTestView : OK !")
+        print(" --->  SetUp of OwnersTestView : OK !")
 
     def test_owners(self):
         owners = list(User.objects.filter(
@@ -434,7 +440,7 @@ class OwnersTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(liste, owners)
         self.assertEqual(response.context["video_count"], 1)
-        print ("   --->  test_owners of OwnersTestView : OK !")
+        print("   --->  test_owners of OwnersTestView : OK !")
 
     def test_owners_with_filter_in_argument(self):
         owners = list(User.objects.filter(
@@ -448,7 +454,7 @@ class OwnersTestView(TestCase):
         liste = list(response.context[u"owners"].__dict__["object_list"])
         self.assertEqual(response.status_code, 200)
         self.assertEqual(liste, owners)
-        print (
+        print(
             "   --->  test_owners_with_filter_in_argument of OwnersTestView : OK !")
 
     def test_owners_with_ajax_request(self):
@@ -458,19 +464,20 @@ class OwnersTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request[u'REQUEST_METHOD'], 'GET')
         self.assertEqual(response.request['perpage'], 24)
-        print (
+        print(
             "   --->  test_owners_with_ajax_request of OwnersTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class DisciplinesTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -489,7 +496,7 @@ class DisciplinesTestView(TestCase):
             id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
         pod.discipline.add(d1)
         pod.save()
-        print (" --->  SetUp of DisciplinesTestView : OK !")
+        print(" --->  SetUp of DisciplinesTestView : OK !")
 
     def test_disciplines(self):
         disciplines = list(Discipline.objects.all())
@@ -498,7 +505,7 @@ class DisciplinesTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(liste, disciplines)
         self.assertEqual(response.context["video_count"], 1)
-        print ("   --->  test_disciplines of DisciplinesTestView : OK !")
+        print("   --->  test_disciplines of DisciplinesTestView : OK !")
 
     def test_disciplines_with_ajax_request(self):
         response = self.client.get(
@@ -506,19 +513,20 @@ class DisciplinesTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request[u'REQUEST_METHOD'], 'GET')
         self.assertEqual(response.request['perpage'], 24)
-        print (
+        print(
             "   --->  test_disciplines_with_ajax_request of DisciplinesTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Owner_Videos_listTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -537,7 +545,7 @@ class Owner_Videos_listTestView(TestCase):
 
             pod.save()
             i += 1
-        print (" --->  SetUp of Owner_Videos_listTestView : OK !")
+        print(" --->  SetUp of Owner_Videos_listTestView : OK !")
 
     def test_owners_video_list(self):
         self.client = Client()
@@ -550,7 +558,7 @@ class Owner_Videos_listTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         liste = list(response.context["videos"])
         self.assertEqual(liste, videos)
-        print (
+        print(
             "   --->  test_owners_video_list of Owner_Videos_listTestView : OK !")
 
     def test_owners_video_list_with_ajax_request(self):
@@ -564,19 +572,20 @@ class Owner_Videos_listTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request[u'REQUEST_METHOD'], 'GET')
         self.assertEqual(response.request['perpage'], 24)
-        print (
+        print(
             "   --->  test_owners_video_list_with_ajax_request of Owner_Videos_listTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Tags_TestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -590,7 +599,7 @@ class Tags_TestView(TestCase):
         pod.tags.add(u"testtagVideo2")
         pod.tags.add(u"téstàvecâccent")
         pod.save()
-        print (" --->  SetUp of Tags_TestView : OK !")
+        print(" --->  SetUp of Tags_TestView : OK !")
 
     def test_tags(self):
         pod = Pod.objects.get(id=1)
@@ -600,18 +609,19 @@ class Tags_TestView(TestCase):
         self.assertEqual(pod.tags.get(id=2).name, u'testavecaccent')
         pod.tags.add("TESTTAGVIDEO2")
         self.assertEqual(pod.tags.all().count(), 2)
-        print ("   --->  test_tags of Tags_TestView : OK !")
+        print("   --->  test_tags of Tags_TestView : OK !")
+
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Video_add_favoriteTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -630,7 +640,7 @@ class Video_add_favoriteTestView(TestCase):
                                  allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         pod.save()
-        print (" --->  SetUp of Video_add_favoriteTestView : OK !")
+        print(" --->  SetUp of Video_add_favoriteTestView : OK !")
 
     def test_add_favorite(self):
         pod = Pod.objects.get(id=1)
@@ -645,7 +655,7 @@ class Video_add_favoriteTestView(TestCase):
         self.assertEqual(
             Favorites.objects.get(user=self.user).video, Pod.objects.get(id=1))
 
-        print (
+        print(
             "   --->  test_add_favorite_with_ajax_requete of Video_add_favoriteTestView : OK !")
 
     def test_video_edit_not_good_user(self):
@@ -657,7 +667,7 @@ class Video_add_favoriteTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get('/video_add_favorite/%s/' % pod.slug)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue("You cannot view this page" in response.content)
+        self.assertTrue("You cannot acces this page." in response.content)
 
     def test_delete_favorite(self):
         pod = Pod.objects.get(id=1)
@@ -671,19 +681,20 @@ class Video_add_favoriteTestView(TestCase):
             "/video_add_favorite/%s/" % pod.slug, {'submit': ['true']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response2.status_code, 200)
         self.assertEqual(Favorites.objects.filter(user=self.user).count(), 0)
-        print (
+        print(
             "   --->  test_delete_favorite of Video_add_favoriteTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Video_add_reportTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -702,7 +713,7 @@ class Video_add_reportTestView(TestCase):
                                  allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         pod.save()
-        print (" --->  SetUp of Video_add_reportTestView : OK !")
+        print(" --->  SetUp of Video_add_reportTestView : OK !")
 
     def test_add_report(self):
         pod = Pod.objects.get(id=1)
@@ -719,7 +730,7 @@ class Video_add_reportTestView(TestCase):
         reportVideo = ReportVideo.objects.get(video=pod)
         self.assertEqual(reportVideo.user, self.user)
         self.assertEqual(reportVideo.comment, "message")
-        print (
+        print(
             "   --->  test_add_report of Video_add_reportTestView : OK !")
 
     def test_add_report_with_not_authentificate(self):
@@ -729,21 +740,20 @@ class Video_add_reportTestView(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response, reverse('account_login') + '?next=/video_add_report/%s/' % pod.slug, status_code=302, target_status_code=200, msg_prefix='')
-        print (
+        print(
             "   --->  test_add_report_with_not_authentificate of Video_add_reportTestView : OK !")
 
-    
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Favorites_videos_listTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -765,7 +775,7 @@ class Favorites_videos_listTestView(TestCase):
                                      duration=3, infoVideo="videotest", to_encode=False)
             pod.save()
             i += 1
-        print (" --->  SetUp of Favorites_videos_listTestView : OK !")
+        print(" --->  SetUp of Favorites_videos_listTestView : OK !")
 
     def test_favorites_video_list(self):
         #csrf_client = Client(enforce_csrf_checks=True)
@@ -785,7 +795,7 @@ class Favorites_videos_listTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         liste = list(response.context["videos"])
         self.assertEqual(liste, videos)
-        print (
+        print(
             "   --->  test_favorites_video_list of Favorites_videos_listTestView : OK !")
 
     def test_favorites_video_list_with_ajax_request(self):
@@ -799,19 +809,20 @@ class Favorites_videos_listTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request[u'REQUEST_METHOD'], 'GET')
         self.assertEqual(response.request['perpage'], 24)
-        print (
+        print(
             "   --->  test_favorites_video_list_with_ajax_request of Favorites_videos_listTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class VideosTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -830,16 +841,16 @@ class VideosTestView(TestCase):
                                      duration=3, infoVideo="videotest", to_encode=False)
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
                 id=1), encodingFile="/media/videos/remi/1/video_1_240.mp4")
-            ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+            ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
             if ENCODE_WEBM:
                 EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile="/media/videos/remi/1/video_1_240.webm")
+                    id=1), encodingFile="/media/videos/remi/1/video_1_240.webm")
             pod.tags.add("videotests")
             if i % 2:
                 pod.discipline.add(d1)
             pod.save()
             i += 1
-        print (" --->  SetUp of videosTestView : OK !")
+        print(" --->  SetUp of videosTestView : OK !")
 
     def test_videos_discipline_filtre(self):
         d1 = Discipline.objects.get(id=1)
@@ -852,7 +863,7 @@ class VideosTestView(TestCase):
         self.assertEqual(liste_videos, videos)
         self.assertEqual(
             liste_discipline[0], list(Discipline.objects.all())[0].title.lower())
-        print (
+        print(
             "   --->  test_videos_discipline_filtre of videosTestView : OK !")
 
     def test_videos_owners_filtre(self):
@@ -862,7 +873,7 @@ class VideosTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         liste_videos = list(response.context["videos"].__dict__["object_list"])
         self.assertEqual(liste_videos, list(videos))
-        print (
+        print(
             "   --->  test_videos_owners_filtre of videosTestView : OK !")
 
     def test_videos_with_ajax_request(self):
@@ -871,19 +882,20 @@ class VideosTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request[u'REQUEST_METHOD'], 'GET')
         self.assertEqual(response.request['perpage'], 24)
-        print (
+        print(
             "   --->  test_videos_with_ajax_request of videosTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class VideoTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -908,16 +920,16 @@ class VideoTestView(TestCase):
 
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        
-        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()
-        print (" --->  SetUp of videoTestView : OK !")
+        print(" --->  SetUp of videoTestView : OK !")
 
     def test_video(self):
         pod = Pod.objects.get(id=1)
@@ -933,7 +945,7 @@ class VideoTestView(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response, reverse('account_login') + '?next=/video/%s/' % pod.slug, status_code=302, target_status_code=200, msg_prefix='')
-        print (
+        print(
             "   --->  test_video of VideoTestView : OK !")
 
     def test_video_draft_not_good_user(self):
@@ -945,8 +957,8 @@ class VideoTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/video/%s/" % pod.slug)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue("You cannot watch this video" in response.content)
-        print (
+        self.assertTrue("You cannot watch this video." in response.content)
+        print(
             "   --->  test_video_draft_not_good_user of VideoTestView : OK !")
 
     def test_video_with_authenticated(self):
@@ -967,7 +979,7 @@ class VideoTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/video/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
-        print (
+        print(
             "   --->  test_video_with_authenticated of VideoTestView : OK !")
 
     def test_video_password(self):
@@ -987,19 +999,20 @@ class VideoTestView(TestCase):
             "/video/%s/" % pod.slug, {u'password': [u'toto2'], u'action1': [u'Send']})
         self.assertEqual(response.status_code, 200)
 
-        print (
+        print(
             "   --->  test_video_password of VideoTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Video_edit_testCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1023,21 +1036,21 @@ class Video_edit_testCase(TestCase):
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()
-        print (" --->  SetUp of Video_edit_testCase : OK !")
+        print(" --->  SetUp of Video_edit_testCase : OK !")
 
     def test_video_edit(self):
         pod = Pod.objects.get(id=1)
         self.client = Client()
         response = self.client.get("/video_edit/%s/" % pod.slug)
         self.assertEqual(response.status_code, 302)
-        print (
+        print(
             "   --->  test_video_edit of Video_edit_testCase : OK !")
 
     def test_video_edit_not_good_user(self):
@@ -1049,8 +1062,8 @@ class Video_edit_testCase(TestCase):
         self.assertEqual(login, True)
         response = self.client.post('/video_edit/%s/' % pod.slug)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue("You cannot edit this video" in response.content)
-        print (
+        self.assertTrue("You cannot edit this video." in response.content)
+        print(
             "   --->  test_video_edit_not_good_user of Video_edit_testCase : OK !")
 
     def test_edit_video_redirection_to_previous_page(self):
@@ -1060,7 +1073,7 @@ class Video_edit_testCase(TestCase):
         self.user = authenticate(username='remi', password='hello')
         login = self.client.login(username='remi', password='hello')
         self.assertEqual(login, True)
-        response = self.client.post('/video_edit/%s/' % pod.slug, {u'password': [u''], u'description': [u'<p>sdfsdf</p>\r\n'], u'title': [u'Bunny'], u'tags': [u''], u'action2': [u'Save and back to the previous page'], u'date_evt': [
+        response = self.client.post('/video_edit/%s/' % pod.slug, {u'password': [u''], u'description': [u'<p>sdfsdf</p>\r\n'], u'title': [u'Bunny'], u'tags': [u''], u'action2': [u'Save and back to previous page'], u'date_evt': [
                                     u''], u'video': [u''], u'date_added': [u'20/04/2015'], u'allow_downloading': [u'on'], u'type': [u'1'], u'referer': [
             u'/channels/']})
         self.assertEqual(response.status_code, 302)
@@ -1068,7 +1081,7 @@ class Video_edit_testCase(TestCase):
         self.assertEqual(video.description, u'<p>sdfsdf</p>\r\n')
         self.assertRedirects(
             response, u'/channels/', status_code=302, target_status_code=200, msg_prefix='')
-        print (
+        print(
             "   --->  test_edit_video_redirection_to_previous_page of Video_edit_testCase : OK !")
 
     def test_save_edit_video(self):
@@ -1085,19 +1098,20 @@ class Video_edit_testCase(TestCase):
         self.assertEqual(video.password, "b")
         self.assertRedirects(
             response, u'/video/%s/' % pod.slug, status_code=302, target_status_code=200, msg_prefix='')
-        print (
+        print(
             "   --->  test_save_edit_video of Video_edit_testCase : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Video_notesTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1121,15 +1135,15 @@ class Video_notesTestView(TestCase):
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()
-        print (" --->  SetUp of Video_notesTestView : OK !")
+        print(" --->  SetUp of Video_notesTestView : OK !")
 
     def test_video_notes(self):
         pod = Pod.objects.get(id=1)
@@ -1143,7 +1157,7 @@ class Video_notesTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             Notes.objects.get(video=Pod.objects.get(id=1), user=self.user).note, u'dddd')
-        print (
+        print(
             "   --->  test_video_notes of Video_notesTestView : OK !")
 
     def test_video_notes_not_authenticated(self):
@@ -1155,19 +1169,20 @@ class Video_notesTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.post('/video_notes/%s/' % pod.slug)
         self.assertEqual(response.status_code, 403)
-        print (
+        print(
             "   --->  test_video_notes_not_authenticated of Video_notesTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Video_completion_TestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1191,15 +1206,15 @@ class Video_completion_TestView(TestCase):
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()
-        print (" --->  SetUp of Video_completion_TestView : OK !")
+        print(" --->  SetUp of Video_completion_TestView : OK !")
 
     def test_video_completion(self):
         pod = Pod.objects.get(id=1)
@@ -1207,7 +1222,7 @@ class Video_completion_TestView(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response, reverse('account_login') + '?next=/video_completion/%s/' % pod.slug, status_code=302, target_status_code=200, msg_prefix='')
-        print (
+        print(
             "   --->  test_video_completion of Video_completion_TestView : OK !")
 
     def test_completion_with_authenticated(self):
@@ -1219,8 +1234,9 @@ class Video_completion_TestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/video_completion/%s/" % pod.slug)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue("You cannot complete this video" in response.content)
-        print (
+        self.assertTrue(
+            "You cannot complement this video." in response.content)
+        print(
             "   --->  test_completion_with_authenticated of Video_completion_TestView : OK !")
 
     def test_completion_post_request(self):
@@ -1246,7 +1262,7 @@ class Video_completion_TestView(TestCase):
             instance=Pod.objects.get(id=1), prefix='contributor_form')
         self.assertEqual(
             list(contributorformset.queryset), list(response.context['contributorformset'].queryset))
-        print (
+        print(
             "   --->  test_completion_post_request of Video_completion_TestView : OK !")
 
     def test_completion_other_post_request(self):
@@ -1265,7 +1281,7 @@ class Video_completion_TestView(TestCase):
         response = response = self.client.post("/video_completion/%s/" % pod.slug,
                                                {u'track_form-0-src': [u''], u'track_form-TOTAL_FORMS': [u'1'], u'doc_form-INITIAL_FORMS': [u'0'],
                                                 u'contributor_form-TOTAL_FORMS': [u'0'], u'track_form-0-id': [u''], u'track_form-0-lang': [u'as'],
-                                                u'action2': [u'Save and back to the previous page'], u'track_form-0-kind': [u'subtitles'], u'doc_form-TOTAL_FORMS': [u'0'],
+                                                u'action2': [u'Save and go back to previous page'], u'track_form-0-kind': [u'subtitles'], u'doc_form-TOTAL_FORMS': [u'0'],
                                                 u'doc_form-MAX_NUM_FORMS': [u'1000'], u'track_form-0-video': [u'1'], u'referer': [u''],
                                                 u'track_form-INITIAL_FORMS': [u'0'], u'contributor_form-MAX_NUM_FORMS': [u'1000'], u'contributor_form-INITIAL_FORMS': [u'0'],
                                                 u'track_form-MAX_NUM_FORMS': [u'1000']})
@@ -1276,19 +1292,20 @@ class Video_completion_TestView(TestCase):
             instance=Pod.objects.get(id=1), prefix='contributor_form')
         self.assertEqual(
             list(contributorformset.queryset), list(response.context['contributorformset'].queryset))
-        print (
+        print(
             "   --->  test_completion_other_post_request of Video_completion_TestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Video_chapterTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1313,15 +1330,15 @@ class Video_chapterTestView(TestCase):
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
 
-        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()
-        print (" --->  SetUp of Video_chapterTestView : OK !")
+        print(" --->  SetUp of Video_chapterTestView : OK !")
 
     def test_insert_chapter(self):
         pod = Pod.objects.get(id=1)
@@ -1332,18 +1349,18 @@ class Video_chapterTestView(TestCase):
         login = self.client.login(
             username='remi', password='hello')
         self.assertEqual(login, True)
-        #access to the page
+        # access to the page
         response = self.client.get("/video_chapter/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['list_chapter']), 0)
-        #click 'add new enrichment' button
+        # click 'add new enrichment' button
         response = self.client.post(
             "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_chapter'] != "")
-        #send form with 'save' button
+        # send form with 'save' button
         response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap1'], u'chapter_id': [u'None'],
-                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+                                                                      u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
         list_chapter = pod.chapterpods_set.all()
         self.assertEqual(len(list_chapter), 1)
         self.assertEqual(list_chapter[0].title, u'chap1')
@@ -1351,19 +1368,20 @@ class Video_chapterTestView(TestCase):
         self.assertEqual(list_chapter[0].video.id, 1)
         self.assertEqual(len(response.context['list_chapter']), 1)
         self.assertEqual(response.context['list_chapter'][0].title, u'chap1')
-        #click 'modify' button
+        # click 'modify' button
         response = self.client.post(
             "/video_chapter/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_chapter'] != "")
-        self.assertTrue('<input type="hidden" id = "id_chapter" name="chapter_id" value="1">' in response.content)
+        self.assertTrue(
+            '<input type="hidden" id = "id_chapter" name="chapter_id" value="1">' in response.content)
         response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap2'], u'chapter_id': [u'1'],
-                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+                                                                      u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
         self.assertEqual(response.status_code, 200)
         list_chapter = pod.chapterpods_set.all()
         self.assertEqual(len(list_chapter), 1)
         self.assertEqual(list_chapter[0].title, u'chap2')
-        #cancel and delete enrich
+        # cancel and delete enrich
         response = self.client.post(
             "/video_chapter/%s/" % pod.slug, {u'action': [u'cancel']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
@@ -1374,7 +1392,7 @@ class Video_chapterTestView(TestCase):
         list_chapter = pod.chapterpods_set.all()
         self.assertEqual(len(list_chapter), 0)
 
-        print (
+        print(
             "   --->  test_insert_chapter of Video_chapterTestView : OK !")
 
     def test_insert_chapter_with_overlap_errors(self):
@@ -1386,28 +1404,28 @@ class Video_chapterTestView(TestCase):
         login = self.client.login(
             username='remi', password='hello')
         self.assertEqual(login, True)
-        #access to the page
+        # access to the page
         response = self.client.get("/video_chapter/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['list_chapter']), 0)
-        #click 'add new enrichment' button
+        # click 'add new enrichment' button
         response = self.client.post(
             "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_chapter'] != "")
-        #send form with 'save' button
+        # send form with 'save' button
         response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap1'], u'chapter_id': [u'None'],
-                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
-        #click 'add new enrichment' button
+                                                                      u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+        # click 'add new enrichment' button
         response = self.client.post(
             "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        #test to add new enrich with overlap 
+        # test to add new enrich with overlap
         response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap1'], u'chapter_id': [u'None'],
-                                                                     u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
+                                                                      u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
 
         list_chapter = pod.chapterpods_set.all()
         self.assertEqual(len(list_chapter), 1)
-        print (
+        print(
             "   --->  test_insert_chapter_with_overlap_errors of Video_chapterTestView : OK !")
 
     def test_insert_chapter_with_title_errors(self):
@@ -1419,22 +1437,22 @@ class Video_chapterTestView(TestCase):
         login = self.client.login(
             username='remi', password='hello')
         self.assertEqual(login, True)
-        #access to the page
+        # access to the page
         response = self.client.get("/video_chapter/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['list_chapter']), 0)
-        #click 'add new enrichment' button
+        # click 'add new enrichment' button
         response = self.client.post(
             "/video_chapter/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_chapter'] != "")
-        #send form with 'save' button
+        # send form with 'save' button
         response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u't'], u'chapter_id': [u'None'],
                                                                       u'time': [u'0'], u'video': [u'1'], u'action': [u'save']})
 
         list_chapter = pod.chapterpods_set.all()
         self.assertEqual(len(list_chapter), 0)
-        print (
+        print(
             "   --->  test_insert_chapter_with_title_errors of Video_chapterTestView : OK !")
 
     def test_acces_to_chapter_with_other_authenticating(self):
@@ -1450,20 +1468,21 @@ class Video_chapterTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/video_chapter/%s/" % pod.slug)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue("You cannot chapter this video" in response.content)
-        print (
+        self.assertTrue("You cannot chapter this video." in response.content)
+        print(
             "   --->  test_acces_to_chapter_with_other_authenticating of Video_chapterTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Video_enrichTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1488,15 +1507,15 @@ class Video_enrichTestView(TestCase):
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
 
-        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()
-        print (" --->  SetUp of Video_enrichTestView : OK !")
+        print(" --->  SetUp of Video_enrichTestView : OK !")
 
     def test_insert_enrich(self):
         pod = Pod.objects.get(id=1)
@@ -1507,20 +1526,20 @@ class Video_enrichTestView(TestCase):
         login = self.client.login(
             username='remi', password='hello')
         self.assertEqual(login, True)
-        #access to the page
+        # access to the page
         response = self.client.get("/video_enrich/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['list_enrichment']), 0)
-        #click 'add new enrichment' button
+        # click 'add new enrichment' button
         response = self.client.post(
             "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_enrich'] != "")
-        #send form with 'save' button
+        # send form with 'save' button
         response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u'test'], u'image': [u''],
                                                                      u'weblink': [u''], u'richtext': [u'sdfg'], u'enrich_id': [u'None'],
-                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
-                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
+                                                                     u'start': [u'0'], u'video': [u'1'], u'action': [u'save'],
+                                                                     u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
         list_enrichment = pod.enrichpods_set.all()
         self.assertEqual(len(list_enrichment), 1)
         self.assertEqual(list_enrichment[0].title, u'test')
@@ -1531,20 +1550,21 @@ class Video_enrichTestView(TestCase):
         self.assertEqual(list_enrichment[0].richtext, u'sdfg')
         self.assertEqual(len(response.context['list_enrichment']), 1)
         self.assertEqual(response.context['list_enrichment'][0].title, u'test')
-        #click 'modify' button
+        # click 'modify' button
         response = self.client.post(
             "/video_enrich/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_enrich'] != "")
-        self.assertTrue('<input type="hidden" id = "id_enrich" name="enrich_id" value="1">' in response.content)
+        self.assertTrue(
+            '<input type="hidden" id = "id_enrich" name="enrich_id" value="1">' in response.content)
         response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u'test2'], u'image': [u''],
                                                                      u'weblink': [u''], u'richtext': [u'sdfg'], u'enrich_id': [u'1'],
-                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
-                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
+                                                                     u'start': [u'0'], u'video': [u'1'], u'action': [u'save'],
+                                                                     u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
         list_enrichment = pod.enrichpods_set.all()
         self.assertEqual(len(list_enrichment), 1)
         self.assertEqual(list_enrichment[0].title, u'test2')
-        #cancel and delete enrich
+        # cancel and delete enrich
         response = self.client.post(
             "/video_enrich/%s/" % pod.slug, {u'action': [u'cancel']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
@@ -1554,7 +1574,7 @@ class Video_enrichTestView(TestCase):
         self.assertEqual(len(response.context['list_enrichment']), 0)
         list_enrichment = pod.enrichpods_set.all()
         self.assertEqual(len(list_enrichment), 0)
-        print (
+        print(
             "   --->  test_insert_enrich of Video_enrichTestView : OK !")
 
     def test_insert_enrich_with_field_and_overlap_errors(self):
@@ -1566,32 +1586,32 @@ class Video_enrichTestView(TestCase):
         login = self.client.login(
             username='remi', password='hello')
         self.assertEqual(login, True)
-        #access to the page
+        # access to the page
         response = self.client.get("/video_enrich/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['list_enrichment']), 0)
-        #click 'add new enrichment' button
+        # click 'add new enrichment' button
         response = self.client.post(
             "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_enrich'] != "")
-        #send form with 'save' button
+        # send form with 'save' button
         response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u'test'], u'image': [u''],
                                                                      u'weblink': [u''], u'richtext': [u'sdfg'], u'enrich_id': [u'None'],
-                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
-                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
-        #click 'add new enrichment' button
+                                                                     u'start': [u'0'], u'video': [u'1'], u'action': [u'save'],
+                                                                     u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
+        # click 'add new enrichment' button
         response = self.client.post(
             "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        #test to add new enrich with overlap 
+        # test to add new enrich with overlap
         response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u't'], u'image': [u''],
                                                                      u'weblink': [u''], u'richtext': [u''], u'enrich_id': [u'None'],
-                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
-                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
+                                                                     u'start': [u'0'], u'video': [u'1'], u'action': [u'save'],
+                                                                     u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
 
         list_enrichment = pod.enrichpods_set.all()
         self.assertEqual(len(list_enrichment), 1)
-        print (
+        print(
             "   --->  test_insert_enrich_with_field_and_overlap_errors of Video_enrichTestView : OK !")
 
     def test_insert_enrich_with_title_errors(self):
@@ -1603,24 +1623,24 @@ class Video_enrichTestView(TestCase):
         login = self.client.login(
             username='remi', password='hello')
         self.assertEqual(login, True)
-        #access to the page
+        # access to the page
         response = self.client.get("/video_enrich/%s/" % pod.slug)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['list_enrichment']), 0)
-        #click 'add new enrichment' button
+        # click 'add new enrichment' button
         response = self.client.post(
             "/video_enrich/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_enrich'] != "")
-        #send form with 'save' button
+        # send form with 'save' button
         response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u't'], u'image': [u''],
                                                                      u'weblink': [u''], u'richtext': [u''], u'enrich_id': [u'None'],
-                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'], 
-                                                                       u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
+                                                                     u'start': [u'0'], u'video': [u'1'], u'action': [u'save'],
+                                                                     u'document': [u''], u'type': [u'richtext'], u'embed': [u'']})
 
         list_enrichment = pod.enrichpods_set.all()
         self.assertEqual(len(list_enrichment), 0)
-        print (
+        print(
             "   --->  test_insert_enrich_with_title_errors of Video_enrichTestView : OK !")
 
     def test_access_to_enrich_with_other_authenticating(self):
@@ -1636,20 +1656,21 @@ class Video_enrichTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/video_enrich/%s/" % pod.slug)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue("You cannot enrich this video" in response.content)
-        print (
+        self.assertTrue("You cannot enrich this video." in response.content)
+        print(
             "   --->  test_access_to_enrich_with_other_authenticating of Video_enrichTestView : OK !")
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Video_mediacourses(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1664,7 +1685,7 @@ class Video_mediacourses(TestCase):
             username='remi2', password='12345', is_active=True)
         user2.set_password('hello')
         user2.save()
-        print (" --->  SetUp of Video_mediacourses : OK !")
+        print(" --->  SetUp of Video_mediacourses : OK !")
 
     def test_access_user_staff_mediacourses_add(self):
         self.client = Client()
@@ -1679,7 +1700,7 @@ class Video_mediacourses(TestCase):
         self.assertEqual(self.client.session['_auth_user_id'], user.pk)
         self.client.logout()
         self.assertTrue(self.client.session.get('_auth_user_id') == None)
-        print (
+        print(
             "   --->  test_access_user_staff_mediacourses_add of Video_mediacourses : OK !")
 
     def test_access_user_mediacourses_add(self):
@@ -1697,9 +1718,9 @@ class Video_mediacourses(TestCase):
             self.assertTrue("this_is_the_login_form" in response.content)
         else:
             self.assertRedirects(
-            response, '/admin/login/?next=/mediacourses_add/%3Fmediapath%3Dabcdefg.zip', status_code=302, target_status_code=200, msg_prefix='')
-        print (
-            "   --->  test_access_user_mediacourses_add of Video_mediacourses : OK !")     
+                response, '/admin/login/?next=/mediacourses_add/%3Fmediapath%3Dabcdefg.zip', status_code=302, target_status_code=200, msg_prefix='')
+        print(
+            "   --->  test_access_user_mediacourses_add of Video_mediacourses : OK !")
 
     def test_access_user_mediacourses_add_without_mediapath(self):
         self.client = Client()
@@ -1711,7 +1732,7 @@ class Video_mediacourses(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/mediacourses_add/")
         self.assertEqual(response.status_code, 403)
-        print (
+        print(
             "   --->  test_access_user_mediacourses_add_without_mediapath of Video_mediacourses : OK !")
     """
     def test_post_data_mediacourses_add(self):
@@ -1726,16 +1747,17 @@ class Video_mediacourses(TestCase):
         self.assertEqual(response.status_code, 200)
     """
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Video_mediacourses_notify(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1745,7 +1767,7 @@ class Video_mediacourses_notify(TestCase):
         # add recorder
         recorder = Recorder.objects.create(
             name='my recorder', adress_ip='192.168.1.59', building=building)
-        print (" --->  SetUp of Video_mediacourses_notify : OK !")
+        print(" --->  SetUp of Video_mediacourses_notify : OK !")
 
     def test_mediacourses_notify_args(self):
         response = self.client.get("/mediacourses_notify/")
@@ -1771,7 +1793,7 @@ class Video_mediacourses_notify(TestCase):
             "/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=a81c115af212b6ae406ce1509bce8ef6")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "nok : key is not valid")
-        print (
+        print(
             "   --->  test_mediacourses_notify_args of Video_mediacourses_notify : OK !")
 
     def test_mediacourses_notify_without_good_recorder(self):
@@ -1781,7 +1803,7 @@ class Video_mediacourses_notify(TestCase):
         response = self.client.get(
             "/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" % m.hexdigest())
         self.assertEqual(response.status_code, 404)
-        print (
+        print(
             "   --->  test_mediacourses_notify_without_good_recorder of Video_mediacourses_notify : OK !")
 
     def test_mediacourses_notify_good(self):
@@ -1792,5 +1814,5 @@ class Video_mediacourses_notify(TestCase):
             "/mediacourses_notify/?recordingPlace=192_168_1_59&mediapath=4b2652fb-d890-46d4-bb15-9a47c6666239.zip&key=%s" % m.hexdigest())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "ok")
-        print (
+        print(
             "   --->  test_mediacourses_notify_good of Video_mediacourses_notify : OK !")

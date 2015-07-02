@@ -74,7 +74,7 @@ class Channel(models.Model):
                                    null=True, blank=True)
     visible = models.BooleanField(verbose_name=_('Visible'),
                                   help_text=_(
-                                      u'If checked, the channel appear in a list of available channels on the platform'),
+                                      u'If checked, the channel appear in a list of available channels on the platform.'),
                                   default=False)
 
     class Meta:
@@ -303,9 +303,9 @@ class Pod(Video):
     #tags = TaggableManager(help_text=_(u'Séparez les tags par des espaces, mettez les tags constituées de plusieurs mots entre guillemets.'), verbose_name=_('Tags'), blank=True)
 
     is_draft = models.BooleanField(verbose_name=_('Draft'), help_text=_(
-        u'If you check this box, the video will be visible and accessible only by you'), default=True)
+        u'If you check this box, the video will be visible and accessible only by you.'), default=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
-        u'The video is accessible only by those who are enabled to authenticate.'), default=False)
+        u'The video is only accessible to authenticated users.'), default=False)
     password = models.CharField(_('password'), help_text=_(
         u'The video is available with the specified password.'), max_length=50, blank=True, null=True)
 
@@ -377,8 +377,9 @@ class Pod(Video):
 
     def get_iframe_admin_integration(self):
         request = None
-        full_url = ''.join(['//', get_current_site(request).domain, self.get_absolute_url()])
-        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' %full_url
+        full_url = ''.join(
+            ['//', get_current_site(request).domain, self.get_absolute_url()])
+        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % full_url
         return iframe_url
 
 
@@ -426,8 +427,8 @@ class EncodingPods(models.Model):
         _('Format'), max_length=12, choices=FORMAT_CHOICES, default="video/mp4")
 
     class Meta:
-        verbose_name = _("Encoding Pod")
-        verbose_name_plural = _("Encodings Pod")
+        verbose_name = _("encoding")
+        verbose_name_plural = _("encodings")
 
     def __unicode__(self):
         return u"Video:%s - EncodingType:%s - EncodingFile:%s" % (self.video, self.encodingType, self.encodingFile)
@@ -529,7 +530,7 @@ class TrackPods(models.Model):
         ("", settings.PREF_LANG_CHOICES), ("-----------", settings.ALL_LANG_CHOICES))
     lang = models.CharField(_('Language'), max_length=2, choices=LANG_CHOICES)
     src = FilerFileField(
-        null=True, blank=True, verbose_name=_("Video track file"))
+        null=True, blank=True, verbose_name=_("sub-heading file"))
 
     class Meta:
         verbose_name = _("Track Pod")
@@ -631,11 +632,11 @@ class EnrichPods(models.Model):
 
     #is_chapter = models.BooleanField(_('Is chapter ?'), default=False, help_text=_('Is chapter ?'))
     stop_video = models.BooleanField(_('Stop video'), default=False, help_text=_(
-        'The video will pause when displaying this enrichment'))
+        'The video will pause when displaying this enrichment.'))
     start = models.PositiveIntegerField(
-        _('Start'), default=0, help_text=_('Start displaying enrichment in seconds'))
+        _('Start'), default=0, help_text=_('Start of enrichment display in seconds'))
     end = models.PositiveIntegerField(
-        _('End'), default=1, help_text=_('End displaying enrichment in seconds'))
+        _('End'), default=1, help_text=_('End of enrichment display in seconds'))
 
     ENRICH_CHOICES = (
         ("image", _("image")),
@@ -680,37 +681,37 @@ class EnrichPods(models.Model):
     def verify_all_fields(self):
         msg = []
         if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
-            msg.append(_('please enter a title form 2 to 100 caracteres. '))
+            msg.append(_('Please enter a title from 2 to 100 characters.'))
 
         if ((self.start == "") or (self.start < 0) or (self.start >= self.video.duration)):
-            msg.append(_('please enter a correct start field between 0 and %(duration)s') % {
+            msg.append(_('Please enter a correct start field between 0 and %(duration)s.') % {
                        "duration": self.video.duration - 1})
 
         if (not self.end or (self.end == "") or (self.end <= 0) or (self.end > self.video.duration)):
-            msg.append(_('please enter a correct end field between 1 and %(duration)s') % {
+            msg.append(_('Please enter a correct end field between 1 and %(duration)s.') % {
                        "duration": self.video.duration})
-
         if (self.type == "image"):
             if(not self.image):
-                msg.append(_('please enter a correct image. '))
+                msg.append(_('Please enter a correct image.'))
 
         elif (self.type == "richtext"):
             if(not self.richtext):
-                msg.append(_('please enter a correct richtext. '))
+                msg.append(_('Please enter a correct richtext.'))
 
         elif (self.type == "weblink"):
             if(not self.weblink):
-                msg.append(_('please enter a correct weblink. '))
+                msg.append(_('Please enter a correct weblink.'))
 
         elif (self.type == "document"):
             if(not self.document):
-                msg.append(_('please enter a correct document. '))
+                msg.append(_('Please enter a correct document.'))
 
         elif (self.type == "embed"):
             if(not self.embed):
-                msg.append(_('please enter a correct embed. '))
+                msg.append(_('Please enter a correct embed.'))
         else:
-            msg.append(_('please enter a type in index field.'))
+            msg.append(_('Please enter a type in index field.'))
+
 
         if (len(msg) > 0):
             return msg
@@ -722,10 +723,10 @@ class EnrichPods(models.Model):
         video = Pod.objects.get(id=self.video.id)
         if(self.start > self.end):
             msg.append(
-                _('the value of the start field is greater than the value of end field. '))
+                _('The value of the start field is greater than the value of end field.'))
         elif(self.end > video.duration):
             msg.append(
-                _('the value of end field is greater than the video duration.'))
+                _('The value of end field is greater than the video duration.'))
         elif (self.start == self.end):
             msg.append(_('End field and start field can\'t be equal.'))
 
@@ -745,8 +746,8 @@ class EnrichPods(models.Model):
         if len(list_enrichment) > 0:
             for element in list_enrichment:
                 if not ((self.start < element.start and self.end <= element.start) or (self.start >= element.end and self.end > element.end)):
-                    msg.append(_("there is a overlap with the " + element.title +
-                                 " enrich, please change end field and start field. "))
+                    msg.append(_("There is an overlap with the enrichment " + element.title +
+                                 ", please change start and/or end values."))
             if len(msg) > 0:
                 return msg
         return []
@@ -780,7 +781,7 @@ class ChapterPods(models.Model):
                             editable=False)
 
     time = models.PositiveIntegerField(
-        _('Start time'), default=0, help_text=_('Start time in second of the chapter.'))
+        _('Start time'), default=0, help_text=_('Start time of the chapter, in seconds.'))
 
     class Meta:
         verbose_name = _("Chapter")
@@ -803,10 +804,10 @@ class ChapterPods(models.Model):
     def verify_start_title_items(self):
         msg = []
         if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
-            msg.append(_('please enter a title form 2 to 100 caracteres. '))
+            msg.append(_('Please enter a title from 2 to 100 characters.'))
 
         if ((self.time == "") or (self.time < 0) or (self.time >= self.video.duration)):
-            msg.append(_('please enter a correct start field between 0 and %(duration)s') % {
+            msg.append(_('Please enter a correct start field between 0 and %(duration)s.') % {
                        "duration": self.video.duration - 1})
         if len(msg) > 0:
             return msg
@@ -824,7 +825,7 @@ class ChapterPods(models.Model):
             for element in list_chapter:
                 if self.time == element.time:
                     msg.append(
-                        _("there is a overlap with the " + element.title + " chapter, please change start time field. "))
+                        _("There is an overlap with the chapter " + element.title + ", please change start and/or end values."))
             if len(msg) > 0:
                 return msg
         return []
@@ -942,7 +943,7 @@ class Recorder(models.Model):
     slide = models.BooleanField(default=1)
     gmapurl = models.CharField(max_length=250, blank=True, null=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
-        u'Live is accessible only by those who can authenticate on the website.'), default=False)
+        u'Live is accessible only to authenticated users.'), default=False)
     building = models.ForeignKey('Building', verbose_name=_('Building'))
 
     def __unicode__(self):
@@ -958,12 +959,15 @@ class Recorder(models.Model):
         verbose_name = _("Recorder")
         verbose_name_plural = _("Recorders")
 
-############# REPORT VIDEO
+# REPORT VIDEO
+
+
 @python_2_unicode_compatible
 class ReportVideo(models.Model):
-    video = models.ForeignKey(Pod, verbose_name=_('Video'))    
+    video = models.ForeignKey(Pod, verbose_name=_('Video'))
     user = models.ForeignKey(User, verbose_name=_('User'))
-    comment = models.TextField(null=True, blank=True, verbose_name=_('Comment'))
+    comment = models.TextField(
+        null=True, blank=True, verbose_name=_('Comment'))
     answer = models.TextField(null=True, blank=True, verbose_name=_('Answer'))
     date_added = models.DateTimeField(
         'Date', default=datetime.now, editable=False)
@@ -976,11 +980,10 @@ class ReportVideo(models.Model):
 
     def get_iframe_url_to_video(self):
         return self.video.get_iframe_admin_integration()
-        
-    get_iframe_url_to_video.allow_tags=True 
+
+    get_iframe_url_to_video.allow_tags = True
 
     class Meta:
         verbose_name = _("Report")
         verbose_name_plural = _("Reports")
         unique_together = ('video', 'user',)
-

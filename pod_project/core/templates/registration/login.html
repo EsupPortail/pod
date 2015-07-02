@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -31,7 +31,7 @@ $( document ).ready(function() {
         $("#formConn").toggle('slow');
         return false;
     });
-    
+
     {% if USE_CAS %}
         {% if form.errors or messages %}
             $("#formConn").show();
@@ -78,17 +78,17 @@ $( document ).ready(function() {
 
 <form method="post" action="{% url 'core.views.core_login' %}" id="formConn">
     {% csrf_token %}
-    
+
     {% bootstrap_form form %}
-    
+
     <input type="hidden" name="next" value="{{ next }}" />
     <input type="hidden" name="gateway" value="False" />
-    
+
     {% buttons %}
         <button type="submit" class="btn btn-success">
             {% bootstrap_icon "ok" %} {% trans "Log in" %}
         </button>
-        
+
         <button type="reset" class="btn">
             {% bootstrap_icon "remove" %} {% trans "Erase" %}
         </button>
@@ -100,7 +100,7 @@ $( document ).ready(function() {
         {% endif %}
         {% endif %}
     {% endbuttons %}
-    
+
 </form>
 
     {% endblock article_content %}
@@ -114,10 +114,10 @@ $( document ).ready(function() {
     {% block box_info %}
     <div class="widget">
         <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Information" %}</h4>
-    	{% trans "Don't hesitate to contact us for any assistance" %} : <a href="mailto:{{HELP_MAIL}}">{{HELP_MAIL}}</a>
+    	{% trans "Don't hesitate to contact us for any assistance:" %} <a href="mailto:{{HELP_MAIL}}">{{HELP_MAIL}}</a>
     </div>
     {% endblock box_info %}
-    
+
     {% block box_discipline %}{{ block.super }}{% endblock box_discipline %}
     {% block box_tags %}{{ block.super }}{% endblock box_tags %}
     {% block box_note %} {% endblock box_note %}
