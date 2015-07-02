@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:36+0200\n"
-"PO-Revision-Date: 2015-07-02 17:33+0200\n"
+"PO-Revision-Date: 2015-07-02 18:06+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1529,7 +1529,7 @@ msgid "Kind"
 msgstr "Genre"
 
 #: pods/models.py:501
-msgid "sub-heading file"
+msgid "subtitle file"
 msgstr "fichier de sous-titres"
 
 #: pods/models.py:504
@@ -1937,7 +1937,7 @@ msgstr "Modifier les informations de la vidéo."
 #: pods/templates/search/search.html:148
 #: pods/templates/videos/ownertools.html:28
 #: pods/templates/videos/videos_list.html:89
-msgid "Add subheading, contributors, documents to download."
+msgid "Add subtitle files, contributors, documents to download."
 msgstr "Ajouter des sous-titres, contributeurs, documents à télécharger."
 
 #: pods/templates/search/search.html:176
