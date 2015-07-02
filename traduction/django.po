@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-25 17:36+0200\n"
-"PO-Revision-Date: 2015-07-02 18:06+0200\n"
+"POT-Creation-Date: 2015-07-02 18:08+0200\n"
+"PO-Revision-Date: 2015-07-02 18:10+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -292,6 +292,7 @@ msgstr "Supprimer '%(item_label)s'."
 #: pods/templates/search/search.html:153 pods/templates/search/search.html:155
 #: pods/templates/videos/chapter/list_chapter.html:55
 #: pods/templates/videos/enrich/list_enrich.html:60
+#: pods/templates/videos/ownertools.html:45
 #: pods/templates/videos/video_chapterpods_formset.html:133
 #: pods/templates/videos/video_chapterpods_formset.html:161
 #: pods/templates/videos/video_completion_formset.html:138
@@ -303,7 +304,6 @@ msgstr "Supprimer '%(item_label)s'."
 #: pods/templates/videos/video_delete.html:73
 #: pods/templates/videos/videos_list.html:101
 #: pods/templates/videos/videos_list.html:102
-#: pods/templates/videos/ownertools.html:45
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -627,7 +627,7 @@ msgstr "Effacer"
 
 #: core/templates/registration/login.html:116
 #: pods/templates/videos/my_videos.html:64
-#: pods/templates/videos/video_chapter.html:380
+#: pods/templates/videos/video_chapter.html:379
 #: pods/templates/videos/video_completion_formset.html:352
 #: pods/templates/videos/video_enrich.html:474
 msgid "Information"
@@ -1681,10 +1681,7 @@ msgstr "Début de la vidéo"
 msgid "Start time of the chapter, in seconds."
 msgstr "Début d'affichage du chapitre, en secondes."
 
-#: pods/models.py:696 pods/templates/search/search.html:140
-#: pods/templates/search/search.html:142
-#: pods/templates/videos/videos_list.html:92
-#: pods/templates/videos/videos_list.html:93
+#: pods/models.py:696
 msgid "Chapter"
 msgstr "Chapitre"
 
@@ -1900,7 +1897,7 @@ msgstr "Ajouter un nouvel enregistrement"
 #: pods/templates/videos/my_videos.html:24
 #: pods/templates/videos/my_videos.html:32
 #: pods/templates/videos/my_videos.html:43
-#: pods/templates/videos/video_chapter.html:340
+#: pods/templates/videos/video_chapter.html:339
 #: pods/templates/videos/video_chapterpods_formset.html:96
 #: pods/templates/videos/video_completion_formset.html:89
 #: pods/templates/videos/video_delete.html:35
@@ -1922,23 +1919,53 @@ msgstr "propriétaires"
 msgid "Show all"
 msgstr "Afficher tous"
 
-#: pods/templates/search/search.html:136 pods/templates/search/search.html:138
-#: pods/templates/search/search.html:179
+#: pods/templates/search/search.html:136
+#: pods/templates/videos/ownertools.html:24
 #: pods/templates/videos/videos_list.html:86
+msgid "Edit video information."
+msgstr "Modifier les informations de la vidéo."
+
+#: pods/templates/search/search.html:138 pods/templates/search/search.html:179
+#: pods/templates/videos/ownertools.html:25
 #: pods/templates/videos/videos_list.html:87
 msgid "Edit"
 msgstr "Modifier"
 
-#: pods/templates/videos/ownertools.html:24
-#: pods/templates/videos/ownertools.html:25
-msgid "Edit video information."
-msgstr "Modifier les informations de la vidéo."
-
-#: pods/templates/search/search.html:148
+#: pods/templates/search/search.html:140
 #: pods/templates/videos/ownertools.html:28
 #: pods/templates/videos/videos_list.html:89
 msgid "Add subtitle files, contributors, documents to download."
 msgstr "Ajouter des sous-titres, contributeurs, documents à télécharger."
+
+#: pods/templates/search/search.html:142
+#: pods/templates/videos/ownertools.html:29
+#: pods/templates/videos/videos_list.html:90
+msgid "Completion"
+msgstr "Complétion"
+
+#: pods/templates/search/search.html:144
+#: pods/templates/videos/ownertools.html:32
+#: pods/templates/videos/videos_list.html:92
+msgid "Divide the video into chapters."
+msgstr "Diviser la video en chapitres."
+
+#: pods/templates/search/search.html:146
+#: pods/templates/videos/ownertools.html:33
+#: pods/templates/videos/videos_list.html:93
+msgid "Chaptering"
+msgstr "Chapitrage"
+
+#: pods/templates/search/search.html:148
+#: pods/templates/videos/ownertools.html:36
+#: pods/templates/videos/videos_list.html:96
+msgid "Add enrichments to the video."
+msgstr "Ajouter des enrichissements à la vidéo."
+
+#: pods/templates/search/search.html:150
+#: pods/templates/videos/ownertools.html:37
+#: pods/templates/videos/videos_list.html:97
+msgid "Enrich"
+msgstr "Enrichir"
 
 #: pods/templates/search/search.html:176
 msgid "Advanced Search"
@@ -1980,31 +2007,6 @@ msgstr "Liste des enrichissements"
 msgid "Use the thumbnails toolbar to work on a video."
 msgstr "Utilisez la barre d'outils pour travailler sur une vidéo."
 
-#: pods/templates/videos/ownertools.html:29
-#: pods/templates/search/search.html:150
-#: pods/templates/videos/videos_list.html:90
-msgid "Completion"
-msgstr "Complétion"
-
-#: pods/templates/videos/ownertools.html:32
-msgid "Divide the video into chapters."
-msgstr "Diviser la video en chapitres."
-
-#: pods/templates/videos/ownertools.html:33
-msgid "Chaptering"
-msgstr "Chapitrage"
-
-#: pods/templates/videos/ownertools.html:36
-msgid "Add enrichments to the video."
-msgstr "Ajouter des enrichissements à la vidéo."
-
-#: pods/templates/videos/ownertools.html:37
-#: pods/templates/search/search.html:144 pods/templates/search/search.html:146
-#: pods/templates/videos/videos_list.html:96
-#: pods/templates/videos/videos_list.html:97
-msgid "Enrich"
-msgstr "Enrichir"
-
 #: pods/templates/videos/ownertools.html:40
 msgid "Watch the video."
 msgstr "Regarder la vidéo."
@@ -2016,13 +2018,6 @@ msgstr "Regarder"
 #: pods/templates/videos/ownertools.html:44
 msgid "Delete the video."
 msgstr "Supprimer la vidéo."
-
-#: pods/templates/videos/video_delete.html:26
-#: pods/templates/videos/video_delete.html:35
-#: pods/templates/videos/video_delete.html:41
-#: pods/templates/videos/video_delete.html:57
-msgid "Delete the video"
-msgstr "Supprimer la vidéo"
 
 #: pods/templates/videos/video.html:45 pods/templates/videos/video.html:78
 #: pods/templates/videos/video_chapter.html:183
@@ -2142,15 +2137,15 @@ msgid "You must be logged in to take notes."
 msgstr "Vous devez être connecté pour prendre des notes."
 
 #: pods/templates/videos/video.html:500
-#: pods/templates/videos/video_chapter.html:374
+#: pods/templates/videos/video_chapter.html:373
 #: pods/templates/videos/video_chapterpods_formset.html:208
 #: pods/templates/videos/video_enrich.html:468
 msgid "Edit the video"
 msgstr "Modifier la vidéo"
 
 #: pods/templates/videos/video_chapter.html:29
-#: pods/templates/videos/video_chapter.html:330
-#: pods/templates/videos/video_chapter.html:341
+#: pods/templates/videos/video_chapter.html:329
+#: pods/templates/videos/video_chapter.html:340
 msgid "Chaptering of the video"
 msgstr "Chapitrer la vidéo"
 
@@ -2223,11 +2218,11 @@ msgstr "commence en même temps."
 msgid "Get time from the player"
 msgstr "Récupérer le temps depuis le lecteur"
 
-#: pods/templates/videos/video_chapter.html:366
+#: pods/templates/videos/video_chapter.html:365
 msgid "Add a new chapter"
 msgstr "Ajouter un nouveau chapitre"
 
-#: pods/templates/videos/video_chapter.html:382
+#: pods/templates/videos/video_chapter.html:381
 msgid ""
 "\"Add a new chapter\" allows you to add a new chapter and \"delete\" allows "
 "you to remove the chapter"
@@ -2235,7 +2230,7 @@ msgstr ""
 "\"Ajouter un nouveau chapitre\" vous permet de créer un nouveau chapitre et "
 "\"supprimer\" vous permet de supprimer le chapitre"
 
-#: pods/templates/videos/video_chapter.html:383
+#: pods/templates/videos/video_chapter.html:382
 msgid ""
 "Start playback of the video, pause the video and click on \"Get time from "
 "the player\" to fill in the field intitled \"Start time\"."
@@ -2244,11 +2239,11 @@ msgstr ""
 "le temps depuis le lecteur\" pour renseigner automatiquement le champ "
 "\"début du chapitre\"."
 
-#: pods/templates/videos/video_chapter.html:384
+#: pods/templates/videos/video_chapter.html:383
 msgid "The chapters cannot start at the same time."
 msgstr "Les chapitres ne peuvent pas commencer en même temps."
 
-#: pods/templates/videos/video_chapter.html:385
+#: pods/templates/videos/video_chapter.html:384
 msgid "You must save your chapters to view the result."
 msgstr "Vous devez sauvegarder pour visualiser le résultat."
 
@@ -2347,6 +2342,13 @@ msgstr ""
 "Vos permissions actuelles ne vous permettent pas d'ajouter des fichiers de "
 "sous-titre ou des documents à télécharger à vos vidéos. Veuillez nous "
 "contacter pour vous ajouter ces droits"
+
+#: pods/templates/videos/video_delete.html:26
+#: pods/templates/videos/video_delete.html:35
+#: pods/templates/videos/video_delete.html:41
+#: pods/templates/videos/video_delete.html:57
+msgid "Delete the video"
+msgstr "Supprimer la vidéo"
 
 #: pods/templates/videos/video_delete.html:63
 msgid "Are you sure you want to delete the video"
