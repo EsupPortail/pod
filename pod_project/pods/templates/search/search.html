@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -56,7 +56,7 @@ voir http://www.gnu.org/licenses/
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
 	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
-	<meta property="og:description" content="{{ query }}" /> 
+	<meta property="og:description" content="{{ query }}" />
 	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock opengraph %}
 
@@ -133,21 +133,21 @@ voir http://www.gnu.org/licenses/
                             </a>
                             {% if user.is_authenticated and result.object.owner == request.user%}
                                 <span class="user-tools hidden-xs"><!-- ONLY VISIBLE TO THE VIDEO OWNER ! -->
-                                    <a href="{% url 'video_edit' slug=result.object.slug %}" class="btn btn-default btn-xs" title="{% trans 'Edit' %}">
+                                    <a href="{% url 'video_edit' slug=result.object.slug %}" class="btn btn-default btn-xs" title="{% trans 'Edit video information.' %}">
                                         <span class="glyphicon glyphicon-pencil"></span>
                                         <span class="sr-only">{% trans 'Edit' %}</span>
                                     </a>
-                                    <a href="{% url 'video_chapter' slug=result.object.slug %}" class="btn btn-default btn-xs" title="{% trans 'Chapter' %}">
-                                        <span class="glyphicon glyphicon-list"></span>
-                                        <span class="sr-only">{% trans 'Chapter' %}</span>
-                                    </a>
-                                    <a href="{% url 'video_enrich' slug=result.object.slug %}" class="btn btn-default btn-xs" title="{% trans 'Enrich' %}">
-                                        <span class="glyphicon glyphicon-file"></span>
-                                        <span class="sr-only">{% trans 'Enrich' %}</span>
-                                    </a>
-                                    <a href="{% url 'video_completion' slug=result.object.slug %}" class="btn btn-default btn-xs" title="{% trans 'Add subtitles, contributors, download documents' %}">
+                                    <a href="{% url 'video_completion' slug=result.object.slug %}" class="btn btn-default btn-xs" title="{% trans 'Add subheading, contributors, documents to download.' %}">
                                         <span class="glyphicon glyphicon-paperclip"></span>
                                         <span class="sr-only">{% trans 'Completion' %}</span>
+                                    </a>
+                                    <a href="{% url 'video_chapter' slug=result.object.slug %}" class="btn btn-default btn-xs" title="{% trans 'Divide the video into chapters.' %}">
+                                        <span class="glyphicon glyphicon-list"></span>
+                                        <span class="sr-only">{% trans 'Chaptering' %}</span>
+                                    </a>
+                                    <a href="{% url 'video_enrich' slug=result.object.slug %}" class="btn btn-default btn-xs" title="{% trans 'Add enrichments to the video.' %}">
+                                        <span class="glyphicon glyphicon-file"></span>
+                                        <span class="sr-only">{% trans 'Enrich' %}</span>
                                     </a>
                                     {% if not result.object.encoding_in_progress %}
                                         <a href="{% url 'video_delete' slug=result.object.slug %}" class="btn btn-danger btn-xs" title="{% trans 'Delete' %}">

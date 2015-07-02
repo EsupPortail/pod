@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:36+0200\n"
-"PO-Revision-Date: 2015-07-01 18:22+0200\n"
+"PO-Revision-Date: 2015-07-02 17:33+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -303,6 +303,7 @@ msgstr "Supprimer '%(item_label)s'."
 #: pods/templates/videos/video_delete.html:73
 #: pods/templates/videos/videos_list.html:101
 #: pods/templates/videos/videos_list.html:102
+#: pods/templates/videos/ownertools.html:45
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1923,29 +1924,21 @@ msgstr "Afficher tous"
 
 #: pods/templates/search/search.html:136 pods/templates/search/search.html:138
 #: pods/templates/search/search.html:179
-#: pods/templates/videos/ownertools.html:24
-#: pods/templates/videos/ownertools.html:25
 #: pods/templates/videos/videos_list.html:86
 #: pods/templates/videos/videos_list.html:87
 msgid "Edit"
 msgstr "Modifier"
 
-#: pods/templates/search/search.html:144 pods/templates/search/search.html:146
-#: pods/templates/videos/videos_list.html:96
-#: pods/templates/videos/videos_list.html:97
-msgid "Enrich"
-msgstr "Enrichir la vidéo"
+#: pods/templates/videos/ownertools.html:24
+#: pods/templates/videos/ownertools.html:25
+msgid "Edit video information."
+msgstr "Modifier les informations de la vidéo."
 
 #: pods/templates/search/search.html:148
 #: pods/templates/videos/ownertools.html:28
 #: pods/templates/videos/videos_list.html:89
-msgid "Add subtitles, contributors, download documents"
-msgstr "Ajouter des sous-titres, contributeurs, documents à télécharger"
-
-#: pods/templates/search/search.html:150
-#: pods/templates/videos/videos_list.html:90
-msgid "Completion"
-msgstr "Complétion de la vidéo"
+msgid "Add subheading, contributors, documents to download."
+msgstr "Ajouter des sous-titres, contributeurs, documents à télécharger."
 
 #: pods/templates/search/search.html:176
 msgid "Advanced Search"
@@ -1988,26 +1981,42 @@ msgid "Use the thumbnails toolbar to work on a video."
 msgstr "Utilisez la barre d'outils pour travailler sur une vidéo."
 
 #: pods/templates/videos/ownertools.html:29
-msgid "Completion the video"
-msgstr "Complétion de la vidéo"
+#: pods/templates/search/search.html:150
+#: pods/templates/videos/videos_list.html:90
+msgid "Completion"
+msgstr "Complétion"
 
 #: pods/templates/videos/ownertools.html:32
+msgid "Divide the video into chapters."
+msgstr "Diviser la video en chapitres."
+
 #: pods/templates/videos/ownertools.html:33
-msgid "Chapter the video"
-msgstr "Chapitrer la vidéo"
+msgid "Chaptering"
+msgstr "Chapitrage"
 
 #: pods/templates/videos/ownertools.html:36
+msgid "Add enrichments to the video."
+msgstr "Ajouter des enrichissements à la vidéo."
+
 #: pods/templates/videos/ownertools.html:37
-msgid "Enrich the video"
-msgstr "Enrichir la vidéo"
+#: pods/templates/search/search.html:144 pods/templates/search/search.html:146
+#: pods/templates/videos/videos_list.html:96
+#: pods/templates/videos/videos_list.html:97
+msgid "Enrich"
+msgstr "Enrichir"
 
 #: pods/templates/videos/ownertools.html:40
+msgid "Watch the video."
+msgstr "Regarder la vidéo."
+
 #: pods/templates/videos/ownertools.html:41
-msgid "Watch the video"
-msgstr "Regarder la vidéo"
+msgid "Watch"
+msgstr "Regarder"
 
 #: pods/templates/videos/ownertools.html:44
-#: pods/templates/videos/ownertools.html:45
+msgid "Delete the video."
+msgstr "Supprimer la vidéo."
+
 #: pods/templates/videos/video_delete.html:26
 #: pods/templates/videos/video_delete.html:35
 #: pods/templates/videos/video_delete.html:41
