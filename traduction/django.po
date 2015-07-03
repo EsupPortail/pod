@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-02 18:08+0200\n"
-"PO-Revision-Date: 2015-07-02 18:10+0200\n"
+"PO-Revision-Date: 2015-07-03 11:24+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2146,7 +2146,7 @@ msgstr "Modifier la vidéo"
 #: pods/templates/videos/video_chapter.html:29
 #: pods/templates/videos/video_chapter.html:329
 #: pods/templates/videos/video_chapter.html:340
-msgid "Chaptering of the video"
+msgid "Chaptering the video"
 msgstr "Chapitrer la vidéo"
 
 #: pods/templates/videos/video_chapter.html:192

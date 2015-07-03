@@ -26,7 +26,7 @@ voir http://www.gnu.org/licenses/
 {% load bootstrap3 %}
 
 {% block bootstrap3_title%}
-{% trans "Chaptering of the video" %} "{{video.title}}"
+{% trans "Chaptering the video" %} "{{video.title}}"
 {% endblock bootstrap3_title%}
 
 {% block bootstrap3_extra_head %}
@@ -326,7 +326,7 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
 
 {% endblock bootstrap3_extra_head %}
 
-{% block article_title %}{% trans "Chaptering of the video" %} "{{video.title}}"{% endblock %}
+{% block article_title %}{% trans "Chaptering the video" %} "{{video.title}}"{% endblock %}
 
 {% block mainToolbar %}
 {% endblock mainToolbar %}
@@ -337,7 +337,7 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
         {% block breadcrumbs %}
         {{ block.super }}
         <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
-        <li class="active"> {% trans "Chaptering of the video" %} "{{video.title}}"</li>
+        <li class="active"> {% trans "Chaptering the video" %} "{{video.title}}"</li>
         {% endblock breadcrumbs %}
     </ol>
 
