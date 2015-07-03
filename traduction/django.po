@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-02 18:08+0200\n"
-"PO-Revision-Date: 2015-07-03 13:53+0200\n"
+"PO-Revision-Date: 2015-07-03 14:15+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1918,7 +1918,7 @@ msgstr "propriétaires"
 
 #: pods/templates/pagination.html:40
 msgid "Show all"
-msgstr "Afficher tous"
+msgstr "Tout afficher"
 
 #: pods/templates/search/search.html:136
 #: pods/templates/videos/ownertools.html:24
