@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-02 18:08+0200\n"
-"PO-Revision-Date: 2015-07-03 11:55+0200\n"
+"PO-Revision-Date: 2015-07-03 11:58+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2177,7 +2177,7 @@ msgstr "Erreur lors de l'enregistrement."
 #: pods/templates/videos/video_chapter.html:253
 #: pods/templates/videos/video_enrich.html:244
 msgid "No data could be stored."
-msgstr "Aucune données enregistrées"
+msgstr "Aucune donnée n'a pu être enregistrée."
 
 #: pods/templates/videos/video_chapter.html:273
 #: pods/templates/videos/video_enrich.html:268 pods/views.py:178
