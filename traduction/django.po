@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-02 18:08+0200\n"
-"PO-Revision-Date: 2015-07-03 11:58+0200\n"
+"PO-Revision-Date: 2015-07-03 13:53+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2356,16 +2356,16 @@ msgid "Editing the video"
 msgstr "Modification de la vidéo"
 
 #: pods/templates/videos/video_edit.html:106
-msgid "Video field is required"
-msgstr "Le champ vidéo est obligatoire"
+msgid "Video field is required."
+msgstr "Le champ vidéo est obligatoire."
 
 #: pods/templates/videos/video_edit.html:107
-msgid "The mime type is wrong"
-msgstr "Le type MIME est faux"
+msgid "Wrong MIME type."
+msgstr "Le type MIME ne correspond pas."
 
 #: pods/templates/videos/video_edit.html:108
-msgid "Wrong format."
-msgstr "Format non autorisé"
+msgid "File format not allowed."
+msgstr "Format non autorisé."
 
 #: pods/templates/videos/video_edit.html:112
 msgid "Please, specify a title."
