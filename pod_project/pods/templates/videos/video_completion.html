@@ -41,7 +41,6 @@ table.scroll {
     /*border: 2px solid black;*/
 }
 #accordeon li, #accordeon div{list-style: none;}
-/*#accordeon li.contenuTitre{display: none;}   */
 
 table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
     border-radius: 3px;
@@ -120,7 +119,7 @@ $(window).load(function(){
     manageResize();
     $('li.contenuTitre').css('display','none');
   // On déclare des variables        
-    var accordion_head = $('#accordeon li a.titre');
+    var accordion_head = $('#accordeon li a.title');
     var accordion_body = $('#accordeon li.contenuTitre');
 
     //On attribut la classe "active" au premier .titre de la liste et on ouvre par effet de slide .contenuTitre qui suit .active :
@@ -130,15 +129,10 @@ $(window).load(function(){
 
     // when click on .titre
     accordion_head.on('click', function(event) {
-        // On annule l'effet naturel du lien
         event.preventDefault();
         // On vérifie la présence de la classe "active"
-        if ($(this).attr('class') != 'titre active'){
-            // On ferme par effet de slide tous les li qui contiennent la classe .contenuTitre
-            /*accordion_body.slideUp('normal');*/
-            // On ouvre celui qui suit directement le lien (.titre) sur lequel on a cliqué
+        if ($(this).attr('class') != 'title active'){
             $(this).parent().next().slideToggle('normal');
-            // On enlève la classe .active de tous les liens
             $(this).addClass('active');
             var text = $(this).context.text;
             var name_section = "\"" + text.replace(/\s/g,'') + "\"";
@@ -146,7 +140,7 @@ $(window).load(function(){
             $(this).children().removeClass('glyphicon glyphicon-chevron-down');
             $(this).children().addClass('glyphicon glyphicon-chevron-up');  
             
-        }else if($(this).attr('class') == 'titre active'){
+        }else if($(this).attr('class') == 'title active'){
             $(this).parent().next().slideUp('normal');
             $(this).removeClass('active');
             var text = $(this).context.text;
@@ -158,11 +152,11 @@ $(window).load(function(){
         manageResize();
 
     });
-    manageResize();
 });
 /*** table scroll ***/
 // Change the selector if needed
 function manageResize() {
+    console.log("manageResize");
     var $table = $('table.scroll'),
     $bodyCells = $table.find('tbody tr:first').children(),
     colWidth;
@@ -196,7 +190,7 @@ $(document).on("reset", "#page-video form", function (e) {
     }
     $("form#" + form_new).show();
     $('form').show()
-    $('a.titre').css('display','initial');
+    $('a.title').css('display','initial');
     $("table tr").removeClass("info");
     manageResize();
 });
@@ -229,7 +223,8 @@ $(document).on("submit", "#page-video form", function (e) {
         $('form.form_modif').hide();
         $('form.form_delete').hide();
         //on cache les sections
-        $('a.titre').css('display','none');
+        $('a.title').css('display','none');
+        hide_others_sections(name_form);
         if( name_form != "contributor"){
             $('span#' + form).wrapAll("<div class = 'col-sm-6' ></div>");
             $('span#' + list).wrapAll("<div class = 'col-sm-6' ></div>");
@@ -325,12 +320,30 @@ $(document).on("submit", "#page-video form", function (e) {
         }
     }
 });
+/*** Hide others sections ***/
+function hide_others_sections(name_form){
+    var sections = $('a.title.active').not("a[id='section_"+name_form+"']");
+    if(sections.length > 0){
+        sections.parent().next().slideUp('normal');
+        sections.removeClass('active');
+        var i;
+        for (i=0; i<sections.length; i++){
+            var section=sections[i];
+            var text = section.text;
+            var name_section = "\"" + text.replace(/\s/g,'') + "\"";
+            section.title='{% trans "Display '+ name_section + ' section" %}';
+            section.firstElementChild.className ="glyphicon glyphicon-chevron-down";
+
+        }     
+
+    }
+}
 /*** refrech the list  ***/
 function refrech_list(data, form, list){
     $("#"+form).html("");
     $('form.form_new').show();
     $('form').show()
-    $('a.titre').css('display','initial');
+    $('a.title').css('display','initial');
     $("span#enrich_player").html(data.player);
     $("span#"+list).html(data.list_data);
     manageResize();
@@ -430,7 +443,7 @@ function verify_fields(form){
         <div class="row" id="info_video">
             <div id="accordeon" class="col-sm-9"> 
                 <!-- Le lien qui sert de bouton pour ouvrir le dropdown -->
-                <li><a href="#"  title="{% trans "Display &quot;Contributor(s)&quot; section" %}" class = "titre" >{% trans "Contributor(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down" /> </a></li>
+                <li><a id = "section_contributor" href="#"  title="{% trans "Display &quot;Contributor(s)&quot; section" %}" class = "title" >{% trans "Contributor(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down" /> </a></li>
                 <li class="contenuTitre">
                     &nbsp;
                     <span id="list_contributor">
@@ -451,7 +464,7 @@ function verify_fields(form){
                     </form>
                 </li>
                 &nbsp;
-                <li><a href="#" title="{% trans "Display &quot;Subtitle(s)&quot; section" %}" class="titre" >{% trans "Subtitle(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down"/></a></li>
+                <li><a id = "section_subtitle" href="#" title="{% trans "Display &quot;Subtitle(s)&quot; section" %}" class="title" >{% trans "Subtitle(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down"/></a></li>
                 <li class="contenuTitre">
                     <span id= "form_subtitle">
                     {% if form_subtitle %}
@@ -471,7 +484,7 @@ function verify_fields(form){
                     </form>
                 </li>
                 &nbsp;
-                <li><a href="#" title="{% trans "Display &quot;Download(s)&quot; section" %}" class="titre" >{% trans "Download(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down" /></a></li>
+                <li><a id = "section_download" href="#" title="{% trans "Display &quot;Download(s)&quot; section" %}" class="title" >{% trans "Download(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down" /></a></li>
                 <li class="contenuTitre">  
                     <span id= "form_download">
                     {% if form_download %}
