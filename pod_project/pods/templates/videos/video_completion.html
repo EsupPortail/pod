@@ -228,10 +228,6 @@ $(document).on("submit", "#page-video form", function (e) {
         if( name_form != "contributor"){
             $('span#' + form).wrapAll("<div class = 'col-sm-6' ></div>");
             $('span#' + list).wrapAll("<div class = 'col-sm-6' ></div>");
-            $("span#" + form + '.div')
-                        .before("<div class = 'row' ></div>");
-            $("form#" + "form_new_" + name_form)
-                        .after("<div class = 'row' ></div>");
         }
         manageResize();
         var elt = $(this).parents('tr'); 
