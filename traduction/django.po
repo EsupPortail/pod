@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-02 18:08+0200\n"
-"PO-Revision-Date: 2015-07-03 11:24+0200\n"
+"PO-Revision-Date: 2015-07-03 11:55+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -661,9 +661,20 @@ msgstr ""
 msgid "My Profile"
 msgstr "Mon profil"
 
-#: core/templates/userProfile.html:65
-msgid "errors have been found in the form"
-msgstr "Erreur dans le formulaire"
+#: core/templates/userProfile.html:65 core/views.py:166 pods/views.py:188
+#: pods/views.py:458 pods/views.py:678 pods/views.py:747 pods/views.py:772
+#: pods/views.py:1156 pods/templates/channels/channel_edit.html:78
+#: pods/templates/mediacourses/mediacourses_add.html:53
+#: pods/templates/videos/video_chapter.html:257
+#: pods/templates/videos/video_enrich.html:248
+#: pods/templates/videos/video_edit.html:176
+msgid "One or more errors have been found in the form."
+msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
+
+#: pods/templates/videos/chapter/form_chapter.html:27
+#: pods/templates/videos/enrich/form_enrich.html:27
+msgid "One or more errors have been found in the form:"
+msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 
 #: core/templates/userProfile.html:77
 #: pods/templates/videos/chapter/form_chapter.html:44
@@ -706,11 +717,6 @@ msgstr ""
 #: core/views.py:163
 msgid "Your profile is saved."
 msgstr "Votre profil est enregistré."
-
-#: core/views.py:166 pods/views.py:188 pods/views.py:458 pods/views.py:678
-#: pods/views.py:747 pods/views.py:772 pods/views.py:1156
-msgid "Error in the form."
-msgstr "Erreur dans le formulaire."
 
 #: django_cas_gateway/views.py:82
 #, python-format
@@ -1824,11 +1830,6 @@ msgstr "Aucune vidéo trouvée"
 msgid "Edition of the channel"
 msgstr "Édition de la chaîne"
 
-#: pods/templates/channels/channel_edit.html:78
-#: pods/templates/mediacourses/mediacourses_add.html:53
-msgid "Warning, errors have been found in the form"
-msgstr "Attention, des erreurs ont été trouvées dans le formulaire"
-
 #: pods/templates/channels/channel_edit.html:95
 #: pods/templates/channels/channel_edit.html:96
 #: pods/templates/channels/channel_edit.html:176
@@ -1974,11 +1975,6 @@ msgstr "Recherche avancée"
 #: pods/templates/search/search.html:191
 msgid "faceting"
 msgstr "Affiner"
-
-#: pods/templates/videos/chapter/form_chapter.html:27
-#: pods/templates/videos/enrich/form_enrich.html:27
-msgid "Your form contains errors:"
-msgstr "Le formulaire contient des erreurs :"
 
 #: pods/templates/videos/chapter/list_chapter.html:26
 msgid "List of chapters"
@@ -2182,13 +2178,6 @@ msgstr "Erreur lors de l'enregistrement."
 #: pods/templates/videos/video_enrich.html:244
 msgid "No data could be stored."
 msgstr "Aucune données enregistrées"
-
-#: pods/templates/videos/video_chapter.html:257
-#: pods/templates/videos/video_enrich.html:248
-msgid "Errors found in the form, please correct it."
-msgstr ""
-"Des erreurs ont été trouvées dans le formulaire. Veuillez les corriger puis "
-"sauvegarder à nouveau."
 
 #: pods/templates/videos/video_chapter.html:273
 #: pods/templates/videos/video_enrich.html:268 pods/views.py:178
@@ -2398,10 +2387,6 @@ msgstr "Veuillez spécifier un type."
 #: pods/templates/videos/video_player.html:117
 msgid "The video is currently being encoded."
 msgstr "Cette vidéo est en cours d'encodage."
-
-#: pods/templates/videos/video_edit.html:176
-msgid "Errors have been found in the form."
-msgstr "Des erreurs ont été trouvées dans le formulaire."
 
 #: pods/templates/videos/video_edit.html:204
 msgid "Save and return to the previous page"

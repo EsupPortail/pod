@@ -163,7 +163,7 @@ def user_profile(request):
                 request, messages.INFO, _(u'Your profile is saved.'))
         else:
             messages.add_message(
-                request, messages.ERROR, _(u'Error in the form.'))
+                request, messages.ERROR, _(u'One or more errors have been found in the form.'))
 
     return render_to_response("userProfile.html",
                               {'form': profile_form, },

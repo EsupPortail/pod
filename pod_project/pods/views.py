@@ -185,7 +185,7 @@ def channel_edit(request, slug_c):
                 return HttpResponseRedirect(reverse('pods.views.channel', args=(channel.slug,)))
         else:
             messages.add_message(
-                request, messages.ERROR, _(u'Error in the form.'))
+                request, messages.ERROR, _(u'One or more errors have been found in the form.'))
 
     formset = ThemeInlineFormSet(instance=channel)   # MAJ...
     return render_to_response("channels/channel_edit.html",
@@ -455,7 +455,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                     )
             else:
                 messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form.'))
+                    request, messages.ERROR, _(u'One or more errors have been found in the form.'))
                 return render_to_response(
                     'videos/video.html',
                     {'video': video, 'form': form, 'channel': channel,
@@ -675,7 +675,7 @@ def video_edit(request, slug=None):
                 return HttpResponseRedirect(reverse('pods.views.video_edit', args=(vid.slug,)))
         else:
             messages.add_message(
-                request, messages.ERROR, _(u'Error in the form.'))
+                request, messages.ERROR, _(u'One or more errors have been found in the form.'))
 
     video_ext_accept = replace(' | '.join(settings.VIDEO_EXT_ACCEPT), ".", "")
 
@@ -744,7 +744,7 @@ def video_completion(request, slug):
                 # args=(video.slug,)))
             else:
                 messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form.'))
+                    request, messages.ERROR, _(u'One or more errors have been found in the form.'))
         else:
             contributorformset = ContributorInlineFormSet(
                 request.POST, instance=video, prefix='contributor_form')
@@ -769,7 +769,7 @@ def video_completion(request, slug):
                 # args=(video.slug,)))
             else:
                 messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form.'))
+                    request, messages.ERROR, _(u'One or more errors have been found in the form.'))
     else:
         contributorformset = ContributorInlineFormSet(
             instance=video, prefix='contributor_form')
@@ -1153,7 +1153,7 @@ def mediacourses(request):
             messages.add_message(request, messages.INFO, message)
             return HttpResponseRedirect(reverse('pods.views.owner_videos_list'))
         else:
-            message = _('Error in the form.')
+            message = _('One or more errors have been found in the form.')
             messages.add_message(request, messages.ERROR, message)
 
     return render_to_response("mediacourses/mediacourses_add.html",
