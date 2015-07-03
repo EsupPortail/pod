@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-02 18:08+0200\n"
-"PO-Revision-Date: 2015-07-03 14:15+0200\n"
+"POT-Creation-Date: 2015-07-03 14:35+0200\n"
+"PO-Revision-Date: 2015-07-03 14:37+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -661,20 +661,16 @@ msgstr ""
 msgid "My Profile"
 msgstr "Mon profil"
 
-#: core/templates/userProfile.html:65 core/views.py:166 pods/views.py:188
-#: pods/views.py:458 pods/views.py:678 pods/views.py:747 pods/views.py:772
-#: pods/views.py:1156 pods/templates/channels/channel_edit.html:78
+#: core/templates/userProfile.html:65 core/views.py:166
+#: pods/templates/channels/channel_edit.html:78
 #: pods/templates/mediacourses/mediacourses_add.html:53
 #: pods/templates/videos/video_chapter.html:257
-#: pods/templates/videos/video_enrich.html:248
 #: pods/templates/videos/video_edit.html:176
+#: pods/templates/videos/video_enrich.html:248 pods/views.py:188
+#: pods/views.py:458 pods/views.py:678 pods/views.py:747 pods/views.py:772
+#: pods/views.py:1156
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
-
-#: pods/templates/videos/chapter/form_chapter.html:27
-#: pods/templates/videos/enrich/form_enrich.html:27
-msgid "One or more errors have been found in the form:"
-msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 
 #: core/templates/userProfile.html:77
 #: pods/templates/videos/chapter/form_chapter.html:44
@@ -1975,6 +1971,11 @@ msgstr "Recherche avancée"
 #: pods/templates/search/search.html:191
 msgid "faceting"
 msgstr "Affiner"
+
+#: pods/templates/videos/chapter/form_chapter.html:27
+#: pods/templates/videos/enrich/form_enrich.html:27
+msgid "One or more errors have been found in the form:"
+msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 
 #: pods/templates/videos/chapter/list_chapter.html:26
 msgid "List of chapters"
