@@ -43,7 +43,7 @@ voir http://www.gnu.org/licenses/
             {% csrf_token %}
             <input type="hidden" name="action" value="modify">
             <input type="hidden" name="id" value="{{download.id}}">
-            <input type="submit" title="{% trans "Edit the download" %}" value="{% trans "modify" %}" class="edt_download btn btn-info btn-sm" />
+            <input type="submit" title="{% trans "Edit the additional resource" %}" value="{% trans "modify" %}" class="edt_download btn btn-info btn-sm" />
           </form>
         </td>
         <td>
@@ -51,7 +51,7 @@ voir http://www.gnu.org/licenses/
             {% csrf_token %}
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="id" value="{{download.id}}">
-            <input type="submit" title="{% trans "Delete the download" %}" value="{% trans "delete" %}" class="del_download btn btn-danger btn-sm"/>
+            <input type="submit" title="{% trans "Delete the additional resource" %}" value="{% trans "delete" %}" class="del_download btn btn-danger btn-sm"/>
           </form>
         </td>
       </tr>

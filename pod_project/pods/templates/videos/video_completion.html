@@ -243,7 +243,7 @@ $(document).on("submit", "#page-video form", function (e) {
         }
         jqxhr.done(function(data){
             if(data.indexOf(form)==-1) {
-                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} ", true, 'alert-danger');
+                show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
             } else {
                 get_form(data, form);
                 elt.addClass('info');      
@@ -258,7 +258,12 @@ $(document).on("submit", "#page-video form", function (e) {
             $('#' + form).html("");
         });
     }else if(action == "delete"){
-        var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this " + name_form +"' %}");
+        var deleteConfirm = "";
+        if(name_form == "subtitle"){
+            deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this file ?' %}");
+        }else{
+            deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this " + name_form +" ?' %}");
+        }
         if (deleteConfirm){
             var id = $(this).find('input[name=id]').val();
             jqxhr = $.post( window.location.origin + href, {"action":"delete", "id": id });

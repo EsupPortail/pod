@@ -47,7 +47,7 @@ voir http://www.gnu.org/licenses/
             {% csrf_token %}
             <input type="hidden" name="action" value="modify">
             <input type="hidden" name="id" value="{{subtitle.id}}">
-            <input type="submit" title="{% trans "Edit the subtitle" %}" value="{% trans "modify" %}" class="edt_subtitle btn btn-info btn-sm" />
+            <input type="submit" title="{% trans "Edit the subtitle or the caption" %}" value="{% trans "modify" %}" class="edt_subtitle btn btn-info btn-sm" />
           </form>
         </td>
         <td>
@@ -55,7 +55,7 @@ voir http://www.gnu.org/licenses/
             {% csrf_token %}
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="id" value="{{subtitle.id}}">
-            <input type="submit" title="{% trans "Delete the subtitle" %}" value="{% trans "delete" %}" class="del_subtitle btn btn-danger btn-sm"/>
+            <input type="submit" title="{% trans "Delete the subtitle or the caption" %}" value="{% trans "delete" %}" class="del_subtitle btn btn-danger btn-sm"/>
           </form>
         </td>
       </tr>
