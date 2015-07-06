@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-06 11:40+0200\n"
-"PO-Revision-Date: 2015-07-06 11:41+0200\n"
+"PO-Revision-Date: 2015-07-06 14:34+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1801,10 +1801,17 @@ msgstr "Eléments par page"
 #: pods/templates/channels/my_channels.html:51
 #: pods/templates/disciplines/disciplines.html:73
 #: pods/templates/favorites/my_favorites.html:39
-#: pods/templates/maintoolbar.html:45 pods/templates/owners/owners.html:62
-#: pods/templates/search/search.html:76 pods/templates/types/types.html:62
+#: pods/templates/owners/owners.html:62 pods/templates/search/search.html:76
+#: pods/templates/types/types.html:62
 msgid "videos"
 msgstr "vidéos"
+
+#: pods/templates/maintoolbar.html:46
+#, python-format
+msgid "1 video"
+msgid_plural "%(counter)s videos"
+msgstr[0] "1 vidéo"
+msgstr[1] "%(counter)s vidéos"
 
 #: pods/templates/channels/channel.html:95
 #: pods/templates/channels/channel.html:97
