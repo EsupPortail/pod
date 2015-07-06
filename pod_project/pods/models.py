@@ -462,8 +462,7 @@ class ContributorPods(models.Model):
         ("soundman", _("soundman")),
         ("technician", _("technician"))
     )
-    role = models.CharField(_(u'role'), max_length=200, null=True,
-                            blank=True, choices=ROLE_CHOICES, default=_("authors"))
+    role = models.CharField(_(u'role'), max_length=200, choices=ROLE_CHOICES, default=_("authors"))
     weblink = models.URLField(
         _(u'Web link'), max_length=200, null=True, blank=True)
 

@@ -70,7 +70,7 @@ table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
 table.scroll tbody,
 table.scroll thead { display: block }
 
-table.scroll thead /*tr th*/ { 
+table.scroll thead tr th { 
     height: 27px;
     line-height: 27px;
     text-align: left;
@@ -87,7 +87,7 @@ table.scroll tbody td, table.scroll thead th {
     height: 20px;
     line-height: 20px;
 }
-table.scroll tbody td.contributor_name {
+table#table_list_contributors tbody td.contributor_name {
     width: 20%;
 }
 
@@ -116,7 +116,9 @@ table.scroll tbody td.contributor_name {
 var video_duration = {{video.duration}};
 
 $(window).load(function(){
-    manageResize();
+    manageResize("contributor");
+    manageResize("subtitle");
+    manageResize("download");
     $('li.contenuTitre').css('display','none');
   // On déclare des variables        
     var accordion_head = $('#accordeon li a.title');
@@ -149,19 +151,17 @@ $(window).load(function(){
             $(this).children().removeClass('glyphicon glyphicon-chevron-up');
             $(this).children().addClass('glyphicon glyphicon-chevron-down')           
         }
-        manageResize();
-
     });
 });
 /*** table scroll ***/
 // Change the selector if needed
-function manageResize() {
-    console.log("manageResize");
-    var $table = $('table.scroll'),
-    $bodyCells = $table.find('tbody tr:first').children(),
-    colWidth;
+function manageResize(name_form) {
+    var $table="";
+    $table = $('table#table_list_'+name_form+'s');
+    var $bodyCells = $table.find('tbody tr:first').children();
+    var colWidth;
     // Adjust the width of thead cells when window resizes
-    $(window).resize(function() {
+    function resize() {
         // Get the tbody columns width array
         colWidth = $bodyCells.map(function() {
             return $(this).width();
@@ -170,9 +170,11 @@ function manageResize() {
         $table.find('thead tr').children().each(function(i, v) {
             $(v).width(colWidth[i]);
         });
-    }).resize(); // Trigger resize handler
+    };
+    resize(); // Trigger resize handler
 }
 /*** end table scroll ***/
+
 
 var preventUnloadPrompt;
 var num = 0;
@@ -181,8 +183,9 @@ var button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close
 
 $(document).on("reset", "#page-video form", function (e) {
     var id_form = $(this).attr("id")
-    var form_new  = "form_new_" + id_form.substring(5,id_form.length);
-    var list = "list_" + id_form.substring(5,id_form.length);
+    var name_form= id_form.substring(5,id_form.length);
+    var form_new  = "form_new_" + name_form;
+    var list = "list_" + name_form;
     $("span#" + id_form).html("");
     if(id_form != "form_contributor"){
         $("span#" + id_form).unwrap();
@@ -192,7 +195,7 @@ $(document).on("reset", "#page-video form", function (e) {
     $('form').show()
     $('a.title').css('display','initial');
     $("table tr").removeClass("info");
-    manageResize();
+    manageResize(name_form);
 });
 
 $(document).on("submit", "#page-video form", function (e) {
@@ -228,8 +231,8 @@ $(document).on("submit", "#page-video form", function (e) {
         if( name_form != "contributor"){
             $('span#' + form).wrapAll("<div class = 'col-sm-6' ></div>");
             $('span#' + list).wrapAll("<div class = 'col-sm-6' ></div>");
+            manageResize(name_form);
         }
-        manageResize();
         var elt = $(this).parents('tr'); 
         $('#'+form).html(ajax_image); 
         if (action == "modify"){
@@ -245,7 +248,6 @@ $(document).on("submit", "#page-video form", function (e) {
                 get_form(data, form);
                 elt.addClass('info');      
             }
-        
         });
         jqxhr.fail(function($xhr) {
             var data = $xhr.status+ " : " +$xhr.statusText;
@@ -254,16 +256,16 @@ $(document).on("submit", "#page-video form", function (e) {
             $('form.form_delete').show();
             $('form.form_new').show();
             $('#' + form).html("");
-            manageResize();
         });
     }else if(action == "delete"){
-        var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this enrichment' %}");
+        var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this " + name_form +"' %}");
         if (deleteConfirm){
             var id = $(this).find('input[name=id]').val();
             jqxhr = $.post( window.location.origin + href, {"action":"delete", "id": id });
             jqxhr.done(function(data){
                 if(data.list_data) {
                     refrech_list(data, form, list);
+                    manageResize(name_form);
                 } else {
                     show_messages("{% trans 'You are no longer authenticated. Please log in again' %} "+button, true, 'alert-danger');
                 }
@@ -297,8 +299,8 @@ $(document).on("submit", "#page-video form", function (e) {
                             if( name_form != "contributor"){
                                 $("span#"+form).unwrap();
                                 $("span#"+list).unwrap();
-                                manageResize();
-                            }
+                                
+                            }manageResize(name_form);
                             $(window).scrollTop(100);
                             show_messages("{% trans 'Changes have been saved.' %}", false, 'alert-info');
                         }
@@ -329,9 +331,7 @@ function hide_others_sections(name_form){
             var name_section = "\"" + text.replace(/\s/g,'') + "\"";
             section.title='{% trans "Display '+ name_section + ' section" %}';
             section.firstElementChild.className ="glyphicon glyphicon-chevron-down";
-
         }     
-
     }
 }
 /*** refrech the list  ***/
@@ -342,11 +342,9 @@ function refrech_list(data, form, list){
     $('a.title').css('display','initial');
     $("span#enrich_player").html(data.player);
     $("span#"+list).html(data.list_data);
-    manageResize();
 };
 function get_form(data, form) {    
         $("#"+form).hide().html(data).fadeIn();
-        manageResize();
 
 };
 function verify_fields(form){
@@ -460,7 +458,7 @@ function verify_fields(form){
                     </form>
                 </li>
                 &nbsp;
-                <li><a id = "section_subtitle" href="#" title="{% trans "Display &quot;Subtitle(s)&quot; section" %}" class="title" >{% trans "Subtitle(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down"/></a></li>
+                <li><a id = "section_subtitle" href="#" title="{% trans "Display &quot;Subtitle(s) and Captions(s) &quot; section" %}" class="title" >{% trans "Subtitle(s) and caption(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down"/></a></li>
                 <li class="contenuTitre">
                     <span id= "form_subtitle">
                     {% if form_subtitle %}
@@ -476,11 +474,11 @@ function verify_fields(form){
                     <form  class = "form_new" id="form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="new">
-                        <input type="submit" value="{% trans "Add a new subtitle" %}" class="new_subtitle btn btn-info"/>
+                        <input type="submit" value="{% trans "Add a new subtitle or caption file" %}" class="new_subtitle btn btn-info"/>
                     </form>
                 </li>
                 &nbsp;
-                <li><a id = "section_download" href="#" title="{% trans "Display &quot;Download(s)&quot; section" %}" class="title" >{% trans "Download(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down" /></a></li>
+                <li><a id = "section_download" href="#" title="{% trans "Display &quot; Additional resource(s)&quot; section" %}" class="title" >{% trans "Additional resource(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down" /></a></li>
                 <li class="contenuTitre">  
                     <span id= "form_download">
                     {% if form_download %}
@@ -495,7 +493,7 @@ function verify_fields(form){
                     <form  class = "form_new"  id="form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="new">
-                        <input type="submit" value="{% trans "Add a new download" %}" class="new_download btn btn-info"/>
+                        <input type="submit" value="{% trans "Add a new additional resource" %}" class="new_download btn btn-info"/>
                     </form>
                 </li>
             </div>
@@ -511,10 +509,17 @@ function verify_fields(form){
                         <h4>
                             <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Information' %}
                         </h4>
-                        <p>{% trans 'The title fields is required and must contains from 2 to 100 characters.'%}
-                        <p>{% trans 'Start and end fields must contain a value in seconds. You can use the "get time from the player" button to fill it with the current time of the player in the video.' %}</p>
-                        <p>{% trans 'You cannot overlap the enrichments' %}</p>
-                        <p>{% trans 'You must "Save" to view the results.' %}</p>
+                        {% if request.user.is_staff %}    
+                            <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara).' %}</p>
+                            <p>{% trans 'You can add several subtitle or caption files to a single video (for example, in order to subtitle or caption this video in several languages).' %} </p>
+                            <p>{% trans 'For this purpose, you will need the URL of your video. This URL is a direct access to this video. Please do not communicate it outside of this site in order to avoid any misuse.' %}</p>
+                            <input maxlength="250" value="//{{ request.get_host }}{{ video.get_MP4_240_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
+                        {% else %}
+                            <p>
+                            {% trans 'Your current permissions do not allow you to add subtitle files or documents to download videos. Please contact us to add these rights.' %} :
+                            <a href="mailto:{{ HELP_MAIL }}">{{ HELP_MAIL }}</a>
+                            </p>
+                        {% endif %}
                     </div>
                 </aside>
         </div>        
