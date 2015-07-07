@@ -28,6 +28,43 @@ voir http://www.gnu.org/licenses/
     <script src="{% static 'video-js/video.js' %}"></script>
     {% include 'videos/extraheadplayer.html' %}
 <script>
+    $(document).on('submit', 'form#video_contact_form', function (event) {
+        $('form').show();
+        $('form#video_contact_form').hide();
+        event.preventDefault();
+        if(expiration_date_second > 5) {
+            //var comment = $(this).find('#commentreport').val();
+            var jqxhr = $.post( $(this).attr("action"));
+            jqxhr.done(function(data){
+                if(data.msg) {
+                    button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+                    show_messages(data.msg+button, false, 'alert-info');
+                    //$("#button_video_report").attr('disabled','disabled');
+                    $("#mark-as-contact").attr('style','color: #ee7d19');
+                } else {
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'alert-danger');
+                }
+            });
+            jqxhr.fail(function($xhr) {
+                var data = $xhr.status+ " : " +$xhr.statusText;
+                button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+                show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}"+button, false, 'alert-danger');
+            });
+            $('form#video_contact_form').show();
+            $('#modal_contact_form').modal('hide');
+            //$(this).find('#commentreport').val("");
+        } else {
+            alert(expiredsession);
+            location.reload();
+        }
+        return false;
+    });
+
+
+
+
+
+
     $(document).on('submit', 'form#video_report_form', function (event) {
         $('form').show();
         $('form#video_report_form').hide();
@@ -174,6 +211,18 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
         {% endif %}
         {% if form %}
             <p>{% trans 'This video is protected by password, please fill in and click send.' %}</p>
+            {% buttons %}
+             <form method="post" action="{% url 'video_contact' slug=video.slug %}" id="video_contact_form" style="display:inline-block;">
+                <button type="submit" class="btn btn-default" id="button_video_contact" title="{% trans 'Contact us.' %}">
+                    <span id="mark-as-contact" class="glyphicon glyphicon-envelope">{% trans '&nbsp;Contact' %}</span>
+                    <span class="sr-only">{% trans 'Contact us.' %}</span>
+                    <noscript>
+                        <textarea rows="5" name="comment" ></textarea>
+                        <input type="submit" value="{% trans 'Send' %}"/>
+                    </noscript>
+                </button>
+            </form>    
+            {% endbuttons %}
             <form method="post" action="{{ request.get_full_path }}" id="video_password_form">
                 {% csrf_token %}
                 <fieldset>

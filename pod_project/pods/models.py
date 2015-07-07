@@ -896,3 +896,30 @@ class ReportVideo(models.Model):
         verbose_name = _("Report")
         verbose_name_plural = _("Reports")
         unique_together = ('video', 'user',)
+
+# CONTACT US FOR A VIDEO
+
+@python_2_unicode_compatible
+class ContactVideo(models.Model):
+    video = models.ForeignKey(Pod, verbose_name=_('Video'))
+    user = models.ForeignKey(User, verbose_name=_('User'))
+    comment = models.TextField(
+        null=True, blank=True, verbose_name=_('Comment'))
+    answer = models.TextField(null=True, blank=True, verbose_name=_('Answer'))
+    date_added = models.DateTimeField(
+        'Date', default=datetime.now, editable=False)
+
+    def __unicode__(self):
+        return "%s - %s - %s" % (self.video, self.user, self.comment)
+
+    def __str__(self):
+        return "%s - %s - %s" % (self.video, self.user, self.comment)
+
+    def get_iframe_url_to_video(self):
+        return self.video.get_iframe_admin_integration()
+
+    get_iframe_url_to_video.allow_tags = True
+
+    class Meta:
+        verbose_name = _("Contact")
+        verbose_name_plural = _("Contacts")
