@@ -43,7 +43,7 @@ voir http://www.gnu.org/licenses/
 		{% block stats %}
 		<div class="col-sm-4  text-right">
             <div class="results">
-            {% blocktrans count videos.paginator.count as counter %}1 video{% plural %}{{ counter }} videos{% endblocktrans %}
+            {% blocktrans count counter=videos.paginator.count %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}
             </div>
 		</div>
 		{% endblock stats %}

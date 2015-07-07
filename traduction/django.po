@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-06 11:40+0200\n"
-"PO-Revision-Date: 2015-07-06 14:34+0200\n"
+"PO-Revision-Date: 2015-07-07 11:24+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1808,9 +1808,9 @@ msgstr "vidéos"
 
 #: pods/templates/maintoolbar.html:46
 #, python-format
-msgid "1 video"
+msgid "%(counter)s video"
 msgid_plural "%(counter)s videos"
-msgstr[0] "1 vidéo"
+msgstr[0] "%(counter)s vidéo"
 msgstr[1] "%(counter)s vidéos"
 
 #: pods/templates/channels/channel.html:95
