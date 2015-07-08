@@ -234,7 +234,6 @@ $(document).on('click', 'button#button_video_report', function (event) {
 
 $(document).on('click', 'button.button_video_contact', function (event) {
     event.preventDefault();
-    console.log("baba");
     if($(this).parent('form').length==0){
         alert($(this).children('span.sr-only').text());
     } else {

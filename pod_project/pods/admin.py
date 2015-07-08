@@ -123,3 +123,10 @@ class ReportAdmin(admin.ModelAdmin):
     list_filter = ('date_added',)
     list_display_links = ('id','user','video')
 admin.site.register(ReportVideo, ReportAdmin)
+
+#AdditionRequestVideo
+class AdditionInformationRequestAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'video', 'subject', 'comment', 'answer', 'date_added', 'get_iframe_url_to_video')
+    list_filter = ('date_added',)
+    list_display_links = ('id','user','video')
+admin.site.register(AdditionRequestVideo, AdditionInformationRequestAdmin)
