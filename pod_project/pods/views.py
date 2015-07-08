@@ -597,6 +597,65 @@ def video_add_report(request, slug):
             request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
 
+@login_required
+@csrf_protect
+def video_add_additional_information(request, slug):
+    video = get_object_or_404(Pod, slug=slug)
+    if request.POST and request.POST.get('comment'):
+        contact = ContactVideo.objects.create(
+            user=request.user, video=video, comment='%s' % request.POST['comment'])
+
+        subject = _(u'Additional information request.')
+
+        msg = _(u'The user %(user_firstname)s %(user_lastname)s <%(user_email)s>.\n'
+                'ask additional information: \n'
+                '%(comment)s\n'
+                'here is some more information about the video:\n'
+                'Description: %(description)s.\n'
+                'url: %(url)s.\n'
+                'Video posted by: %(owner_firstname)s %(owner_lastname)s <%(owner_email)s>.\n'
+                'Video added on: %(video_date_added)s.\n') % {
+                    'video_title': video.title, 'user_firstname': request.user.first_name, 'user_lastname': request.user.last_name,
+                    'user_email': request.user.email, 'comment': request.POST['comment'], 'description': video.description,
+                    'url': ''.join(['http://', get_current_site(request).domain, video.get_absolute_url()]),
+                    'owner_firstname': video.owner.first_name, 'owner_lastname': video.owner.last_name, 'owner_email': video.owner.email,
+                    'video_date_added': video.date_added}
+
+        msg_html = _(u'<p>The user %(user_firstname)s %(user_lastname)s &lt;<a href=\"mailto:%(user_email)s\">%(user_email)s</a>&gt;.</p>'
+                     '<p>He ask additional information: <br/>'
+                     '%(comment)s</p>'
+                     '<p>here is some more information about the video:<br/>'
+                     'Description: %(description)s<br/>'
+                     'url: <a href=\"%(url)s\">%(url)s</a><br/>'
+                     'Video posted by: %(owner_firstname)s %(owner_lastname)s &lt;<a href=\"mailto:%(owner_email)s\">%(owner_email)s&gt;</a>.<br/>'
+                     'Video added on: %(video_date_added)s.</p>') % {
+            'video_title': video.title, 'user_firstname': request.user.first_name, 'user_lastname': request.user.last_name,
+            'user_email': request.user.email, 'comment': request.POST['comment'].replace("\n", "<br/>"), 'description': video.description,
+            'url': ''.join(['http://', get_current_site(request).domain, video.get_absolute_url()]),
+            'owner_firstname': video.owner.first_name, 'owner_lastname': video.owner.last_name, 'owner_email': video.owner.email,
+            'video_date_added': video.date_added}
+
+        email_msg = EmailMultiAlternatives(
+            "[" + settings.TITLE_SITE + "]  %s" % subject, msg, settings.DEFAULT_FROM_EMAIL, settings.REPORT_VIDEO_MAIL_TO)
+        email_msg.attach_alternative(msg_html, "text/html")
+        print "before send"
+        email_msg.send(fail_silently=False)
+        print "after send"
+
+        if request.is_ajax():
+            print "ajax"
+            msg = _(u'Your addtional information request has been send.')
+            some_data_to_dump = {'msg': "%s" % msg}
+            data = json.dumps(some_data_to_dump)
+            return HttpResponse(data, content_type='application/json')
+
+        messages.add_message(request, messages.INFO, msg)
+        return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
+    else:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot acces this page.'))
+        raise PermissionDenied
+
 
 @login_required
 @csrf_protect

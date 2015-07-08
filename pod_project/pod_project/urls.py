@@ -84,6 +84,8 @@ urlpatterns = patterns(
         'pods.views.video_add_favorite', name='video_add_favorite'),
     url(r'^video_add_report/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_add_report', name='video_add_report'),
+    url(r'^video_add_additional_information/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video_add_additional_information', name='video_add_additional_information'),
     url(r'^video_completion/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_completion', name='video_completion'),
     url(r'^video_chapter/(?P<slug>[\-\d\w]+)/$',
