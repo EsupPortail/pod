@@ -602,7 +602,7 @@ def video_add_report(request, slug):
 def video_add_additional_information(request, slug):
     video = get_object_or_404(Pod, slug=slug)
     print request.POST
-    if request.POST and request.POST.get('comment'):
+    if request.POST:
         if request.POST['subject_ask'] != "" and len(request.POST['subject_ask'])<100:
             additionrequest = AdditionRequestVideo.objects.create(
                 user=request.user, video=video, subject='%s' % request.POST['subject_ask'], comment= '%s' % request.POST['comment'])
@@ -660,6 +660,7 @@ def video_add_additional_information(request, slug):
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
 
     else:
+        print request.POST.get('comment')
         messages.add_message(
             request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
