@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-03 14:35+0200\n"
-"PO-Revision-Date: 2015-07-03 14:37+0200\n"
+"POT-Creation-Date: 2015-06-25 17:36+0200\n"
+"PO-Revision-Date: 2015-07-07 15:40+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -255,16 +255,16 @@ msgstr "Modifier"
 
 #: core/templates/admin/filer/folder/directory_table.html:29
 #, python-format
-msgid "1 folder"
+msgid "%(counter)s folder"
 msgid_plural "%(counter)s folders"
-msgstr[0] "1 dossier"
+msgstr[0] "%(counter)s dossier"
 msgstr[1] "%(counter)s dossiers"
 
 #: core/templates/admin/filer/folder/directory_table.html:29
 #, python-format
-msgid "1 file"
+msgid "%(counter)s file"
 msgid_plural "%(counter)s files"
-msgstr[0] "1 fichier"
+msgstr[0] "%(counter)s fichier"
 msgstr[1] "%(counter)s fichiers"
 
 #: core/templates/admin/filer/folder/directory_table.html:36
