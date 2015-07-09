@@ -24,7 +24,7 @@ voir http://www.gnu.org/licenses/
     {% csrf_token %}
     <div id="formcontent" class="form-container">
         {% if form_enrich.errors or form_enrich.non_field_errors %}
-            {% trans "Your form contains errors:" %} <br/>
+            {% trans "One or more errors have been found in the form:" %} <br/>
             {% for error in form_enrich.non_field_errors %}
                 - {{error}} <br/>
             {%endfor%}
