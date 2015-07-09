@@ -292,7 +292,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                               <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"  data-toggle="dropdown" title="{% trans 'Report this video or other requests' %}" >{% trans 'more' %}
                                 <span class="caret"></span>
                               </button>
-                              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                              <ul class="dropdown-menu" style="padding:2px" aria-labelledby="dropdownMenu1">
                                 <li>
                                 {% if show_report %}
                                 {% if video.id in request.user.reportvideo_set.all|only_video %}
@@ -322,7 +322,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                     {% csrf_token %}
                                     <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Other requests' %}">
                                         <span id="mark-as-contact" class="glyphicon glyphicon-envelope"></span>
-                                        <span>{% trans '&nbsp;Other requests' %}</span>
+                                        <span>{% trans '&nbsp;&nbsp;Other requests&nbsp;&nbsp;' %}</span>
                                         <span class="sr-only">{% trans 'Other requests.' %}</span>
                                         <noscript>
                                             <input class="required form-control" id="id_subject" maxlength="100" name="subject" placeholder="Subject" required="required" type="text">
