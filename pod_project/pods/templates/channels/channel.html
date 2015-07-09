@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -35,8 +35,8 @@ voir http://www.gnu.org/licenses/
 	<meta property="og:title" content="{{ channel.title }}" />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
-	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.jpg' %}" />
-	<meta property="og:description" content="{{ channel.description|striptags|addslashes|linebreaksbr|truncatechars:250  }}" /> 
+	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
+	<meta property="og:description" content="{{ channel.description|striptags|addslashes|linebreaksbr|truncatechars:250  }}" />
 	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 

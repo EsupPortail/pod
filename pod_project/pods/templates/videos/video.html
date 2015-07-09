@@ -133,7 +133,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
     {% if video.thumbnail %}
         <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{{ video.thumbnail.url }}" />
     {%else%}
-        <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.jpg' %}" />
+        <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
     {% endif %}
 
 	<meta property="og:description" content="{{ video.description|striptags|addslashes|linebreaksbr|truncatechars:250 }}" />
