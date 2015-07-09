@@ -601,16 +601,14 @@ def video_add_report(request, slug):
 @csrf_protect
 def video_add_additional_information(request, slug):
     video = get_object_or_404(Pod, slug=slug)
-    print request.POST
     if request.POST:
         if request.POST['subject_ask'] != "" and len(request.POST['subject_ask'])<100:
             additionrequest = AdditionRequestVideo.objects.create(
                 user=request.user, video=video, subject='%s' % request.POST['subject_ask'], comment= '%s' % request.POST['comment'])
-
             subject = _(u'Additional information request.')
 
-            msg = _(u'The user %(user_firstname)s %(user_lastname)s <%(user_email)s>.\n'
-                    'Subject of ask additional information: \n'
+            msg = _(u'The user %(user_firstname)s %(user_lastname)s <%(user_email)s> has been send a additional information request.\n'
+                    'Subject of request: \n'
                     '%(subject_ask)s\n'
                     'This content: \n'
                     '%(comment)s\n'
@@ -625,8 +623,8 @@ def video_add_additional_information(request, slug):
                         'owner_firstname': video.owner.first_name, 'owner_lastname': video.owner.last_name, 'owner_email': video.owner.email,
                         'video_date_added': video.date_added}
 
-            msg_html = _(u'<p>The user %(user_firstname)s %(user_lastname)s &lt;<a href=\"mailto:%(user_email)s\">%(user_email)s</a>&gt;.</p>'
-                         '<p>Subject of the ask is : </br>'
+            msg_html = _(u'<p>The user %(user_firstname)s %(user_lastname)s &lt;<a href=\"mailto:%(user_email)s\">%(user_email)s</a>&gt;has been send a additional information request.</p>'
+                         '<p>Subject of request : </br>'
                          '%(subject_ask)s\n<p>'
                          '<p>He ask additional information: <br/>'
                          '%(comment)s</p>'
@@ -646,8 +644,7 @@ def video_add_additional_information(request, slug):
             email_msg.attach_alternative(msg_html, "text/html")
             email_msg.send(fail_silently=False)
             if request.is_ajax():
-                print "ajax"
-                msg = _(u'Your addtional information request has been send.')
+                msg = _(u'Your request has been send.')
                 some_data_to_dump = {'msg': "%s" % msg}
                 data = json.dumps(some_data_to_dump)
                 return HttpResponse(data, content_type='application/json')
@@ -660,7 +657,6 @@ def video_add_additional_information(request, slug):
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
 
     else:
-        print request.POST.get('comment')
         messages.add_message(
             request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
