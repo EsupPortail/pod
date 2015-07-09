@@ -509,7 +509,7 @@ msgstr "Signaler cette vidéo"
 
 #: core/templates/base.html:271
 msgid "Please, specify the problem:"
-msgstr "Veuillez expliquer le problème :"
+msgstr "Veuillez expliquer le problème :"
 
 #: core/templates/base.html:277 core/templates/header.html:50
 #: core/templates/userProfile.html:74
@@ -635,7 +635,7 @@ msgstr "Information"
 
 #: core/templates/registration/login.html:117
 msgid "Don't hesitate to contact us for any assistance:"
-msgstr "N'hésitez pas à nous contacter pour toute assistance :"
+msgstr "N'hésitez pas à nous contacter pour toute assistance :"
 
 #: core/templates/userProfile.html:24
 #: pods/templates/channels/channel_edit.html:65
@@ -2423,7 +2423,7 @@ msgstr "Enrichissement de la vidéo"
 
 #: pods/templates/videos/video_enrich.html:193
 msgid "Are you sure you want to delete this enrichment?"
-msgstr "Etes-vous sûr de vouloir supprimer cet enrichissement ?"
+msgstr "Etes-vous sûr de vouloir supprimer cet enrichissement ?"
 
 #: pods/templates/videos/video_enrich.html:236
 msgid "Changes have been saved."
