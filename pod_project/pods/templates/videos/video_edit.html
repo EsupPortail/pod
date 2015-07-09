@@ -103,9 +103,9 @@ $(document).ready(function() {
 		messages: {
 		    {% if not form.instance.video %}
 			video: {
-				required: "{% trans "Video field is required" %}",
-				/*accept: "{% trans "The mime type is wrong" %}",*/
-				extension: "{% trans "Wrong format." %}",
+				required: "{% trans "Video field is required." %}",
+				/*accept: "{% trans "Wrong MIME type." %}",*/
+				extension: "{% trans "File format not allowed." %}",
 			},
 			{% endif %}
 			title: {
@@ -173,7 +173,7 @@ var name = "";
 
 
 {% if form.errors %}
-<p> {% trans "Errors have been found in the form." %}</p>
+<p> {% trans "One or more errors have been found in the form." %}</p>
 {{form.errors}}
 {% endif %}
 
