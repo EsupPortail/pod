@@ -911,10 +911,10 @@ class AdditionRequestVideo(models.Model):
         'Date', default=datetime.now, editable=False)
 
     def __unicode__(self):
-        return "%s - %s - %s" % (self.video, self.user, self.comment)
+        return "%s - %s - %s" % (self.video, self.user, self.subject)
 
     def __str__(self):
-        return "%s - %s - %s" % (self.video, self.user, self.comment)
+        return "%s - %s - %s" % (self.video, self.user, self.subject)
 
     def get_iframe_url_to_video(self):
         return self.video.get_iframe_admin_integration()
