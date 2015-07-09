@@ -111,6 +111,3 @@ voir http://www.gnu.org/licenses/
 <div id="pager" class="text-center">
     {% block pagination %} {% pagination videos %} {% endblock %}
 </div>
-<script>
-    $('div.results').html('{{ videos.paginator.count }} {% trans 'Videos' %}');
-</script>
