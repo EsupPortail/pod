@@ -60,6 +60,7 @@ voir http://www.gnu.org/licenses/
                     >
                         {% for track in video.trackpods_set.all %}
                             <track
+                                id= "{{ track.id }}"
                                 kind="{{ track.kind }}"
                                 src="{{ track.src.url }}"
                                 srclang="{{ track.lang }}"

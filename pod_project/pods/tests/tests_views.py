@@ -37,6 +37,8 @@ from pods.forms import ChannelForm, ThemeForm, PodForm, ContributorPodsForm, Cha
 import threading
 from core.utils import encode_video
 import os
+from filer.models.foldermodels import Folder
+from filer.models.imagemodels import Image
 """
     test view
 """
@@ -1195,6 +1197,10 @@ class Video_completion_TestView(TestCase):
             username='remi2', password='12345', is_active=True, is_staff=True)
         user2.set_password('hello')
         user2.save()
+        userNoStaff = User.objects.create(
+            username='userNoStaff', password='12345', is_active=True, is_staff=False)
+        userNoStaff.set_password('hello')
+        userNoStaff.save()
         c = Channel.objects.create(title="ChannelTest1", visible=True,
                                    color="Black", owner=user, style="italic", description="blabla")
         t = Theme.objects.create(
@@ -1214,6 +1220,15 @@ class Video_completion_TestView(TestCase):
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()
+
+        # create file to subtitle and download
+        folder, created = Folder.objects.get_or_create(
+            name="remi", owner=pod.owner, level=0)
+        upc_document, created = Image.objects.get_or_create(
+            folder=folder, name="test")
+        upc_document, created = Image.objects.get_or_create(
+            folder=folder, name="test2")
+
         print(" --->  SetUp of Video_completion_TestView : OK !")
 
     def test_video_completion(self):
@@ -1236,64 +1251,260 @@ class Video_completion_TestView(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertTrue(
             "You cannot complement this video." in response.content)
+
+        response = self.client.get(
+            "/video_completion_contributor/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(
+            "You cannot complement this video." in response.content)
+
+        response = self.client.get("/video_completion_subtitle/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(
+            "You cannot complement this video." in response.content)
+
+        response = self.client.get("/video_completion_download/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(
+            "You cannot complement this video." in response.content)
+
+        # change pod owner to none staff
+
+        self.client.logout()
+
+        self.user = User.objects.get(username="userNoStaff")
+
+        pod.owner = self.user
+        pod.save()
+
+        self.user = authenticate(username='userNoStaff', password='hello')
+        login = self.client.login(username='userNoStaff', password='hello')
+        self.assertEqual(login, True)
+
+        # check acces to completion et contributor and NOT subtitle and
+        # download
+        response = self.client.get("/video_completion/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(
+            "/video_completion_contributor/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/video_completion_subtitle/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(
+            "Acces denied" in response.content)
+        response = self.client.get("/video_completion_download/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(
+            "Acces denied" in response.content)
+
         print(
             "   --->  test_completion_with_authenticated of Video_completion_TestView : OK !")
 
-    def test_completion_post_request(self):
+    # check crud action for contributor
+    def test_crud_completion_contributor(self):
         pod = Pod.objects.get(id=1)
         self.client = Client()
         self.user = User.objects.get(username="remi")
-        self.user = authenticate(
-            username='remi', password='hello', is_staff=True)
-        login = self.client.login(
-            username='remi', password='hello', is_staff=True)
+        self.user = authenticate(username='remi', password='hello')
+        login = self.client.login(username='remi', password='hello')
         self.assertEqual(login, True)
-        response = self.client.get("/video_completion/%s/" % pod.slug)
+        # new
+        response = self.client.post(
+            "/video_completion_contributor/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        response = response = self.client.post("/video_completion/%s/" % pod.slug,
-                                               {u'track_form-TOTAL_FORMS': [u'0'], u'contributor_form-0-name': [u'l'], u'contributor_form-0-weblink': [u''], u'contributor_form-TOTAL_FORMS': [u'1'], u'contributor_form-MAX_NUM_FORMS': [u'1000'], u'action1': [u'Enregistrer'], u'doc_form-INITIAL_FORMS': [u'0'], u'doc_form-TOTAL_FORMS': [u'0'],
-                                                u'contributor_form-0-email_address': [u''], u'doc_form-MAX_NUM_FORMS': [u'1000'], u'contributor_form-0-role': [u'authors'], u'referer': [u''],
-                                                u'track_form-INITIAL_FORMS': [u'0'], u'contributor_form-0-id': [u''], u'contributor_form-INITIAL_FORMS': [u'0'], u'csrfmiddlewaretoken': [u'lPzdMGHrywbqLt9PfraVgYWUabjjLawg'],
-                                                u'track_form-MAX_NUM_FORMS': [u'1000'], u'contributor_form-0-video': [u'1']})
+        self.assertTrue(response.context['form_contributor'] != "")
+        self.assertTrue("<form  id=\"form_contributor\"" in response.content)
+        # save
+        response = self.client.post(
+            "/video_completion_contributor/%s/" % pod.slug, {
+                u'name': [u'nicolas can'],
+                u'weblink': [u'http://moodle.univ-lille1.fr/'],
+                u'role': [u'director'],
+                u'action': [u'save'],
+                u'video': [u'1'],
+                u'email_address': [u'nicolas.can@univ-lille1.fr']
+            })
         self.assertEqual(response.status_code, 200)
-        ContributorInlineFormSet = inlineformset_factory(
-            Pod, ContributorPods, form=ContributorPodsForm, extra=0, can_delete=True)
-        contributorformset = ContributorInlineFormSet(
-            instance=Pod.objects.get(id=1), prefix='contributor_form')
-        self.assertEqual(
-            list(contributorformset.queryset), list(response.context['contributorformset'].queryset))
-        print(
-            "   --->  test_completion_post_request of Video_completion_TestView : OK !")
 
-    def test_completion_other_post_request(self):
+        list_contributor = pod.contributorpods_set.all()
+        self.assertEqual(len(list_contributor), 1)
+        self.assertEqual(list_contributor[0].name, u'nicolas can')
+        self.assertEqual(
+            list_contributor[0].weblink, u'http://moodle.univ-lille1.fr/')
+        self.assertEqual(list_contributor[0].role, u'director')
+        self.assertEqual(
+            list_contributor[0].email_address, u'nicolas.can@univ-lille1.fr')
+        self.assertEqual(list_contributor[0].video.id, 1)
+        self.assertEqual(len(response.context['list_contributor']), 1)
+        self.assertEqual(
+            response.context['list_contributor'][0].name, u'nicolas can')
+
+        # modify
+        response = self.client.post(
+            "/video_completion_contributor/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_contributor'] != "")
+        self.assertTrue("<form  id=\"form_contributor\"" in response.content)
+
+        response = self.client.post(
+            "/video_completion_contributor/%s/" % pod.slug,
+            {
+                u'name': [u'nicolas can'],
+                u'weblink': [u'http://moodle.univ-lille1.fr/'],
+                u'role': [u'author'],
+                u'action': [u'save'],
+                u'video': [u'1'],
+                u'email_address': [u'nicolas.can@univ-lille1.fr'],
+                u'contributor_id': [u'1']
+            })
+
+        self.assertEqual(response.status_code, 200)
+        list_contributor = pod.contributorpods_set.all()
+        self.assertEqual(len(list_contributor), 1)
+        self.assertEqual(list_contributor[0].role, u'author')
+
+        # delete
+        response = self.client.post(
+            "/video_completion_contributor/%s/" % pod.slug, {u'action': [u'delete'],  u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        list_contributor = pod.contributorpods_set.all()
+        self.assertEqual(len(response.context['list_contributor']), 0)
+        self.assertEqual(len(list_contributor), 0)
+
+        print(
+            "   --->  test_crud_completion_contributor of Video_completion_TestView : OK !")
+
+    # test crud action video_completion_subtitle
+    def test_crud_completion_subtitle(self):
         pod = Pod.objects.get(id=1)
         self.client = Client()
-        user = User.objects.get(username="remi")
-        user.is_staff = False
-        user.save()
-        user = authenticate(
-            username='remi', password='hello')
-        login = self.client.login(
-            username='remi', password='hello')
+        self.user = User.objects.get(username="remi")
+        self.user = authenticate(username='remi', password='hello')
+        login = self.client.login(username='remi', password='hello')
         self.assertEqual(login, True)
-        response = self.client.get("/video_completion/%s/" % pod.slug)
+        # new
+        response = self.client.post(
+            "/video_completion_subtitle/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        response = response = self.client.post("/video_completion/%s/" % pod.slug,
-                                               {u'track_form-0-src': [u''], u'track_form-TOTAL_FORMS': [u'1'], u'doc_form-INITIAL_FORMS': [u'0'],
-                                                u'contributor_form-TOTAL_FORMS': [u'0'], u'track_form-0-id': [u''], u'track_form-0-lang': [u'as'],
-                                                u'action2': [u'Save and go back to previous page'], u'track_form-0-kind': [u'subtitles'], u'doc_form-TOTAL_FORMS': [u'0'],
-                                                u'doc_form-MAX_NUM_FORMS': [u'1000'], u'track_form-0-video': [u'1'], u'referer': [u''],
-                                                u'track_form-INITIAL_FORMS': [u'0'], u'contributor_form-MAX_NUM_FORMS': [u'1000'], u'contributor_form-INITIAL_FORMS': [u'0'],
-                                                u'track_form-MAX_NUM_FORMS': [u'1000']})
+        self.assertTrue(response.context['form_subtitle'] != "")
+        self.assertTrue("<form  id=\"form_subtitle\"" in response.content)
+
+        # save
+        response = self.client.post(
+            "/video_completion_subtitle/%s/" % pod.slug, {
+                u'lang': [u'fr'],
+                u'src': [u'1'],
+                u'kind': [u'subtitles'],
+                u'subtitle_id': [u'None'],
+                u'action': [u'save'],
+                u'video': [u'1']
+            })
         self.assertEqual(response.status_code, 200)
-        ContributorInlineFormSet = inlineformset_factory(
-            Pod, ContributorPods, form=ContributorPodsForm, extra=0, can_delete=True)
-        contributorformset = ContributorInlineFormSet(
-            instance=Pod.objects.get(id=1), prefix='contributor_form')
-        self.assertEqual(
-            list(contributorformset.queryset), list(response.context['contributorformset'].queryset))
+
+        list_subtitle = pod.trackpods_set.all()
+
+        self.assertEqual(len(list_subtitle), 1)
+
+        self.assertEqual(list_subtitle[0].lang, u'fr')
+        self.assertEqual(list_subtitle[0].src.id, 1)
+        self.assertEqual(list_subtitle[0].kind, u'subtitles')
+        self.assertEqual(list_subtitle[0].video.id, 1)
+
+        # modify
+        response = self.client.post(
+            "/video_completion_subtitle/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_subtitle'] != "")
+        self.assertTrue("<form  id=\"form_subtitle\"" in response.content)
+
+        response = self.client.post(
+            "/video_completion_subtitle/%s/" % pod.slug, {
+                u'lang': [u'en'],
+                u'src': [u'1'],
+                u'kind': [u'subtitles'],
+                u'subtitle_id': [u'1'],
+                u'action': [u'save'],
+                u'video': [u'1']
+            })
+
+        self.assertEqual(response.status_code, 200)
+        list_subtitle = pod.trackpods_set.all()
+        self.assertEqual(len(list_subtitle), 1)
+        self.assertEqual(list_subtitle[0].lang, u'en')
+
+        # delete
+        response = self.client.post(
+            "/video_completion_subtitle/%s/" % pod.slug, {u'action': [u'delete'],  u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        list_subtitle = pod.trackpods_set.all()
+        self.assertEqual(len(response.context['list_subtitle']), 0)
+        self.assertEqual(len(list_subtitle), 0)
+
         print(
-            "   --->  test_completion_other_post_request of Video_completion_TestView : OK !")
+            "   --->  test_crud_completion_subtitle of Video_completion_TestView : OK !")
+
+    # test crud action video_completion_download
+    def test_crud_completion_download(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        self.user = User.objects.get(username="remi")
+        self.user = authenticate(username='remi', password='hello')
+        login = self.client.login(username='remi', password='hello')
+        self.assertEqual(login, True)
+        # new
+        response = self.client.post(
+            "/video_completion_download/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_download'] != "")
+        self.assertTrue("<form  id=\"form_download\"" in response.content)
+
+        # save
+        response = self.client.post(
+            "/video_completion_download/%s/" % pod.slug, {
+                u'document': [u'1'],
+                u'action': [u'save'],
+                u'download_id': [u'None'],
+                u'video': [u'1']
+            })
+        self.assertEqual(response.status_code, 200)
+
+        list_download = pod.docpods_set.all()
+
+        self.assertEqual(len(list_download), 1)
+        self.assertEqual(list_download[0].document.id, 1)
+        self.assertEqual(list_download[0].video.id, 1)
+
+        # modify
+        response = self.client.post(
+            "/video_completion_download/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_download'] != "")
+        self.assertTrue("<form  id=\"form_download\"" in response.content)
+
+        response = self.client.post(
+            "/video_completion_download/%s/" % pod.slug, {
+                u'document': [u'2'],
+                u'action': [u'save'],
+                u'download_id': [u'1'],
+                u'video': [u'1']
+            })
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(response.status_code, 200)
+        list_download = pod.docpods_set.all()
+        self.assertEqual(len(list_download), 1)
+        self.assertEqual(list_download[0].document.id, 2)
+
+        # delete
+        response = self.client.post(
+            "/video_completion_download/%s/" % pod.slug, {u'action': [u'delete'],  u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        list_download = pod.docpods_set.all()
+        self.assertEqual(len(response.context['list_download']), 0)
+        self.assertEqual(len(list_download), 0)
+
+        print(
+            "   --->  test_crud_completion_download of Video_completion_TestView : OK !")
 
 
 @override_settings(

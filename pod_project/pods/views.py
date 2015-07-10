@@ -686,9 +686,12 @@ def video_edit(request, slug=None):
 
 
 @csrf_protect
-@login_required
 #@staff_member_required
 def video_completion(request, slug):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+    video = get_object_or_404(Pod, slug=slug)
+
     # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
@@ -696,95 +699,427 @@ def video_completion(request, slug):
             owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot complement this video.'))
+        raise PermissionDenied
+    else:
+        if request.user.is_staff:
+            list_contributor = video.contributorpods_set.all()
+            list_subtitle = video.trackpods_set.all()
+            list_download = video.docpods_set.all()
+        else:
+            list_contributor = video.contributorpods_set.all()
+
+    if request.user.is_staff:
+        return render_to_response("videos/video_completion.html",
+                                  {'video': video,
+                                      'list_contributor': list_contributor,
+                                      'list_subtitle': list_subtitle,
+                                      'list_download': list_download},
+                                  context_instance=RequestContext(request))
+    else:
+        return render_to_response("videos/video_completion.html",
+                                  {'video': video,
+                                      'list_contributor': list_contributor},
+                                  context_instance=RequestContext(request))
+
+
+@csrf_protect
+#@staff_member_required
+def video_completion_contributor(request, slug):
+    if not request.user.is_authenticated():
+        raise PermissionDenied
+
     video = get_object_or_404(Pod, slug=slug)
+
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
 
-    ContributorInlineFormSet = inlineformset_factory(
-        Pod, ContributorPods, form=ContributorPodsForm, extra=0, can_delete=True)
-    TrackInlineFormSet = inlineformset_factory(
-        Pod, TrackPods, form=TrackPodsForm, extra=0, can_delete=True)
-    DocInlineFormSet = inlineformset_factory(
-        Pod, DocPods, form=DocPodsForm, extra=0, can_delete=True)
+    list_contributor = video.contributorpods_set.all()
+    list_subtitle = video.trackpods_set.all()
+    list_download = video.docpods_set.all()
 
-    if request.method == "POST":
-        if request.user.is_staff:
-            contributorformset = ContributorInlineFormSet(
-                request.POST, instance=video, prefix='contributor_form')
-            trackformset = TrackInlineFormSet(
-                request.POST, instance=video, prefix='track_form')
-            docformset = DocInlineFormSet(
-                request.POST, instance=video, prefix='doc_form')
-
-            if contributorformset.is_valid() and trackformset.is_valid() and docformset.is_valid():
-                contributorformset.save()
-                trackformset.save()
-                docformset.save()
-                # MAJ...
-                contributorformset = ContributorInlineFormSet(
-                    instance=video, prefix='contributor_form')
-                trackformset = TrackInlineFormSet(
-                    instance=video, prefix='track_form')
-                docformset = DocInlineFormSet(
-                    instance=video, prefix='doc_form')
-                #...
-                messages.add_message(
-                    request, messages.INFO, _(u'The changes have been saved.'))
-                referer = request.POST.get("referer")
-                # go back
-                if request.POST.get("action2") and request.POST.get("referer"):
-                    return HttpResponseRedirect("%s" % request.POST.get("referer"))
-                if request.POST.get("action3"):
-                    return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
-                # else:
-                # return
-                # HttpResponseRedirect(reverse('pods.views.video_completion',
-                # args=(video.slug,)))
+    if request.POST:  # Contributor CRUD Action
+        # new
+        if request.POST.get("action") and request.POST['action'] == 'new':
+            form_contributor = ContributorPodsForm({"video": video})
+            if request.is_ajax():  # if ajax
+                return render_to_response("videos/completion/contributor/form_contributor.html",
+                                          {'form_contributor': form_contributor,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
             else:
-                messages.add_message(
-                    request, messages.ERROR, _(u'One or more errors have been found in the form.'))
-        else:
-            contributorformset = ContributorInlineFormSet(
-                request.POST, instance=video, prefix='contributor_form')
-
-            if contributorformset.is_valid():
-                contributorformset.save()
-                # MAJ...
-                contributorformset = ContributorInlineFormSet(
-                    instance=video, prefix='contributor_form')
-                #...
-                messages.add_message(
-                    request, messages.INFO, _(u'The changes have been saved.'))
-                referer = request.POST.get("referer")
-                # go back
-                if request.POST.get("action2") and request.POST.get("referer"):
-                    return HttpResponseRedirect("%s" % request.POST.get("referer"))
-                if request.POST.get("action3"):
-                    return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
-                # else:
-                # return
-                # HttpResponseRedirect(reverse('pods.views.video_completion',
-                # args=(video.slug,)))
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download,
+                                              'form_contributor': form_contributor
+                                          },
+                                          context_instance=RequestContext(request))
+        # save
+        if request.POST.get("action") and request.POST['action'] == 'save':
+            form_contributor = None
+            if request.POST.get("contributor_id"):
+                contributor = get_object_or_404(
+                    ContributorPods, id=request.POST.get("contributor_id"))
+                form_contributor = ContributorPodsForm(
+                    request.POST, instance=contributor)
             else:
-                messages.add_message(
-                    request, messages.ERROR, _(u'One or more errors have been found in the form.'))
-    else:
-        contributorformset = ContributorInlineFormSet(
-            instance=video, prefix='contributor_form')
-        trackformset = TrackInlineFormSet(instance=video, prefix='track_form')
-        docformset = DocInlineFormSet(instance=video, prefix='doc_form')
+                form_contributor = ContributorPodsForm(request.POST)
 
-    if request.user.is_staff:
-        return render_to_response("videos/video_completion_formset.html",
-                                  {'contributorformset': contributorformset,
-                                      'trackformset': trackformset, 'docformset': docformset},
-                                  context_instance=RequestContext(request))
-    else:
-        return render_to_response("videos/video_completion_formset.html",
-                                  {'contributorformset': contributorformset},
-                                  context_instance=RequestContext(request))
+            if form_contributor.is_valid():  # All validation rules pass
+                form_contributor.save()
+                list_contributor = video.contributorpods_set.all()
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'list_data': render_to_string('videos/completion/contributor/list_contributor.html', {'list_contributor': list_contributor, 'video': video}, context_instance=RequestContext(request)),
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_completion.html",
+                                              {
+                                                  'video': video,
+                                                  'list_contributor': list_contributor,
+                                                  'list_subtitle': list_subtitle,
+                                                  'list_download': list_download
+                                              },
+                                              context_instance=RequestContext(request))
+            else:
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'errors': "%s" % _('Please correct errors'),
+                        'form': render_to_string('videos/completion/contributor/form_contributor.html', {'video': video, 'form_contributor': form_contributor}, context_instance=RequestContext(request))
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_completion.html",
+                                              {
+                                                  'video': video,
+                                                  'list_contributor': list_contributor,
+                                                  'list_subtitle': list_subtitle,
+                                                  'list_download': list_download,
+                                                  'form_contributor': form_contributor
+                                              },
+                                              context_instance=RequestContext(request))
+        # modify
+        if request.POST.get("action") and request.POST['action'] == 'modify':
+            contributor = get_object_or_404(
+                ContributorPods, id=request.POST['id'])
+            form_contributor = ContributorPodsForm(instance=contributor)
+            if request.is_ajax():
+                return render_to_response("videos/completion/contributor/form_contributor.html",
+                                          {'form_contributor': form_contributor,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download,
+                                              'form_contributor': form_contributor
+                                          },
+                                          context_instance=RequestContext(request))
+        # delete
+        if request.POST.get("action") and request.POST['action'] == 'delete':
+            contributor = get_object_or_404(
+                ContributorPods, id=request.POST['id'])
+            contributor_delete = contributor.delete()
+            list_contributor = video.contributorpods_set.all()
+            if request.is_ajax():
+                some_data_to_dump = {
+                    'list_data': render_to_string('videos/completion/contributor/list_contributor.html',
+                                                  {'list_contributor': list_contributor, 'video': video}, context_instance=RequestContext(request))
+                }
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download
+                                          },
+                                          context_instance=RequestContext(request))
+
+    return render_to_response("videos/video_completion.html",
+                              {'video': video,
+                                  'list_contributor': list_contributor,
+                                  'list_subtitle': list_subtitle,
+                                  'list_download': list_download},
+                              context_instance=RequestContext(request))
+
+
+@csrf_protect
+#@staff_member_required
+def video_completion_subtitle(request, slug):
+    if not request.user.is_authenticated() or not request.user.is_staff:
+        raise PermissionDenied
+
+    video = get_object_or_404(Pod, slug=slug)
+
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot complement this video.'))
+        raise PermissionDenied
+
+    list_contributor = video.contributorpods_set.all()
+    list_subtitle = video.trackpods_set.all()
+    list_download = video.docpods_set.all()
+
+    if request.POST:  # Subtitle CRUD Action
+        # new
+        if request.POST.get("action") and request.POST['action'] == 'new':
+            form_subtitle = TrackPodsForm({"video": video})
+            if request.is_ajax():  # if ajax
+                return render_to_response("videos/completion/subtitle/form_subtitle.html",
+                                          {'form_subtitle': form_subtitle,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download,
+                                              'form_subtitle': form_subtitle
+                                          },
+                                          context_instance=RequestContext(request))
+        # save
+        if request.POST.get("action") and request.POST['action'] == 'save':
+            form_subtitle = None
+            if request.POST.get("subtitle_id") and request.POST.get("subtitle_id") != "None":
+                subtitle = get_object_or_404(
+                    TrackPods, id=request.POST.get("subtitle_id"))
+                form_subtitle = TrackPodsForm(request.POST, instance=subtitle)
+            else:
+                form_subtitle = TrackPodsForm(request.POST)
+
+            if form_subtitle.is_valid():  # All validation rules pass
+                form_subtitle.save()
+                list_subtitle = video.trackpods_set.all()
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'list_data': render_to_string('videos/completion/subtitle/list_subtitle.html', {'list_subtitle': list_subtitle, 'video': video}, context_instance=RequestContext(request)),
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_completion.html",
+                                              {
+                                                  'video': video,
+                                                  'list_contributor': list_contributor,
+                                                  'list_subtitle': list_subtitle,
+                                                  'list_download': list_download
+                                              },
+                                              context_instance=RequestContext(request))
+            else:
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'errors': "%s" % _('Please correct errors'),
+                        'form': render_to_string('videos/completion/subtitle/form_subtitle.html', {'video': video, 'form_subtitle': form_subtitle}, context_instance=RequestContext(request))
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_completion.html",
+                                              {
+                                                  'video': video,
+                                                  'list_contributor': list_contributor,
+                                                  'list_subtitle': list_subtitle,
+                                                  'list_download': list_download,
+                                                  'form_subtitle': form_subtitle
+                                              },
+                                              context_instance=RequestContext(request))
+        # modify
+        if request.POST.get("action") and request.POST['action'] == 'modify':
+            subtitle = get_object_or_404(TrackPods, id=request.POST['id'])
+            form_subtitle = TrackPodsForm(instance=subtitle)
+            if request.is_ajax():
+                return render_to_response("videos/completion/subtitle/form_subtitle.html",
+                                          {'form_subtitle': form_subtitle,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download,
+                                              'form_subtitle': form_subtitle
+                                          },
+                                          context_instance=RequestContext(request))
+        # delete
+        if request.POST.get("action") and request.POST['action'] == 'delete':
+            subtitle = get_object_or_404(TrackPods, id=request.POST['id'])
+            subtitle_delete = subtitle.delete()
+            list_subtitle = video.trackpods_set.all()
+            if request.is_ajax():
+                some_data_to_dump = {
+                    'list_data': render_to_string('videos/completion/subtitle/list_subtitle.html', {'list_subtitle': list_subtitle, 'video': video}, context_instance=RequestContext(request))
+                }
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download
+                                          },
+                                          context_instance=RequestContext(request))
+
+    return render_to_response("videos/video_completion.html",
+                              {
+                                  'video': video,
+                                  'list_contributor': list_contributor,
+                                  'list_subtitle': list_subtitle,
+                                  'list_download': list_download
+                              },
+                              context_instance=RequestContext(request))
+
+
+@csrf_protect
+#@staff_member_required
+def video_completion_download(request, slug):
+    if not request.user.is_authenticated() or not request.user.is_staff:
+        raise PermissionDenied
+    video = get_object_or_404(Pod, slug=slug)
+
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot complement this video.'))
+        raise PermissionDenied
+
+    list_contributor = video.contributorpods_set.all()
+    list_subtitle = video.trackpods_set.all()
+    list_download = video.docpods_set.all()
+
+    if request.POST:  # Download CRUD Action
+        # new
+        if request.POST.get("action") and request.POST['action'] == 'new':
+            form_download = DocPodsForm({"video": video})
+            if request.is_ajax():  # if ajax
+                return render_to_response("videos/completion/download/form_download.html",
+                                          {
+                                              'form_download': form_download,
+                                              'video': video
+                                          },
+                                          context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download,
+                                              'form_download': form_download
+                                          },
+                                          context_instance=RequestContext(request))
+        # save
+        if request.POST.get("action") and request.POST['action'] == 'save':
+            form_download = None
+            if request.POST.get("download_id")  and request.POST.get("download_id") != "None":
+                download = get_object_or_404(
+                    DocPods, id=request.POST.get("download_id"))
+                form_download = DocPodsForm(request.POST, instance=download)
+            else:
+                form_download = DocPodsForm(request.POST)
+
+            if form_download.is_valid():  # All validation rules pass
+                form_download.save()
+                list_download = video.docpods_set.all()
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'list_data': render_to_string('videos/completion/download/list_download.html', {'list_download': list_download, 'video': video}, context_instance=RequestContext(request))
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_completion.html",
+                                              {
+                                                  'video': video,
+                                                  'list_contributor': list_contributor,
+                                                  'list_subtitle': list_subtitle,
+                                                  'list_download': list_download
+                                              },
+                                              context_instance=RequestContext(request))
+            else:
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'errors': "%s" % _('Please correct errors'),
+                        'form': render_to_string('videos/completion/download/form_download.html', {'video': video, 'form_download': form_download}, context_instance=RequestContext(request))
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_completion.html",
+                                              {
+                                                  'video': video,
+                                                  'list_contributor': list_contributor,
+                                                  'list_subtitle': list_subtitle,
+                                                  'list_download': list_download,
+                                                  'form_download': form_download
+                                              },
+                                              context_instance=RequestContext(request))
+        # modify
+        if request.POST.get("action") and request.POST['action'] == 'modify':
+            download = get_object_or_404(DocPods, id=request.POST['id'])
+            form_download = DocPodsForm(instance=download)
+            if request.is_ajax():
+                return render_to_response("videos/completion/download/form_download.html",
+                                          {'form_download': form_download,
+                                              'video': video},
+                                          context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download,
+                                              'form_download': form_download
+                                          },
+                                          context_instance=RequestContext(request))
+        # delete
+        if request.POST.get("action") and request.POST['action'] == 'delete':
+            download = get_object_or_404(DocPods, id=request.POST['id'])
+            download_delete = download.delete()
+            list_download = video.docpods_set.all()
+            if request.is_ajax():
+                some_data_to_dump = {
+                    'list_data': render_to_string('videos/completion/download/list_download.html', {'list_download': list_download, 'video': video}, context_instance=RequestContext(request))
+                }
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download
+                                          },
+                                          context_instance=RequestContext(request))
+
+    return render_to_response("videos/video_completion.html",
+                              {'video': video,
+                                  'list_contributor': list_contributor,
+                                  'list_subtitle': list_subtitle,
+                                  'list_download': list_download},
+                              context_instance=RequestContext(request))
 
 
 @csrf_protect
@@ -950,7 +1285,6 @@ def video_enrich(request, slug):
                 form_enrich.save()
                 list_enrichment = video.enrichpods_set.all()
                 if request.is_ajax():
-                    # print list_enrichment
                     some_data_to_dump = {
                         'list_enrich': render_to_string('videos/enrich/list_enrich.html', {'list_enrichment': list_enrichment, 'video': video}),
                         'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
