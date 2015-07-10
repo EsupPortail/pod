@@ -229,7 +229,13 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                         <button type="submit" class="btn btn-info" value="{% trans 'Send' %}" name="action1">
                             {% bootstrap_icon 'save' %} {% trans 'Send' %}
                         </button>
+                        {% if request.META.HTTP_REFERER %}
+                        <a href="{{request.META.HTTP_REFERER}}" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Back" %}</a>
+                        {% else %}
+                        <a href="/" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Home" %}</a>
+                        {% endif %}
                     {% endbuttons %}
+
                 </fieldset>
             </form>
             <p>{% trans 'If you do not have the password or if you have connection problems, contact us :' %}</p>
@@ -320,10 +326,10 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 <li>
                                 <form method="post" action="{% url 'video_add_additional_information' slug=video.slug %}" style="display:inline-block;">
                                     {% csrf_token %}
-                                    <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Other requests' %}">
+                                    <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Other requests about the video' %}">
                                         <span id="mark-as-contact" class="glyphicon glyphicon-envelope"></span>
                                         <span>{% trans '&nbsp;&nbsp;Other requests&nbsp;&nbsp;' %}</span>
-                                        <span class="sr-only">{% trans 'Other requests.' %}</span>
+                                        <span class="sr-only">{% trans 'Other requests about the video.' %}</span>
                                         <noscript>
                                             <input class="required form-control" id="id_subject" maxlength="100" name="subject" placeholder="Subject" required="required" type="text">
                                             <textarea rows="5" name="comment" ></textarea>
