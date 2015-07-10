@@ -602,7 +602,7 @@ def video_add_report(request, slug):
 def video_add_additional_information(request, slug):
     video = get_object_or_404(Pod, slug=slug)
     if request.POST:
-        if request.POST['subject_ask'] != "" and len(request.POST['subject_ask'])<100:
+        if request.POST['subject_ask'] != ""  and len(request.POST['subject_ask'])<100 and len(request.POST['subject_ask'])>1:
             additionrequest = AdditionRequestVideo.objects.create(
                 user=request.user, video=video, subject='%s' % request.POST['subject_ask'], comment= '%s' % request.POST['comment'])
             subject = _(u'Additional information request.')
