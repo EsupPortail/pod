@@ -226,14 +226,14 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                 <fieldset>
                     {% bootstrap_form form %}
                     {% buttons %}
-                        <button type="submit" class="btn btn-info" value="{% trans 'Send' %}" name="action1">
-                            {% bootstrap_icon 'save' %} {% trans 'Send' %}
-                        </button>
                         {% if request.META.HTTP_REFERER %}
-                        <a href="{{request.META.HTTP_REFERER}}" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Back" %}</a>
-                        {% else %}
-                        <a href="/" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Home" %}</a>
+                            <a href="{{request.META.HTTP_REFERER}}" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Back" %}</a>
+                            {% else %}
+                            <a href="/" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Home" %}</a>
                         {% endif %}
+                        <button type="submit" class="btn btn-success" value="{% trans 'Send' %}" name="action1">
+                            {% bootstrap_icon 'save' %} {% trans 'Send' %}
+                        </button>                       
                     {% endbuttons %}
 
                 </fieldset>
@@ -632,7 +632,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                     </div>
                     <div class="modal-footer">
                             <button  id ="button_reset" type="reset" class="btn btn-default" data-dismiss="modal">{% trans 'Cancel' %} </button>
-                            <button type="submit" class="btn btn-info" >{% trans 'Send' %}</button>
+                            <button type="submit" class="btn btn-default" >{% trans 'Send' %}</button>
                     </div>
                     <!-- reset form. I can't move the script in navigation.js or on top of the video.hmtl because he don't know the tag -->
                     <script>
