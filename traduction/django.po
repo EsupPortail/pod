@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:36+0200\n"
-"PO-Revision-Date: 2015-07-06 15:25+0200\n"
+"PO-Revision-Date: 2015-07-07 15:40+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -255,16 +255,16 @@ msgstr "Modifier"
 
 #: core/templates/admin/filer/folder/directory_table.html:29
 #, python-format
-msgid "1 folder"
+msgid "%(counter)s folder"
 msgid_plural "%(counter)s folders"
-msgstr[0] "1 dossier"
+msgstr[0] "%(counter)s dossier"
 msgstr[1] "%(counter)s dossiers"
 
 #: core/templates/admin/filer/folder/directory_table.html:29
 #, python-format
-msgid "1 file"
+msgid "%(counter)s file"
 msgid_plural "%(counter)s files"
-msgstr[0] "1 fichier"
+msgstr[0] "%(counter)s fichier"
 msgstr[1] "%(counter)s fichiers"
 
 #: core/templates/admin/filer/folder/directory_table.html:36
@@ -292,6 +292,7 @@ msgstr "Supprimer '%(item_label)s'."
 #: pods/templates/search/search.html:153 pods/templates/search/search.html:155
 #: pods/templates/videos/chapter/list_chapter.html:55
 #: pods/templates/videos/enrich/list_enrich.html:60
+#: pods/templates/videos/ownertools.html:45
 #: pods/templates/videos/video_chapterpods_formset.html:133
 #: pods/templates/videos/video_chapterpods_formset.html:161
 #: pods/templates/videos/video_completion_formset.html:138
@@ -626,7 +627,7 @@ msgstr "Effacer"
 
 #: core/templates/registration/login.html:116
 #: pods/templates/videos/my_videos.html:64
-#: pods/templates/videos/video_chapter.html:380
+#: pods/templates/videos/video_chapter.html:379
 #: pods/templates/videos/video_completion_formset.html:352
 #: pods/templates/videos/video_enrich.html:474
 msgid "Information"
@@ -660,9 +661,16 @@ msgstr ""
 msgid "My Profile"
 msgstr "Mon profil"
 
-#: core/templates/userProfile.html:65
-msgid "errors have been found in the form"
-msgstr "Erreur dans le formulaire"
+#: core/templates/userProfile.html:65 core/views.py:166
+#: pods/templates/channels/channel_edit.html:78
+#: pods/templates/mediacourses/mediacourses_add.html:53
+#: pods/templates/videos/video_chapter.html:257
+#: pods/templates/videos/video_edit.html:176
+#: pods/templates/videos/video_enrich.html:248 pods/views.py:188
+#: pods/views.py:458 pods/views.py:678 pods/views.py:747 pods/views.py:772
+#: pods/views.py:1156
+msgid "One or more errors have been found in the form."
+msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 
 #: core/templates/userProfile.html:77
 #: pods/templates/videos/chapter/form_chapter.html:44
@@ -705,11 +713,6 @@ msgstr ""
 #: core/views.py:163
 msgid "Your profile is saved."
 msgstr "Votre profil est enregistré."
-
-#: core/views.py:166 pods/views.py:188 pods/views.py:458 pods/views.py:678
-#: pods/views.py:747 pods/views.py:772 pods/views.py:1156
-msgid "Error in the form."
-msgstr "Erreur dans le formulaire."
 
 #: django_cas_gateway/views.py:82
 #, python-format
@@ -1312,7 +1315,7 @@ msgstr "Français"
 
 #: pods/forms.py:128
 msgid "Filetype not allowed! Filetypes allowed: "
-msgstr "Type de fichier non admis ! Les types de fichiers acceptés sont : "
+msgstr "Type de fichier non admis ! Les types de fichiers acceptés sont : "
 
 #: pods/forms.py:134
 msgid "Date of the event"
@@ -1528,7 +1531,7 @@ msgid "Kind"
 msgstr "Genre"
 
 #: pods/models.py:501
-msgid "sub-heading file"
+msgid "subtitle file"
 msgstr "fichier de sous-titres"
 
 #: pods/models.py:504
@@ -1549,7 +1552,7 @@ msgstr "Documents"
 
 #: pods/models.py:543
 msgid "Stop video"
-msgstr "Stop video"
+msgstr "Arrêter la lecture"
 
 #: pods/models.py:544
 msgid "The video will pause when displaying this enrichment."
@@ -1680,10 +1683,7 @@ msgstr "Début de la vidéo"
 msgid "Start time of the chapter, in seconds."
 msgstr "Début d'affichage du chapitre, en secondes."
 
-#: pods/models.py:696 pods/templates/search/search.html:140
-#: pods/templates/search/search.html:142
-#: pods/templates/videos/videos_list.html:92
-#: pods/templates/videos/videos_list.html:93
+#: pods/models.py:696
 msgid "Chapter"
 msgstr "Chapitre"
 
@@ -1801,10 +1801,17 @@ msgstr "Eléments par page"
 #: pods/templates/channels/my_channels.html:51
 #: pods/templates/disciplines/disciplines.html:73
 #: pods/templates/favorites/my_favorites.html:39
-#: pods/templates/maintoolbar.html:45 pods/templates/owners/owners.html:62
-#: pods/templates/search/search.html:76 pods/templates/types/types.html:62
+#: pods/templates/owners/owners.html:62 pods/templates/search/search.html:76
+#: pods/templates/types/types.html:62
 msgid "videos"
 msgstr "vidéos"
+
+#: pods/templates/maintoolbar.html:46
+#, python-format
+msgid "%(counter)s video"
+msgid_plural "%(counter)s videos"
+msgstr[0] "%(counter)s vidéo"
+msgstr[1] "%(counter)s vidéos"
 
 #: pods/templates/channels/channel.html:95
 #: pods/templates/channels/channel.html:97
@@ -1825,11 +1832,6 @@ msgstr "Aucune vidéo trouvée"
 #: pods/templates/channels/channel_edit.html:65
 msgid "Edition of the channel"
 msgstr "Édition de la chaîne"
-
-#: pods/templates/channels/channel_edit.html:78
-#: pods/templates/mediacourses/mediacourses_add.html:53
-msgid "Warning, errors have been found in the form"
-msgstr "Attention, des erreurs ont été trouvées dans le formulaire"
 
 #: pods/templates/channels/channel_edit.html:95
 #: pods/templates/channels/channel_edit.html:96
@@ -1899,7 +1901,7 @@ msgstr "Ajouter un nouvel enregistrement"
 #: pods/templates/videos/my_videos.html:24
 #: pods/templates/videos/my_videos.html:32
 #: pods/templates/videos/my_videos.html:43
-#: pods/templates/videos/video_chapter.html:340
+#: pods/templates/videos/video_chapter.html:339
 #: pods/templates/videos/video_chapterpods_formset.html:96
 #: pods/templates/videos/video_completion_formset.html:89
 #: pods/templates/videos/video_delete.html:35
@@ -1919,33 +1921,55 @@ msgstr "propriétaires"
 
 #: pods/templates/pagination.html:40
 msgid "Show all"
-msgstr "Afficher tous"
+msgstr "Tout afficher"
 
-#: pods/templates/search/search.html:136 pods/templates/search/search.html:138
-#: pods/templates/search/search.html:179
+#: pods/templates/search/search.html:136
 #: pods/templates/videos/ownertools.html:24
-#: pods/templates/videos/ownertools.html:25
 #: pods/templates/videos/videos_list.html:86
+msgid "Edit video information."
+msgstr "Modifier les informations de la vidéo."
+
+#: pods/templates/search/search.html:138 pods/templates/search/search.html:179
+#: pods/templates/videos/ownertools.html:25
 #: pods/templates/videos/videos_list.html:87
 msgid "Edit"
 msgstr "Modifier"
 
-#: pods/templates/search/search.html:144 pods/templates/search/search.html:146
-#: pods/templates/videos/videos_list.html:96
-#: pods/templates/videos/videos_list.html:97
-msgid "Enrich"
-msgstr "Enrichir la vidéo"
-
-#: pods/templates/search/search.html:148
+#: pods/templates/search/search.html:140
 #: pods/templates/videos/ownertools.html:28
 #: pods/templates/videos/videos_list.html:89
-msgid "Add subtitles, contributors, download documents"
-msgstr "Ajouter des sous-titres, contributeurs, documents à télécharger"
+msgid "Add subtitle files, contributors, documents to download."
+msgstr "Ajouter des sous-titres, contributeurs, documents à télécharger."
 
-#: pods/templates/search/search.html:150
+#: pods/templates/search/search.html:142
+#: pods/templates/videos/ownertools.html:29
 #: pods/templates/videos/videos_list.html:90
 msgid "Completion"
-msgstr "Complétion de la vidéo"
+msgstr "Complétion"
+
+#: pods/templates/search/search.html:144
+#: pods/templates/videos/ownertools.html:32
+#: pods/templates/videos/videos_list.html:92
+msgid "Divide the video into chapters."
+msgstr "Diviser la video en chapitres."
+
+#: pods/templates/search/search.html:146
+#: pods/templates/videos/ownertools.html:33
+#: pods/templates/videos/videos_list.html:93
+msgid "Chaptering"
+msgstr "Chapitrage"
+
+#: pods/templates/search/search.html:148
+#: pods/templates/videos/ownertools.html:36
+#: pods/templates/videos/videos_list.html:96
+msgid "Add enrichments to the video."
+msgstr "Ajouter des enrichissements à la vidéo."
+
+#: pods/templates/search/search.html:150
+#: pods/templates/videos/ownertools.html:37
+#: pods/templates/videos/videos_list.html:97
+msgid "Enrich"
+msgstr "Enrichir"
 
 #: pods/templates/search/search.html:176
 msgid "Advanced Search"
@@ -1957,8 +1981,8 @@ msgstr "Affiner"
 
 #: pods/templates/videos/chapter/form_chapter.html:27
 #: pods/templates/videos/enrich/form_enrich.html:27
-msgid "Your form contains errors:"
-msgstr "Le formulaire contient des erreurs :"
+msgid "One or more errors have been found in the form:"
+msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 
 #: pods/templates/videos/chapter/list_chapter.html:26
 msgid "List of chapters"
@@ -1987,33 +2011,17 @@ msgstr "Liste des enrichissements"
 msgid "Use the thumbnails toolbar to work on a video."
 msgstr "Utilisez la barre d'outils pour travailler sur une vidéo."
 
-#: pods/templates/videos/ownertools.html:29
-msgid "Completion the video"
-msgstr "Complétion de la vidéo"
-
-#: pods/templates/videos/ownertools.html:32
-#: pods/templates/videos/ownertools.html:33
-msgid "Chapter the video"
-msgstr "Chapitrer la vidéo"
-
-#: pods/templates/videos/ownertools.html:36
-#: pods/templates/videos/ownertools.html:37
-msgid "Enrich the video"
-msgstr "Enrichir la vidéo"
-
 #: pods/templates/videos/ownertools.html:40
+msgid "Watch the video."
+msgstr "Regarder la vidéo."
+
 #: pods/templates/videos/ownertools.html:41
-msgid "Watch the video"
-msgstr "Regarder la vidéo"
+msgid "Watch"
+msgstr "Regarder"
 
 #: pods/templates/videos/ownertools.html:44
-#: pods/templates/videos/ownertools.html:45
-#: pods/templates/videos/video_delete.html:26
-#: pods/templates/videos/video_delete.html:35
-#: pods/templates/videos/video_delete.html:41
-#: pods/templates/videos/video_delete.html:57
-msgid "Delete the video"
-msgstr "Supprimer la vidéo"
+msgid "Delete the video."
+msgstr "Supprimer la vidéo."
 
 #: pods/templates/videos/video.html:45 pods/templates/videos/video.html:78
 #: pods/templates/videos/video_chapter.html:183
@@ -2133,15 +2141,15 @@ msgid "You must be logged in to take notes."
 msgstr "Vous devez être connecté pour prendre des notes."
 
 #: pods/templates/videos/video.html:500
-#: pods/templates/videos/video_chapter.html:374
+#: pods/templates/videos/video_chapter.html:373
 #: pods/templates/videos/video_chapterpods_formset.html:208
 #: pods/templates/videos/video_enrich.html:468
 msgid "Edit the video"
 msgstr "Modifier la vidéo"
 
 #: pods/templates/videos/video_chapter.html:29
-#: pods/templates/videos/video_chapter.html:330
-#: pods/templates/videos/video_chapter.html:341
+#: pods/templates/videos/video_chapter.html:329
+#: pods/templates/videos/video_chapter.html:340
 msgid "Chaptering of the video"
 msgstr "Chapitrer la vidéo"
 
@@ -2157,7 +2165,7 @@ msgstr "Le formulaire n'a pu être rechargé."
 
 #: pods/templates/videos/video_chapter.html:201
 msgid "Are you sure you want to delete this chapter?"
-msgstr "Etes-vous sûr de vouloir supprimer ce chapitre ?"
+msgstr "Etes-vous sûr de vouloir supprimer ce chapitre ?"
 
 #: pods/templates/videos/video_chapter.html:214
 #: pods/templates/videos/video_enrich.html:206
@@ -2177,14 +2185,7 @@ msgstr "Erreur lors de l'enregistrement."
 #: pods/templates/videos/video_chapter.html:253
 #: pods/templates/videos/video_enrich.html:244
 msgid "No data could be stored."
-msgstr "Aucune données enregistrées"
-
-#: pods/templates/videos/video_chapter.html:257
-#: pods/templates/videos/video_enrich.html:248
-msgid "Errors found in the form, please correct it."
-msgstr ""
-"Des erreurs ont été trouvées dans le formulaire. Veuillez les corriger puis "
-"sauvegarder à nouveau."
+msgstr "Aucune donnée n'a pu être enregistrée."
 
 #: pods/templates/videos/video_chapter.html:273
 #: pods/templates/videos/video_enrich.html:268 pods/views.py:178
@@ -2214,11 +2215,11 @@ msgstr "commence en même temps."
 msgid "Get time from the player"
 msgstr "Récupérer le temps depuis le lecteur"
 
-#: pods/templates/videos/video_chapter.html:366
+#: pods/templates/videos/video_chapter.html:365
 msgid "Add a new chapter"
 msgstr "Ajouter un nouveau chapitre"
 
-#: pods/templates/videos/video_chapter.html:382
+#: pods/templates/videos/video_chapter.html:381
 msgid ""
 "\"Add a new chapter\" allows you to add a new chapter and \"delete\" allows "
 "you to remove the chapter"
@@ -2226,7 +2227,7 @@ msgstr ""
 "\"Ajouter un nouveau chapitre\" vous permet de créer un nouveau chapitre et "
 "\"supprimer\" vous permet de supprimer le chapitre"
 
-#: pods/templates/videos/video_chapter.html:383
+#: pods/templates/videos/video_chapter.html:382
 msgid ""
 "Start playback of the video, pause the video and click on \"Get time from "
 "the player\" to fill in the field intitled \"Start time\"."
@@ -2235,11 +2236,11 @@ msgstr ""
 "le temps depuis le lecteur\" pour renseigner automatiquement le champ "
 "\"début du chapitre\"."
 
-#: pods/templates/videos/video_chapter.html:384
+#: pods/templates/videos/video_chapter.html:383
 msgid "The chapters cannot start at the same time."
 msgstr "Les chapitres ne peuvent pas commencer en même temps."
 
-#: pods/templates/videos/video_chapter.html:385
+#: pods/templates/videos/video_chapter.html:384
 msgid "You must save your chapters to view the result."
 msgstr "Vous devez sauvegarder pour visualiser le résultat."
 
@@ -2275,7 +2276,7 @@ msgstr "Envoi en cours, merci de patienter."
 #: pods/templates/videos/video_chapterpods_formset.html:202
 msgid "Use \"Add\" to add a new chapter and \"Delete\" to delete a chapter."
 msgstr ""
-"« Ajouter » permet d’ajouter un nouveau chapitre et « Supprimer » supprime "
+"« Ajouter » permet d’ajouter un nouveau chapitre et « Supprimer » supprime "
 "le chapitre."
 
 #: pods/templates/videos/video_chapterpods_formset.html:203
@@ -2339,6 +2340,13 @@ msgstr ""
 "sous-titre ou des documents à télécharger à vos vidéos. Veuillez nous "
 "contacter pour vous ajouter ces droits"
 
+#: pods/templates/videos/video_delete.html:26
+#: pods/templates/videos/video_delete.html:35
+#: pods/templates/videos/video_delete.html:41
+#: pods/templates/videos/video_delete.html:57
+msgid "Delete the video"
+msgstr "Supprimer la vidéo"
+
 #: pods/templates/videos/video_delete.html:63
 msgid "Are you sure you want to delete the video"
 msgstr "Etes-vous sûr de vouloir supprimer la vidéo"
@@ -2356,16 +2364,16 @@ msgid "Editing the video"
 msgstr "Modification de la vidéo"
 
 #: pods/templates/videos/video_edit.html:106
-msgid "Video field is required"
-msgstr "Le champ vidéo est obligatoire"
+msgid "Video field is required."
+msgstr "Le champ vidéo est obligatoire."
 
 #: pods/templates/videos/video_edit.html:107
-msgid "The mime type is wrong"
-msgstr "Le type MIME est faux"
+msgid "Wrong MIME type."
+msgstr "Le type MIME ne correspond pas."
 
 #: pods/templates/videos/video_edit.html:108
-msgid "Wrong format."
-msgstr "Format non autorisé"
+msgid "File format not allowed."
+msgstr "Format non autorisé."
 
 #: pods/templates/videos/video_edit.html:112
 msgid "Please, specify a title."
@@ -2387,10 +2395,6 @@ msgstr "Veuillez spécifier un type."
 #: pods/templates/videos/video_player.html:117
 msgid "The video is currently being encoded."
 msgstr "Cette vidéo est en cours d'encodage."
-
-#: pods/templates/videos/video_edit.html:176
-msgid "Errors have been found in the form."
-msgstr "Des erreurs ont été trouvées dans le formulaire."
 
 #: pods/templates/videos/video_edit.html:204
 msgid "Save and return to the previous page"

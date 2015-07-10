@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -34,7 +34,7 @@ voir http://www.gnu.org/licenses/
         <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}admin/js/actions.js"></script>
-        
+
         <!-- form.media -->
         {{form.media}}
         <!-- {{formset.media}} -->
@@ -72,10 +72,10 @@ jQuery(function($) {
 
 {% block article %}
     {% block article_content %}
-        
-    
+
+
 {% if form.errors %}
-<p> {% trans "Warning, errors have been found in the form" %}</p>
+<p> {% trans "One or more errors have been found in the form." %}</p>
 {{form.errors}}
 {% endif %}
 
@@ -106,7 +106,7 @@ jQuery(function($) {
     <legend>{% trans "Themes" %}</legend>
     <div id="formset" data-formset-prefix="{{ formset.prefix }}">
         {{ formset.management_form }}
-    
+
         <div data-formset-body class="data-formset-body" >
             <!-- New forms will be inserted in here -->
             {% for form in formset %}
@@ -131,7 +131,7 @@ jQuery(function($) {
                 </div>
             {% endfor %}
         </div>
-    
+
         <!-- The empty form template. By wrapping this in a <script> tag, the
         __prefix__ placeholder can easily be replaced in both attributes and
         any scripts -->
@@ -158,7 +158,7 @@ jQuery(function($) {
                 </div>
             {% endescapescript %}
         </script>
-    
+
         <!-- This button will add a new form when clicked -->
         <p>&nbsp;</p>
         <div class="text-center">
@@ -181,7 +181,7 @@ jQuery(function($) {
     </button>
 </div>
 {% endbuttons %}
-    
+
     </form>
     {% endblock article_content %}
     {% block video_list %} {% endblock video_list %}
