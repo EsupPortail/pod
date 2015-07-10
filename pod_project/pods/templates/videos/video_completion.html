@@ -462,6 +462,7 @@ function verify_fields(form){
                     </form>
                 </li>
                 &nbsp;
+                {% if request.user.is_staff %}
                 <li><a id = "section_subtitle" href="#" title="{% trans "Display &quot;Subtitle(s) and Captions(s) &quot; section" %}" class="title" >{% trans "Subtitle(s) and caption(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down"/></a></li>
                 <li class="contenuTitre">
                     <span id= "form_subtitle">
@@ -500,6 +501,7 @@ function verify_fields(form){
                         <input type="submit" value="{% trans "Add a new additional resource" %}" class="new_download btn btn-info"/>
                     </form>
                 </li>
+                {%endif%}
             </div>
             <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
                 <aside class="col-sm-3  panel panel-info">
