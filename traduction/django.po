@@ -583,6 +583,13 @@ msgstr "Auteurs"
 msgid "Types"
 msgstr "Types"
 
+#: pods/templates/types/types.html:63
+#, python-format
+msgid "%(counter)s type"
+msgid_plural "%(counter)s types"
+msgstr[0] "%(counter)s type"
+msgstr[1] "%(counter)s types"
+
 #: core/templates/navbar.html:115 pods/models.py:314
 #: pods/templates/videos/video.html:158 pods/templates/videos/videos.html:26
 #: pods/templates/videos/videos.html:30 pods/templates/videos/videos.html:32
@@ -1806,7 +1813,7 @@ msgstr "Eléments par page"
 msgid "videos"
 msgstr "vidéos"
 
-#: pods/templates/maintoolbar.html:46
+#: pods/templates/maintoolbar.html:46 pods/templates/types/types.html:95
 #, python-format
 msgid "%(counter)s video"
 msgid_plural "%(counter)s videos"
