@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:36+0200\n"
-"PO-Revision-Date: 2015-07-07 15:40+0200\n"
+"PO-Revision-Date: 2015-07-15 11:38+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1358,7 +1358,7 @@ msgstr ""
 
 #: pods/models.py:82 pods/models.py:114 pods/templates/search/search.html:247
 msgid "Channel"
-msgstr "Chaînes"
+msgstr "Chaîne"
 
 #: pods/models.py:102 pods/models.py:141 pods/models.py:175 pods/models.py:209
 msgid "count"
