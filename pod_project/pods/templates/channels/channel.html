@@ -85,7 +85,7 @@ voir http://www.gnu.org/licenses/
             {% block stats %}
                 <div class="col-sm-4  text-right">
                     {% if videos %}
-                        <div class="results">{{ video_count }} {% trans 'videos' %}</div>
+                        <div class="results">{{ videos.paginator.count }} {% trans 'videos' %}</div>
                     {% endif %}
                     {% if channel.themes.all %}
                         <div class="resultstheme">{{ channel.themes.all.count }} {% trans 'Themes' %}</div>
