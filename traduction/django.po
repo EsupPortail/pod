@@ -1807,6 +1807,7 @@ msgid "videos"
 msgstr "vidéos"
 
 #: pods/templates/maintoolbar.html:46
+#: pods/templates/owners/owners.html:66
 #, python-format
 msgid "%(counter)s video"
 msgid_plural "%(counter)s videos"
@@ -1916,8 +1917,11 @@ msgid "Owners"
 msgstr "Propriétaires"
 
 #: pods/templates/owners/owners.html:63
-msgid "owners"
-msgstr "propriétaires"
+#, python-format
+msgid "%(counter)s owner"
+msgid_plural "%(counter)s owners"
+msgstr[0] "%(counter)s propriétaire"
+msgstr[1] "%(counter)s propriétaires"
 
 #: pods/templates/pagination.html:40
 msgid "Show all"
