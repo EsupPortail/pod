@@ -220,7 +220,6 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
         {% if form %}
             <legend>{% trans 'Password requiered' %}</legend>
             <p>{% trans 'This video is protected by password, please fill in below: ' %}</p>
-            {% if request.user.is_authenticated %}
              <form method="post" action="{{ request.get_full_path }}" id="video_password_form">
                 {% csrf_token %}
                 <fieldset>
@@ -241,23 +240,17 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
             <p>{% trans 'If you do not have the password or if you have connection problems, contact us :' %}</p>
              <form method="post" action="{% url 'video_add_additional_information' slug=video.slug %}" style="display:inline-block;">
                 {% csrf_token %}
-                <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Contact us.' %}">
+                <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Contact us' %}">
                     <span id="mark-as-contact"  class="glyphicon glyphicon-envelope"></span>
                     <span>{% trans '&nbsp;Contact us' %}</span>
-                    <span class="sr-only">{% trans 'Contact us.' %}</span>
-                    <noscript>
-                        <input class="required form-control" id="id_subject" maxlength="100" name="subject" placeholder="Subject" required="required" type="text">
-                        <textarea rows="5" name="comment" ></textarea>
-                        <input type="submit" value="{% trans 'Send' %}" />
-                    </noscript>
+                    <span class="sr-only">{% trans 'Contact us' %}</span>
                 </button>
+                <noscript>
+                    <input class="required form-control" id="id_subject" maxlength="100" name="subject_ask" placeholder="Subject" required="required" type="text">
+                    <textarea rows="5" name="comment" ></textarea>
+                    <input type="submit" value="{% trans 'Send' %}" />
+                </noscript>
             </form> 
-            {% else %}
-             <button class="btn btn-link" id="button_video_report">
-                <span class="glyphicon glyphicon-flag"></span>
-                <span class="sr-only">{% trans 'You must be logged in to report inappropriate content.' %}</span>
-            </button>
-            {% endif %}
 
            
         {% else %}
@@ -314,32 +307,55 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                             <span id="mark-as-report" class="glyphicon glyphicon-flag"></span>
                                             <span>{% trans '&nbsp;Report this video' %}</span>
                                             <span class="sr-only">{% trans 'Report this video.' %}</span>
-                                        </button>
-                                    <noscript>
-                                        <textarea rows="5" name="comment" ></textarea>
-                                        <input type="submit" value="{% trans 'Send' %}" />
-                                    </noscript>
+                                        </button>                                   
                                 </form>
                                 {%endif%}
                                 {%endif%}
                                 </li>
                                 <li>
-                                <form method="post" action="{% url 'video_add_additional_information' slug=video.slug %}" style="display:inline-block;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Other requests about the video' %}">
-                                        <span id="mark-as-contact" class="glyphicon glyphicon-envelope"></span>
-                                        <span>{% trans '&nbsp;&nbsp;Other requests&nbsp;&nbsp;' %}</span>
-                                        <span class="sr-only">{% trans 'Other requests about the video.' %}</span>
-                                        <noscript>
-                                            <input class="required form-control" id="id_subject" maxlength="100" name="subject" placeholder="Subject" required="required" type="text">
-                                            <textarea rows="5" name="comment" ></textarea>
-                                            <input type="reset" value= "{% trans 'Cancel' %}" />
-                                            <input type="submit" value="{% trans 'Send' %}" />
-                                        </noscript>
-                                    </button>
-                                </form>
+                                    <form method="post" action="{% url 'video_add_additional_information' slug=video.slug %}" style="display:inline-block;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Other requests about the video' %}">
+                                            <span id="mark-as-contact" class="glyphicon glyphicon-envelope"></span>
+                                            <span>{% trans '&nbsp;&nbsp;Other requests&nbsp;&nbsp;' %}</span>
+                                            <span class="sr-only">{% trans 'Other requests about the video.' %}</span>
+                                            <noscript>
+                                                <input class="required form-control" id="id_subject" maxlength="100" name="subject" placeholder="Subject" required="required" type="text">
+                                                <textarea rows="5" name="comment" ></textarea>
+                                                <input type="reset" value= "{% trans 'Cancel' %}" />
+                                                <input type="submit" value="{% trans 'Send' %}" />
+                                            </noscript>
+                                        </button>
+                                    </form>
                                 </li>
-                              </ul>
+                            </ul>
+                            <noscript>
+                                {% if show_report %}
+                                {% if video.id in request.user.reportvideo_set.all|only_video %}
+                                
+                                <span class="sr-only">{% trans 'You have already reported this video.' %}</span>
+                                {% else %}
+                                    <form method="post" action="{% url 'video_add_report' slug=video.slug %}" style="display:inline-block;">
+                                         {% csrf_token %}
+                                        <span>{% trans '&nbsp;Report this video' %}</span>
+                                        <textarea rows="5" name="comment" ></textarea>
+                                        <input type="submit" value="{% trans 'Send' %}" />
+                                    </form>
+                                
+                                {%endif%}
+                                {%endif%}
+                                <span>{% trans '&nbsp;&nbsp;Other requests&nbsp;&nbsp;' %}</span>
+                                <span class="sr-only">{% trans 'Other requests about the video.' %}</span>
+                                    <form method="post" action="{% url 'video_add_additional_information' slug=video.slug %}" style="display:inline-block;">
+                                         {% csrf_token %}
+                                        <input class="required form-control" id="id_subject" maxlength="100" name="subject_ask" placeholder="Subject" required="required" type="text">
+                                        <textarea rows="5" name="comment" ></textarea>
+                                        <input type="reset" value= "{% trans 'Cancel' %}" />
+                                        <input type="submit" value="{% trans 'Send' %}" />
+                                    </form>
+                            </noscript>
+
+
                             </div>
                         {% else %}
                             <button class="btn btn-link" id="button_video_favorite">
@@ -352,10 +368,20 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 <span class="sr-only">{% trans 'You must be logged in to report inappropriate content.' %}</span>
                             </button>
                             {% endif %}
-                            <button class="btn btn-link" id="button_video_contact">
-                                <span class="glyphicon glyphicon-envelope"></span>
-                                <span class="sr-only">{% trans 'You must be logged in to contact us.' %}</span>
-                            </button>
+                            <form method="post" action="{% url 'video_add_additional_information' slug=video.slug %}" style="display:inline-block;">
+                                {% csrf_token %}
+                                <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Other requests about the video' %}">
+                                    <span id="mark-as-contact" class="glyphicon glyphicon-envelope"></span>
+                                    <span>{% trans '&nbsp;&nbsp;Other requests&nbsp;&nbsp;' %}</span>
+                                </button>
+                                <noscript>
+                                    <span class="sr-only">{% trans 'Other requests about the video.' %}</span>
+                                    <input class="required form-control" id="id_subject" maxlength="100" name="subject_ask" placeholder="Subject" required="required" type="text">
+                                    <textarea rows="5" name="comment" ></textarea>
+                                    <input type="reset" value= "{% trans 'Cancel' %}" />
+                                    <input type="submit" value="{% trans 'Send' %}" />
+                                </noscript>
+                            </form>
                         {% endif %}
                     </small>
                 </h3><!-- end h3 title -->

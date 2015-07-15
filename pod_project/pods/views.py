@@ -597,7 +597,7 @@ def video_add_report(request, slug):
             request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
 
-@login_required
+
 @csrf_protect
 def video_add_additional_information(request, slug):
     video = get_object_or_404(Pod, slug=slug)
@@ -650,13 +650,15 @@ def video_add_additional_information(request, slug):
                 return HttpResponse(data, content_type='application/json')
 
             messages.add_message(request, messages.INFO, msg)
+            print "post and not ajax"
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
         else:
             messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form.'))
+                    request, messages.ERROR, _(u'Error in the form. Please enter a subject from 2 to 100 characters. '))
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
 
     else:
+        print "else de fin"
         messages.add_message(
             request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
