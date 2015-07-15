@@ -462,14 +462,45 @@ class ContributorPods(models.Model):
         ("soundman", _("soundman")),
         ("technician", _("technician"))
     )
-    role = models.CharField(_(u'role'), max_length=200, null=True,
-                            blank=True, choices=ROLE_CHOICES, default=_("authors"))
+    role = models.CharField(_(u'role'), max_length=200, choices=ROLE_CHOICES, default=_("authors"))
     weblink = models.URLField(
         _(u'Web link'), max_length=200, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Contributor Pod")
         verbose_name_plural = _("Contributors Pod")
+
+    def clean(self):
+        # Don't allow draft entries to have a pub_date.
+        msg = []
+        msg = self.verify_attributs() + self.verify_not_same_contributor()
+        if(len(msg) > 0):
+            raise ValidationError(msg)
+
+    def verify_attributs(self):
+        msg = []
+        if not self.name  or self.name == "" or len(self.name) < 2 or len(self.name) > 200:
+            msg.append(_('please enter a name from 2 to 200 caracteres.'))
+        if len(self.weblink)> 200:
+            msg.append(_('you cannot enter a weblink with more than 200 caracteres.'))
+        if not self.role:
+            msg.append(_('please enter a role.'))
+        if (len(msg) > 0):
+            return msg
+        else:
+            return []
+
+    def verify_not_same_contributor(self):
+        msg = []
+        list_contributorpods = ContributorPods.objects.filter(video=self.video)
+        if self.id != None:
+            list_contributorpods = list_contributorpods.exclude(id=self.id)
+        if len(list_contributorpods) > 0:
+            for element in list_contributorpods:
+                if self.name == element.name and self.role == element.role:
+                    msg.append(_("there is already a contributor with the same name and role in the list."))
+                    return msg        
+        return []
 
     def __unicode__(self):
         return u"Video:%s - Name:%s - Role:%s" % (self.video, self.name, self.role)
@@ -504,6 +535,37 @@ class TrackPods(models.Model):
         verbose_name = _("Track Pod")
         verbose_name_plural = _("Tracks Pod")
 
+    def clean(self):
+        # Don't allow draft entries to have a pub_date.
+        msg = []
+        msg = self.verify_attributs() + self.verify_not_same_trackpod()
+        if(len(msg) > 0):
+            raise ValidationError(msg)
+
+    def verify_attributs(self):
+        msg = []
+        if not self.kind or (self.kind != "subtitles" and self.kind != "captions"):
+            msg.append(_('please enter a correct kind.'))
+        if not self.lang or (self.lang in settings.PREF_LANG_CHOICES or self.lang in settings.ALL_LANG_CHOICES):
+            msg.append(_('please enter a correct lang.'))
+        if (len(msg) > 0):
+            return msg
+        else:
+            return []
+
+    def verify_not_same_trackpod(self):
+        msg = []
+        list_trackpods = TrackPods.objects.filter(video=self.video)
+        if self.id != None:
+            list_trackpods = list_trackpods.exclude(id=self.id)
+        if len(list_trackpods) > 0:
+            for element in list_trackpods:
+                if self.kind == element.kind and self.lang == element.lang:
+                    msg.append(_("there is already a subtitle with the same kind and language in the list."))
+                    return msg        
+        return []
+
+
     def __unicode__(self):
         return u"%s - File: %s - Video: %s" % (self.kind, self.src, self.video)
 
@@ -525,6 +587,34 @@ class DocPods(models.Model):
 
     def __str__(self):
         return u"Document: %s - video: %s" % (self.document, self.video)
+    def clean(self):
+        msg = []
+        msg = self.verify_document() + self.verify_not_same_document()
+        if(len(msg) > 0):
+            raise ValidationError(msg)
+
+    def verify_document(self):
+        msg = []
+        if not self.document:
+            msg.append(_('please enter a document '))
+
+        if (len(msg) > 0):
+            return msg
+        else:
+            return []
+
+    def verify_not_same_document(self):
+        msg = []
+        list_docpods = DocPods.objects.filter(video=self.video)
+        if self.id != None:
+            list_docpods = list_docpods.exclude(id=self.id)
+        if len(list_docpods) > 0:
+            for element in list_docpods:
+                if self.document == element.document:
+                    msg.append(_("this document is already contained in the list."))
+            if len(msg) > 0:
+                return msg
+        return []
 
     def icon(self):
         return self.document.name.split('.')[-1]
@@ -599,7 +689,6 @@ class EnrichPods(models.Model):
         if (not self.end or (self.end == "") or (self.end <= 0) or (self.end > self.video.duration)):
             msg.append(_('Please enter a correct end field between 1 and %(duration)s.') % {
                        "duration": self.video.duration})
-
         if (self.type == "image"):
             if(not self.image):
                 msg.append(_('Please enter a correct image.'))
@@ -621,6 +710,7 @@ class EnrichPods(models.Model):
                 msg.append(_('Please enter a correct embed.'))
         else:
             msg.append(_('Please enter a type in index field.'))
+
 
         if (len(msg) > 0):
             return msg
