@@ -26,84 +26,119 @@ voir http://www.gnu.org/licenses/
 
 {% block bootstrap3_extra_head %}
     <script src="{% static 'video-js/video.js' %}"></script>
+    <script type='text/javascript' src='http://www.google.com/recaptcha/api/js/recaptcha_ajax.js'></script>
     {% include 'videos/extraheadplayer.html' %}
 
 <style>
 .form-help-inline, .special_class {color:red;}
 </style>
 <script>
-     $(document).on('submit', 'form#video_contact_form', function (event) {
-        var button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
-        $('form').show();
-        $(".form-help-inline").parents('div.form-group').removeClass("has-error");
-        $(".form-help-inline").remove();
-        event.preventDefault();
-        if(expiration_date_second > 5) {
+ $(document).on('submit', 'form#video_contact_form', function (event) {
+    var button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+    $('form').show();
+    $(".form-help-inline").parents('div.form-group').removeClass("has-error");
+    $(".form-help-inline").remove();
+    event.preventDefault();
+    if(expiration_date_second > 5) {
+        verify_fields();
+        if (!($("span").hasClass("form-help-inline"))){
             var subject_ask = $(this).find('#id_subject').val();
-            if (document.getElementById("id_subject").value == "" || document.getElementById("id_subject").value.length < 2 || document.getElementById("id_subject").value.length > 100) {
-                $("input#id_subject")
-                    .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a subject from 2 to 100 characters.' %} </span>")
-                    .parents('div.form-group').addClass('has-error');
-            }
             var comment = $(this).find('#commentcontact').val();
-            if (!($("span").hasClass("form-help-inline"))){
-                var jqxhr = $.post( $(this).attr("action"), {"comment":comment, "subject_ask":subject_ask});
-                jqxhr.done(function(data){
-                    if(data.msg) {
-                        show_messages(data.msg+button, false, 'alert-info');
-                    } else {
-                        show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'alert-danger');
-                    }
-                });
-                jqxhr.fail(function($xhr) {
-                    var data = $xhr.status+ " : " +$xhr.statusText;
-                    show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}"+button, false, 'alert-danger');
-                });
-            $('#modal_contact_form').modal('hide');
-            $("#video_contact_form")[0].reset();  
+            /** if is not authenticated **/
+            if($(this).find('#id_lastname')){
+                var lastname = $(this).find('#id_lastname').val();
+                var firstname = $(this).find('#id_firstname').val();
+                var mail = $(this).find('#id_mail').val();
+                var recaptcha_challenge_field = $(this).find('#recaptcha_challenge_field').val();
+                var recaptcha_response_field = $(this).find('#recaptcha_response_field').val();
+                var jqxhr = $.post( $(this).attr("action"), {"comment":comment, "subject_ask":subject_ask, "lastname":lastname, "firstname":firstname, "mail":mail,"recaptcha_challenge_field":recaptcha_challenge_field, "recaptcha_response_field":recaptcha_response_field });
+            /** end if **/
             }else{
-                show_messages("{% trans 'Error found in the form, please correct it.' %}"+button, false, 'alert-danger');
+                var jqxhr = $.post( $(this).attr("action"), {"comment":comment, "subject_ask":subject_ask});
             }
-            $('form#video_contact_form').show();
-            
-        } else {
-            alert(expiredsession);
-            location.reload();
-        }
-        return false;
-    });
-
-    $(document).on('submit', 'form#video_report_form', function (event) {
-        $('form').show();
-        $('form#video_report_form').hide();
-        event.preventDefault();
-        if(expiration_date_second > 5) {
-            var comment = $(this).find('#commentreport').val();
-            var jqxhr = $.post( $(this).attr("action"), {"comment":comment });
             jqxhr.done(function(data){
                 if(data.msg) {
-                    button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
                     show_messages(data.msg+button, false, 'alert-info');
-                    $("#button_video_report").attr('disabled','disabled');
-                    $("#mark-as-report").attr('style','color: #ee7d19');
-                } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'alert-danger');
+                    $('#modal_contact_form').modal('hide');
+                    $("#video_contact_form")[0].reset(); 
+                } else if (data.errors) {
+                    show_messages(data.errors+button, false, 'alert-danger');
                 }
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
                 show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}"+button, false, 'alert-danger');
             });
-            $('form#video_report_form').show();
-            $('#modal_report_form').modal('hide');
-            $(this).find('#commentreport').val("");
-        } else {
-            alert(expiredsession);
-            location.reload();
+         
+        }else{
+            show_messages("{% trans 'Error found in the form, please correct it.' %}"+button, false, 'alert-danger');
         }
-        return false;
-    });
+        $('form#video_contact_form').show();
+        
+    } else {
+        alert(expiredsession);
+        location.reload();
+    }
+    return false;
+});
+
+function verify_fields(){
+    if (document.getElementById("id_subject").value == "" || document.getElementById("id_subject").value.length < 2 || document.getElementById("id_subject").value.length > 100) {
+            $("input#id_subject")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a subject from 2 to 100 characters.' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+    }
+    if(document.getElementById("id_lastname")){        
+        if (document.getElementById("id_lastname").value == "" || document.getElementById("id_lastname").value.length < 2 || document.getElementById("id_lastname").value.length > 200) {
+            $("input#id_lastname")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct lastname.' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+        }
+        if (document.getElementById("id_firstname").value == "" || document.getElementById("id_firstname").value.length < 2 || document.getElementById("id_firstname").value.length > 200) {
+            $("input#id_firstname")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct firstname.' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+        }
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (document.getElementById("id_mail").value == "" || document.getElementById("id_mail").value.length < 2 || document.getElementById("id_mail").value.length > 75 || !emailReg.test(document.getElementById("id_mail").value)) {
+            $("input#id_mail")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct mail.' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+        }
+    }
+}
+
+$(document).on('submit', 'form#video_report_form', function (event) {
+    $('form').show();
+    $('form#video_report_form').hide();
+    event.preventDefault();
+    if(expiration_date_second > 5) {
+        var comment = $(this).find('#commentreport').val();
+        var jqxhr = $.post( $(this).attr("action"), {"comment":comment });
+        jqxhr.done(function(data){
+            if(data.msg) {
+                button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+                show_messages(data.msg+button, false, 'alert-info');
+                $("#button_video_report").attr('disabled','disabled');
+                $("#mark-as-report").attr('style','color: #ee7d19');
+            } else {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'alert-danger');
+            }
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+            show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}"+button, false, 'alert-danger');
+        });
+        $('form#video_report_form').show();
+        $('#modal_report_form').modal('hide');
+        $(this).find('#commentreport').val("");
+    } else {
+        alert(expiredsession);
+        location.reload();
+    }
+    return false;
+});
 
 $(document).on('click', 'button#button_video_favorite', function (event) {
     event.preventDefault();
@@ -228,7 +263,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                         {% if request.META.HTTP_REFERER %}
                             <a href="{{request.META.HTTP_REFERER}}" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Back" %}</a>
                             {% else %}
-                            <a href="/" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Home" %}</a>
+                            <a href="/" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Back" %}</a>
                         {% endif %}
                         <button type="submit" class="btn btn-success" value="{% trans 'Send' %}" name="action1">
                             {% bootstrap_icon 'save' %} {% trans 'Send' %}
@@ -242,12 +277,20 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                 {% csrf_token %}
                 <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Contact us' %}">
                     <span id="mark-as-contact"  class="glyphicon glyphicon-envelope"></span>
-                    <span>{% trans '&nbsp;Contact us' %}</span>
+                    <span>&nbsp;{% trans 'Contact us' %}</span>
                     <span class="sr-only">{% trans 'Contact us' %}</span>
                 </button>
                 <noscript>
+                    {% if not request.user.is_authenticated %}
+                        <input class="required form-control" id="id_lastname" maxlength="200" name="lastname" placeholder="{% trans 'Lastname' %}" required="required" type="text">
+                        <input class="required form-control" id="id_firstname" maxlength="200" name="firstname" placeholder="{% trans 'Firstname' %}" required="required" type="text">
+                        <input class="required form-control" id="id_mail" maxlength="75" name="mail" placeholder="{% trans 'Mail' %}" required="required" type="email">
+                        <iframe src="http://www.google.com/recaptcha/api/noscript?k=6Lc_0cwSAAAAANJABWJ3p4_V0xfpPVYheLaG8wYm" frameborder="1"></iframe>
+                        <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea> 
+                        <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
+                    {% endif %}
                     <input class="required form-control" id="id_subject" maxlength="100" name="subject_ask" placeholder="Subject" required="required" type="text">
-                    <textarea rows="5" name="comment" ></textarea>
+                    <textarea rows="5" name="comment" placeholder="{% trans 'Comment' %}" ></textarea>
                     <input type="submit" value="{% trans 'Send' %}" />
                 </noscript>
             </form> 
@@ -274,13 +317,13 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 <!-- if marked as fav, display #fav. Else #mark-as-fav -->
                                 {% if video.id in request.user.favorites_set.all|only_video %}
                                     <button type="submit" class="btn btn-default" id="button_video_favorite" title="{% trans 'favorite' %}">
-                                        <span id="fav" class="glyphicon glyphicon-star"></span>
+                                        <span id="fav" class="glyphicon glyphicon-star"></span>&nbsp;{% trans 'favorite' %}
                                         <span class="sr-only">{% trans 'favorite' %}</span>
                                     </button>
                                 {% else %}
                                     <button type="submit" class="btn btn-default" id="button_video_favorite" title="{% trans 'Add to your favorites videos.' %}">
-                                        <span id="mark-as-fav" class="glyphicon glyphicon-star"></span>
-                                        <span class="sr-only">{% trans 'Add to your favorites videos.' %}</span>
+                                        <span id="mark-as-fav" class="glyphicon glyphicon-star"></span>&nbsp;{% trans 'favorite' %}
+                                        <span class="sr-only">{% trans 'Add to your favorites videos' %}</span>
                                     </button>
                                 {% endif %}
                                 <noscript>
@@ -288,24 +331,23 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 </noscript>
                             </form>
                             <div class="dropdown" style="display:inline-block;">
-                              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"  data-toggle="dropdown" title="{% trans 'Report this video or other requests' %}" >{% trans 'more' %}
-                                <span class="caret"></span>
+                              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"  data-toggle="dropdown" title="{% trans 'Report this video or other requests' %}" ><i class="fa fa-ellipsis-h fa-lg"></i>&nbsp;&nbsp;{% trans 'more' %}
                               </button>
-                              <ul class="dropdown-menu" style="padding:2px" aria-labelledby="dropdownMenu1">
+                              <ul class="dropdown-menu" style="padding:2px;min-width:0px;" aria-labelledby="dropdownMenu1">
                                 <li>
                                 {% if show_report %}
                                 {% if video.id in request.user.reportvideo_set.all|only_video %}
-                                    <button type="submit" class="btn btn-default" id="button_video_report" title="{% trans 'You have already reported this video.' %}" disabled>
+                                    <button type="submit" class="btn btn-default" id="button_video_report" style="border-color:#FFF;" title="{% trans 'You have already reported this video.' %}" disabled>
                                         <span id="mark-as-report" class="glyphicon glyphicon-flag" style="color: #ee7d19"></span>
-                                        <span style="color: #ee7d19">{% trans '&nbsp;Report this video' %}</span>
+                                        <span style="color: #ee7d19">&nbsp;{% trans 'report this video' %}</span>
                                         <span class="sr-only">{% trans 'You have already reported this video.' %}</span>
                                     </button>
                                 {% else %}
                                 <form method="post" action="{% url 'video_add_report' slug=video.slug %}" style="display:inline-block;">
                                     {% csrf_token %}
-                                        <button type="submit" class="btn btn-default" id="button_video_report" title="{% trans 'Report this video' %}" >
+                                        <button type="submit" class="btn btn-default" id="button_video_report" style="border-color:#FFF;" title="{% trans 'Report this video' %}" >
                                             <span id="mark-as-report" class="glyphicon glyphicon-flag"></span>
-                                            <span>{% trans '&nbsp;Report this video' %}</span>
+                                            <span>&nbsp;{% trans 'report this video' %}</span>
                                             <span class="sr-only">{% trans 'Report this video.' %}</span>
                                         </button>                                   
                                 </form>
@@ -315,13 +357,13 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 <li>
                                     <form method="post" action="{% url 'video_add_additional_information' slug=video.slug %}" style="display:inline-block;">
                                         {% csrf_token %}
-                                        <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Other requests about the video' %}">
+                                        <button type="submit" class="button_video_contact btn btn-default" style="border-color:#FFF;" title="{% trans 'Other requests about the video' %}">
                                             <span id="mark-as-contact" class="glyphicon glyphicon-envelope"></span>
-                                            <span>{% trans '&nbsp;&nbsp;Other requests&nbsp;&nbsp;' %}</span>
-                                            <span class="sr-only">{% trans 'Other requests about the video.' %}</span>
+                                            <span>&nbsp;&nbsp;{% trans 'other requests' %}&nbsp;&nbsp;</span>
+                                            <span class="sr-only">{% trans 'other requests about the video.' %}</span>
                                             <noscript>
-                                                <input class="required form-control" id="id_subject" maxlength="100" name="subject" placeholder="Subject" required="required" type="text">
-                                                <textarea rows="5" name="comment" ></textarea>
+                                                <input class="required form-control" id="id_subject" maxlength="100" name="subject" placeholder="{% trans 'Subject' %}" required="required" type="text">
+                                                <textarea rows="5" name="comment" placeholder="{% trans 'Comment' %}"></textarea>
                                                 <input type="reset" value= "{% trans 'Cancel' %}" />
                                                 <input type="submit" value="{% trans 'Send' %}" />
                                             </noscript>
@@ -337,19 +379,19 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 {% else %}
                                     <form method="post" action="{% url 'video_add_report' slug=video.slug %}" style="display:inline-block;">
                                          {% csrf_token %}
-                                        <span>{% trans '&nbsp;Report this video' %}</span>
+                                        <span>&nbsp;{% trans 'report this video' %}</span>
                                         <textarea rows="5" name="comment" ></textarea>
                                         <input type="submit" value="{% trans 'Send' %}" />
                                     </form>
                                 
                                 {%endif%}
                                 {%endif%}
-                                <span>{% trans '&nbsp;&nbsp;Other requests&nbsp;&nbsp;' %}</span>
-                                <span class="sr-only">{% trans 'Other requests about the video.' %}</span>
+                                <span>&nbsp;&nbsp;{% trans 'other requests' %}&nbsp;&nbsp;</span>
+                                <span class="sr-only">{% trans 'other requests about the video.' %}</span>
                                     <form method="post" action="{% url 'video_add_additional_information' slug=video.slug %}" style="display:inline-block;">
-                                         {% csrf_token %}
-                                        <input class="required form-control" id="id_subject" maxlength="100" name="subject_ask" placeholder="Subject" required="required" type="text">
-                                        <textarea rows="5" name="comment" ></textarea>
+                                        {% csrf_token %}   
+                                        <input class="required form-control" id="id_subject" maxlength="100" name="subject_ask" placeholder="{% trans 'Subject' %}" required="required" type="text">
+                                        <textarea rows="5" name="comment" placeholder=""{% trans 'Comment' %}""></textarea>
                                         <input type="reset" value= "{% trans 'Cancel' %}" />
                                         <input type="submit" value="{% trans 'Send' %}" />
                                     </form>
@@ -372,12 +414,18 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 {% csrf_token %}
                                 <button type="submit" class="button_video_contact btn btn-default" title="{% trans 'Other requests about the video' %}">
                                     <span id="mark-as-contact" class="glyphicon glyphicon-envelope"></span>
-                                    <span>{% trans '&nbsp;&nbsp;Other requests&nbsp;&nbsp;' %}</span>
+                                    <span>&nbsp;&nbsp;{% trans 'other requests' %}&nbsp;&nbsp;</span>
                                 </button>
                                 <noscript>
-                                    <span class="sr-only">{% trans 'Other requests about the video.' %}</span>
-                                    <input class="required form-control" id="id_subject" maxlength="100" name="subject_ask" placeholder="Subject" required="required" type="text">
-                                    <textarea rows="5" name="comment" ></textarea>
+                                    <span class="sr-only">{% trans 'other requests about the video.' %}</span>
+                                    <input class="required form-control" id="id_lastname" maxlength="200" name="lastname" placeholder="{% trans 'Lastname' %}" required="required" type="text">
+                                    <input class="required form-control" id="id_firstname" maxlength="200" name="firstname" placeholder="{% trans 'Firstname' %}" required="required" type="text">
+                                    <input class="required form-control" id="id_mail" maxlength="75" name="mail" placeholder="{% trans 'Mail' %}" required="required" type="email">
+                                    <input class="required form-control" id="id_subject" maxlength="100" name="subject_ask" placeholder="{% trans 'Subject' %}" required="required" type="text">
+                                    <textarea rows="5" name="comment" placeholder="{% trans 'Comment' %}" ></textarea>
+                                    <iframe src="http://www.google.com/recaptcha/api/noscript?k=6Lc_0cwSAAAAANJABWJ3p4_V0xfpPVYheLaG8wYm" frameborder="1"></iframe>
+                                    <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea> 
+                                    <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
                                     <input type="reset" value= "{% trans 'Cancel' %}" />
                                     <input type="submit" value="{% trans 'Send' %}" />
                                 </noscript>
@@ -647,15 +695,32 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                     <form method="post" action="{% url 'video_add_additional_information' slug=video.slug %}" id="video_contact_form">
                     {% csrf_token %}
                     <div class="modal-body" >
+                        {% if not request.user.is_authenticated %}
                         <div class="form-group">
-                            <label for="id_subject">{% trans 'Subject: * '%}
-                            <input class="required form-control" id="id_subject" maxlength="100" name="subject" placeholder="subject" required="required" type="text">
+                            <label for="id_lastname">{% trans 'Lastname: * '%}</label>
+                            <input class="required form-control" id="id_lastname" maxlength="200" name="lastname" style="width:40%;" placeholder="{% trans 'Lastname' %}" required="required" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_firstname">{% trans 'Firstname: * '%}</label>
+                            <input class="required form-control" id="id_firstname" maxlength="200" name="firstname" style="width:40%;" placeholder="{% trans 'Firstname' %}" required="required" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_mail">{% trans 'Mail: * '%}</label>
+                            <input class="required form-control" id="id_mail" maxlength="75" name="mail" style="width:40%;" placeholder="{% trans 'Mail' %}" required="required" type="email">
+                        </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label for="id_subject">{% trans 'Subject: * '%}</label>
+                            <input class="required form-control" id="id_subject" maxlength="100" name="subject" style="width:50%;" placeholder="{% trans 'Subject' %}" required="required" type="text">
                         </div>
                         <div class="form-group">
                             <label for="commentcontact">{% trans 'Please, specify the content:' %}</label><br/>
-                            <textarea rows="5" name="comment" id="commentcontact" class="form-control" placeholder="message"></textarea>
-                        </div>
-                    </div>
+                            <textarea rows="5" name="comment" id="commentcontact" class="form-control" placeholder="{% trans 'Message' %}"></textarea>
+                        </div> 
+                        {% if not request.user.is_authenticated %}
+                        <script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=6Lc_0cwSAAAAANJABWJ3p4_V0xfpPVYheLaG8wYm"></script>
+                        
+                        {% endif %}
                     <div class="modal-footer">
                             <button  id ="button_reset" type="reset" class="btn btn-default" data-dismiss="modal">{% trans 'Cancel' %} </button>
                             <button type="submit" class="btn btn-default" >{% trans 'Send' %}</button>

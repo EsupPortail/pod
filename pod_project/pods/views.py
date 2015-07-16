@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os
 import hashlib
+import captcha.client
 from string import find
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
@@ -597,14 +598,56 @@ def video_add_report(request, slug):
             request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
 
+def verify_fields_additional_information(request):
+    msg_errors=[]
+    print request
+    if request.POST['subject_ask'] == "" or len(request.POST['subject_ask'])>100 or len(request.POST['subject_ask'])<=1:
+        msg_errors.append(_('please enter a subject from 2 to 100 characters'))
+    if not request.user.is_authenticated():
+        if request.POST['firstname'] == "" or len(request.POST['firstname'])>200 or len(request.POST['firstname'])<=1:
+            msg_errors.append(_('please enter a firstname from 2 to 200 characters'))
+        if request.POST['lastname'] == "" or len(request.POST['lastname'])>200 or len(request.POST['lastname'])<=1:
+            msg_errors.append(_('please enter a lastname from 2 to 200 characters'))
+        if request.POST['mail'] == "" or len(request.POST['mail'])>75: 
+            msg_errors.append(_('please enter a mail from 2 to 75 characters'))
+    return msg_errors
 
 @csrf_protect
 def video_add_additional_information(request, slug):
     video = get_object_or_404(Pod, slug=slug)
-    if request.POST:
-        if request.POST['subject_ask'] != ""  and len(request.POST['subject_ask'])<100 and len(request.POST['subject_ask'])>1:
+    if request.POST: 
+        print request.POST
+        msg_errors = verify_fields_additional_information(request)
+        if  len(msg_errors) == 0:
+            if request.user.is_authenticated():
+                user_firstname = request.user.first_name
+                user_lastname = request.user.last_name
+                user_email = request.user.email
+            else:
+                recaptcha_response = captcha.client.submit(  
+                    request.POST.get('recaptcha_challenge_field'),  
+                    request.POST.get('recaptcha_response_field'),  
+                    settings.RECAPTCHA_PRIVATE_KEY,  
+                    request.META['REMOTE_ADDR'],)
+                if recaptcha_response.is_valid:
+                    print "captcha valid"
+                    user_firstname = request.POST['firstname']
+                    user_lastname = request.POST['lastname']
+                    user_email = request.POST['mail']
+                else:
+                    if request.is_ajax():
+                        msg = _(u'Error in the form. The captcha is uncorrect. ')
+                        some_data_to_dump = {'errors': "%s" % msg}
+                        data = json.dumps(some_data_to_dump)
+                        return HttpResponse(data, content_type='application/json')
+                    else:
+                        print "error captcha"
+                        messages.add_message(
+                        request, messages.ERROR, _(u'Error in the form. The captcha is uncorrect. '))
+                        return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
+
             additionrequest = AdditionRequestVideo.objects.create(
-                user=request.user, video=video, subject='%s' % request.POST['subject_ask'], comment= '%s' % request.POST['comment'])
+                video=video, subject='%s' % request.POST['subject_ask'], comment= '%s' % request.POST['comment'])
             subject = _(u'Additional information request.')
 
             msg = _(u'The user %(user_firstname)s %(user_lastname)s <%(user_email)s> has been send a additional information request.\n'
@@ -617,8 +660,8 @@ def video_add_additional_information(request, slug):
                     'url: %(url)s.\n'
                     'Video posted by: %(owner_firstname)s %(owner_lastname)s <%(owner_email)s>.\n'
                     'Video added on: %(video_date_added)s.\n') % {
-                        'video_title': video.title, 'user_firstname': request.user.first_name, 'user_lastname': request.user.last_name,
-                        'user_email': request.user.email, 'comment': request.POST['comment'], 'subject_ask': request.POST['subject_ask'], 'description': video.description,
+                        'video_title': video.title, 'user_firstname': user_firstname, 'user_lastname': user_lastname,
+                        'user_email': user_email, 'comment': request.POST['comment'], 'subject_ask': request.POST['subject_ask'], 'description': video.description,
                         'url': ''.join(['http://', get_current_site(request).domain, video.get_absolute_url()]),
                         'owner_firstname': video.owner.first_name, 'owner_lastname': video.owner.last_name, 'owner_email': video.owner.email,
                         'video_date_added': video.date_added}
@@ -633,8 +676,8 @@ def video_add_additional_information(request, slug):
                          'url: <a href=\"%(url)s\">%(url)s</a><br/>'
                          'Video posted by: %(owner_firstname)s %(owner_lastname)s &lt;<a href=\"mailto:%(owner_email)s\">%(owner_email)s&gt;</a>.<br/>'
                          'Video added on: %(video_date_added)s.</p>') % {
-                'video_title': video.title, 'user_firstname': request.user.first_name, 'user_lastname': request.user.last_name,
-                'user_email': request.user.email, 'comment': request.POST['comment'].replace("\n", "<br/>"), 'subject_ask': request.POST['subject_ask'], 'description': video.description,
+                'video_title': video.title, 'user_firstname': user_firstname, 'user_lastname': user_lastname,
+                'user_email': user_email, 'comment': request.POST['comment'].replace("\n", "<br/>"), 'subject_ask': request.POST['subject_ask'], 'description': video.description,
                 'url': ''.join(['http://', get_current_site(request).domain, video.get_absolute_url()]),
                 'owner_firstname': video.owner.first_name, 'owner_lastname': video.owner.last_name, 'owner_email': video.owner.email,
                 'video_date_added': video.date_added}
@@ -653,8 +696,9 @@ def video_add_additional_information(request, slug):
             print "post and not ajax"
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
         else:
+            list_errors =  ", ".join(unicode(x) for x in msg_errors)
             messages.add_message(
-                    request, messages.ERROR, _(u'Error in the form. Please enter a subject from 2 to 100 characters. '))
+                    request, messages.ERROR, _(u'Errors in form: ') +  list_errors + '.')
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
 
     else:
@@ -923,7 +967,7 @@ def video_chapter(request, slug):
                                                   'form_chapter': form_chapter},
                                               context_instance=RequestContext(request))
         # end save
-        # modify
+        # modify 
         if request.POST.get("action") and request.POST['action'] == 'modify':
             chapter = get_object_or_404(ChapterPods, id=request.POST['id'])
             form_chapter = ChapterPodsForm(instance=chapter)

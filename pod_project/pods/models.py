@@ -902,7 +902,6 @@ class ReportVideo(models.Model):
 @python_2_unicode_compatible
 class AdditionRequestVideo(models.Model):
     video = models.ForeignKey(Pod, verbose_name=_('Video'))
-    user = models.ForeignKey(User, verbose_name=_('User'))
     subject = models.TextField(max_length=100, verbose_name=_('Subject'))
     comment = models.TextField(
         null=True, blank=True, verbose_name=_('Comment'))
