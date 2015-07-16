@@ -35,6 +35,7 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 from django.contrib.sites.models import get_current_site
+from elasticsearch import Elasticsearch
 # django-taggit
 from taggit.managers import TaggableManager, _TaggableManager, TaggableRel
 from django.core.exceptions import ValidationError
@@ -45,9 +46,9 @@ logger = logging.getLogger(__name__)
 import unicodedata
 import json
 
+ES_URL = getattr(settings, 'ES_URL', 'http://127.0.0.1:9200/')
+
 # gloabl function to remove accent, use in tags
-
-
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', unicode(input_str))
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
@@ -423,14 +424,6 @@ class Pod(Video):
 
 @receiver(post_save, sender=Pod)
 def launch_encode(sender, instance, created, **kwargs):
-    """
-    if created:
-        instance.to_encode=False
-        instance.encoding_in_progress=True
-        instance.save()
-        start_encode(instance)
-    else:
-    """
     if instance.to_encode == True and instance.encoding_in_progress == False:
         instance.to_encode = False
         instance.encoding_in_progress = True
@@ -447,6 +440,21 @@ def start_encode(video):
     t.setDaemon(True)
     t.start()
 
+
+@receiver(post_save) # instead of @receiver(post_save, sender=Rebel)
+def update_video_index(sender, instance=None, created=False, **kwargs):
+    list_of_models = ('ChapterPods', 'EnrichPods', 'ContributorPods', 'Pod')
+    if sender.__name__ in list_of_models: # this is the dynamic part you want
+        pod = None
+        if sender.__name__ == "Pod":
+            pod = instance
+        else:
+            pod = instance.video
+        es = Elasticsearch(['%s' %ES_URL])
+        if pod.is_draft == False and pod.encodingpods_set.all().count() > 0:
+            res = es.index(index="pod", doc_type='pod', id=pod.id, body=pod.get_json_to_index(), refresh=True)
+        else:
+            delete = es.delete(index="pod", doc_type='pod', id=pod.id, refresh=True, ignore=[400, 404])
 
 @python_2_unicode_compatible
 class EncodingPods(models.Model):
