@@ -319,7 +319,34 @@ class VideoPasswordForm(Form):
                 self.fields[myField].label = mark_safe(
                     "%s <span class=\"special_class\">*</span>" % label_unicode)
 
+class SearchForm(Form):
+    q = forms.CharField(required=False, label=_('Search'),
+                        widget=forms.TextInput(attrs={'type': 'search'}))
+    start_date = forms.DateField(
+        required=False, label=u'Date de début', widget=widgets.AdminDateWidget)
+    end_date = forms.DateField(
+        required=False, label=u'Date de fin', widget=widgets.AdminDateWidget)
 
+    def __init__(self, request, *args, **kwargs):
+        super(SearchForm, self).__init__(*args, **kwargs)
+
+        if request.GET.get('q'):
+            self.fields["q"].initial = request.GET.get('q')
+
+        if request.GET.get('start_date'):
+            self.fields["start_date"].initial = request.GET.get('start_date')
+
+        if request.GET.get('end_date'):
+            self.fields["end_date"].initial = request.GET.get('end_date')
+
+        for myField in self.fields:
+            self.fields[myField].widget.attrs[
+                'placeholder'] = self.fields[myField].label
+            if self.fields[myField].required:
+                self.fields[myField].widget.attrs['class'] = 'required'
+                label_unicode = u'%s' % self.fields[myField].label
+                self.fields[myField].label = mark_safe(
+                    "%s <span class=\"special_class\">*</span>" % label_unicode)
 # class formMediacours(forms.Form):
 #    titre = forms.CharField(max_length=100,widget=forms.TextInput(attrs={'size':'35', 'class':'required'}), required=True, label=(u'Titre '))
 #    mediapath = forms.CharField(required=False, widget=forms.HiddenInput())
