@@ -600,7 +600,6 @@ def video_add_report(request, slug):
 
 def verify_fields_additional_information(request):
     msg_errors=[]
-    print request
     if request.POST['subject_ask'] == "" or len(request.POST['subject_ask'])>100 or len(request.POST['subject_ask'])<=1:
         msg_errors.append(_('please enter a subject from 2 to 100 characters'))
     if not request.user.is_authenticated():
@@ -616,7 +615,6 @@ def verify_fields_additional_information(request):
 def video_add_additional_information(request, slug):
     video = get_object_or_404(Pod, slug=slug)
     if request.POST: 
-        print request.POST
         msg_errors = verify_fields_additional_information(request)
         if  len(msg_errors) == 0:
             if request.user.is_authenticated():
@@ -630,7 +628,6 @@ def video_add_additional_information(request, slug):
                     settings.RECAPTCHA_PRIVATE_KEY,  
                     request.META['REMOTE_ADDR'],)
                 if recaptcha_response.is_valid:
-                    print "captcha valid"
                     user_firstname = request.POST['firstname']
                     user_lastname = request.POST['lastname']
                     user_email = request.POST['mail']
@@ -641,7 +638,6 @@ def video_add_additional_information(request, slug):
                         data = json.dumps(some_data_to_dump)
                         return HttpResponse(data, content_type='application/json')
                     else:
-                        print "error captcha"
                         messages.add_message(
                         request, messages.ERROR, _(u'Error in the form. The captcha is uncorrect. '))
                         return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
@@ -693,7 +689,6 @@ def video_add_additional_information(request, slug):
                 return HttpResponse(data, content_type='application/json')
 
             messages.add_message(request, messages.INFO, msg)
-            print "post and not ajax"
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
         else:
             list_errors =  ", ".join(unicode(x) for x in msg_errors)
@@ -702,7 +697,6 @@ def video_add_additional_information(request, slug):
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
 
     else:
-        print "else de fin"
         messages.add_message(
             request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied

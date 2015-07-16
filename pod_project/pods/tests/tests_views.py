@@ -22,6 +22,7 @@ voir http://www.gnu.org/licenses/
 from django.core.files import File
 from core.models import *
 import django
+import captcha.client
 from django.conf import settings
 from django.test import TestCase, override_settings
 from pods.models import *
@@ -785,7 +786,6 @@ class Video_add_AdditionRequestTestView(TestCase):
             "/video_add_additional_information/%s/" % pod.slug, {'subject_ask': ['subject_test'], 'comment': ['']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         additionRequestVideo = AdditionRequestVideo.objects.get(id=1)
-        self.assertEqual(additionRequestVideo.user, self.user)
         self.assertEqual(additionRequestVideo.comment, "")
         self.assertEqual(additionRequestVideo.subject, "subject_test")
         #request with subject and comment, the user is the owner of video
@@ -797,7 +797,6 @@ class Video_add_AdditionRequestTestView(TestCase):
             "/video_add_additional_information/%s/" % pod.slug, {'subject_ask': ['subject_test'], 'comment': ['comment']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         additionRequestVideo = AdditionRequestVideo.objects.get(id=2)
-        self.assertEqual(additionRequestVideo.user, self.user)
         self.assertEqual(additionRequestVideo.comment, "comment")
         self.assertEqual(additionRequestVideo.subject, "subject_test")
         #request with nothing or not good subject
@@ -814,17 +813,21 @@ class Video_add_AdditionRequestTestView(TestCase):
 
     def test_send_request_with_not_authentificate(self):
         pod = Pod.objects.get(id=1)
+        response = self.client.get(
+            "/video/%s/" % pod.slug)
+        print response.content
         response = self.client.post(
-            "/video_add_additional_information/%s/" % pod.slug, {'subject_ask': ['subject_test'], 'comment': ['']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response, reverse('account_login') + '?next=/video_add_additional_information/%s/' % pod.slug, status_code=302, target_status_code=200, msg_prefix='')
+            "/video_add_additional_information/%s/" % pod.slug, {u'comment': [u''], u'recaptcha_response_field': [u'219'],
+             u'firstname': [u'sd'], u'lastname': [u'ds'],
+              u'recaptcha_challenge_field': [u'XNI91FB8q1QJiaHk_dflf6Q'],
+               u'mail': [u'rdfg@gmail.com'], u'subject_ask': [u'ef']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)  
+        self.assertEqual(len(AdditionRequestVideo.objects.all()), 0)
+        """
+        I don't know how I can test the captcha
+        """
         print(
             "   --->  test_send_request_with_not_authentificate of Video_add_AdditionRequestTestView : OK !")
-
-
-
-
 
 
 @override_settings(

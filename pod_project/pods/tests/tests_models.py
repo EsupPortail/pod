@@ -821,8 +821,8 @@ class AdditionRequestVideoTestCase(TestCase):
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(
             type=other_type,  title="Video1", slug="tralala", owner=remi)
-        AdditionRequestVideo.objects.create(video=pod, user=remi, subject="test")
-        AdditionRequestVideo.objects.create(video=pod, user=remi, subject="test", comment="demande de mot de passe", answer="accepte")
+        AdditionRequestVideo.objects.create(video=pod, subject="test")
+        AdditionRequestVideo.objects.create(video=pod, subject="test", comment="demande de mot de passe", answer="accepte")
 
 
         print (" --->  SetUp of AdditionRequestVideoTestCase : OK !")
@@ -835,8 +835,7 @@ class AdditionRequestVideoTestCase(TestCase):
         additionRequestVideo = AdditionRequestVideo.objects.get(id=1)
         self.assertEqual(additionRequestVideo.video.id, 1)
         self.assertEqual(additionRequestVideo.__unicode__(), "%s - %s - %s" %
-                         (additionRequestVideo.video, additionRequestVideo.user, additionRequestVideo.subject))
-        self.assertEqual(additionRequestVideo.user.username, "Remi")
+                         (additionRequestVideo.video, additionRequestVideo.subject, additionRequestVideo.date_added))
         date = datetime.today()
         self.assertEqual(additionRequestVideo.date_added.year, date.year)
         self.assertEqual(additionRequestVideo.date_added.month, date.month)
@@ -857,8 +856,7 @@ class AdditionRequestVideoTestCase(TestCase):
         additionRequestVideo = AdditionRequestVideo.objects.get(id=2)
         self.assertEqual(additionRequestVideo.video.id, 1)
         self.assertEqual(additionRequestVideo.__unicode__(), "%s - %s - %s" %
-                         (additionRequestVideo.video, additionRequestVideo.user, additionRequestVideo.subject))
-        self.assertEqual(additionRequestVideo.user.username, "Remi")
+                         (additionRequestVideo.video, additionRequestVideo.subject, additionRequestVideo.date_added))
         date = datetime.today()
         self.assertEqual(additionRequestVideo.date_added.year, date.year)
         self.assertEqual(additionRequestVideo.date_added.month, date.month)
