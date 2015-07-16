@@ -44,7 +44,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.models import get_current_site
 
 import simplejson as json
-from haystack.query import SearchQuerySet
 
 from django.core.servers.basehttp import FileWrapper
 
@@ -1451,7 +1450,10 @@ def autocomplete(request):
     return HttpResponse(the_data, content_type='application/json')
 
 
-# RECORDER
+def search_videos(request):
+    return ""
+
+####### RECORDER #######
 @csrf_protect
 @login_required
 @staff_member_required

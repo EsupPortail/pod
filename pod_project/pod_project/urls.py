@@ -5,12 +5,6 @@ from django.views.generic import RedirectView
 from django.contrib import admin
 admin.autodiscover()
 
-from haystack.query import SearchQuerySet
-from haystack.views import SearchView, search_view_factory, FacetedSearchView
-from pods.forms import DateRangeSearchForm
-sqs = SearchQuerySet().facet('owner').facet('type').facet(
-    'tags').facet('discipline').facet('channel')
-
 urlpatterns = patterns(
     '',
     (r'^favicon\.ico$', RedirectView.as_view(
@@ -36,6 +30,7 @@ urlpatterns = patterns(
     # TEXT EDITOR
     url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^browse/', 'core.views.file_browse', name='ckeditor_browse'),
+    
     # Add for no staff users
     (r'^dynamic-media/jsi18n/$', 'django.views.i18n.javascript_catalog'),
     (
@@ -44,18 +39,7 @@ urlpatterns = patterns(
         {'packages': ('django.conf', 'django.contrib.admin')}
     ),
 
-    url(
-        r'^search/$',
-        search_view_factory(
-            view_class=FacetedSearchView,
-            template='search/search.html',
-            searchqueryset=sqs,
-            form_class=DateRangeSearchForm
-        ),
-        name='haystack_search'
-    ),
-    url(r'^search/autocomplete/$',
-        'pods.views.autocomplete', name='autocomplete'),
+    url(r'^search/$','pods.views.search_videos', name='search_videos'),
 
     # MEDIACOURSES
     url(r'^mediacourses_add/$',
