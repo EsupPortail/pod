@@ -152,6 +152,77 @@ voir http://www.gnu.org/licenses/
                             </button>
                         {% endbuttons %}
                     </fieldset>
+                    {% if result.aggregations %}
+                        <fieldset>
+                            <legend><span class="glyphicon glyphicon-filter"></span> {% trans 'faceting' %}</legend>
+                            <div class="form-group"><!-- add .show-all to this .form-group to reveal the .more checkboxes -->
+                                <dl>
+                                    {% if result.aggregations.owner_full_name %}
+                                        <dt>{% trans 'Owner' %}</dt>
+                                        {# Provide only the top 5 owner #}
+                                        {% for owner in result.aggregations.owner_full_name.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=owner_full_name:{{ owner.key|urlencode }}">
+                                                    {{ owner.key }}
+                                                </a>
+                                                ({{ owner.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {%endif%}
+                                    {% if result.aggregations.type %}
+                                        <dt>{% trans 'Type' %}</dt>
+                                        {# Provide only the top 5 type #}
+                                        {% for type in result.aggregations.type.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=type:{{ type.key|urlencode }}">
+                                                    {{ type.key }}
+                                                </a>
+                                                ({{ type.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if result.aggregations.tags %}
+                                        <dt>{% trans 'Tags' %}</dt>
+                                        {# Provide only the top 5 type #}
+                                        {% for tag in result.aggregations.tags.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=tags:{{ tag.key|urlencode }}">
+                                                    {{ tag.key }}
+                                                </a>
+                                                ({{ tag.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if result.aggregations.disciplines %}
+                                        <dt>{% trans 'Discipline' %}</dt>
+                                        {# Provide only the top 5 type #}
+                                        {% for discipline in result.aggregations.disciplines.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=discipline:{{ discipline.key|urlencode }}">
+                                                    {{ discipline.key }}
+                                                </a>
+                                                ({{ discipline.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    {% if result.aggregations.channels %}
+                                        <dt>{% trans 'Channel' %}</dt>
+                                        {# Provide only the top 5 type #}
+                                        {% for channel in result.aggregations.channels.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=channel:{{ channel.key|urlencode }}">
+                                                    {{ channel.key }}
+                                                </a>
+                                                ({{ channel.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                </dl>
+                            </div>
+                        </fieldset>
+                    {%endif%}
                 </form>
             </div>
         {% endblock box_filtre %}
