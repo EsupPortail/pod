@@ -43,6 +43,7 @@ import base64
 import logging
 logger = logging.getLogger(__name__)
 import unicodedata
+import json
 
 # gloabl function to remove accent, use in tags
 
@@ -322,6 +323,18 @@ class Pod(Video):
     def get_absolute_url(self):
         return reverse('video', args=[self.slug])
 
+    def get_full_url(self):
+        request = None
+        full_url = ''.join(
+            ['//', get_current_site(request).domain, self.get_absolute_url()])
+        return full_url
+
+    def get_thumbnail_url(self):
+        request = None
+        thumbnail_url = ''.join(
+            ['//', get_current_site(request).domain, self.thumbnail.url])
+        return thumbnail_url
+
     def save(self, *args, **kwargs):
         newid = -1
         if not self.id:
@@ -373,14 +386,39 @@ class Pod(Video):
         super(Pod, self).delete()
 
     def is_richmedia(self):
-        return self.enrichpods_set.exclude(type=None)
+        return True if self.enrichpods_set.exclude(type=None) else False
 
     def get_iframe_admin_integration(self):
-        request = None
-        full_url = ''.join(
-            ['//', get_current_site(request).domain, self.get_absolute_url()])
-        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % full_url
+        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % self.get_full_url()
         return iframe_url
+
+    def get_json_to_index(self):
+        data_to_dump = {
+                'id': self.id,
+                'title': u'%s' %self.title,
+                'owner': u'%s' %self.owner.username,
+                'owner_full_name': u'%s' %self.owner.get_full_name(),
+                "date_added": u'%s' %self.date_added, 
+                "date_evt": u'%s' %self.date_evt, 
+                "description": u'%s' %self.description, 
+                "thumbnail": u'%s' %self.get_thumbnail_url(),
+                "duration": u'%s' %self.duration,
+                "tags" : list(self.tags.all().values_list('name', flat=True)),
+                "type" : u'%s' %self.type,
+                "disciplines" : list(self.discipline.values_list('title', flat=True)),
+                "channels" : list(self.channel.values_list('title', flat=True)),
+                "themes" : list(self.theme.values_list('title', flat=True)),
+                "contributors" : list(self.contributorpods_set.values_list('name', 'role')),
+                "chapters" : list(self.chapterpods_set.values_list('title', flat=True)),
+                "enrichments" : list(self.enrichpods_set.values_list('title', flat=True)),
+                "full_url" : self.get_full_url(),
+                "protected" : True if self.password != "" or self.is_restricted is True else False,
+                "duration_in_time": self.duration_in_time(),
+                "mediatype": self.get_mediatype()[0],
+                "is_richmedia" : self.is_richmedia()
+            }
+
+        return json.dumps(data_to_dump)
 
 
 @receiver(post_save, sender=Pod)
