@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-17 15:17+0200\n"
-"PO-Revision-Date: 2015-07-17 15:57+0100\n"
+"PO-Revision-Date: 2015-07-17 16:31+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2523,7 +2523,7 @@ msgstr "Afficher la section de sous-titre ou de légende"
 
 #: pods/templates/videos/video_completion.html:464
 msgid "Subtitle(s) and caption(s)"
-msgstr "Sous-titre et légende"
+msgstr "Sous-titre(s) et légende(s)"
 
 #: pods/templates/videos/video_completion.html:480
 msgid "Add a new subtitle or caption file"
@@ -2535,7 +2535,7 @@ msgstr "Afficher la section documents complémentaires"
 
 #: pods/templates/videos/video_completion.html:484
 msgid "Additional resource(s)"
-msgstr "Document(s) complémentaire"
+msgstr "Document(s) complémentaire(s)"
 
 #: pods/templates/videos/video_completion.html:499
 #| msgid "Add a new chapter"
