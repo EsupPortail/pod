@@ -645,7 +645,7 @@ def contact_us(request):
 
             contact_us = Contact_us.objects.create(
                 subject='%s' % request.POST['subject_ask'], comment= '%s' % request.POST['comment'])
-            subject = _(u'Additional information request : %s.')% request.POST['subject_ask']
+            subject = _(u'Information request : %s.')% request.POST['subject_ask']
 
             msg = _(u'The user %(user_firstname)s %(user_lastname)s <%(user_email)s> has been send a information request.\n'
                     'Subject of request: \n'
