@@ -332,6 +332,8 @@ class Pod(Video):
 
     def get_thumbnail_url(self):
         request = None
+        if not self.thumbnail:
+            return ""
         thumbnail_url = ''.join(
             ['//', get_current_site(request).domain, self.thumbnail.url])
         return thumbnail_url
@@ -400,7 +402,7 @@ class Pod(Video):
                 'owner': u'%s' %self.owner.username,
                 'owner_full_name': u'%s' %self.owner.get_full_name(),
                 "date_added": u'%s' %self.date_added, 
-                "date_evt": u'%s' %self.date_evt, 
+                "date_evt": u'%s' %self.date_evt if self.date_evt else None, 
                 "description": u'%s' %self.description, 
                 "thumbnail": u'%s' %self.get_thumbnail_url(),
                 "duration": u'%s' %self.duration,

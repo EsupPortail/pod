@@ -1495,7 +1495,7 @@ def search_videos(request):
         query = {
           "multi_match" : {
             "query":    "%s" %search_word,
-            "fields": [ "_id", "title", "owner_full_name", "description", "tags", "contributors", "chapters", "enrichments" ] 
+            "fields": [ "_id", "title", "owner", "owner_full_name", "description", "tags", "contributors", "chapters", "enrichments" ] 
           }
         }
 
