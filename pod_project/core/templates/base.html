@@ -67,6 +67,82 @@ voir http://www.gnu.org/licenses/
                         window.setTimeout(function() { $('.alert').alert('close'); }, 3000);
                     });
                 {% endif %}
+
+$(document).on('submit', 'form#video_contact_form', function (event) {
+    var button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
+    $('form').show();
+    $(".form-help-inline").parents('div.form-group').removeClass("has-error");
+    $(".form-help-inline").remove();
+    event.preventDefault();
+    if(expiration_date_second > 5) {
+        verify_fields_contact();
+        if (!($("span").hasClass("form-help-inline"))){
+            var subject_ask = $(this).find('#id_subject').val();
+            var comment = $(this).find('#commentcontact').val();
+            /** if is not authenticated **/
+            if($(this).find('#id_lastname')){
+                var lastname = $(this).find('#id_lastname').val();
+                var firstname = $(this).find('#id_firstname').val();
+                var mail = $(this).find('#id_mail').val();
+                var recaptcha_challenge_field = $(this).find('#recaptcha_challenge_field').val();
+                var recaptcha_response_field = $(this).find('#recaptcha_response_field').val();
+                var jqxhr = $.post( $(this).attr("action"), {"comment":comment, "subject_ask":subject_ask, "lastname":lastname, "firstname":firstname, "mail":mail,"recaptcha_challenge_field":recaptcha_challenge_field, "recaptcha_response_field":recaptcha_response_field });
+            /** end if **/
+            }else{
+                var jqxhr = $.post( $(this).attr("action"), {"comment":comment, "subject_ask":subject_ask});
+            }
+            jqxhr.done(function(data){
+                if(data.msg) {
+                    show_messages(data.msg+button, false, 'alert-info');
+                    $('#modal_contact_form').modal('hide');
+                    $("#video_contact_form")[0].reset(); 
+                } else if (data.errors) {
+                    show_messages(data.errors+button, false, 'alert-danger');
+                }
+            });
+            jqxhr.fail(function($xhr) {
+                var data = $xhr.status+ " : " +$xhr.statusText;
+                show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}"+button, false, 'alert-danger');
+            });
+         
+        }else{
+            show_messages("{% trans 'Error found in the form, please correct it.' %}"+button, false, 'alert-danger');
+        }
+        $('form#video_contact_form').show();
+        
+    } else {
+        alert(expiredsession);
+        location.reload();
+    }
+    return false;
+});
+
+function verify_fields_contact(){
+    if (document.getElementById("id_subject").value == "" || document.getElementById("id_subject").value.length < 2 || document.getElementById("id_subject").value.length > 100) {
+            $("input#id_subject")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a subject from 2 to 100 characters.' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+    }
+    if(document.getElementById("id_lastname")){        
+        if (document.getElementById("id_lastname").value == "" || document.getElementById("id_lastname").value.length < 2 || document.getElementById("id_lastname").value.length > 200) {
+            $("input#id_lastname")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct lastname.' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+        }
+        if (document.getElementById("id_firstname").value == "" || document.getElementById("id_firstname").value.length < 2 || document.getElementById("id_firstname").value.length > 200) {
+            $("input#id_firstname")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct firstname.' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+        }
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (document.getElementById("id_mail").value == "" || document.getElementById("id_mail").value.length < 2 || document.getElementById("id_mail").value.length > 75 || !emailReg.test(document.getElementById("id_mail").value)) {
+            $("input#id_mail")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct mail.' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+        }
+    }
+}
+
             </script>
         {% endif %}
         {% block bootstrap3_extra_head %}{% endblock %}
@@ -233,7 +309,7 @@ voir http://www.gnu.org/licenses/
                 {% include 'footer.html' %}
             {% endif %}
             <!-- footer -->
-
+            
             <!-- DIV MEDIA BOX -->
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -254,7 +330,7 @@ voir http://www.gnu.org/licenses/
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
+            </div><!-- /.modal --> 
         {% endif %}
         {% if show_report %}
         <div class="modal fade" id="modal_report_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -281,9 +357,10 @@ voir http://www.gnu.org/licenses/
                 </div><!-- /.modal-dialog -->
         </div>
         {%endif%}
+        {% include 'contact_modal.html' %}
 
         <span id="show_messages" class="alert alert-danger collapse" role="alert" >
             &nbsp;
-        </span>
+        </span> 
     </body>
 </html>
