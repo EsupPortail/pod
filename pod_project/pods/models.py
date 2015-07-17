@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 import unicodedata
 import json
 
-ES_URL = getattr(settings, 'ES_URL', 'http://127.0.0.1:9200/')
+ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 # gloabl function to remove accent, use in tags
 def remove_accents(input_str):
@@ -452,7 +452,7 @@ def update_video_index(sender, instance=None, created=False, **kwargs):
             pod = instance
         else:
             pod = instance.video
-        es = Elasticsearch(['%s' %ES_URL])
+        es = Elasticsearch(ES_URL)
         if pod.is_draft == False and pod.encodingpods_set.all().count() > 0:
             res = es.index(index="pod", doc_type='pod', id=pod.id, body=pod.get_json_to_index(), refresh=True)
         else:

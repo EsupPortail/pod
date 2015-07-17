@@ -50,7 +50,7 @@ from django.core.servers.basehttp import FileWrapper
 
 DEFAULT_PER_PAGE = 12
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
-ES_URL = getattr(settings, 'ES_URL', 'http://127.0.0.1:9200/')
+ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 def get_pagination(page, paginator):
     try:
@@ -1447,7 +1447,7 @@ def autocomplete(request):
 
 
 def search_videos(request):
-    es = Elasticsearch(['%s' %ES_URL])
+    es = Elasticsearch(ES_URL)
     aggsAttrs = ['owner_full_name', 'type', 'disciplines', 'tags', 'channels']
     
     #SEARCH FORM

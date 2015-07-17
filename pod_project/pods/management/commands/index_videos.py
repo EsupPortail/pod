@@ -4,14 +4,14 @@ from elasticsearch import Elasticsearch
 from django.conf import settings
 import json
 
-ES_URL = getattr(settings, 'ES_URL', 'http://127.0.0.1:9200/')
+ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 class Command(BaseCommand):
 	args = '__ALL__ or <pod_id pod_id ...>'
 	help = 'Index in elasticsearch the specified video'
 	
 	def handle(self, *args, **options):	
-		es = Elasticsearch(['%s' %ES_URL])
+		es = Elasticsearch(ES_URL)
 		if args:
 			if args[0]=='__ALL__':
 				delete = es.delete_by_query(index="pod", doc_type='pod', body={"query":{"match_all":{}}})

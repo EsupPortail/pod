@@ -131,8 +131,8 @@ SITE_ID = 1
 
 FILER_ENABLE_PERMISSIONS = True
 
-#URL FOR ELASTICSEARCH
-ES_URL = 'http://127.0.0.1:9200/'
+#URL FOR ELASTICSEARCH ['host1', 'host2', ...]
+ES_URL = ['http://127.0.0.1:9200/']
 
 CACHES = {
     'default': {

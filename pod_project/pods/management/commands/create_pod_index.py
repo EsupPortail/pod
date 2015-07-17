@@ -5,7 +5,7 @@ from django.conf import settings
 from elasticsearch.exceptions import TransportError
 
 
-ES_URL = getattr(settings, 'ES_URL', 'http://127.0.0.1:9200/')
+ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 
 class Command(BaseCommand):
@@ -13,7 +13,7 @@ class Command(BaseCommand):
 	help = 'Create the Pod index in leasticsearch engine'
 	
 	def handle(self, *args, **options):
-		es = Elasticsearch(['%s' %ES_URL])
+		es = Elasticsearch(ES_URL)
 		json_data = open('pods/search_template.json')   
 		es_template = json.load(json_data)
 		try:
