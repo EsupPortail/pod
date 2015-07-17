@@ -763,7 +763,7 @@ def video_completion_contributor(request, slug):
         # save
         if request.POST.get("action") and request.POST['action'] == 'save':
             form_contributor = None
-            if request.POST.get("contributor_id"):
+            if request.POST.get("contributor_id") and request.POST.get("contributor_id") != "None":
                 contributor = get_object_or_404(
                     ContributorPods, id=request.POST.get("contributor_id"))
                 form_contributor = ContributorPodsForm(
