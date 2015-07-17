@@ -25,6 +25,7 @@ from pods.forms import VideoPasswordForm
 from pods.forms import NotesForm
 from pods.forms import MediacoursesForm
 from pods.forms import EnrichPodsForm
+from pods.forms import SearchForm
 from pods.models import *
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
@@ -44,14 +45,12 @@ from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.models import get_current_site
 
 import simplejson as json
-from haystack.query import SearchQuerySet
 
 from django.core.servers.basehttp import FileWrapper
 
 DEFAULT_PER_PAGE = 12
-
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
-
+ES_URL = getattr(settings, 'ES_URL', 'http://127.0.0.1:9200/')
 
 def get_pagination(page, paginator):
     try:
@@ -1440,18 +1439,101 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
 
 
 def autocomplete(request):
-    sqs = SearchQuerySet().autocomplete(
-        title_auto=request.GET.get('q', ''))[:5]
-    suggestions = [entry.object.title for entry in sqs]
+    suggestions = [entry.object.title for entry in res]
     # Make sure you return a JSON object, not a bare list.
     # Otherwise, you could be vulnerable to an XSS attack.
-    the_data = json.dumps({
-        'results': suggestions
-    })
+    the_data = json.dumps({ })
     return HttpResponse(the_data, content_type='application/json')
 
 
-# RECORDER
+def search_videos(request):
+    es = Elasticsearch(['%s' %ES_URL])
+    aggsAttrs = ['owner_full_name', 'type', 'disciplines', 'tags', 'channels']
+    
+    #SEARCH FORM
+    search_word = ""
+    start_date = None
+    end_date = None
+    searchForm = SearchForm(request.GET)
+    if searchForm.is_valid():
+        search_word = searchForm.cleaned_data['q']
+        start_date = searchForm.cleaned_data['start_date']
+        end_date = searchForm.cleaned_data['end_date']
+
+    #request parameters
+    selected_facets = request.GET.getlist('selected_facets') if request.GET.getlist('selected_facets') else []
+    page = request.GET.get('page') if request.GET.get('page') else 1
+    size = request.COOKIES.get('perpage') if request.COOKIES.get(
+        'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
+    search_from = 0 if page==1 else ((page-1)*size) - 1
+
+    ##Filter query
+    filter_search = {}
+    filter_query = ""
+    for facet in selected_facets:
+        filter_query += " %s AND" %facet
+    else:
+        filter_query = filter_query[:-3]
+
+    if filter_query != "":
+        filter_search["query"] = {
+                                    "query_string" : {
+                                        "query" : "%s" %filter_query
+                                    }
+                                }
+    ##filter date range                            
+    if start_date or end_date :
+        filter_search["range"] = {"date_added": {}}
+        if start_date :
+            filter_search["range"]["date_added"]["gte"] = "%04d-%02d-%02d" %(start_date.year, start_date.month, start_date.day)
+        if end_date :
+            filter_search["range"]["date_added"]["lte"] = "%04d-%02d-%02d" %(end_date.year, end_date.month, end_date.day)
+
+    #Query
+    query = {"match_all" : {}}
+    if search_word != "":
+        query = {
+          "multi_match" : {
+            "query":    "%s" %search_word,
+            "fields": [ "_id", "title", "owner", "owner_full_name", "description", "tags", "contributors", "chapters", "enrichments" ] 
+          }
+        }
+
+    #bodysearch
+    bodysearch = {
+    "from" : search_from,
+    "size" : size,
+    "aggs": {},
+    "highlight": {
+        "pre_tags" : ["<strong>"],
+        "post_tags" : ["</strong>"],
+        "fields":{"title":{"type" : "plain"}}}
+    }
+
+    if filter_search != {}:
+        bodysearch["query"] = {"filtered":{}}
+        bodysearch["query"]["filtered"]["query"] = query
+        bodysearch["query"]["filtered"]["filter"] = filter_search
+    else :
+        bodysearch["query"] = query
+
+    for attr in aggsAttrs:
+        bodysearch["aggs"][attr] = {"terms": {"field": attr+".raw", "size": 5, "order" : { "_count" : "asc" }}}
+
+    result = es.search(index="pod", body=bodysearch)
+
+    #Pagination mayby better idea ?
+    objects = []
+    for i in range(1,result["hits"]["total"]):
+        objects.append(i)
+    paginator = Paginator(objects, size)
+    pagination = get_pagination(page, paginator)
+
+    return render_to_response("search/search_video.html",
+                              {"result": result, "page":page, "pagination":pagination, "form":searchForm},
+                              context_instance=RequestContext(request))
+
+####### RECORDER #######
 @csrf_protect
 @login_required
 @staff_member_required
