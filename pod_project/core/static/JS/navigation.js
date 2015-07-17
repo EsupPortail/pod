@@ -78,6 +78,8 @@ $(document).ready(function() {
     });
     
     $(window).bind("beforeunload", function(e) {
+        console.log(messageBeforeUnload);
+        console.log(preventUnloadPrompt);
         if(typeof messageBeforeUnload != 'undefined' && messageBeforeUnload != "") {
             if(preventUnloadPrompt) {
                 return;

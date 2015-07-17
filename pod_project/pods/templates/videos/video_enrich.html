@@ -102,6 +102,10 @@ table.scroll tbody td.enrich_type {
 
 
 <script>
+
+var preventUnloadPrompt="";
+console.log(messageBeforeUnload);
+var messageBeforeUnload = "{% trans 'Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost.' %}";
 /*** table scroll ***/
 // Change the selector if needed
 
@@ -109,7 +113,10 @@ table.scroll tbody td.enrich_type {
 $(window).load(function(){
     manageResize();
 });
-
+$(window).bind(function(){
+     preventUnloadPrompt="";
+     messageBeforeUnload = "{% trans 'Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost.' %}";
+});
 /*** end table scroll ***/
 function manageResize() {
     var $table = $('table.scroll'),
@@ -447,20 +454,24 @@ function overlaptest(){
                 <span id= "list_enrich">
                 {%include 'videos/enrich/list_enrich.html'%}
                 <!-- This button will add a new form when clicked -->
+                
                 </span>
                 <span id="form_enrich">
                     <!-- place for form, it will be replace by a form : empty or to modify -->
                     {% if form_enrich %}
                     {%include 'videos/enrich/form_enrich.html' with form_enrich=form_enrich%}
-                    {%endif%}
+                    {%endif%}                          
                 </span>
                 <form  id = "form_new" action="{% url 'video_enrich' slug=video.slug  %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="new">
-                    <input type="submit" id="add_new_enrichment"  value="{% trans "Add a new enrichment" %}" class="btn btn-info"/>
+                    <input type="submit" id="add_new_enrichment"  value="{% trans "Add a new enrichment" %}" class="btn btn-info"/> 
                 </form>
+                <div class="col-md-8 col-md-offset-8">
+                    <a href="{{request.META.HTTP_REFERER}}" class="btn btn-danger">{% trans "Quit this page" %}</a>
+                </div>
+            
             </div>
-
             <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
                 <aside class="col-sm-3  panel panel-info">
                     <div class="widget user-tools">
