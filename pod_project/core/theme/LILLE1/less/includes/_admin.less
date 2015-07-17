@@ -1,0 +1,26 @@
+@charset "utf-8";
+
+
+body {
+    .backgroundImage( @bgFull, @adminBgColor );
+    padding: 20px;
+}
+
+#header {
+    color: @adminHeaderLinkColor;
+    .gradient( @adminHeaderStartColor, @adminHeaderEndColor );
+}
+
+#branding h1 {
+    color: @adminHeaderTitleColor;
+}
+
+#container {
+    background: #fff;
+}
+
+.module h2, .module caption, .inline-group h2 {
+    background: #333;
+    color: #fff;
+}
+

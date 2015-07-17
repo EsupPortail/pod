@@ -1,3 +1,4 @@
+@charset "utf-8";
 /*
 Copyright (C) 2014 Yannick Bonnaz
 Ce programme est un logiciel libre : vous pouvez
@@ -19,26 +20,33 @@ avec ce programme. Si ce n'est pas le cas,
 voir http://www.gnu.org/licenses/
 */
 body {
-    background: #222 url("../images/binding_dark.png");
-	padding: 20px;
+  background-color: #222222;
+  background-image: url("/static/images/binding_dark.png");
+  background-position: top center;
+  background-attachment: fixed;
+  background-repeat: repeat;
+  padding: 20px;
 }
 #header {
-	background: #f8af19;
-	background: -moz-linear-gradient(top, #f8af19 0%, #ee7d19 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f8af19), color-stop(100%, #ee7d19));
-	background: -webkit-linear-gradient(top, #f8af19 0%, #ee7d19 100%);
-	background: -o-linear-gradient(top, #f8af19 0%, #ee7d19 100%);
-	background: -ms-linear-gradient(top, #f8af19 0%, #ee7d19 100%);
-	background: linear-gradient(to bottom, #f8af19 0%, #ee7d19 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8af19', endColorstr='#ee7d19', GradientType=0);
+  color: #333333;
+  background-color: #f8af19;
+  background: -moz-linear-gradient(top, #f8af19 0%, #ee7d19 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f8af19), color-stop(100%, #ee7d19));
+  background: -webkit-linear-gradient(top, #f8af19 0%, #ee7d19 100%);
+  background: -o-linear-gradient(top, #f8af19 0%, #ee7d19 100%);
+  background: -ms-linear-gradient(top, #f8af19 0%, #ee7d19 100%);
+  background: linear-gradient(to bottom, #f8af19 0%, #ee7d19 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8af19',endColorstr='#ee7d19',GradientType=0);
 }
 #branding h1 {
-	color: #111;
+  color: #111111;
 }
 #container {
-	background: #fff;
+  background: #fff;
 }
-.module h2, .module caption, .inline-group h2 {
-	background: #333;
-	color: white;
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: #333;
+  color: #fff;
 }
