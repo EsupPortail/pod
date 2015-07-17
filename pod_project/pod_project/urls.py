@@ -11,6 +11,10 @@ urlpatterns = patterns(
         url=settings.STATIC_URL + '/images/favicon.ico')),
     (r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^contact_us/$',
+        'pods.views.contact_us', name='contact_us'),
+
     # ACCOUNT
     url(r'^accounts/login/$', 'core.views.core_login', name='account_login'),
     url(r'^accounts/logout/$', 'core.views.core_logout',

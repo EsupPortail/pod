@@ -757,11 +757,12 @@ class ReportVideoTestCase(TestCase):
 
     def setUp(self):
         remi = User.objects.create_user("Remi")
+        root = User.objects.create_user("root")
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(
             type=other_type,  title="Video1", slug="tralala", owner=remi)
         ReportVideo.objects.create(video=pod, user=remi)
-        ReportVideo.objects.create(video=pod, user=remi, comment="violation des droits", answer="accepte")
+        ReportVideo.objects.create(video=pod, user=root, comment="violation des droits", answer="accepte")
 
 
         print (" --->  SetUp of ReportVideoTestCase : OK !")
@@ -797,7 +798,7 @@ class ReportVideoTestCase(TestCase):
         self.assertEqual(reportVideo.video.id, 1)
         self.assertEqual(reportVideo.__unicode__(), "%s - %s" %
                          (reportVideo.video, reportVideo.user))
-        self.assertEqual(reportVideo.user.username, "Remi")
+        self.assertEqual(reportVideo.user.username, "root")
         date = datetime.today()
         self.assertEqual(reportVideo.date_added.year, date.year)
         self.assertEqual(reportVideo.date_added.month, date.month)
@@ -809,6 +810,60 @@ class ReportVideoTestCase(TestCase):
         print (
             "   --->  test_attributs_with_comment of ReportVideoTestCase : OK !")
 
+"""              
+    test AdditionRequestVideo object
+"""
+class AdditionRequestVideoTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type,  title="Video1", slug="tralala", owner=remi)
+        AdditionRequestVideo.objects.create(video=pod, subject="test")
+        AdditionRequestVideo.objects.create(video=pod, subject="test", comment="demande de mot de passe", answer="accepte")
+
+
+        print (" --->  SetUp of AdditionRequestVideoTestCase : OK !")
+
     """
-        test delete object
+        test_attributs_with_not_comment
     """
+
+    def test_attributs_with_not_comment(self):
+        additionRequestVideo = AdditionRequestVideo.objects.get(id=1)
+        self.assertEqual(additionRequestVideo.video.id, 1)
+        self.assertEqual(additionRequestVideo.__unicode__(), "%s - %s - %s" %
+                         (additionRequestVideo.video, additionRequestVideo.subject, additionRequestVideo.date_added))
+        date = datetime.today()
+        self.assertEqual(additionRequestVideo.date_added.year, date.year)
+        self.assertEqual(additionRequestVideo.date_added.month, date.month)
+        self.assertEqual(additionRequestVideo.date_added.day, date.day)
+        self.assertEqual(additionRequestVideo.comment, None)
+        self.assertEqual(additionRequestVideo.answer, None)
+        yesterday = datetime.today() - timedelta(1)
+        additionRequestVideo.date= yesterday
+        self.assertFalse(additionRequestVideo.date_added.day ==  yesterday.day)
+
+        print (
+            "   --->  test_attributs_with_not_comment of AdditionRequestVideoTestCase : OK !")
+
+    """
+        test_attributs_with_comment
+    """
+    def test_attributs_with_comment(self):
+        additionRequestVideo = AdditionRequestVideo.objects.get(id=2)
+        self.assertEqual(additionRequestVideo.video.id, 1)
+        self.assertEqual(additionRequestVideo.__unicode__(), "%s - %s - %s" %
+                         (additionRequestVideo.video, additionRequestVideo.subject, additionRequestVideo.date_added))
+        date = datetime.today()
+        self.assertEqual(additionRequestVideo.date_added.year, date.year)
+        self.assertEqual(additionRequestVideo.date_added.month, date.month)
+        self.assertEqual(additionRequestVideo.date_added.day, date.day)
+        self.assertEqual(additionRequestVideo.comment, "demande de mot de passe")
+        self.assertEqual(additionRequestVideo.answer, "accepte")
+        self.assertEqual(additionRequestVideo.get_iframe_url_to_video(), additionRequestVideo.video.get_iframe_admin_integration())
+
+        print (
+            "   --->  test_attributs_with_comment of AdditionRequestVideoTestCase : OK !")

@@ -248,6 +248,23 @@ $(document).on('click', 'button#button_video_report', function (event) {
     return false;
 });
 
+$(document).on('click', 'button.button_video_contact', function (event) {
+    event.preventDefault();
+    if($(this).parent('form').length==0){
+        alert($(this).children('span.sr-only').text());
+    } else {
+        if(expiration_date_second > 5) {
+            $("#modal_contact_form").modal({
+              show: true,
+            });
+        } else {
+            alert(expiredsession);
+            location.reload();
+        }
+    }
+    return false;
+});
+
 function show_messages(msg, reload, msgclass) {
 
     if(!msgclass||msgclass==='undefined') msgclass='alert-danger';
