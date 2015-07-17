@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:36+0200\n"
-"PO-Revision-Date: 2015-07-07 15:40+0200\n"
+"PO-Revision-Date: 2015-07-15 14:56+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -564,7 +564,6 @@ msgstr "Connexion"
 #: pods/templates/channels/channels.html:31
 #: pods/templates/channels/channels.html:39
 #: pods/templates/channels/channels.html:41
-#: pods/templates/channels/channels.html:60
 #: pods/templates/channels/my_channels.html:52
 #: pods/templates/videos/video.html:155
 msgid "Channels"
@@ -1358,7 +1357,7 @@ msgstr ""
 
 #: pods/models.py:82 pods/models.py:114 pods/templates/search/search.html:247
 msgid "Channel"
-msgstr "Chaînes"
+msgstr "Chaîne"
 
 #: pods/models.py:102 pods/models.py:141 pods/models.py:175 pods/models.py:209
 msgid "count"
@@ -1369,11 +1368,17 @@ msgid "Theme"
 msgstr "Thème"
 
 #: pods/models.py:129 pods/models.py:301
-#: pods/templates/channels/channel.html:91
 #: pods/templates/channels/channel.html:118
 #: pods/templates/channels/channel_edit.html:106
 msgid "Themes"
 msgstr "Thèmes"
+
+#: pods/templates/channels/channel.html:94
+#, python-format
+msgid "%(counter)s theme"
+msgid_plural "%(counter)s themes"
+msgstr[0] "%(counter)s thème"
+msgstr[1] "%(counter)s thèmes"
 
 #: pods/models.py:165 pods/models.py:295 pods/models.py:558
 #: pods/templates/search/search.html:208
@@ -1806,12 +1811,20 @@ msgstr "Eléments par page"
 msgid "videos"
 msgstr "vidéos"
 
-#: pods/templates/maintoolbar.html:46
+#: pods/templates/maintoolbar.html:46 pods/templates/channels/channel.html:89
+#: pods/templates/channels/channels.html:60
 #, python-format
 msgid "%(counter)s video"
 msgid_plural "%(counter)s videos"
 msgstr[0] "%(counter)s vidéo"
 msgstr[1] "%(counter)s vidéos"
+
+#: pods/templates/channels/channels.html:63
+#, python-format
+msgid "%(counter)s channel"
+msgid_plural "%(counter)s channels"
+msgstr[0] "%(counter)s chaîne"
+msgstr[1] "%(counter)s chaînes"
 
 #: pods/templates/channels/channel.html:95
 #: pods/templates/channels/channel.html:97
