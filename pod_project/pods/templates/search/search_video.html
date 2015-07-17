@@ -152,12 +152,12 @@ voir http://www.gnu.org/licenses/
                             </button>
                         {% endbuttons %}
                     </fieldset>
-                    {% if result.aggregations %}
+                    {% if result.hits.total != 0 and result.aggregations %}
                         <fieldset>
                             <legend><span class="glyphicon glyphicon-filter"></span> {% trans 'faceting' %}</legend>
                             <div class="form-group"><!-- add .show-all to this .form-group to reveal the .more checkboxes -->
                                 <dl>
-                                    {% if result.aggregations.owner_full_name %}
+                                    {% if result.aggregations.owner_full_name and result.aggregations.owner_full_name.buckets %}
                                         <dt>{% trans 'Owner' %}</dt>
                                         {# Provide only the top 5 owner #}
                                         {% for owner in result.aggregations.owner_full_name.buckets %}
@@ -169,7 +169,7 @@ voir http://www.gnu.org/licenses/
                                             </dd>
                                         {% endfor %}
                                     {%endif%}
-                                    {% if result.aggregations.type %}
+                                    {% if result.aggregations.type and result.aggregations.type.buckets %}
                                         <dt>{% trans 'Type' %}</dt>
                                         {# Provide only the top 5 type #}
                                         {% for type in result.aggregations.type.buckets %}
@@ -181,7 +181,7 @@ voir http://www.gnu.org/licenses/
                                             </dd>
                                         {% endfor %}
                                     {% endif %}
-                                    {% if result.aggregations.tags %}
+                                    {% if result.aggregations.tags and result.aggregations.tags.buckets %}
                                         <dt>{% trans 'Tags' %}</dt>
                                         {# Provide only the top 5 type #}
                                         {% for tag in result.aggregations.tags.buckets %}
@@ -193,7 +193,7 @@ voir http://www.gnu.org/licenses/
                                             </dd>
                                         {% endfor %}
                                     {% endif %}
-                                    {% if result.aggregations.disciplines %}
+                                    {% if result.aggregations.disciplines and result.aggregations.disciplines.buckets %}
                                         <dt>{% trans 'Discipline' %}</dt>
                                         {# Provide only the top 5 type #}
                                         {% for discipline in result.aggregations.disciplines.buckets %}
@@ -206,7 +206,7 @@ voir http://www.gnu.org/licenses/
                                         {% endfor %}
                                     {% endif %}
 
-                                    {% if result.aggregations.channels %}
+                                    {% if result.aggregations.channels and result.aggregations.channels.buckets %}
                                         <dt>{% trans 'Channel' %}</dt>
                                         {# Provide only the top 5 type #}
                                         {% for channel in result.aggregations.channels.buckets %}
