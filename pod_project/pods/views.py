@@ -1449,13 +1449,19 @@ def autocomplete(request):
 def search_videos(request):
     es = Elasticsearch(['%s' %ES_URL])
     aggsAttrs = ['owner_full_name', 'type', 'disciplines', 'tags', 'channels']
-    searchForm = SearchForm(request)
+    
+    #SEARCH FORM
+    search_word = ""
+    start_date = None
+    end_date = None
+    searchForm = SearchForm(request.GET)
+    if searchForm.is_valid():
+        search_word = searchForm.cleaned_data['q']
+        start_date = searchForm.cleaned_data['start_date']
+        end_date = searchForm.cleaned_data['end_date']
 
     #request parameters
-    search_word = request.GET.get('q') if request.GET.get('q') else "*"
     selected_facets = request.GET.getlist('selected_facets') if request.GET.getlist('selected_facets') else []
-    start_date = request.GET.get('start_date') if request.GET.get('start_date') else None
-    end_date = request.GET.get('end_date') if request.GET.get('end_date') else None
     page = request.GET.get('page') if request.GET.get('page') else 1
     size = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
@@ -1479,17 +1485,13 @@ def search_videos(request):
     if start_date or end_date :
         filter_search["range"] = {"date_added": {}}
         if start_date :
-            start_date = datetime.strptime(start_date, '%d/%m/%Y')
-            print "%s" %start_date
             filter_search["range"]["date_added"]["gte"] = "%04d-%02d-%02d" %(start_date.year, start_date.month, start_date.day)
         if end_date :
-            end_date = datetime.strptime(end_date, '%d/%m/%Y')
-            print "%s" %end_date
             filter_search["range"]["date_added"]["lte"] = "%04d-%02d-%02d" %(end_date.year, end_date.month, end_date.day)
 
     #Query
     query = {"match_all" : {}}
-    if search_word != "*":
+    if search_word != "":
         query = {
           "multi_match" : {
             "query":    "%s" %search_word,

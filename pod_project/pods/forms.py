@@ -327,17 +327,8 @@ class SearchForm(Form):
     end_date = forms.DateField(
         required=False, label=u'Date de fin', widget=widgets.AdminDateWidget)
 
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(SearchForm, self).__init__(*args, **kwargs)
-
-        if request.GET.get('q'):
-            self.fields["q"].initial = request.GET.get('q')
-
-        if request.GET.get('start_date'):
-            self.fields["start_date"].initial = request.GET.get('start_date')
-
-        if request.GET.get('end_date'):
-            self.fields["end_date"].initial = request.GET.get('end_date')
 
         for myField in self.fields:
             self.fields[myField].widget.attrs[
