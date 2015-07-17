@@ -125,8 +125,8 @@ class ReportAdmin(admin.ModelAdmin):
 admin.site.register(ReportVideo, ReportAdmin)
 
 #AdditionRequestVideo
-class AdditionInformationRequestAdmin(admin.ModelAdmin):
-    list_display = ('id','video', 'subject', 'comment', 'answer', 'date_added', 'get_iframe_url_to_video')
+class Contact_usAdmin(admin.ModelAdmin):
+    list_display = ('id','subject', 'comment', 'answer', 'date_added')
     list_filter = ('date_added',)
-    list_display_links = ('id','video')
-admin.site.register(AdditionRequestVideo, AdditionInformationRequestAdmin)
+    list_display_links = ('id',)
+admin.site.register(Contact_us, Contact_usAdmin)

@@ -17,6 +17,10 @@ urlpatterns = patterns(
         url=settings.STATIC_URL + '/images/favicon.ico')),
     (r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^contact_us/$',
+        'pods.views.contact_us', name='contact_us'),
+
     # ACCOUNT
     url(r'^accounts/login/$', 'core.views.core_login', name='account_login'),
     url(r'^accounts/logout/$', 'core.views.core_logout',
@@ -84,8 +88,6 @@ urlpatterns = patterns(
         'pods.views.video_add_favorite', name='video_add_favorite'),
     url(r'^video_add_report/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_add_report', name='video_add_report'),
-    url(r'^video_add_additional_information/(?P<slug>[\-\d\w]+)/$',
-        'pods.views.video_add_additional_information', name='video_add_additional_information'),
     url(r'^video_completion/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_completion', name='video_completion'),
     url(r'^video_chapter/(?P<slug>[\-\d\w]+)/$',

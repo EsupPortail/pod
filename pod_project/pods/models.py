@@ -900,8 +900,7 @@ class ReportVideo(models.Model):
 # CONTACT US FOR A VIDEO
 
 @python_2_unicode_compatible
-class AdditionRequestVideo(models.Model):
-    video = models.ForeignKey(Pod, verbose_name=_('Video'))
+class Contact_us(models.Model):
     subject = models.TextField(max_length=100, verbose_name=_('Subject'))
     comment = models.TextField(
         null=True, blank=True, verbose_name=_('Comment'))
@@ -910,16 +909,10 @@ class AdditionRequestVideo(models.Model):
         'Date', default=datetime.now, editable=False)
 
     def __unicode__(self):
-        return "%s - %s - %s" % (self.video, self.subject, self.date_added)
+        return "%s - %s - %s" % (self.subject, self.date_added)
 
     def __str__(self):
-        return "%s - %s - %s" % (self.video, self.subject, self.date_added)
-
-    def get_iframe_url_to_video(self):
-        return self.video.get_iframe_admin_integration()
-
-    get_iframe_url_to_video.allow_tags = True
+        return "%s - %s - %s" % (self.subject, self.date_added)
 
     class Meta:
-        verbose_name = _("Addition Request Video")
-        verbose_name_plural = _("Addition Requests Video")
+        verbose_name = _("Contact_us")

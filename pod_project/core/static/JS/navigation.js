@@ -158,6 +158,21 @@ $(document).ready(function() {
     
 });
 
+function csrfSafeMethod(method) {
+    // These HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+$.ajaxSetup({
+    crossDomain: false, // Obviates need for sameOrigin test
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type)) {
+            xhr.setRequestHeader('X-CSRFToken', csrftoken);
+        }
+    }
+});
+var csrftoken = getCookie('csrftoken');
+
 /** EVTS PERMANENT **/
 /** video list **/
 $(document).on('click', "#pagination .paginator a", function () {
@@ -238,7 +253,6 @@ $(document).on('click', 'button.button_video_contact', function (event) {
         alert($(this).children('span.sr-only').text());
     } else {
         if(expiration_date_second > 5) {
-            //show modal box with comment input and save/cancel buttons
             $("#modal_contact_form").modal({
               show: true,
             });

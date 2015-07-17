@@ -612,10 +612,11 @@ def verify_fields_additional_information(request):
     return msg_errors
 
 @csrf_protect
-def video_add_additional_information(request, slug):
-    video = get_object_or_404(Pod, slug=slug)
+def contact_us(request):
+    url = ''.join(['http://', get_current_site(request).domain,request.GET['url']])
     if request.POST: 
         msg_errors = verify_fields_additional_information(request)
+
         if  len(msg_errors) == 0:
             if request.user.is_authenticated():
                 user_firstname = request.user.first_name
@@ -642,41 +643,37 @@ def video_add_additional_information(request, slug):
                         request, messages.ERROR, _(u'Error in the form. The captcha is uncorrect. '))
                         return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
 
-            additionrequest = AdditionRequestVideo.objects.create(
-                video=video, subject='%s' % request.POST['subject_ask'], comment= '%s' % request.POST['comment'])
-            subject = _(u'Additional information request.')
+            contact_us = Contact_us.objects.create(
+                subject='%s' % request.POST['subject_ask'], comment= '%s' % request.POST['comment'])
+            subject = _(u'Additional information request : %s.')% request.POST['subject_ask']
 
-            msg = _(u'The user %(user_firstname)s %(user_lastname)s <%(user_email)s> has been send a additional information request.\n'
+            msg = _(u'The user %(user_firstname)s %(user_lastname)s <%(user_email)s> has been send a information request.\n'
                     'Subject of request: \n'
                     '%(subject_ask)s\n'
                     'This content: \n'
                     '%(comment)s\n'
-                    'here is some more information about the video:\n'
-                    'Description: %(description)s.\n'
+                    'The page where he was:\n'
                     'url: %(url)s.\n'
-                    'Video posted by: %(owner_firstname)s %(owner_lastname)s <%(owner_email)s>.\n'
-                    'Video added on: %(video_date_added)s.\n') % {
-                        'video_title': video.title, 'user_firstname': user_firstname, 'user_lastname': user_lastname,
-                        'user_email': user_email, 'comment': request.POST['comment'], 'subject_ask': request.POST['subject_ask'], 'description': video.description,
-                        'url': ''.join(['http://', get_current_site(request).domain, video.get_absolute_url()]),
-                        'owner_firstname': video.owner.first_name, 'owner_lastname': video.owner.last_name, 'owner_email': video.owner.email,
-                        'video_date_added': video.date_added}
+                    ) % {
+                        'user_firstname': user_firstname, 'user_lastname': user_lastname,
+                        'user_email': user_email, 'comment': request.POST['comment'], 'subject_ask': request.POST['subject_ask'],
+                        'url': url
+                        }
+                        
 
-            msg_html = _(u'<p>The user %(user_firstname)s %(user_lastname)s &lt;<a href=\"mailto:%(user_email)s\">%(user_email)s</a>&gt;has been send a additional information request.</p>'
+            msg_html = _(u'<p>The user %(user_firstname)s %(user_lastname)s &lt;<a href=\"mailto:%(user_email)s\">%(user_email)s</a>&gt;has been send a information request.</p>'
                          '<p>Subject of request : </br>'
                          '%(subject_ask)s\n<p>'
                          '<p>He ask additional information: <br/>'
                          '%(comment)s</p>'
-                         '<p>here is some more information about the video:<br/>'
-                         'Description: %(description)s<br/>'
+                         '<p>The page where he was:<br/>'
+                         '<br>'
                          'url: <a href=\"%(url)s\">%(url)s</a><br/>'
-                         'Video posted by: %(owner_firstname)s %(owner_lastname)s &lt;<a href=\"mailto:%(owner_email)s\">%(owner_email)s&gt;</a>.<br/>'
-                         'Video added on: %(video_date_added)s.</p>') % {
-                'video_title': video.title, 'user_firstname': user_firstname, 'user_lastname': user_lastname,
-                'user_email': user_email, 'comment': request.POST['comment'].replace("\n", "<br/>"), 'subject_ask': request.POST['subject_ask'], 'description': video.description,
-                'url': ''.join(['http://', get_current_site(request).domain, video.get_absolute_url()]),
-                'owner_firstname': video.owner.first_name, 'owner_lastname': video.owner.last_name, 'owner_email': video.owner.email,
-                'video_date_added': video.date_added}
+                         '</p>') % {
+                'user_firstname': user_firstname, 'user_lastname': user_lastname,
+                'user_email': user_email, 'comment': request.POST['comment'].replace("\n", "<br/>"), 'subject_ask': request.POST['subject_ask'],
+                'url': url
+                }
 
             email_msg = EmailMultiAlternatives(
                 "[" + settings.TITLE_SITE + "]  %s" % subject, msg, settings.DEFAULT_FROM_EMAIL, settings.REPORT_VIDEO_MAIL_TO)
@@ -689,12 +686,17 @@ def video_add_additional_information(request, slug):
                 return HttpResponse(data, content_type='application/json')
 
             messages.add_message(request, messages.INFO, msg)
-            return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
+            return HttpResponseRedirect(url)
         else:
-            list_errors =  ", ".join(unicode(x) for x in msg_errors)
-            messages.add_message(
-                    request, messages.ERROR, _(u'Errors in form: ') +  list_errors + '.')
-            return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
+            if request.is_ajax():
+                some_data_to_dump = {'errors': "%s" % msg}
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+            else:
+                list_errors =  ", ".join(unicode(x) for x in msg_errors)
+                messages.add_message(
+                        request, messages.ERROR, _(u'Errors in form: ') +  list_errors + '.')
+                return HttpResponseRedirect(url)
 
     else:
         messages.add_message(
