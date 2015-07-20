@@ -20,6 +20,7 @@ voir http://www.gnu.org/licenses/
 {% endcomment %}
 {% load bootstrap3 %}
 {% load i18n %}
+{% load list %}
 
 <div class="panel panel-primary" overflow: auto>
     <div class="panel-heading"> 
@@ -39,8 +40,8 @@ voir http://www.gnu.org/licenses/
     <tbody>
       {% for subtitle in list_subtitle %}
       <tr>
-        <td class="subtitle_kind">{{ subtitle.kind }}</td>
-        <td class="subtitle_lang">{{ subtitle.lang }}</td>
+        <td class="subtitle_kind">{% trans subtitle.kind %}</td>
+        <td class="subtitle_lang">{% get_label_lang subtitle.lang %}</td>
         <td class="subtitle_src">{{ subtitle.src }}</td>
         <td>
           <form  class = "form_modif" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">

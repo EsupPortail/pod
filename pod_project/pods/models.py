@@ -529,7 +529,7 @@ class ContributorPods(models.Model):
         msg = []
         if not self.name  or self.name == "" or len(self.name) < 2 or len(self.name) > 200:
             msg.append(_('please enter a name from 2 to 200 caracteres.'))
-        if len(self.weblink)> 200:
+        if self.weblink and len(self.weblink) > 200:
             msg.append(_('you cannot enter a weblink with more than 200 caracteres.'))
         if not self.role:
             msg.append(_('please enter a role.'))
@@ -596,6 +596,8 @@ class TrackPods(models.Model):
             msg.append(_('please enter a correct kind.'))
         if not self.lang or (self.lang in settings.PREF_LANG_CHOICES or self.lang in settings.ALL_LANG_CHOICES):
             msg.append(_('please enter a correct lang.'))
+        if not self.src :
+            msg.append(_('please specify a track file.'))
         if (len(msg) > 0):
             return msg
         else:

@@ -28,7 +28,6 @@ from itertools import chain
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods, ChapterPods, Favorites, Type, Discipline, Mediacourses, EnrichPods, Notes
-from djangoformsetjs.utils import formset_media_js
 from modeltranslation.forms import TranslationModelForm
 from django.forms.widgets import HiddenInput
 
@@ -177,11 +176,6 @@ class PodForm(ModelForm):
 
 class ContributorPodsForm(ModelForm):
 
-    class Media(object):
-        js = formset_media_js + (
-            # Other form media here
-        )
-
     def __init__(self, *args, **kwargs):
         super(ContributorPodsForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
@@ -201,22 +195,17 @@ class ContributorPodsForm(ModelForm):
 
 class TrackPodsForm(ModelForm):
 
-    class Media(object):
-        js = formset_media_js + (
-            # Other form media here
-        )
-
     def __init__(self, *args, **kwargs):
         super(TrackPodsForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
             self.fields['video'].widget = HiddenInput()
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
-            if self.fields[myField].required:
+            if self.fields[myField].required or myField == 'src':
                 self.fields[myField].widget.attrs['class'] = 'required'
                 label_unicode = u'%s' % self.fields[myField].label
                 self.fields[myField].label = mark_safe(
-                    "%s <span class=\"special_class\">*</span>" % label_unicode)
+                    "%s <span class=\"special_class\">*</span> : " % label_unicode)
 
     class Meta:
         model = TrackPods
@@ -224,11 +213,6 @@ class TrackPodsForm(ModelForm):
 
 
 class DocPodsForm(ModelForm):
-
-    class Media(object):
-        js = formset_media_js + (
-            # Other form media here
-        )
 
     def __init__(self, *args, **kwargs):
         super(DocPodsForm, self).__init__(*args, **kwargs)
@@ -249,11 +233,6 @@ class DocPodsForm(ModelForm):
 
 class ChapterPodsForm(ModelForm):
 
-    class Media(object):
-        js = formset_media_js + (
-            # Other form media here
-        )
-        # min="1" max="5"
 
     def __init__(self, *args, **kwargs):
       super(ChapterPodsForm, self).__init__(*args, **kwargs)

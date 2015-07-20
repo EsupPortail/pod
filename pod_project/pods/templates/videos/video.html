@@ -357,11 +357,11 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                     {% for contrib in video.contributorpods_set.all %}
                                         {% if contrib.email_address %}
                                             <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" target="_blank">
-                                                {{ contrib.name }} ({{ contrib.role }})
+                                                {{ contrib.name }} ({% trans contrib.role %})
                                             </a>
                                             <noscript>{{ contrib.get_noscript_mail }}</noscript>
                                         {% else %}
-                                            {{ contrib.name }} ({{ contrib.role }})
+                                            {{ contrib.name }} ({% trans contrib.role %})
                                         {% endif %}
                                         {% if contrib.weblink %}
                                             <a href="{{ contrib.weblink }}" target="_blank" title="{{ contrib.weblink }}">

@@ -258,8 +258,10 @@ $(document).on("submit", "#page-video form", function (e) {
         var deleteConfirm = "";
         if(name_form == "subtitle"){
             deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this file ?' %}");
-        }else{
-            deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this " + name_form +" ?' %}");
+        } else if (name_form == "contributor") {
+            deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this contributor ?' %}");
+        } else if (name_form == "download") {
+            deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this download ?' %}");
         }
         if (deleteConfirm){
             var id = $(this).find('input[name=id]').val();
@@ -383,9 +385,14 @@ function verify_fields(form){
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct kind.' %} </span>")
             .parents('div.form-group').addClass('has-error');
         }
-        if(document.getElementById("id_lang").value == "" || (document.getElementById("id_lang").value !="subtitles" && document.getElementById("id_lang").value !="captions")){
+        if(document.getElementById("id_lang").value == "" ){
             $("input#id_lang")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct lang.' %} </span>")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a lang.' %} </span>")
+            .parents('div.form-group').addClass('has-error');
+        }
+        if(document.getElementById("id_src").value == "" ){
+            $("input#id_src")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please specify a track file.' %} </span>")
             .parents('div.form-group').addClass('has-error');
         }
         var kind = document.getElementById("id_kind").value;
