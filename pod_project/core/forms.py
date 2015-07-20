@@ -73,3 +73,4 @@ class ContactUsModelForm(ModelForm):
 
     class Meta:
         model = ContactUs
+        fields = '__all__'
