@@ -256,10 +256,10 @@ class EncodingType(models.Model):
 
 @python_2_unicode_compatible
 class ContactUs(models.Model):
-    name = models.CharField(_('name'), max_length=250)
-    email = models.EmailField(_('email'), max_length=250)
-    subject = models.CharField(_('subject'), max_length=250)
-    message = models.TextField(_('message'))
+    name = models.CharField(_('Name'), max_length=250)
+    email = models.EmailField(_('Email'), max_length=250)
+    subject = models.CharField(_('Subject'), max_length=250)
+    message = models.TextField(_('Message'))
 
     class Meta:
         verbose_name = _("Contact")

@@ -110,7 +110,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
 {% endblock bootstrap3_extra_head %}
 
 {% block dublincore %}
-    <!- Dublin Core ->
+    <!-- Dublin Core -->
     <meta name="dc.title" content="{{ video.title }}" />
     <meta name="dc.creator" content="{{ video.owner.get_full_name }}" />
     {% if video.discipline.all %}<meta name="dc.subject" content="{% for disc in video.discipline.all %}{{ disc.title }}{% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
@@ -121,7 +121,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
     {% if video.type %}<meta name="dc.type" content="{{ video.type }}" />{% endif %}
     <meta name="dc.format" content="{{ video.get_mediatype|first }}" />
     <meta name="dc.identifier" content="{{ request.build_absolute_uri }}" />
-    <!- /Dublin Core ->
+    <!-- /Dublin Core -->
 {% endblock %}
 
 {% block opengraph %}
@@ -186,6 +186,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                     {% endbuttons %}
                 </fieldset>
             </form>
+            <p>{% trans 'If you do not have the password or if you have connection problems' %} : <a href="{% url "contact_us" %}" title="{% trans "Contact us" %}">{% trans "Contact us" %}</a>.</p>
         {% else %}
             <meta itemprop="duration" content="{{ video.duration }}" />
             <meta itemprop="thumbnailUrl" content="{{ video.thumbnail.url }}" />
