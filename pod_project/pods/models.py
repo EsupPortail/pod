@@ -1034,23 +1034,3 @@ class ReportVideo(models.Model):
         verbose_name = _("Report")
         verbose_name_plural = _("Reports")
         unique_together = ('video', 'user',)
-
-# CONTACT US FOR A VIDEO
-
-@python_2_unicode_compatible
-class Contact_us(models.Model):
-    subject = models.TextField(max_length=100, verbose_name=_('Subject'))
-    comment = models.TextField(
-        null=True, blank=True, verbose_name=_('Comment'))
-    answer = models.TextField(null=True, blank=True, verbose_name=_('Answer'))
-    date_added = models.DateTimeField(
-        'Date', default=datetime.now, editable=False)
-
-    def __unicode__(self):
-        return "%s - %s - %s" % (self.subject, self.date_added)
-
-    def __str__(self):
-        return "%s - %s - %s" % (self.subject, self.date_added)
-
-    class Meta:
-        verbose_name = _("Contact_us")

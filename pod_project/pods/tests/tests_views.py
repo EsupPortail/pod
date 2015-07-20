@@ -22,7 +22,6 @@ voir http://www.gnu.org/licenses/
 from django.core.files import File
 from core.models import *
 import django
-import captcha.client
 from django.conf import settings
 from django.test import TestCase, override_settings
 from pods.models import *
@@ -745,91 +744,6 @@ class Video_add_reportTestView(TestCase):
             response, reverse('account_login') + '?next=/video_add_report/%s/' % pod.slug, status_code=302, target_status_code=200, msg_prefix='')
         print(
             "   --->  test_add_report_with_not_authentificate of Video_add_reportTestView : OK !")
-
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
-class Video_add_AdditionRequestTestView(TestCase):
-    fixtures = ['initial_data.json', ]
-
-    def setUp(self):
-            user = User.objects.create(
-                username='testuser', password='12345', is_active=True, is_staff=False)
-            user.set_password('hello')
-            user.save()
-            user2 = User.objects.create(
-                username='testuser2', password='12345', is_active=True, is_staff=False)
-            user2.set_password('hello')
-            user2.save()
-            other_type = Type.objects.get(id=1)
-            pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True, password="toto", 
-                                     date_added=datetime.today(), owner=user2, date_evt=datetime.today(), video="videos/remi/test.mp4",
-                                     allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
-                                     duration=3, infoVideo="videotest", to_encode=False)
-            pod.save()
-            print(" --->  SetUp of Video_add_AdditionRequestTestView : OK !")
-
-    def test_send_request(self):
-        pod = Pod.objects.get(id=1)
-        self.client = Client()
-        self.user = User.objects.get(username="testuser")
-        self.user = authenticate(username='testuser', password='hello')
-        login = self.client.login(username='testuser', password='hello')
-        self.assertEqual(login, True)
-        #request with only subject
-        response = self.client.post(
-            "/video_add_additional_information/%s/" % pod.slug, {'subject_ask': ['subject_test'], 'comment': ['']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
-        additionRequestVideo = AdditionRequestVideo.objects.get(id=1)
-        self.assertEqual(additionRequestVideo.comment, "")
-        self.assertEqual(additionRequestVideo.subject, "subject_test")
-        #request with subject and comment, the user is the owner of video
-        self.user = User.objects.get(username="testuser2")
-        self.user = authenticate(username='testuser2', password='hello')
-        login = self.client.login(username='testuser2', password='hello')
-        self.assertEqual(login, True)
-        response = self.client.post(
-            "/video_add_additional_information/%s/" % pod.slug, {'subject_ask': ['subject_test'], 'comment': ['comment']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
-        additionRequestVideo = AdditionRequestVideo.objects.get(id=2)
-        self.assertEqual(additionRequestVideo.comment, "comment")
-        self.assertEqual(additionRequestVideo.subject, "subject_test")
-        #request with nothing or not good subject
-        response = self.client.post(
-            "/video_add_additional_information/%s/" % pod.slug, {'submit': ['true'], 'subject_ask': [''], 'comment': ['']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 302)
-        response = self.client.post(
-            "/video_add_additional_information/%s/" % pod.slug, {'subject_ask': ['s'],'comment': ['']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(len(AdditionRequestVideo.objects.all()), 2)
-
-        print(
-            "   --->  test_send_request of Video_add_AdditionRequestTestView : OK !")
-
-    def test_send_request_with_not_authentificate(self):
-        pod = Pod.objects.get(id=1)
-        response = self.client.get(
-            "/video/%s/" % pod.slug)
-        print response.content
-        response = self.client.post(
-            "/video_add_additional_information/%s/" % pod.slug, {u'comment': [u''], u'recaptcha_response_field': [u'219'],
-             u'firstname': [u'sd'], u'lastname': [u'ds'],
-              u'recaptcha_challenge_field': [u'XNI91FB8q1QJiaHk_dflf6Q'],
-               u'mail': [u'rdfg@gmail.com'], u'subject_ask': [u'ef']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)  
-        self.assertEqual(len(AdditionRequestVideo.objects.all()), 0)
-        """
-        I don't know how I can test the captcha
-        """
-        print(
-            "   --->  test_send_request_with_not_authentificate of Video_add_AdditionRequestTestView : OK !")
 
 
 @override_settings(

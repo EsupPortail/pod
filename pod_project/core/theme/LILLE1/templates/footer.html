@@ -24,28 +24,6 @@ voir http://www.gnu.org/licenses/
     <div class="row">
         <div class="col-sm-4 col-xs-6"><img src="{% static  SERV_LOGO %}" alt="SEMM" id="semmLOGO" /></div>
         <div class="col-sm-4 col-xs-12">
-         <form method="post" action="{% url 'contact_us' %}?url={{ request.get_full_path }}" style="display:inline-block;">
-            {% csrf_token %}
-            <button type="submit" class="button_video_contact btn btn-block btn-link" title="{% trans 'Other requests about the video' %}">
-                <span id="mark-as-contact" class="glyphicon glyphicon-chevron-right"></span>
-                <span>&nbsp;{% trans 'Contact us' %}</span>
-            </button>
-            <noscript>
-                <span class="sr-only">{% trans 'contact us' %}</span>
-                <input class="required form-control" id="id_lastname" maxlength="200" name="lastname" placeholder="{% trans 'Lastname' %}" required="required" type="text">
-                <input class="required form-control" id="id_firstname" maxlength="200" name="firstname" placeholder="{% trans 'Firstname' %}" required="required" type="text">
-                <input class="required form-control" id="id_mail" maxlength="75" name="mail" placeholder="{% trans 'Mail' %}" required="required" type="email">
-                <input class="required form-control" id="id_subject" maxlength="100" name="subject_ask" placeholder="{% trans 'Subject' %}" required="required" type="text">
-                <textarea rows="5" name="comment" placeholder="{% trans 'Comment' %}" ></textarea>
-                <iframe src="http://www.google.com/recaptcha/api/noscript?k=6Lc_0cwSAAAAANJABWJ3p4_V0xfpPVYheLaG8wYm" frameborder="1"></iframe>
-                <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea> 
-                <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
-                <input type="reset" value= "{% trans 'Cancel' %}" />
-                <input type="submit" value="{% trans 'Send' %}" />
-            </noscript>
-        </form>
-        </div>
-        <div class="col-sm-4 col-xs-12">
             {% for page in PAGES_MENU_BAS %}
                 <a href="{{ page.page.url }}" title="{{ page.page.title }}" class="btn btn-block btn-link">
                     <span class="glyphicon glyphicon-chevron-right"></span> {{ page }}

@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 import os
 import hashlib
-import captcha.client
 from string import find
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
@@ -592,111 +591,6 @@ def video_add_report(request, slug):
 
         messages.add_message(request, messages.INFO, msg)
         return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
-    else:
-        messages.add_message(
-            request, messages.ERROR, _(u'You cannot acces this page.'))
-        raise PermissionDenied
-
-def verify_fields_additional_information(request):
-    msg_errors=[]
-    if request.POST['subject_ask'] == "" or len(request.POST['subject_ask'])>100 or len(request.POST['subject_ask'])<=1:
-        msg_errors.append(_('please enter a subject from 2 to 100 characters'))
-    if not request.user.is_authenticated():
-        if request.POST['firstname'] == "" or len(request.POST['firstname'])>200 or len(request.POST['firstname'])<=1:
-            msg_errors.append(_('please enter a firstname from 2 to 200 characters'))
-        if request.POST['lastname'] == "" or len(request.POST['lastname'])>200 or len(request.POST['lastname'])<=1:
-            msg_errors.append(_('please enter a lastname from 2 to 200 characters'))
-        if request.POST['mail'] == "" or len(request.POST['mail'])>75: 
-            msg_errors.append(_('please enter a mail from 2 to 75 characters'))
-    return msg_errors
-
-@csrf_protect
-def contact_us(request):
-    url = ''.join(['http://', get_current_site(request).domain,request.GET['url']])
-    if request.POST: 
-        msg_errors = verify_fields_additional_information(request)
-
-        if  len(msg_errors) == 0:
-            if request.user.is_authenticated():
-                user_firstname = request.user.first_name
-                user_lastname = request.user.last_name
-                user_email = request.user.email
-            else:
-                recaptcha_response = captcha.client.submit(  
-                    request.POST.get('recaptcha_challenge_field'),  
-                    request.POST.get('recaptcha_response_field'),  
-                    settings.RECAPTCHA_PRIVATE_KEY,  
-                    request.META['REMOTE_ADDR'],)
-                if recaptcha_response.is_valid:
-                    user_firstname = request.POST['firstname']
-                    user_lastname = request.POST['lastname']
-                    user_email = request.POST['mail']
-                else:
-                    if request.is_ajax():
-                        msg = _(u'Error in the form. The captcha is uncorrect. ')
-                        some_data_to_dump = {'errors': "%s" % msg}
-                        data = json.dumps(some_data_to_dump)
-                        return HttpResponse(data, content_type='application/json')
-                    else:
-                        messages.add_message(
-                        request, messages.ERROR, _(u'Error in the form. The captcha is uncorrect. '))
-                        return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
-
-            contact_us = Contact_us.objects.create(
-                subject='%s' % request.POST['subject_ask'], comment= '%s' % request.POST['comment'])
-            subject = _(u'Information request : %s.')% request.POST['subject_ask']
-
-            msg = _(u'The user %(user_firstname)s %(user_lastname)s <%(user_email)s> has been send a information request.\n'
-                    'Subject of request: \n'
-                    '%(subject_ask)s\n'
-                    'This content: \n'
-                    '%(comment)s\n'
-                    'The page where he was:\n'
-                    'url: %(url)s.\n'
-                    ) % {
-                        'user_firstname': user_firstname, 'user_lastname': user_lastname,
-                        'user_email': user_email, 'comment': request.POST['comment'], 'subject_ask': request.POST['subject_ask'],
-                        'url': url
-                        }
-                        
-
-            msg_html = _(u'<p>The user %(user_firstname)s %(user_lastname)s &lt;<a href=\"mailto:%(user_email)s\">%(user_email)s</a>&gt;has been send a information request.</p>'
-                         '<p>Subject of request : </br>'
-                         '%(subject_ask)s\n<p>'
-                         '<p>He ask additional information: <br/>'
-                         '%(comment)s</p>'
-                         '<p>The page where he was:<br/>'
-                         '<br>'
-                         'url: <a href=\"%(url)s\">%(url)s</a><br/>'
-                         '</p>') % {
-                'user_firstname': user_firstname, 'user_lastname': user_lastname,
-                'user_email': user_email, 'comment': request.POST['comment'].replace("\n", "<br/>"), 'subject_ask': request.POST['subject_ask'],
-                'url': url
-                }
-
-            email_msg = EmailMultiAlternatives(
-                "[" + settings.TITLE_SITE + "]  %s" % subject, msg, settings.DEFAULT_FROM_EMAIL, settings.REPORT_VIDEO_MAIL_TO)
-            email_msg.attach_alternative(msg_html, "text/html")
-            email_msg.send(fail_silently=False)
-            if request.is_ajax():
-                msg = _(u'Your request has been send.')
-                some_data_to_dump = {'msg': "%s" % msg}
-                data = json.dumps(some_data_to_dump)
-                return HttpResponse(data, content_type='application/json')
-
-            messages.add_message(request, messages.INFO, msg)
-            return HttpResponseRedirect(url)
-        else:
-            if request.is_ajax():
-                some_data_to_dump = {'errors': "%s" % msg}
-                data = json.dumps(some_data_to_dump)
-                return HttpResponse(data, content_type='application/json')
-            else:
-                list_errors =  ", ".join(unicode(x) for x in msg_errors)
-                messages.add_message(
-                        request, messages.ERROR, _(u'Errors in form: ') +  list_errors + '.')
-                return HttpResponseRedirect(url)
-
     else:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot acces this page.'))
@@ -1297,7 +1191,7 @@ def video_chapter(request, slug):
                                                   'form_chapter': form_chapter},
                                               context_instance=RequestContext(request))
         # end save
-        # modify 
+        # modify
         if request.POST.get("action") and request.POST['action'] == 'modify':
             chapter = get_object_or_404(ChapterPods, id=request.POST['id'])
             form_chapter = ChapterPodsForm(instance=chapter)
