@@ -1,0 +1,51 @@
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure.
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n %}
+{% load bootstrap3 %}
+
+
+{% if form.errors %}
+<!-- <p>{% trans "One or more errors have been found in the form." %}</p> -->
+{% endif %}
+
+<form method="post" action="{% url 'contact_us' %}">
+{% csrf_token %}
+{% bootstrap_form form %}
+
+{% buttons %}
+    <button type="submit" class="btn btn-success">
+        {% bootstrap_icon "save" %} {% trans "Send" %}
+    </button>
+    <button type="reset" class="btn">
+        {% bootstrap_icon "remove" %} {% trans "Cancel" %}
+    </button>
+    {% if request.META.HTTP_REFERER %}
+    <a href="{{request.META.HTTP_REFERER}}" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Back" %}</a>
+    {% else %}
+    <a href="/" class="btn btn-info">{% bootstrap_icon "arrow-left" %} {% trans "Home" %}</a>
+    {% endif %}
+{% endbuttons %}
+</form>
+
+
+
+
+

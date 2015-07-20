@@ -26,7 +26,7 @@ from django.contrib.flatpages.models import FlatPage
 from ckeditor.widgets import CKEditorWidget
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from core.models import UserProfile, PagesMenuBas, EncodingType
+from core.models import UserProfile, PagesMenuBas, EncodingType, ContactUs
 
 
 class PageForm(FlatpageForm):
@@ -77,3 +77,7 @@ class EncodingTypeAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'bitrate_audio', 'bitrate_video', 'output_height', 'mediatype')
 admin.site.register(EncodingType, EncodingTypeAdmin)
+
+class ContactUsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'email', 'subject', 'message')
+admin.site.register(ContactUs, ContactUsAdmin)

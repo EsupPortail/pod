@@ -20,10 +20,11 @@ avec ce programme. Si ce n'est pas le cas,
 voir http://www.gnu.org/licenses/
 """
 
-from django.forms import ModelForm
+from django.forms import ModelForm, URLField
 from core.models import FileBrowse, UserProfile, ContactUs
 from captcha.fields import CaptchaField
 from django.utils.safestring import mark_safe
+from django.forms.widgets import HiddenInput
 
 class FileBrowseForm(ModelForm):
     class Meta:
@@ -31,6 +32,7 @@ class FileBrowseForm(ModelForm):
         fields = '__all__'
 
 class ProfileForm(ModelForm):
+
   def __init__(self, *args, **kwargs):
     super(ProfileForm, self).__init__(*args, **kwargs)
     try :
@@ -51,15 +53,22 @@ class ProfileForm(ModelForm):
 
 class ContactUsModelForm(ModelForm):
     captcha = CaptchaField()
-    def __init__(self, *args, **kwargs):
+    url_referrer = URLField(required=False, widget=HiddenInput())
+    def __init__(self, request, *args, **kwargs):
         super(ContactUsModelForm, self).__init__(*args, **kwargs)
-        
+
+        if request.user and request.user.is_authenticated():
+            self.fields['name'].widget = HiddenInput()
+            self.fields['email'].widget = HiddenInput()
+            del self.fields['captcha']
+
         for myField in self.fields:
-            self.fields[myField].widget.attrs['placeholder'] = self.fields[myField].label
-            if self.fields[myField].required:
-                self.fields[myField].widget.attrs['class'] = 'required'
-                label_unicode = u'%s' %self.fields[myField].label
-                self.fields[myField].label = mark_safe("%s <span class=\"special_class\">*</span>" %label_unicode)
+            if self.fields[myField].label != None: 
+                self.fields[myField].widget.attrs['placeholder'] = self.fields[myField].label
+                if self.fields[myField].required:
+                    self.fields[myField].widget.attrs['class'] = 'required'
+                    label_unicode = u'%s' %self.fields[myField].label
+                    self.fields[myField].label = mark_safe("%s <span class=\"special_class\">*</span>" %label_unicode)
 
     class Meta:
         model = ContactUs

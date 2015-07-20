@@ -31,6 +31,7 @@ from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
+from django.core.mail import EmailMultiAlternatives
 from django.contrib import messages
 
 from django.contrib.auth.forms import AuthenticationForm
@@ -39,6 +40,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
 from django.template.loader import render_to_string
 from django.utils.http import urlquote
+from django.utils.html import strip_tags
 
 from django.conf import settings
 import sys
@@ -82,8 +84,7 @@ def core_login(request):
         else:
             return HttpResponseRedirect(reverse('cas_login') + '?gateway=True&next=%s' % urlquote(next))
 
-    if request.user.is_authenticated == True:
-        print "YOUPI"
+    if request.user.is_authenticated():
         return HttpResponseRedirect(next)  # Redirect to a success page.
 
     form = AuthenticationForm()
@@ -173,14 +174,52 @@ def user_profile(request):
 @csrf_protect
 def contact_us(request):
     if request.POST:
-        form = ContactUsModelForm(request.POST)
-
+        form = ContactUsModelForm(request, request.POST)
         # Validate the form: the captcha field will automatically
         # check the input
         if form.is_valid():
-            human = True
+            contact = form.save()
+            msg_html = _(u'\n<p>The user %(sender_name)s &lt;<a href=\"mailto:%(sender_email)s\">%(sender_email)s</a>&gt; send a message from <strong>%(site_title)s.</strong></p>\n'
+                         '<p>Here is the message sent : <br/>\n\n'
+                         '%(message)s</p>\n\n'
+                         '<p>Referrer page : <a href=\"%(url)s\">%(url)s</a></p>\n\n'
+                         ) % {
+                'sender_name': contact.name, 'site_title': settings.TITLE_SITE,
+                'sender_email': contact.email, 'message': contact.message.replace("\n","<br/>"), 
+                'url': form.cleaned_data['url_referrer']
+                }
+            msg_txt = strip_tags(msg_html)
+
+            print msg_txt
+
+            email_msg = EmailMultiAlternatives(
+                "[" + settings.TITLE_SITE + "]  %s" %contact.subject, msg_txt, contact.email, settings.REPORT_VIDEO_MAIL_TO)
+            email_msg.attach_alternative(msg_html, "text/html")
+            email_msg.send(fail_silently=False)
+
+            msg_html = _(u'\n<p>You just send a message from <strong>%(site_title)s.</strong></p>\n'
+                         '<p>Here is the message sent : <br/>\n\n'
+                         '%(message)s</p>\n\n'
+                         '<p>Regards</p>\n\n'
+                         ) % {
+                'site_title': settings.TITLE_SITE,
+                'message': contact.message.replace("\n","<br/>")
+                }
+            msg_txt = strip_tags(msg_html)
+
+            email_msg = EmailMultiAlternatives(
+                "[" + settings.TITLE_SITE + "] %s %s" %(_('your message intitled'), contact.subject), msg_txt, settings.HELP_MAIL, [contact.email])
+            email_msg.attach_alternative(msg_html, "text/html")
+            email_msg.send(fail_silently=False)
+
+            messages.add_message(
+                request, messages.INFO, _(u'Your message has been sent.'))
+            return HttpResponseRedirect(form.cleaned_data['url_referrer'])
     else:
-        form = ContactUsModelForm()
+        if request.user.is_authenticated():
+            form = ContactUsModelForm(request, initial={"name":request.user.get_full_name(), "email":request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
+        else:
+            form = ContactUsModelForm(request, initial={"url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
 
     form_html = render_to_string('contactus/contactus.html', {'form': form}, context_instance=RequestContext(request))
 
