@@ -16,10 +16,10 @@ class Migration(migrations.Migration):
             name='ContactUs',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=250, verbose_name='name')),
-                ('email', models.EmailField(max_length=250, verbose_name='email')),
-                ('subject', models.CharField(max_length=250, verbose_name='subject')),
-                ('message', models.TextField(verbose_name='message')),
+                ('name', models.CharField(max_length=250, verbose_name='Name')),
+                ('email', models.EmailField(max_length=250, verbose_name='Email')),
+                ('subject', models.CharField(max_length=250, verbose_name='Subject')),
+                ('message', models.TextField(verbose_name='Message')),
             ],
             options={
                 'verbose_name': 'Contact',
