@@ -46,7 +46,6 @@ INSTALLED_APPS = (
     'taggit_templatetags',
     'jquery',
     'djangoformsetjs',
-    'haystack',
     'bootstrap3',
     # Applications locales
     'pods',
@@ -132,14 +131,8 @@ SITE_ID = 1
 
 FILER_ENABLE_PERMISSIONS = True
 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://127.0.0.1:9200/',
-        'INDEX_NAME': 'haystack',
-    },
-}
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+#URL FOR ELASTICSEARCH ['host1', 'host2', ...]
+ES_URL = ['http://127.0.0.1:9200/']
 
 CACHES = {
     'default': {

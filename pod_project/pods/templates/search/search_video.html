@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure.
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load i18n list staticfiles thumbnail %}
+{% load bootstrap3 %}
+
+{% block bootstrap3_title %}{{ block.super }}{% trans 'Search' %}{% endblock bootstrap3_title %}
+
+{% block bootstrap3_extra_head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css" />
+    <style>
+        .highlighted {
+            font-style:italic;
+            font-weight:bold;
+        }
+    </style>
+
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = '{% filter escapejs %}{% static 'admin/' %}{% endfilter %}';
+    </script>
+    <script type="text/javascript" src="/my-admin/jsi18n/"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/actions.js"></script>
+    {{ form.media }}
+    <script>
+        $(document).ready(function() {
+            $('.paginator a').unbind('click');
+        });
+    </script>
+{% endblock bootstrap3_extra_head %}
+
+{% block opengraph %}
+    <meta name="description" content="{{ query }}">
+	<!-- Open Graph data -->
+	<meta property="og:title" content="{% trans 'Search' %}" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
+	<meta property="og:description" content="{{ query }}" />
+	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+{% endblock opengraph %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="active">{% trans "Search" %}</li>
+{% endblock breadcrumbs %}
+
+{% block mainToolbar %}
+    <div class="well well-sm">
+        <div class="row">
+            <div class="col-sm-8">
+                &nbsp;
+            </div>
+            {% block stats %}
+            <div class="col-sm-4  text-right">
+                <div class="results"> {{result.hits.total}} {% trans 'videos found' %}</div>
+            </div>
+            {% endblock stats %}
+        </div>
+    </div>
+{% endblock mainToolbar %}
+
+{% block article_title %}{% trans 'Search' %}{% endblock %}
+
+{% block article %}
+    {% block article_content %}{% endblock article_content %}
+
+    {% block video_list %}
+
+        {% if result.hits.total > 0 %}
+            <div id="videoList" class="row">
+            {% for hit in result.hits.hits %}
+                {% with video=hit|get:"_source" score=hit|get:"_score"  %}
+                <div class="video-thumb col-xs-6 col-md-4">
+                    <a href="{{ video.full_url }}" class="video-holder" title="{{ video.title }}"> 
+                        <span class="poster">
+                            <span class="play text-center">
+                                <span class="glyphicon glyphicon-play-circle"></span>
+                            </span>
+                            <span class="time-icons">
+                                <span class="time">{{ video.duration_in_time }}</span>
+                                <span class="icons">
+                                    {% if video.protected %}
+                                        <span title="verrouillée" class="glyphicon glyphicon-lock"></span>
+                                    {% endif %}
+                                    {% if video.mediatype == 'video' %}
+                                        <span title="video" class="glyphicon glyphicon-film"></span>
+                                    {% elif video.mediatype == 'audio' %}
+                                        <span title="audio" class="glyphicon glyphicon-headphones"></span>
+                                    {% endif %}
+                                    {% if video.is_richmedia %}
+                                        <span title="chapitres" class="glyphicon glyphicon-list"></span>
+                                    {% endif %}
+                                </span>
+                            </span>
+                            {% if video.thumbnail %}
+                                <img src="{{video.thumbnail}}" alt="{{ video.title }}" class="preview" />
+                            {% else %}
+                                <img src="{% static DEFAULT_IMG %}" class="preview" alt="{{ video.title }}" />
+                            {% endif %}
+                        </span>
+                        <h5>{{ video.title|truncatechars:36 }} <!-- {{score}} - {{result.hits.max_score}} -->  {% is_new_date video.date_added %}</h5>
+                    </a>
+                </div>
+                {% endwith %}
+            {% endfor %}
+            </div>
+            <div id="pager" class="text-center">
+                {% block pagination %}{% pagination pagination %}{% endblock %}
+            </div>
+        {% else %}
+            {% trans 'no videos found' %}
+        {% endif %}
+        
+    {% endblock video_list %}
+{% endblock article %}
+
+{% block box %}
+    <aside class="col-sm-3">
+        {% block box_filtre %}
+            <div class="widget">
+                <h4><span class="glyphicon glyphicon-search"></span> {% trans 'Advanced Search' %}</h4>
+                <form method="GET" action="." id="form_search_advanced">
+                    <fieldset>
+                        <legend><span class="glyphicon glyphicon-edit"></span> {% trans 'Edit' %}</legend>
+                        <div class="form-group">
+                            {% bootstrap_form form %}
+                        </div>
+                        {% buttons %}
+                            <button type="submit" class="btn btn-success">
+                                {% bootstrap_icon 'search' %} {% trans 'Search' %}
+                            </button>
+                        {% endbuttons %}
+                    </fieldset>
+                    {% if result.hits.total != 0 and result.aggregations %}
+                        <fieldset>
+                            <legend><span class="glyphicon glyphicon-filter"></span> {% trans 'faceting' %}</legend>
+                            <div class="form-group"><!-- add .show-all to this .form-group to reveal the .more checkboxes -->
+                                <dl>
+                                    {% if result.aggregations.owner_full_name and result.aggregations.owner_full_name.buckets %}
+                                        <dt>{% trans 'Owner' %}</dt>
+                                        {# Provide only the top 5 owner #}
+                                        {% for owner in result.aggregations.owner_full_name.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=owner_full_name:{{ owner.key|urlencode }}">
+                                                    {{ owner.key }}
+                                                </a>
+                                                ({{ owner.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {%endif%}
+                                    {% if result.aggregations.type and result.aggregations.type.buckets %}
+                                        <dt>{% trans 'Type' %}</dt>
+                                        {# Provide only the top 5 type #}
+                                        {% for type in result.aggregations.type.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=type:{{ type.key|urlencode }}">
+                                                    {{ type.key }}
+                                                </a>
+                                                ({{ type.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if result.aggregations.tags and result.aggregations.tags.buckets %}
+                                        <dt>{% trans 'Tags' %}</dt>
+                                        {# Provide only the top 5 type #}
+                                        {% for tag in result.aggregations.tags.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=tags:{{ tag.key|urlencode }}">
+                                                    {{ tag.key }}
+                                                </a>
+                                                ({{ tag.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if result.aggregations.disciplines and result.aggregations.disciplines.buckets %}
+                                        <dt>{% trans 'Discipline' %}</dt>
+                                        {# Provide only the top 5 type #}
+                                        {% for discipline in result.aggregations.disciplines.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=discipline:{{ discipline.key|urlencode }}">
+                                                    {{ discipline.key }}
+                                                </a>
+                                                ({{ discipline.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    {% if result.aggregations.channels and result.aggregations.channels.buckets %}
+                                        <dt>{% trans 'Channel' %}</dt>
+                                        {# Provide only the top 5 type #}
+                                        {% for channel in result.aggregations.channels.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=channel:{{ channel.key|urlencode }}">
+                                                    {{ channel.key }}
+                                                </a>
+                                                ({{ channel.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                </dl>
+                            </div>
+                        </fieldset>
+                    {%endif%}
+                </form>
+            </div>
+        {% endblock box_filtre %}
+    </aside>
+{% endblock box %}

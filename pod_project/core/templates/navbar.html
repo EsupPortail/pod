@@ -118,7 +118,7 @@ voir http://www.gnu.org/licenses/
                 <span class="glyphicon glyphicon-plus"></span>
                 {% trans "Add a new video" %}
             </a>
-			<form class="navbar-form navbar-right" role="search" method="get" action="{% url "haystack_search" %}">
+			<form class="navbar-form navbar-right" role="search" method="get" action="{% url "search_videos" %}">
 				<div id="searchBar" class="input-group">
 					<input type="text" class="form-control" autofocus="autofocus" name="q" placeholder="{% trans "Search" %}" />
 					<span class="input-group-btn">

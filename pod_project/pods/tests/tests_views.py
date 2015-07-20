@@ -69,7 +69,7 @@ class ChannelsTestView(TestCase):
             title="Theme1", channel=Channel.objects.get(id=1))
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=False,
-                                 date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                 date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                  allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(
@@ -203,7 +203,7 @@ class ChannelTestView(TestCase):
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
-                                 date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                 date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                  allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         pod.save()
@@ -374,7 +374,7 @@ class TypesTestView(TestCase):
         remi = User.objects.create_user(username="remi")
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
-                                 date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                 date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                  allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
@@ -422,7 +422,7 @@ class OwnersTestView(TestCase):
         remi = User.objects.create_user(username="Remi", last_name="Lefevbre")
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
-                                 date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                 date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                  allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
@@ -489,7 +489,7 @@ class DisciplinesTestView(TestCase):
         other_type = Type.objects.get(id=1)
         d1 = Discipline.objects.create(title="Discipline2")
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
-                                 date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                 date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                  allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
@@ -541,7 +541,7 @@ class Owner_Videos_listTestView(TestCase):
         i = 1
         while i < 3:
             pod = Pod.objects.create(type=other_type, title="Video" + str(i), encoding_status="b", encoding_in_progress=True,
-                                     date_added=datetime.today(), owner=self.user, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                     date_added=datetime.today().date(), owner=self.user, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                      allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                      duration=3, infoVideo="videotest", to_encode=False)
 
@@ -595,7 +595,7 @@ class Tags_TestView(TestCase):
         remi = User.objects.create_user(username="remi")
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
-                                 date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                 date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                  allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         pod.tags.add(u"testtagVideo2")
@@ -638,7 +638,7 @@ class Video_add_favoriteTestView(TestCase):
         user2.save()
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
-                                 date_added=datetime.today(), owner=user2, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                 date_added=datetime.today().date(), owner=user2, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                  allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         pod.save()
@@ -711,7 +711,7 @@ class Video_add_reportTestView(TestCase):
         user2.save()
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
-                                 date_added=datetime.today(), owner=user2, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                 date_added=datetime.today().date(), owner=user2, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                  allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         pod.save()
@@ -772,7 +772,7 @@ class Favorites_videos_listTestView(TestCase):
         i = 1
         while i < 5:
             pod = Pod.objects.create(type=other_type, title="Video" + str(i), encoding_status="b", encoding_in_progress=True,
-                                     date_added=datetime.today(), owner=user2, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                     date_added=datetime.today().date(), owner=user2, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                      allow_downloading=True, view_count=2, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                      duration=3, infoVideo="videotest", to_encode=False)
             pod.save()
@@ -838,7 +838,7 @@ class VideosTestView(TestCase):
         i = 1
         while i < 5:
             pod = Pod.objects.create(type=type1, title="Video" + str(i), encoding_status="b", encoding_in_progress=True,
-                                     date_added=datetime.today(), owner=user, date_evt=datetime.today(), video="videos/remi/test.mp4",
+                                     date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video="videos/remi/test.mp4",
                                      allow_downloading=True, view_count=0, description="fl", overview="videos/remi/1/overview.jpg", is_draft=False,
                                      duration=3, infoVideo="videotest", to_encode=False)
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
@@ -916,7 +916,7 @@ class VideoTestView(TestCase):
             title="Theme1", channel=c)
         type1 = Type.objects.create(title="type1")
         pod = Pod.objects.create(type=type1, title=u'Bunny',
-                                 date_added=datetime.today(), owner=user, date_evt=datetime.today(), video="videos/remi/test.mp4", overview=u'videos/remi/1/overview.jpg',
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video="videos/remi/test.mp4", overview=u'videos/remi/1/overview.jpg',
                                  allow_downloading=False, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
 
@@ -1033,7 +1033,7 @@ class Video_edit_testCase(TestCase):
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
-                                 date_added=datetime.today(), owner=user, date_evt=datetime.today(), video="videos/remi/test.mp4", overview=u'videos/remi/1/overview.jpg',
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video="videos/remi/test.mp4", overview=u'videos/remi/1/overview.jpg',
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
@@ -1132,7 +1132,7 @@ class Video_notesTestView(TestCase):
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
-                                 date_added=datetime.today(), owner=user, date_evt=datetime.today(), video="videos/remi/test.mp4", overview=u'videos/remi/1/overview.jpg',
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video="videos/remi/test.mp4", overview=u'videos/remi/1/overview.jpg',
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
@@ -1207,7 +1207,7 @@ class Video_completion_TestView(TestCase):
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
-                                 date_added=datetime.today(), owner=user, date_evt=datetime.today(), video="videos/remi/test.mp4", overview=u'videos/remi/1/overview.jpg',
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video="videos/remi/test.mp4", overview=u'videos/remi/1/overview.jpg',
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
@@ -1535,7 +1535,7 @@ class Video_chapterTestView(TestCase):
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
-                                 date_added=datetime.today(), owner=user, date_evt=datetime.today(), video="videos/remi/test.mp4", overview="videos/remi/1/overview.jpg",
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video="videos/remi/test.mp4", overview="videos/remi/1/overview.jpg",
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
@@ -1694,6 +1694,97 @@ class Video_chapterTestView(TestCase):
     },
     LANGUAGE_CODE='en'
 )
+class Video_search_videos(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        user = User.objects.create(
+            username='remi', password='12345', is_active=True, is_staff=True)
+        user.set_password('hello')
+        user.save()
+
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(type=other_type, title=u'Bunny',
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video="videos/remi/test.mp4", overview="videos/remi/1/overview.jpg",
+                                 allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="bugs", is_draft=False,
+                                 to_encode=False)
+        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+            id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
+
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+        pod.save()
+
+        pod2 = Pod.objects.create(type=other_type, title=u'NoIndex',
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video="videos/remi/test.mp4", overview="videos/remi/1/overview.jpg",
+                                 allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="no index", is_draft=True,
+                                 to_encode=False)
+        EncodingPods.objects.create(video=pod2, encodingType=EncodingType.objects.get(
+            id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod2, encodingType=EncodingType.objects.get(
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+        pod2.save()
+
+
+        print(" --->  SetUp of Video_enrichTestView : OK !")
+
+    def test_search_video(self):
+        self.client = Client()
+        response = self.client.get("/search/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['result']["hits"]["total"], 1)
+        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+
+        response = self.client.get("/search/?q=bunn") #title
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['result']["hits"]["total"], 1)
+        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+
+        response = self.client.get("/search/?q=remi") #owner
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['result']["hits"]["total"], 1)
+        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+
+        response = self.client.get("/search/?q=bugs") #description
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['result']["hits"]["total"], 1)
+        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+
+        response = self.client.get("/search/?q=NoIndex") #test draft video is no index
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['result']["hits"]["total"], 0)
+
+        response = self.client.get("/search/?q=toto") #test random query
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['result']["hits"]["total"], 0)
+
+        response = self.client.get("/search/?selected_facets=type:Other") #test search filtre
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['result']["hits"]["total"], 1)
+        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+
+        response = self.client.get("/search/?q=&start_date=17%2F07%2F2015") #test date filtre
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['result']["hits"]["total"], 1)
+        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+
+        print(
+            "   --->  test_search_video of Video_search_videos : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class Video_enrichTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -1712,7 +1803,7 @@ class Video_enrichTestView(TestCase):
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
-                                 date_added=datetime.today(), owner=user, date_evt=datetime.today(), video="videos/remi/test.mp4", overview="videos/remi/1/overview.jpg",
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video="videos/remi/test.mp4", overview="videos/remi/1/overview.jpg",
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(

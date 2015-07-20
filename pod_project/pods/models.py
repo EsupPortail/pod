@@ -35,6 +35,7 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 from django.contrib.sites.models import get_current_site
+from elasticsearch import Elasticsearch
 # django-taggit
 from taggit.managers import TaggableManager, _TaggableManager, TaggableRel
 from django.core.exceptions import ValidationError
@@ -43,10 +44,11 @@ import base64
 import logging
 logger = logging.getLogger(__name__)
 import unicodedata
+import json
+
+ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 # gloabl function to remove accent, use in tags
-
-
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', unicode(input_str))
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
@@ -322,6 +324,20 @@ class Pod(Video):
     def get_absolute_url(self):
         return reverse('video', args=[self.slug])
 
+    def get_full_url(self):
+        request = None
+        full_url = ''.join(
+            ['//', get_current_site(request).domain, self.get_absolute_url()])
+        return full_url
+
+    def get_thumbnail_url(self):
+        request = None
+        if not self.thumbnail:
+            return ""
+        thumbnail_url = ''.join(
+            ['//', get_current_site(request).domain, self.thumbnail.url])
+        return thumbnail_url
+
     def save(self, *args, **kwargs):
         newid = -1
         if not self.id:
@@ -373,26 +389,43 @@ class Pod(Video):
         super(Pod, self).delete()
 
     def is_richmedia(self):
-        return self.enrichpods_set.exclude(type=None)
+        return True if self.enrichpods_set.exclude(type=None) else False
 
     def get_iframe_admin_integration(self):
-        request = None
-        full_url = ''.join(
-            ['//', get_current_site(request).domain, self.get_absolute_url()])
-        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % full_url
+        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % self.get_full_url()
         return iframe_url
+
+    def get_json_to_index(self):
+        data_to_dump = {
+                'id': self.id,
+                'title': u'%s' %self.title,
+                'owner': u'%s' %self.owner.username,
+                'owner_full_name': u'%s' %self.owner.get_full_name(),
+                "date_added": u'%s' %self.date_added, 
+                "date_evt": u'%s' %self.date_evt if self.date_evt else None, 
+                "description": u'%s' %self.description, 
+                "thumbnail": u'%s' %self.get_thumbnail_url(),
+                "duration": u'%s' %self.duration,
+                "tags" : list(self.tags.all().values_list('name', flat=True)),
+                "type" : u'%s' %self.type,
+                "disciplines" : list(self.discipline.values_list('title', flat=True)),
+                "channels" : list(self.channel.values_list('title', flat=True)),
+                "themes" : list(self.theme.values_list('title', flat=True)),
+                "contributors" : list(self.contributorpods_set.values_list('name', 'role')),
+                "chapters" : list(self.chapterpods_set.values_list('title', flat=True)),
+                "enrichments" : list(self.enrichpods_set.values_list('title', flat=True)),
+                "full_url" : self.get_full_url(),
+                "protected" : True if self.password != "" or self.is_restricted is True else False,
+                "duration_in_time": self.duration_in_time(),
+                "mediatype": self.get_mediatype()[0],
+                "is_richmedia" : self.is_richmedia()
+            }
+
+        return json.dumps(data_to_dump)
 
 
 @receiver(post_save, sender=Pod)
 def launch_encode(sender, instance, created, **kwargs):
-    """
-    if created:
-        instance.to_encode=False
-        instance.encoding_in_progress=True
-        instance.save()
-        start_encode(instance)
-    else:
-    """
     if instance.to_encode == True and instance.encoding_in_progress == False:
         instance.to_encode = False
         instance.encoding_in_progress = True
@@ -409,6 +442,21 @@ def start_encode(video):
     t.setDaemon(True)
     t.start()
 
+
+@receiver(post_save) # instead of @receiver(post_save, sender=Rebel)
+def update_video_index(sender, instance=None, created=False, **kwargs):
+    list_of_models = ('ChapterPods', 'EnrichPods', 'ContributorPods', 'Pod')
+    if sender.__name__ in list_of_models: # this is the dynamic part you want
+        pod = None
+        if sender.__name__ == "Pod":
+            pod = instance
+        else:
+            pod = instance.video
+        es = Elasticsearch(ES_URL)
+        if pod.is_draft == False and pod.encodingpods_set.all().count() > 0:
+            res = es.index(index="pod", doc_type='pod', id=pod.id, body=pod.get_json_to_index(), refresh=True)
+        else:
+            delete = es.delete(index="pod", doc_type='pod', id=pod.id, refresh=True, ignore=[400, 404])
 
 @python_2_unicode_compatible
 class EncodingPods(models.Model):

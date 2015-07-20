@@ -133,7 +133,7 @@ $(window).load(function(){
             $(this).addClass('active');
             var text = $(this).context.text;
             var name_section = "\"" + text.replace(/\s/g,'') + "\"";
-            $(this).attr('title', '{% trans "Hide '+ name_section + ' section" %}');
+            $(this).attr('title', '{% trans "Hide" %} '+ name_section);
             $(this).children().removeClass('glyphicon glyphicon-chevron-down');
             $(this).children().addClass('glyphicon glyphicon-chevron-up');  
             
@@ -142,7 +142,7 @@ $(window).load(function(){
             $(this).removeClass('active');
             var text = $(this).context.text;
             var name_section = "\"" + text.replace(/\s/g,'') + "\"";
-            $(this).attr('title', '{% trans "Display '+ name_section + ' section" %}');
+            $(this).attr('title', '{% trans "Display" %} '+ name_section);
             $(this).children().removeClass('glyphicon glyphicon-chevron-up');
             $(this).children().addClass('glyphicon glyphicon-chevron-down')           
         }
