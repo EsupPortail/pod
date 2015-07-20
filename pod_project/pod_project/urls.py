@@ -40,6 +40,8 @@ urlpatterns = patterns(
     ),
 
     url(r'^search/$','pods.views.search_videos', name='search_videos'),
+    url(r'^contact_us/$','core.views.contact_us', name='contact_us'),
+    url(r'^captcha/', include('captcha.urls')),
 
     # MEDIACOURSES
     url(r'^mediacourses_add/$',

@@ -21,7 +21,8 @@ voir http://www.gnu.org/licenses/
 """
 
 from django.forms import ModelForm
-from core.models import FileBrowse, UserProfile
+from core.models import FileBrowse, UserProfile, ContactUs
+from captcha.fields import CaptchaField
 
 class FileBrowseForm(ModelForm):
     class Meta:
@@ -46,3 +47,8 @@ class ProfileForm(ModelForm):
   class Meta:
     model = UserProfile
     exclude = ('user','auth_type', 'commentaire', 'affiliation' )
+
+class ContactUsModelForm(ModelForm):
+    captcha = CaptchaField()
+    class Meta:
+        model = ContactUs
