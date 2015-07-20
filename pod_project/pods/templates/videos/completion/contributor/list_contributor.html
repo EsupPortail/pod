@@ -5,7 +5,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -22,7 +22,7 @@ voir http://www.gnu.org/licenses/
 {% load i18n %}
 
 <div class="panel panel-primary" overflow: auto>
-    <div class="panel-heading"> 
+    <div class="panel-heading">
       <h3 class="panel-title">{% trans 'List of contributors' %}&nbsp;({{list_contributor|length}})</h3>
     </div>
   <table class="table table-striped table-condensed scroll" id="table_list_contributors">
@@ -42,7 +42,8 @@ voir http://www.gnu.org/licenses/
       <tr class = "contributor">
         <td class="contributor_name">{{ contributor.name }}</td>
         <td class="contributor_mail">{{ contributor.email_address }}</td>
-        <td class="contributor_role">{{ contributor.role }}</td>
+        <!--td class="contributor_role">{{ contributor.role }}</td-->
+        <td class="contributor_role">{% trans contributor.role %}</td>
         <td class="contributor_weblink">{{ contributor.weblink }}</td>
         <td>
           <form  class = "form_modif" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
@@ -50,7 +51,7 @@ voir http://www.gnu.org/licenses/
             <input type="hidden" name="action" value="modify">
             <input type="hidden" name="id" value="{{contributor.id}}">
             <input type="submit" title="{% trans "Edit the contributor" %}" value="{% trans "modify" %}" class="edt_contributor btn btn-info btn-sm" />
-          </form>                                                                                        
+          </form>
         </td>
         <td>
           <form  class = "form_delete" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
@@ -65,4 +66,4 @@ voir http://www.gnu.org/licenses/
 
     </tbody>
   </table>
-</div> 
+</div>
