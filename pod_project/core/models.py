@@ -253,3 +253,20 @@ class EncodingType(models.Model):
 
     def __unicode__(self):
         return "%s %s %s" % (self.mediatype, self.name, self.output_height)
+
+@python_2_unicode_compatible
+class ContactUs(models.Model):
+    name = models.CharField(_('Name'), max_length=250)
+    email = models.EmailField(_('Email'), max_length=250)
+    subject = models.CharField(_('Subject'), max_length=250)
+    message = models.TextField(_('Message'))
+
+    class Meta:
+        verbose_name = _("Contact")
+        verbose_name_plural = _("Contacts")
+
+    def __str__(self):
+        return "%s %s %s" % (self.name, self.email, self.subject)
+
+    def __unicode__(self):
+        return "%s %s %s" % (self.name, self.email, self.subject)

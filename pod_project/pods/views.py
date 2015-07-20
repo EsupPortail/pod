@@ -522,7 +522,6 @@ def video_add_favorite(request, slug):
             request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
 
-
 @login_required
 @csrf_protect
 def video_add_report(request, slug):
