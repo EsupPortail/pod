@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.8.2\n"
 
 #: core/forms.py:56
 msgid "Please indicate the result of the following operation hereunder "
@@ -477,12 +477,6 @@ msgstr "Notes"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: core/templates/base.html:216 core/templates/userProfile.html:103
-#: pods/templates/channels/my_channels.html:72
-#: pods/templates/videos/video_edit.html:229
-msgid "Informations"
-msgstr "Informations"
-
 #: core/templates/base.html:243
 msgid "My files"
 msgstr "Mes fichiers"
@@ -660,8 +654,11 @@ msgstr "Authentification locale"
 msgid "Erase"
 msgstr "Effacer"
 
+#: core/templates/base.html:216 core/templates/userProfile.html:103
 #: core/templates/registration/login.html:116
 #: pods/templates/videos/my_videos.html:64
+#: pods/templates/channels/my_channels.html:72
+#: pods/templates/videos/video_edit.html:229
 #: pods/templates/videos/video_chapter.html:375
 #: pods/templates/videos/video_completion.html:514
 #: pods/templates/videos/video_enrich.html:474
