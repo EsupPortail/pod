@@ -23,7 +23,7 @@ voir http://www.gnu.org/licenses/
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-from core.forms import FileBrowseForm, ProfileForm
+from core.forms import FileBrowseForm, ProfileForm, ContactUsModelForm
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import Http404, HttpResponseRedirect
 from django.template import RequestContext
@@ -37,7 +37,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
-
+from django.template.loader import render_to_string
 from django.utils.http import urlquote
 
 from django.conf import settings
@@ -172,4 +172,20 @@ def user_profile(request):
 
 @csrf_protect
 def contact_us(request):
-    raise PermissionDenied
+    if request.POST:
+        form = ContactUsModelForm(request.POST)
+
+        # Validate the form: the captcha field will automatically
+        # check the input
+        if form.is_valid():
+            human = True
+    else:
+        form = ContactUsModelForm()
+
+    form_html = render_to_string('contactus/contactus.html', {'form': form}, context_instance=RequestContext(request))
+
+    flatpage = {'title':_("Contact us"), "content":form_html}
+    return render_to_response('flatpages/default.html',
+                              {'flatpage': flatpage, },
+                              context_instance=RequestContext(request))
+

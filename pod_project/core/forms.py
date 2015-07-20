@@ -23,6 +23,7 @@ voir http://www.gnu.org/licenses/
 from django.forms import ModelForm
 from core.models import FileBrowse, UserProfile, ContactUs
 from captcha.fields import CaptchaField
+from django.utils.safestring import mark_safe
 
 class FileBrowseForm(ModelForm):
     class Meta:
@@ -50,5 +51,15 @@ class ProfileForm(ModelForm):
 
 class ContactUsModelForm(ModelForm):
     captcha = CaptchaField()
+    def __init__(self, *args, **kwargs):
+        super(ContactUsModelForm, self).__init__(*args, **kwargs)
+        
+        for myField in self.fields:
+            self.fields[myField].widget.attrs['placeholder'] = self.fields[myField].label
+            if self.fields[myField].required:
+                self.fields[myField].widget.attrs['class'] = 'required'
+                label_unicode = u'%s' %self.fields[myField].label
+                self.fields[myField].label = mark_safe("%s <span class=\"special_class\">*</span>" %label_unicode)
+
     class Meta:
         model = ContactUs
