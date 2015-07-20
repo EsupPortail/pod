@@ -100,7 +100,7 @@ var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you h
     {% block box_info %}
 {% if not request.user.is_staff %}
 <div class="widget" style="text-align: justify">
-<h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Informations"%}</h4>
+<h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Information"%}</h4>
 <p>{%trans "Your current permissions do not allow you to add a photo to your profile. Please contact us to add these rights."%} : <a href="mailto:{{HELP_MAIL}}">{{HELP_MAIL}}</a></p>
 </div>
 {%endif%}
