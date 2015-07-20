@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 """
 Copyright (C) 2014 Nicolas Can
 Ce programme est un logiciel libre : vous pouvez
@@ -19,8 +20,6 @@ GNU General Public Licence
 avec ce programme. Si ce n'est pas le cas,
 voir http://www.gnu.org/licenses/
 """
-
-from __future__ import unicode_literals
 
 from django.shortcuts import render
 from core.forms import FileBrowseForm, ProfileForm, ContactUsModelForm
@@ -188,9 +187,7 @@ def contact_us(request):
                 'sender_email': contact.email, 'message': contact.message.replace("\n","<br/>"), 
                 'url': form.cleaned_data['url_referrer']
                 }
-            msg_txt = strip_tags(msg_html)
-
-            print msg_txt
+            msg_txt = strip_tags(u'%s' %msg_html)
 
             email_msg = EmailMultiAlternatives(
                 "[" + settings.TITLE_SITE + "]  %s" %contact.subject, msg_txt, contact.email, settings.REPORT_VIDEO_MAIL_TO)
@@ -205,7 +202,7 @@ def contact_us(request):
                 'site_title': settings.TITLE_SITE,
                 'message': contact.message.replace("\n","<br/>")
                 }
-            msg_txt = strip_tags(msg_html)
+            msg_txt = strip_tags(u'%s' %msg_html)
 
             email_msg = EmailMultiAlternatives(
                 "[" + settings.TITLE_SITE + "] %s %s" %(_('your message intitled'), contact.subject), msg_txt, settings.HELP_MAIL, [contact.email])
