@@ -45,7 +45,7 @@ INSTALLED_APPS = (
     'taggit',
     'taggit_templatetags',
     'jquery',
-    'djangoformsetjs',
+    'captcha',
     'bootstrap3',
     # Applications locales
     'pods',
@@ -133,6 +133,9 @@ FILER_ENABLE_PERMISSIONS = True
 
 #URL FOR ELASTICSEARCH ['host1', 'host2', ...]
 ES_URL = ['http://127.0.0.1:9200/']
+
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',) #('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)
 
 CACHES = {
     'default': {
