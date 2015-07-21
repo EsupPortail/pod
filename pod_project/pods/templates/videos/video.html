@@ -352,20 +352,21 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 </li>
                                 {% if video.contributorpods_set.all %}
                                     <li class="list-group-item">
-                                    {% trans 'Contributor(s): writers, directors, editors, designers…' %} :
+                                    <em>{% trans 'Contributor(s): writers, directors, editors, designers…' %} :</em>
                                     <br />
                                     {% for contrib in video.contributorpods_set.all %}
                                         {% if contrib.email_address %}
-                                            <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" target="_blank">
-                                                {{ contrib.name }} ({% trans contrib.role %})
+                                             - {{ contrib.name }} ({% trans contrib.role %})
+                                            <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% trans "send an email" %}">
+                                                <i class="fa fa-envelope fa-fw"></i>
                                             </a>
                                             <noscript>{{ contrib.get_noscript_mail }}</noscript>
                                         {% else %}
                                             {{ contrib.name }} ({% trans contrib.role %})
                                         {% endif %}
                                         {% if contrib.weblink %}
-                                            <a href="{{ contrib.weblink }}" target="_blank" title="{{ contrib.weblink }}">
-                                                <i class="fa fa-globe fa-fw"></i>
+                                            <a href="{{ contrib.weblink }}" target="_blank" title="{% trans "go to his web link" %} : {{ contrib.weblink }}">
+                                                <i class="fa fa-link fa-fw"></i>
                                             </a>
                                         {% endif %}
                                         <br />
