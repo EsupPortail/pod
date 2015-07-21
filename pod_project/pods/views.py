@@ -1500,7 +1500,7 @@ def search_videos(request):
         query = {
           "multi_match" : {
             "query":    "%s" %search_word,
-            "fields": [ "_id", "title", "owner", "owner_full_name", "description", "tags", "contributors", "chapters", "enrichments" ] 
+            "fields": [ "_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags^1", "contributors^0.6", "chapters^0.5", "enrichments^0.5" ] 
           }
         }
 
@@ -1508,24 +1508,66 @@ def search_videos(request):
     bodysearch = {
     "from" : search_from,
     "size" : size,
+    "query":{},
     "aggs": {},
     "highlight": {
         "pre_tags" : ["<strong>"],
         "post_tags" : ["</strong>"],
-        "fields":{"title":{"type" : "plain"}}}
+        "fields":{ "title": {} }
+        }
+    }
+
+    """
+    bodysearch["query"]= {
+        "function_score": {
+            "query": {},
+            "functions": [
+                {
+                    "gauss": {
+                        "date_added": {
+                            "scale": "130w",
+                            "offset": "26w",
+                            "decay": 0.8
+                        }
+                    }
+                }
+            ]
+        }
+    }
+    """
+    bodysearch["query"]= {
+        "function_score": {
+            "query": {},
+            "functions": [
+              {
+                "gauss": {
+                    "date_added": {
+                          "scale": "10d",
+                          "offset": "5d", 
+                          "decay" : 0.5 
+                    }
+                }
+              }
+            ]
+        }
     }
 
     if filter_search != {}:
-        bodysearch["query"] = {"filtered":{}}
-        bodysearch["query"]["filtered"]["query"] = query
-        bodysearch["query"]["filtered"]["filter"] = filter_search
+        bodysearch["query"]["function_score"]["query"] = {"filtered":{}}
+        bodysearch["query"]["function_score"]["query"]["filtered"]["query"] = query
+        bodysearch["query"]["function_score"]["query"]["filtered"]["filter"] = filter_search
     else :
-        bodysearch["query"] = query
+        bodysearch["query"]["function_score"]["query"] = query
+    
+    #bodysearch["query"] = query
 
     for attr in aggsAttrs:
         bodysearch["aggs"][attr] = {"terms": {"field": attr+".raw", "size": 5, "order" : { "_count" : "asc" }}}
 
+    #print json.dumps(bodysearch, indent=4)
+
     result = es.search(index="pod", body=bodysearch)
+
 
     #Pagination mayby better idea ?
     objects = []

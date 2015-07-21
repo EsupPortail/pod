@@ -51,7 +51,6 @@
     "pod": {
       "properties": {
         "title": {
-          "boost":6,
           "type":"string",
           "index_analyzer" : "custom_analyzer",
           "search_analyzer" : "custom_search_analyzer"
