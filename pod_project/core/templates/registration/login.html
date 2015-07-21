@@ -114,7 +114,10 @@ $( document ).ready(function() {
     {% block box_info %}
     <div class="widget">
         <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Information" %}</h4>
-    	{% trans "Don't hesitate to contact us for any assistance:" %} <a href="mailto:{{HELP_MAIL}}">{{HELP_MAIL}}</a>
+    	{% trans "Don't hesitate to contact us for any assistance:" %} 
+            <a href="{% url 'contact_us' %}" title="{% trans "Contact us" %}" >
+                {% trans "Contact us" %}
+            </a>
     </div>
     {% endblock box_info %}
 
