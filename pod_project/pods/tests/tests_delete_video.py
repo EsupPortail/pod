@@ -37,19 +37,20 @@ from core.utils import encode_video
 import os
 # Create your tests here.
 """
-    test view delete video 
+    test view delete video
 """
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class Video_deleteTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -73,14 +74,14 @@ class Video_deleteTestView(TestCase):
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
             id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
-        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()
-        print (" --->  SetUp of video_deleteTestView : OK !")
+        print(" --->  SetUp of video_deleteTestView : OK !")
 
     def test_video_delete(self):
         self.client = Client()
@@ -97,7 +98,7 @@ class Video_deleteTestView(TestCase):
         response = self.client.post(
             "/video_delete/%s/" % pod.slug, {u'action1': [u'delete']})
         self.assertEqual(Pod.objects.all().count(), 0)
-        print (
+        print(
             "   --->  test_video_delete of video_deleteTestView : OK !")
 
     def test_acces_to_delete_with_other_authenticating(self):
@@ -113,6 +114,6 @@ class Video_deleteTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/video_delete/%s/" % pod.slug)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue('You can\'t delete this video' in response.content)
-        print (
+        self.assertTrue('You cannot delete this video.' in response.content)
+        print(
             "   --->  test_acces_to_delete_with_other_authenticating of video_deleteTestView : OK !")

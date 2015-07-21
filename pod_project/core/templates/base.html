@@ -52,8 +52,8 @@ voir http://www.gnu.org/licenses/
                 ajax_image = '<div align="center"><img src="{% static 'images/loading.gif' %}" alt="Loading..." /></div>';
                 expiration_date_second = {% timeleft request.session.get_expiry_date|date:'U' %};
                 nIntervId = setInterval(decreasetimeleft, 1000);
-                expiresession = "{% trans 'Warning, your session will expire' %}";
-                expiredsession = "{% trans 'Error, your session has expired' %}";
+                expiresession = "{% trans 'Warning, your session will expire soon.' %}";
+                expiredsession = "{% trans 'Your session has expired.' %}";
                 function decreasetimeleft() {
                     if (expiration_date_second > 5) {
                         expiration_date_second--;
@@ -213,7 +213,7 @@ voir http://www.gnu.org/licenses/
                                     <div class="widget">
                                         <h4>
                                             <span class="glyphicon glyphicon-info-sign"></span>
-                                            {% trans 'Informations' %}
+                                            {% trans 'Information' %}
                                         </h4>
                                         Aliquam congue diam vitae metus elementum, nec fermentum leo facilisis. Nulla blandit placerat enim, nec tempor neque luctus nec. Duis ac tortor ipsum. Donec eget imperdiet lacus. Etiam elementum aliquam purus, ut rutrum sapien tempor sit amet. Morbi laoreet vel diam vitae elementum. Morbi semper sagittis adipiscing.
                                     </div>
@@ -241,7 +241,7 @@ voir http://www.gnu.org/licenses/
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h4 class="modal-title" id="myModalLabel">{% trans 'My files' %}</h4>
-                            <small>{% trans 'You will find here all your folders and files' %}</small>
+                            <small>{% trans 'You will find here all your folders and files.' %}</small>
                         </div>
                         <div class="modal-body" id="mediabox"></div>
                         <div class="modal-footer row">
@@ -260,15 +260,15 @@ voir http://www.gnu.org/licenses/
         <div class="modal fade" id="modal_report_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        
+
                         <div class="modal-header">
-                            <h3>{% trans 'report this video' %}</h3>
+                            <h3>{% trans 'Report this video' %}</h3>
                         </div>
                         <form method="post" action="{% url 'video_add_report' slug=video.slug %}" id="video_report_form" >
                         {% csrf_token %}
                         <div class="modal-body" >
                             <div class="form-group">
-                            <label for="commentreport">{% trans 'Please, specify the problem' %} :</label><br/>
+                            <label for="commentreport">{% trans 'Please, specify the problem:' %}</label><br/>
                             <textarea rows="5" name="comment" id="commentreport" class="form-control" placeholder="message"></textarea>
                             </div>
                         </div>
@@ -281,7 +281,7 @@ voir http://www.gnu.org/licenses/
                 </div><!-- /.modal-dialog -->
         </div>
         {%endif%}
-        
+
         <span id="show_messages" class="alert alert-danger collapse" role="alert" >
             &nbsp;
         </span>

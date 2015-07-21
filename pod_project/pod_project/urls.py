@@ -5,12 +5,6 @@ from django.views.generic import RedirectView
 from django.contrib import admin
 admin.autodiscover()
 
-from haystack.query import SearchQuerySet
-from haystack.views import SearchView, search_view_factory, FacetedSearchView
-from pods.forms import DateRangeSearchForm
-sqs = SearchQuerySet().facet('owner').facet('type').facet(
-    'tags').facet('discipline').facet('channel')
-
 urlpatterns = patterns(
     '',
     (r'^favicon\.ico$', RedirectView.as_view(
@@ -36,6 +30,7 @@ urlpatterns = patterns(
     # TEXT EDITOR
     url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^browse/', 'core.views.file_browse', name='ckeditor_browse'),
+    
     # Add for no staff users
     (r'^dynamic-media/jsi18n/$', 'django.views.i18n.javascript_catalog'),
     (
@@ -44,18 +39,9 @@ urlpatterns = patterns(
         {'packages': ('django.conf', 'django.contrib.admin')}
     ),
 
-    url(
-        r'^search/$',
-        search_view_factory(
-            view_class=FacetedSearchView,
-            template='search/search.html',
-            searchqueryset=sqs,
-            form_class=DateRangeSearchForm
-        ),
-        name='haystack_search'
-    ),
-    url(r'^search/autocomplete/$',
-        'pods.views.autocomplete', name='autocomplete'),
+    url(r'^search/$','pods.views.search_videos', name='search_videos'),
+    url(r'^contact_us/$','core.views.contact_us', name='contact_us'),
+    url(r'^captcha/', include('captcha.urls')),
 
     # MEDIACOURSES
     url(r'^mediacourses_add/$',
@@ -86,6 +72,12 @@ urlpatterns = patterns(
         'pods.views.video_add_report', name='video_add_report'),
     url(r'^video_completion/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_completion', name='video_completion'),
+    url(r'^video_completion_contributor/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video_completion_contributor', name='video_completion_contributor'),
+    url(r'^video_completion_subtitle/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video_completion_subtitle', name='video_completion_subtitle'),
+    url(r'^video_completion_download/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video_completion_download', name='video_completion_download'),
     url(r'^video_chapter/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_chapter', name='video_chapter'),
     url(r'^video_enrich/(?P<slug>[\-\d\w]+)/$',

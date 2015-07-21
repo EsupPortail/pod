@@ -28,7 +28,6 @@ from itertools import chain
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods, ChapterPods, Favorites, Type, Discipline, Mediacourses, EnrichPods, Notes
-from djangoformsetjs.utils import formset_media_js
 from modeltranslation.forms import TranslationModelForm
 from django.forms.widgets import HiddenInput
 
@@ -177,14 +176,10 @@ class PodForm(ModelForm):
 
 class ContributorPodsForm(ModelForm):
 
-    class Media(object):
-        js = formset_media_js + (
-            # Other form media here
-        )
-
     def __init__(self, *args, **kwargs):
         super(ContributorPodsForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
+            self.fields['video'].widget = HiddenInput()
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:
@@ -200,21 +195,17 @@ class ContributorPodsForm(ModelForm):
 
 class TrackPodsForm(ModelForm):
 
-    class Media(object):
-        js = formset_media_js + (
-            # Other form media here
-        )
-
     def __init__(self, *args, **kwargs):
         super(TrackPodsForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
+            self.fields['video'].widget = HiddenInput()
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
-            if self.fields[myField].required:
+            if self.fields[myField].required or myField == 'src':
                 self.fields[myField].widget.attrs['class'] = 'required'
                 label_unicode = u'%s' % self.fields[myField].label
                 self.fields[myField].label = mark_safe(
-                    "%s <span class=\"special_class\">*</span>" % label_unicode)
+                    "%s <span class=\"special_class\">*</span> : " % label_unicode)
 
     class Meta:
         model = TrackPods
@@ -223,14 +214,10 @@ class TrackPodsForm(ModelForm):
 
 class DocPodsForm(ModelForm):
 
-    class Media(object):
-        js = formset_media_js + (
-            # Other form media here
-        )
-
     def __init__(self, *args, **kwargs):
         super(DocPodsForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
+            self.fields['video'].widget = HiddenInput()
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:
@@ -246,11 +233,6 @@ class DocPodsForm(ModelForm):
 
 class ChapterPodsForm(ModelForm):
 
-    class Media(object):
-        js = formset_media_js + (
-            # Other form media here
-        )
-        # min="1" max="5"
 
     def __init__(self, *args, **kwargs):
       super(ChapterPodsForm, self).__init__(*args, **kwargs)
@@ -316,89 +298,25 @@ class VideoPasswordForm(Form):
                 self.fields[myField].label = mark_safe(
                     "%s <span class=\"special_class\">*</span>" % label_unicode)
 
-
-from haystack.forms import SearchForm, FacetedSearchForm
-from haystack.query import SearchQuerySet
-import time
-import datetime
-
-
-class DateRangeSearchForm(FacetedSearchForm):
+class SearchForm(Form):
+    q = forms.CharField(required=False, label=_('Search'),
+                        widget=forms.TextInput(attrs={'type': 'search'}))
     start_date = forms.DateField(
         required=False, label=u'Date de début', widget=widgets.AdminDateWidget)
     end_date = forms.DateField(
         required=False, label=u'Date de fin', widget=widgets.AdminDateWidget)
 
-    #type=forms.ModelMultipleChoiceField(required=False, queryset=Type.objects.all())
-    #discipline=forms.ModelMultipleChoiceField(required=False, queryset=Discipline.objects.all())
-    #channel=forms.ModelMultipleChoiceField(required=False, queryset=Channel.objects.all())
-    def search(self):
-            # First, store the SearchQuerySet received from other processing.
-        sqs = super(DateRangeSearchForm, self).search()
+    def __init__(self, *args, **kwargs):
+        super(SearchForm, self).__init__(*args, **kwargs)
 
-        if not self.is_valid():
-            return self.no_query_found()
-
-        if self.cleaned_data['start_date']:
-            sqs = sqs.filter(date_added__gte=self.cleaned_data['start_date'])
-
-        # Check to see if an end_date was chosen.
-        if self.cleaned_data['end_date']:
-            timestring = "%s 23:59:59" % self.cleaned_data['end_date']
-            time_format = "%Y-%m-%d %H:%M:%S"
-            midnight = datetime.datetime.fromtimestamp(
-                time.mktime(time.strptime(timestring, time_format)))
-            # print "END DATE : %s" %midnight
-            sqs = sqs.filter(date_added__lte=midnight)
-
-        return sqs
-
-    """
-    def search(self):
-        # First, store the SearchQuerySet received from other processing.
-        #sqs = super(DateRangeSearchForm, self).search()
-        sqs = SearchQuerySet().facet('owner').facet('type').facet('tags').facet('discipline').facet('channel')
-        if self.is_valid():
-            
-            sqs = sqs.filter(text_ngram=self.cleaned_data['q'])
-            #sqs = sqs.autocomplete(text=self.cleaned_data['q']) 
-            if not sqs:
-                sqs = super(DateRangeSearchForm, self).search()
-
-            # Check to see if a start_date was chosen.
-            if self.cleaned_data['start_date']:    
-                sqs = sqs.filter(date_added__gte=self.cleaned_data['start_date'])
-    
-            # Check to see if an end_date was chosen.
-            if self.cleaned_data['end_date']:
-                timestring = "%s 23:59:59" %self.cleaned_data['end_date']
-                time_format = "%Y-%m-%d %H:%M:%S"
-                midnight = datetime.datetime.fromtimestamp(time.mktime(time.strptime(timestring, time_format)))
-                #print "END DATE : %s" %midnight
-                sqs = sqs.filter(date_added__lte=midnight)
-            
-            if self.cleaned_data['type']:
-                listid=[]
-                for type in self.cleaned_data['type']:
-                    listid.append(type.id)
-                sqs = sqs.filter(type__in=listid)
-            
-            if self.cleaned_data['discipline']:
-                listid=[]
-                for disc in self.cleaned_data['discipline']:
-                    listid.append(disc.id)
-                sqs = sqs.filter(discipline__in=listid)
-            
-            if self.cleaned_data['channel']:
-                listid=[]
-                for channel in self.cleaned_data['channel']:
-                    listid.append(channel.id)
-                sqs = sqs.filter(channel__in=listid)
-
-        return sqs
-    """
-
-
+        for myField in self.fields:
+            self.fields[myField].widget.attrs[
+                'placeholder'] = self.fields[myField].label
+            if self.fields[myField].required:
+                self.fields[myField].widget.attrs['class'] = 'required'
+                label_unicode = u'%s' % self.fields[myField].label
+                self.fields[myField].label = mark_safe(
+                    "%s <span class=\"special_class\">*</span>" % label_unicode)
 # class formMediacours(forms.Form):
 #    titre = forms.CharField(max_length=100,widget=forms.TextInput(attrs={'size':'35', 'class':'required'}), required=True, label=(u'Titre '))
 #    mediapath = forms.CharField(required=False, widget=forms.HiddenInput())

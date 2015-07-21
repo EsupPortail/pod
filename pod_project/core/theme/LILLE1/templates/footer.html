@@ -24,6 +24,9 @@ voir http://www.gnu.org/licenses/
     <div class="row">
         <div class="col-sm-4 col-xs-6"><img src="{% static  SERV_LOGO %}" alt="SEMM" id="semmLOGO" /></div>
         <div class="col-sm-4 col-xs-12">
+            <a href="{% url 'contact_us' %}" title="{% trans "Contact us" %}" class="btn btn-block btn-link">
+                <span class="glyphicon glyphicon-chevron-right"></span> {% trans "Contact us" %}
+            </a>
             {% for page in PAGES_MENU_BAS %}
                 <a href="{{ page.page.url }}" title="{{ page.page.title }}" class="btn btn-block btn-link">
                     <span class="glyphicon glyphicon-chevron-right"></span> {{ page }}

@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -46,7 +46,7 @@ voir http://www.gnu.org/licenses/
 
 {% block article %}
     {% block article_content %}
-        
+
 
 
 <form method="post" action="{% url 'video_delete' slug=video.slug %}" id="video_form" accept-charset="utf-8">
@@ -60,9 +60,9 @@ voir http://www.gnu.org/licenses/
 <div class="content form">
     <div class="field">
         {% if not video.encoding_in_progress %}
-        <div class="subfield"><p>{% trans "Are you sure you want to delete the video" %} <strong>{{video.title}}</strong> ?</p></div>	
+        <div class="subfield"><p>{% trans "Are you sure you want to delete the video" %} <strong>{{video.title}}</strong> ?</p></div>
         {% else %}
-        <div class="subfield"><p>{% trans "You can not remove this video because it is still being encoded" %}</p></div>
+        <div class="subfield"><p>{% trans "You can not remove this video because it is still being encoded." %}</p></div>
         {% endif %}
     </div>
 </div>

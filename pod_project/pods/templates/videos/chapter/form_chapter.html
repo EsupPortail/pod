@@ -5,7 +5,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -24,12 +24,12 @@ voir http://www.gnu.org/licenses/
     {% csrf_token %}
     <div id="formcontent" class="form-container">
         {% if form_chapter.errors or form_chapter.non_field_errors %}
-            {% trans "Your form contains errors" %}: <br/>
+            {% trans "One or more errors have been found in the form:" %} <br/>
             {% for error in form_chapter.non_field_errors %}
                 - {{error}} <br/>
             {%endfor%}
         {%endif%}
-       
+
         {% for field_hidden in form_chapter.hidden_fields %}
         {{ field_hidden }}
         {% endfor %}
@@ -40,7 +40,7 @@ voir http://www.gnu.org/licenses/
         <input type="hidden" id = "id_chapter" name="chapter_id" value="{{form_chapter.instance.id}}">
         {% endif %}
         <input type="hidden" name="action" value="save">
-        <input type="submit" id="save_chapter" value="{% trans "save"%}" class="btn btn-info" />
-        <input type="reset" action="cancel" id="cancel_chapetr" value="cancel" class="btn btn-danger"/>
+        <input type="submit" id="save_chapter" value="{% trans "Save"%}" class="btn btn-info" />
+        <input type="reset" action="cancel" id="cancel_chapetr" value="{% trans "Cancel"%}" class="btn btn-danger" />
     </div>
 </form>

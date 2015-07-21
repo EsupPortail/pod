@@ -1,0 +1,171 @@
+{
+  "template": "pod",
+  "order": 1,
+
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 0,
+    "analysis": {
+      "filter": {
+        "snowball": {
+          "type":     "snowball",
+          "language": "French"
+          },
+        "elision": {
+          "type": "elision",
+          "articles": ["l", "m", "t", "qu", "n", "s",
+                    "j", "d", "c", "jusqu", "quoiqu",
+                    "lorsqu", "puisqu"]
+        },
+        "stopwords": {
+          "type": "stop",
+          "stopwords":  "_french_" ,
+          "ignore_case" : true
+        },
+        "worddelimiter" : {
+          "type": "word_delimiter"
+        }
+      },
+      "analyzer": {
+        "custom_analyzer" : {
+          "type"     :    "custom",
+          "tokenizer":    "nGram",
+          "filter"   :    ["stopwords", "asciifolding", "lowercase", "snowball", "elision", "worddelimiter"]
+        },
+        "custom_search_analyzer" : {
+          "type"     :    "custom",
+          "tokenizer":    "standard",
+          "filter"   :    ["stopwords", "asciifolding" ,"lowercase", "snowball", "elision", "worddelimiter"]
+        }
+      },
+      "tokenizer": {
+        "nGram": {
+          "type": "nGram",
+          "min_gram": 3,
+          "max_gram": 20
+        }
+      }
+    }
+  },
+  "mappings": {
+    "pod": {
+      "properties": {
+        "title": {
+          "type":"string",
+          "index_analyzer" : "custom_analyzer",
+          "search_analyzer" : "custom_search_analyzer"
+        },
+        "description": {
+          "type":"string",
+          "index_analyzer" : "custom_analyzer",
+          "search_analyzer" : "custom_search_analyzer"
+        },
+        "owner": {
+          "type":"string",
+          "index" : "not_analyzed"
+        },
+        "owner_full_name": {
+          "type":"string",
+          "index_analyzer" : "custom_analyzer",
+          "search_analyzer" : "custom_search_analyzer",
+          "fields": {
+            "raw" : {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "date_added" : {
+          "type": "date"
+        },
+        "date_evt" : {
+          "type": "date"
+        },
+        "thumbnail": {
+          "type":"string",
+          "index" : "not_analyzed"
+        },
+        "full_url": {
+          "type":"string",
+          "index" : "not_analyzed"
+        },
+        "duration" : {
+          "type": "integer"
+        },
+        "type": {
+          "type":"string",
+          "index_analyzer" : "standard",
+          "search_analyzer" : "standard",
+          "fields": {
+            "raw" : {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "disciplines": {
+          "type":"string",
+          "index_analyzer" : "standard",
+          "search_analyzer" : "standard",
+          "fields": {
+            "raw" : {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "channels": {
+          "type":"string",
+          "index_analyzer" : "standard",
+          "search_analyzer" : "standard",
+          "fields": {
+            "raw" : {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "themes": {
+          "type":"string",
+          "index_analyzer" : "standard",
+          "search_analyzer" : "standard",
+          "fields": {
+            "raw" : {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "contributors": {
+          "type":"string",
+          "index_analyzer" : "custom_analyzer",
+          "search_analyzer" : "custom_search_analyzer"
+        },
+        "chapters": {
+          "type":"string",
+          "index_analyzer" : "custom_analyzer",
+          "search_analyzer" : "custom_search_analyzer"
+        },
+        "enrichments": {
+          "type":"string",
+          "index_analyzer" : "custom_analyzer",
+          "search_analyzer" : "custom_search_analyzer"
+        },
+        "tags" : {
+          "type" : "string",
+          "index_analyzer" : "custom_analyzer",
+          "search_analyzer" : "custom_search_analyzer",
+          "fields": {
+            "raw" : {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "id" : {
+          "type" : "long"
+        }
+      }
+    }
+  }
+}

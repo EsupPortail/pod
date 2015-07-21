@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -32,7 +32,7 @@ voir http://www.gnu.org/licenses/
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
 	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
-	<meta property="og:description" content="" /> 
+	<meta property="og:description" content="" />
 	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
@@ -57,12 +57,16 @@ voir http://www.gnu.org/licenses/
                     <input name="" type="submit" class="sr-only" />
                 </form>
             </div>
-            {% block stats %}
-                <div class="col-sm-4 text-right">
-                    <div class="results">{{ video_count }} {% trans 'videos' %}</div>
-                    <div class="resultschannel">{{ owners.paginator.count }} {% trans 'owners' %}</div>
+        {% block stats %}
+            <div class="col-sm-4 text-right">
+                <div class="resultschannel">
+                    {% blocktrans count counter=owners.paginator.count %}{{ counter }} owner{% plural %}{{ counter }} owners{% endblocktrans %}
                 </div>
-            {% endblock stats %}
+                <div class="results">
+                    {% blocktrans count counter=video_count %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}
+                </div>
+            </div>
+        {% endblock stats %}
         </div>
     </div>
 {% endblock mainToolbar %}

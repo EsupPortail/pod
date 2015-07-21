@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -35,8 +35,8 @@ voir http://www.gnu.org/licenses/
 	<meta property="og:title" content="{{ channel.title }}" />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
-	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.jpg' %}" />
-	<meta property="og:description" content="{{ channel.description|striptags|addslashes|linebreaksbr|truncatechars:250  }}" /> 
+	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
+	<meta property="og:description" content="{{ channel.description|striptags|addslashes|linebreaksbr|truncatechars:250  }}" />
 	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
@@ -82,24 +82,28 @@ voir http://www.gnu.org/licenses/
                     <input name="" type="submit" class="sr-only" />
                 </form>
             </div>
-            {% block stats %}
-                <div class="col-sm-4  text-right">
-                    {% if videos %}
-                        <div class="results">{{ video_count }} {% trans 'videos' %}</div>
-                    {% endif %}
-                    {% if channel.themes.all %}
-                        <div class="resultstheme">{{ channel.themes.all.count }} {% trans 'Themes' %}</div>
-                    {% endif %}
-                    {% if user.is_authenticated and channel.owner == request.user%}
-                        <div class="resultschannel">
-                            <a href="{% url 'channel_edit' slug_c=channel.slug %}" title="{% trans 'edit' %}">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                                {% trans 'edit' %}
-                            </a>
-                        </div>
-                    {% endif %}
+        {% block stats %}
+            <div class="col-sm-4  text-right">
+            {% if channel.themes.all %}
+                <div class="resultstheme">
+                    {% blocktrans count counter=channel.themes.all.count %}{{ counter }} theme{% plural %}{{ counter }} themes{% endblocktrans %}
                 </div>
-            {% endblock stats %}
+            {% endif %}
+            {% if videos %}
+                <div class="results">
+                    {% blocktrans count counter=videos.paginator.count %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}
+                </div>
+            {% endif %}
+            {% if user.is_authenticated and channel.owner == request.user%}
+                <div class="resultschannel">
+                    <a href="{% url 'channel_edit' slug_c=channel.slug %}" title="{% trans 'edit' %}">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        {% trans 'edit' %}
+                    </a>
+                </div>
+            {% endif %}
+            </div>
+        {% endblock stats %}
         </div>
     </div>
 {% endblock mainToolbar %}
