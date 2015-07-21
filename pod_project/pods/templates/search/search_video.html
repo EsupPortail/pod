@@ -114,7 +114,7 @@ voir http://www.gnu.org/licenses/
                                 </span>
                             </span>
                             {% if video.thumbnail %}
-                                <img src="{{video.thumbnail}}" alt="{{ video.title }}" class="preview" />
+                                <img src="{{video.thumbnail}}" alt="{{ video.title }}" class="preview" style="max-height:160px"/>
                             {% else %}
                                 <img src="{% static DEFAULT_IMG %}" class="preview" alt="{{ video.title }}" />
                             {% endif %}
@@ -126,7 +126,7 @@ voir http://www.gnu.org/licenses/
             {% endfor %}
             </div>
             <div id="pager" class="text-center">
-                {% block pagination %}{% pagination pagination %}{% endblock %}
+                {% block pagination %}{% pagination search_pagination %}{% endblock %}
             </div>
         {% else %}
             {% trans 'no videos found' %}

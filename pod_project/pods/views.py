@@ -1461,10 +1461,16 @@ def search_videos(request):
 
     #request parameters
     selected_facets = request.GET.getlist('selected_facets') if request.GET.getlist('selected_facets') else []
-    page = request.GET.get('page') if request.GET.get('page') else 1
+    page = request.GET.get('page') if request.GET.get('page') else 0
     size = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
-    search_from = 0 if page==1 else ((page-1)*size) - 1
+    #page = request.GET.get('page') 
+    try:
+        page = int(page.encode('utf-8'))
+    except:
+        page = 0
+
+    search_from = page*size
 
     ##Filter query
     filter_search = {}
@@ -1523,13 +1529,16 @@ def search_videos(request):
 
     #Pagination mayby better idea ?
     objects = []
-    for i in range(1,result["hits"]["total"]):
+    for i in range(0,result["hits"]["total"]):
         objects.append(i)
     paginator = Paginator(objects, size)
-    pagination = get_pagination(page, paginator)
-
+    try :
+        search_pagination = paginator.page(page + 1)
+    except:
+        search_pagination = paginator.page(paginator.num_pages)
+    
     return render_to_response("search/search_video.html",
-                              {"result": result, "page":page, "pagination":pagination, "form":searchForm},
+                              {"result": result, "page":page, "search_pagination":search_pagination, "form":searchForm},
                               context_instance=RequestContext(request))
 
 ####### RECORDER #######
