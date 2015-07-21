@@ -452,7 +452,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 <form>
                                     <div class="form-group">
                                         <label for="txtpartage">{% trans 'Use this link to share the video' %}</label>
-                                        <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="http://{{ share_url }}" />
+                                        <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ share_url }}" />
                                     </div>
                                     <div class="checkbox">
                                         <label for="displaytime"></label>
