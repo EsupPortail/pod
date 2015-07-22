@@ -410,14 +410,6 @@ def video(request, slug, slug_c=None, slug_t=None):
             if request.is_ajax():
                 return HttpResponse(_(u'The changes have been saved.'))
 
-    # Video url to share
-    share_url = request.get_host() + request.get_full_path()
-    if share_url.find('?') == -1:
-        share_url += '?'
-    else:
-        share_url += '&'
-    share_url += 'is_iframe=true&size=240'
-
     ####### VIDEO PASSWORD #########
     if video.password and not (request.user == video.owner or request.user.is_superuser):
         form = VideoPasswordForm()
@@ -425,7 +417,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'form': form, 'channel': channel,
-                    'theme': theme, 'share_url': share_url, 'show_report': show_report},
+                    'theme': theme, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
         else:
@@ -440,7 +432,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                         return render_to_response(
                             'videos/video.html',
                             {'video': video, 'channel': channel,
-                                'theme': theme, 'share_url': share_url, 'show_report': show_report},
+                                'theme': theme, 'show_report': show_report},
                             context_instance=RequestContext(request)
                         )
                 else:
@@ -449,7 +441,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                     return render_to_response(
                         'videos/video.html',
                         {'video': video, 'form': form, 'channel': channel,
-                            'theme': theme, 'share_url': share_url, 'show_report': show_report},
+                            'theme': theme, 'show_report': show_report},
                         context_instance=RequestContext(request)
                     )
             else:
@@ -458,7 +450,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                 return render_to_response(
                     'videos/video.html',
                     {'video': video, 'form': form, 'channel': channel,
-                        'theme': theme, 'share_url': share_url, 'show_report': show_report},
+                        'theme': theme, 'show_report': show_report},
                     context_instance=RequestContext(request)
                 )
 
@@ -472,7 +464,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'theme': theme,
-                    'notes_form': notes_form, 'share_url': share_url, 'show_report': show_report},
+                    'notes_form': notes_form, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
@@ -481,7 +473,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         return render_to_response(
             'videos/video.html',
             {'video': video, 'channel': channel,
-                'theme': theme, 'share_url': share_url, 'show_report': show_report},
+                'theme': theme, 'show_report': show_report},
             context_instance=RequestContext(request)
         )
 
