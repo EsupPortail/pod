@@ -190,8 +190,8 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
         {% else %}
             <meta itemprop="duration" content="{{ video.duration }}" />
             <meta itemprop="thumbnailUrl" content="{{ video.thumbnail.url }}" />
-            <meta itemprop="contentURL" content="{{ request.build_absolute_uri }}" />
-            <meta itemprop="embedURL" content="{{ share_url }}" />
+            <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+            <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" />
 
             {% include 'videos/video_player.html' %}
 
@@ -429,7 +429,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                     <div class="form-group col-sm-8">
                                         <label for="txtintegration">
                                             {% trans 'Copy the content of the text box and paste it in the page' %}
-                                            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ share_url }}" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
                                         </label>
                                     </div>
                                     <div class="form-group col-sm-4">
@@ -453,7 +453,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 <form>
                                     <div class="form-group">
                                         <label for="txtpartage">{% trans 'Use this link to share the video' %}</label>
-                                        <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ share_url }}" />
+                                        <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
                                     </div>
                                     <div class="checkbox">
                                         <label for="displaytime"></label>
