@@ -73,7 +73,9 @@ voir http://www.gnu.org/licenses/
             </div>
             {% block stats %}
             <div class="col-sm-4  text-right">
-                <div class="results"> {{result.hits.total}} {% trans 'videos found' %}</div>
+                <div class="results">
+                    {% blocktrans count counter=result.hits.total %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+                </div>
             </div>
             {% endblock stats %}
         </div>
