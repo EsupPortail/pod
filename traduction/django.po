@@ -2054,7 +2054,7 @@ msgid "videos found"
 msgstr "vidéos trouvées"
 
 #: pods/templates/search/search_video.html:132
-msgid "no videos found"
+msgid "No videos found"
 msgstr "Aucune vidéo trouvée "
 
 #: pods/templates/search/search_video.html:142
