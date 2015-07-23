@@ -135,10 +135,10 @@ class EsTestView(TestCase):
         print "EsTestView"
 
     def test_es(self):
-        es_url = settings.HAYSTACK_CONNECTIONS['default']['URL']
+        es_url = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
         print "> Elastic search url : %s " % es_url
         http = urllib3.PoolManager()
-        r = http.request('GET', es_url)
+        r = http.request('GET', es_url[0])
         self.assertEqual(r.status, 200)
         print "\n   --->  test_es of EsTestView : OK ! \n info : \n %s \n" % r.data
 
