@@ -55,16 +55,22 @@ admin.site.register(Discipline, DisciplineAdmin)
 
 class EncodingPodsInline(admin.TabularInline):
     model = EncodingPods
+    extra=0
 class ContributorPodsInline(admin.TabularInline):
     model = ContributorPods
+    extra=0
 class TrackPodsInline(admin.TabularInline):
     model = TrackPods
+    extra=0
 class DocPodsInline(admin.TabularInline):
     model = DocPods
+    extra=0
 class ChapterPodsInline(admin.TabularInline):
     model = ChapterPods
+    extra=0
 class EnrichPodsInline(admin.TabularInline):
     model = EnrichPods
+    extra=0
 
 
 class PodAdmin(admin.ModelAdmin):
