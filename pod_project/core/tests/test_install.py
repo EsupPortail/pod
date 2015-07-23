@@ -135,10 +135,10 @@ class EsTestView(TestCase):
         print "EsTestView"
 
     def test_es(self):
-        es_url = settings.HAYSTACK_CONNECTIONS['default']['URL']
+        es_url = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
         print "> Elastic search url : %s " % es_url
         http = urllib3.PoolManager()
-        r = http.request('GET', es_url)
+        r = http.request('GET', es_url[0])
         self.assertEqual(r.status, 200)
         print "\n   --->  test_es of EsTestView : OK ! \n info : \n %s \n" % r.data
 
@@ -157,20 +157,29 @@ class EncodingFileTestView(TestCase):
     def setUp(self):
         remi = User.objects.create(username="remi")
         other_type = Type.objects.get(id=1)
-        url = "http://pod.univ-lille1.fr/media/pod.mp4"
-        tempfile = NamedTemporaryFile(delete=True)
-        HTTP_PROXY=getattr(settings, 'HTTP_PROXY', None)
-        if HTTP_PROXY:
-            proxy = urllib3.ProxyManager(settings.HTTP_PROXY)
-            with proxy.request('GET', url, preload_content=False) as r, open(tempfile.name, 'wb') as out_file:
-                shutil.copyfileobj(r, out_file)
-        else:
-            http = urllib3.PoolManager()
-            with http.request('GET', url, preload_content=False) as r, open(tempfile.name, 'wb') as out_file:
-                shutil.copyfileobj(r, out_file)
-        pod = Pod.objects.create(
-            type=other_type, title="Video", owner=remi, video="-", to_encode=False)
-        pod.video.save("test.mp4", File(tempfile))
+        file_path = os.path.join(settings.MEDIA_ROOT, 'videos', remi.username, 'test.mp4')
+        if not os.path.exists(file_path):
+            url = "http://pod.univ-lille1.fr/media/pod.mp4"
+            print "Download video file from %s" %url
+            tempfile = NamedTemporaryFile(delete=True)
+            HTTP_PROXY=getattr(settings, 'HTTP_PROXY', None)
+            if HTTP_PROXY:
+                proxy = urllib3.ProxyManager(settings.HTTP_PROXY)
+                with proxy.request('GET', url, preload_content=False) as r, open(tempfile.name, 'wb') as out_file:
+                    shutil.copyfileobj(r, out_file)
+            else:
+                http = urllib3.PoolManager()
+                with http.request('GET', url, preload_content=False) as r, open(tempfile.name, 'wb') as out_file:
+                    shutil.copyfileobj(r, out_file)
+            pod = Pod.objects.create(
+                type=other_type, title="Video", owner=remi, video="-", to_encode=False)
+            pod.video.save("test.mp4", File(tempfile))
+        else :
+            print "File already exist"
+            pod = Pod.objects.create(
+                type=other_type, title="Video", owner=remi, video="-", to_encode=False)
+            pod.video.name = os.path.join('videos', remi.username, 'test.mp4')
+            pod.save()
         print "\n --->  SetUp of EncodingFileTestView : OK !"
 
     def test_encoding(self):
