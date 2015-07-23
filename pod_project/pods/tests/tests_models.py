@@ -757,11 +757,14 @@ class ReportVideoTestCase(TestCase):
 
     def setUp(self):
         remi = User.objects.create_user("Remi")
+        nicolas = User.objects.create_user("Nicolas")
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(
             type=other_type,  title="Video1", slug="tralala", owner=remi)
+
         ReportVideo.objects.create(video=pod, user=remi)
-        ReportVideo.objects.create(video=pod, user=remi, comment="violation des droits", answer="accepte")
+
+        ReportVideo.objects.create(video=pod, user=nicolas, comment="violation des droits", answer="accepte")
 
 
         print (" --->  SetUp of ReportVideoTestCase : OK !")
@@ -797,7 +800,7 @@ class ReportVideoTestCase(TestCase):
         self.assertEqual(reportVideo.video.id, 1)
         self.assertEqual(reportVideo.__unicode__(), "%s - %s" %
                          (reportVideo.video, reportVideo.user))
-        self.assertEqual(reportVideo.user.username, "Remi")
+        self.assertEqual(reportVideo.user.username, "Nicolas")
         date = datetime.today()
         self.assertEqual(reportVideo.date_added.year, date.year)
         self.assertEqual(reportVideo.date_added.month, date.month)
