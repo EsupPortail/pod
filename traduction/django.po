@@ -627,11 +627,15 @@ msgstr "Ajouter une nouvelle vidéo"
 #: pods/forms.py:302 pods/templates/search/search_video.html:25
 #: pods/templates/search/search_video.html:55
 #: pods/templates/search/search_video.html:65
-#: pods/templates/search/search_video.html:83
 #: pods/templates/search/search_video.html:151
 #: pods/templates/videos/videos.html:54
 msgid "Search"
 msgstr "Rechercher"
+
+#: pods/templates/search/search_video.html:83
+#: pods/templates/videos/videos.html:54
+msgid "Search results"
+msgstr "Résultat(s) de la recherche"
 
 #: core/templates/registration/login.html:25
 #: core/templates/registration/login.html:49
