@@ -2052,9 +2052,9 @@ msgid_plural "%(counter)s videos found"
 msgstr[0] "%(counter)s vidéo trouvée"
 msgstr[1] "%(counter)s vidéos trouvées"
 
-#: pods/templates/search/search_video.html:132
-msgid "No videos found"
-msgstr "Aucune vidéo trouvée "
+#: pods/templates/search/search_video.html:134
+msgid "No videos match your request."
+msgstr "Aucune vidéo ne correspond à votre recherche."
 
 #: pods/templates/search/search_video.html:142
 msgid "Advanced Search"
