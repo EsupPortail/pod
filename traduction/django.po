@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.3\n"
 
 #: core/forms.py:56
-msgid "Please indicate the result of the following operation hereunder "
+msgid "Please indicate the result of the following operation hereunder"
 msgstr "Veuillez compléter le champ ci-dessous avec le résultat de l'opération"
 
 #: core/models.py:68
