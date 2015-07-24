@@ -73,14 +73,16 @@ voir http://www.gnu.org/licenses/
             </div>
             {% block stats %}
             <div class="col-sm-4  text-right">
-                <div class="results"> {{result.hits.total}} {% trans 'videos found' %}</div>
+                <div class="results">
+                    {% blocktrans count counter=result.hits.total %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+                </div>
             </div>
             {% endblock stats %}
         </div>
     </div>
 {% endblock mainToolbar %}
 
-{% block article_title %}{% trans 'Search' %}{% endblock %}
+{% block article_title %}{% trans 'Search results' %}{% endblock %}
 
 {% block article %}
     {% block article_content %}{% endblock article_content %}
@@ -92,7 +94,7 @@ voir http://www.gnu.org/licenses/
             {% for hit in result.hits.hits %}
                 {% with video=hit|get:"_source" score=hit|get:"_score"  %}
                 <div class="video-thumb col-xs-6 col-md-4">
-                    <a href="{{ video.full_url }}" class="video-holder" title="{{ video.title }}"> 
+                    <a href="{{ video.full_url }}" class="video-holder" title="{{ video.title }}">
                         <span class="poster">
                             <span class="play text-center">
                                 <span class="glyphicon glyphicon-play-circle"></span>
@@ -129,9 +131,9 @@ voir http://www.gnu.org/licenses/
                 {% block pagination %}{% pagination search_pagination %}{% endblock %}
             </div>
         {% else %}
-            {% trans 'no videos found' %}
+            {% trans 'No videos match your request.' %}
         {% endif %}
-        
+
     {% endblock video_list %}
 {% endblock article %}
 
