@@ -114,7 +114,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
     <meta name="dc.title" content="{{ video.title }}" />
     <meta name="dc.creator" content="{{ video.owner.get_full_name }}" />
     {% if video.discipline.all %}<meta name="dc.subject" content="{% for disc in video.discipline.all %}{{ disc.title }}{% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
-    {% if video.description %}<meta name="dc.description" content="{{ video.description|striptags }}" />{% endif %}
+    {% if video.description %}<meta name="dc.description" content="{{ video.description|striptags|addslashes|linebreaksbr }}" />{% endif %}
     {% if video.channel.all %}<meta name="dc.publisher" content="{% for chan in video.channel.all %}{{ chan.title }}{% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
     {% if video.contributorpods_set.all %}<meta name="dc.contributor" content="{% for contrib in video.contributorpods_set.all %}{{ contrib.name }} {% if contrib.role %}({% trans contrib.role %}){%endif%} {% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
     {% if video.date_added %}<meta name="dc.date" content="{{ video.date_added|date:'Y/m/d' }}" />{% endif %}
@@ -128,12 +128,12 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
     <meta name="description" content="{{ video.description|striptags|addslashes|linebreaksbr|truncatechars:150 }}">
 	<!-- Open Graph data -->
 	<meta property="og:title" content="{{ video.title }}" />
-	<meta property="og:type" content="article" />
+	<meta property="og:type" content="video" />
 	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
     {% if video.thumbnail %}
-        <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{{ video.thumbnail.url }}" />
+        <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{ video.thumbnail.url }}" />
     {%else%}
-        <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
+        <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
     {% endif %}
 
 	<meta property="og:description" content="{{ video.description|striptags|addslashes|linebreaksbr|truncatechars:250 }}" />
