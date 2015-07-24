@@ -34,6 +34,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
+from django.core.exceptions import SuspiciousOperation
 from string import replace
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
@@ -375,7 +376,10 @@ def videos(request):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None):
-    id = slug[:find(slug, "-")]
+    try:
+        id = int(slug[:find(slug, "-")])
+    except ValueError:
+        raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Pod, id=id)
     show_report = getattr(settings, 'SHOW_REPORT', False)
     channel = None
