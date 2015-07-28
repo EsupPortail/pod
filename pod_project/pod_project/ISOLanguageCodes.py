@@ -155,11 +155,14 @@ ALL_LANG_CHOICES = (
 )
 
 PREF_LANG_CHOICES = (
+    ('de', _('German')),
+    ('en', _('English')),
     ('ar', _('Arabic')),
     ('zh-hans', _('Simplified Chinese')),
     ('zh-hant', _('Traditional Chinese')),
-    ('en', _('English')),
+    ('es', _('Spanish')),
     ('fr', _('French')),
-    ('de', _('German')),
-    ('es', _('Spanish'))
+    ('it', _('Italian')),
+    ('ja', _('Japanese')),
+    ('ru', _('Russian')),
 )
