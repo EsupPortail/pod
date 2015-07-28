@@ -273,7 +273,7 @@ class EnrichPodsForm(ModelForm):
         for myField in self.fields:
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
-            if self.fields[myField].required:
+            if self.fields[myField].required or myField=="type":
                 self.fields[myField].widget.attrs['class'] = 'required'
                 label_unicode = u'%s' % self.fields[myField].label
                 self.fields[myField].label = mark_safe(
