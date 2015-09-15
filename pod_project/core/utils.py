@@ -358,8 +358,8 @@ def add_thumbnails(video_id, in_w, in_h, folder):
             if DEBUG:
                 print "THUMBNAILS %s" % i
             upc_image, created = Image.objects.get_or_create(
-                folder=folder, name="%s_%s.png" % (video.slug, i))
-            upc_image.file.save("%s_%s.png" % (video.slug, i), File(
+                folder=folder, name="%s_%s.png" % (video.id, i))
+            upc_image.file.save("%s_%s.png" % (video.id, i), File(
                 open("%s_%s.png" % (tempfile.name, i))), save=True)
             upc_image.owner = video.owner
             upc_image.save()
