@@ -396,6 +396,7 @@ class Pod(Video):
         return iframe_url
 
     def get_json_to_index(self):
+
         data_to_dump = {
                 'id': self.id,
                 'title': u'%s' %self.title,
@@ -417,7 +418,7 @@ class Pod(Video):
                 "full_url" : self.get_full_url(),
                 "protected" : True if self.password != "" or self.is_restricted is True else False,
                 "duration_in_time": self.duration_in_time(),
-                "mediatype": self.get_mediatype()[0],
+                "mediatype": self.get_mediatype()[0] if len(self.get_mediatype()) > 0 else "video",
                 "is_richmedia" : self.is_richmedia()
             }
 
