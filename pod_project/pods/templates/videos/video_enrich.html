@@ -82,6 +82,11 @@ table.scroll tbody td.enrich_title {
 table.scroll tbody td.enrich_type {
     width: 20%;
 }
+table.scroll tbody td.enrich_start, table.scroll tbody td.enrich_end{
+    width: 20%;
+}
+
+
 </style>
 
 <script src="{% static "video-js/video.js" %}" ></script>
@@ -277,6 +282,7 @@ function get_form(data) {
         $("input#id_end")
             .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode'></span></span>");
         enrich_type();
+        manageResize();
 };
 
 function enrich_type(){
