@@ -1465,6 +1465,10 @@ def search_videos(request):
         page = int(page.encode('utf-8'))
     except:
         page = 0
+    try:
+        size = int(size.encode('utf-8'))
+    except:
+        size = DEFAULT_PER_PAGE
 
     search_from = page*size
 
