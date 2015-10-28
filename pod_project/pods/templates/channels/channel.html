@@ -29,14 +29,14 @@ voir http://www.gnu.org/licenses/
     </style>
 {% endblock bootstrap3_extra_head %}
 
-{% block opengraph %}
-    <meta name="description" content="{{ channel.description|striptags|addslashes|linebreaksbr|truncatechars:150 }}">
+{% block opengraph %}{% load pod_filters %}
+    <meta name="description" content="{{ channel.description|metaformat|safe|striptags|truncatechars:150 }}" />
 	<!-- Open Graph data -->
 	<meta property="og:title" content="{{ channel.title }}" />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
 	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
-	<meta property="og:description" content="{{ channel.description|striptags|addslashes|linebreaksbr|truncatechars:250  }}" />
+	<meta property="og:description" content="{{ channel.description|metaformat|safe|striptags|truncatechars:250  }}" />
 	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
