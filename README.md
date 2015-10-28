@@ -1,6 +1,6 @@
 # Pod, la plateforme video de l'université de Lille,  Sciences et technologies
 
-![Lille1Pod, la plateforme vidéo de lille1](http://pod.univ-lille1.fr/static/images/share.jpg "Pod, la plateforme vidéo de l'université de Lille, Science et technologique")        ![Université de Lille, Sciences et technologies](http://www.univ-lille1.fr/digitalAssets/38/38040_logo-trans.png "Université de Lille, Sciences et technologies")  
+![Lille1Pod, la plateforme vidéo de lille1](http://pod.univ-lille1.fr/static/images/share.png "Pod, la plateforme vidéo de l'université de Lille, Science et technologique")        ![Université de Lille, Sciences et technologies](http://www.univ-lille1.fr/digitalAssets/38/38040_logo-trans.png "Université de Lille, Sciences et technologies")  
 
 # Pod
 =======
