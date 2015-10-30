@@ -234,7 +234,7 @@ def encode_video(video_to_encode):
                     bufsize = "%sk" % (int_bufsize * 2)
                 except:
                     pass
-                if in_height >= encod_video.output_height:
+                if in_height >= encod_video.output_height or encod_video == list_encod_video.first():
                     video = Pod.objects.get(id=VIDEO_ID)
                     videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, "%s" % video.id,
                                                  "video_%s_%s.mp4" % (video.id, encod_video.output_height))
