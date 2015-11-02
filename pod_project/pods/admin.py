@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -22,11 +22,11 @@ voir http://www.gnu.org/licenses/
 from django.contrib import admin
 from pods.models import *
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin import widgets
 
 from django.contrib.auth.models import User
-#Ordering user by username !   
+#Ordering user by username !
 User._meta.ordering=["username"]
 
 from modeltranslation.admin import TranslationAdmin
@@ -97,9 +97,9 @@ class PodAdmin(admin.ModelAdmin):
             item.encoding_in_progress=False
             item.to_encode=True
             item.save()
-    encode_video.short_description = "encode"
-    
-    
+    encode_video.short_description = _('Encode selected')
+
+
 admin.site.register(Pod, PodAdmin)
 
 class EncodingPodsAdmin(admin.ModelAdmin):
