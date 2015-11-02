@@ -1,26 +1,19 @@
 @charset "utf-8";
 /*
 Copyright (C) 2014 Yannick Bonnaz
-Ce programme est un logiciel libre : vous pouvez
-le redistribuer et/ou le modifier sous les termes
-de la licence GNU Public Licence telle que publiée
-par la Free Software Foundation, soit dans la
-version 3 de la licence, ou (selon votre choix)
-toute version ultérieure.
-Ce programme est distribué avec l'espoir
-qu'il sera utile, mais SANS AUCUNE
-GARANTIE : sans même les garanties
-implicites de VALEUR MARCHANDE ou
-D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
-la licence GNU General Public License
-pour plus de détails.
-Vous devriez avoir reçu une copie de la licence
-GNU General Public Licence
-avec ce programme. Si ce n'est pas le cas,
-voir http://www.gnu.org/licenses/
+Ce programme est un logiciel libre : vous pouvez le redistribuer
+et/ou le modifier sous les termes de la licence GNU Public Licence
+telle que publiée par la Free Software Foundation, soit dans la version 3
+de la licence, ou (selon votre choix) toute version ultérieure.
+Ce programme est distribué avec l'espoir qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir la licence GNU General Public License
+pour plus de détails. Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence avec ce programme. Si ce n'est pas le cas, voir
+http://www.gnu.org/licenses/
 */
 body {
-  background-color: #222222;
+  background-color: #222;
   background-image: url("/static/images/binding_dark.png");
   background-position: top center;
   background-attachment: fixed;
@@ -28,7 +21,7 @@ body {
   padding: 20px;
 }
 #header {
-  color: #333333;
+  color: #333;
   background-color: #f8af19;
   background: -moz-linear-gradient(top, #f8af19 0%, #ee7d19 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f8af19), color-stop(100%, #ee7d19));
@@ -39,7 +32,7 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8af19',endColorstr='#ee7d19',GradientType=0);
 }
 #branding h1 {
-  color: #111111;
+  color: #111;
 }
 #container {
   background: #fff;
@@ -49,4 +42,7 @@ body {
 .inline-group h2 {
   background: #333;
   color: #fff;
+}
+#changelist table thead th {
+  white-space: normal;
 }
