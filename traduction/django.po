@@ -1384,6 +1384,10 @@ msgstr ""
 msgid "Français"
 msgstr "Français"
 
+#: pods/admin.py:106
+msgid "Encode selected"
+msgstr "(Ré)encoder la sélection"
+
 #: pods/forms.py:127
 msgid "Filetype not allowed! Filetypes allowed: "
 msgstr "Type de fichier non admis ! Les types de fichiers acceptés sont : "
