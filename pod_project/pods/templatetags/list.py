@@ -175,7 +175,7 @@ def get_label_lang(lang):
 @register.inclusion_tag("videos/videos_list.html")
 def get_last_videos():
     return {
-        'videos': Pod.objects.filter(is_draft=False, password='', encodingpods__gt=0).order_by("-date_added").distinct()[:9],
+        'videos': Pod.objects.filter(is_draft=False, password='', encodingpods__gt=0).exclude(channel__visible=0).order_by("-date_added").distinct()[:9],
         'DEFAULT_IMG': settings.DEFAULT_IMG
     }
 
