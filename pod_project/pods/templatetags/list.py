@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -175,7 +175,7 @@ def get_label_lang(lang):
 @register.inclusion_tag("videos/videos_list.html")
 def get_last_videos():
     return {
-        'videos': Pod.objects.filter(is_draft=False, encodingpods__gt=0).order_by("-date_added").distinct()[:9],
+        'videos': Pod.objects.filter(is_draft=False, password='', encodingpods__gt=0).exclude(channel__visible=0).order_by("-date_added").distinct()[:9],
         'DEFAULT_IMG': settings.DEFAULT_IMG
     }
 
