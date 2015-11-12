@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'taggit',
     'taggit_templatetags',
     'jquery',
+    'djangoformsetjs',
     'captcha',
     'bootstrap3',
     # Applications locales

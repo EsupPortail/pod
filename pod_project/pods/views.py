@@ -34,6 +34,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
+from django.core.exceptions import SuspiciousOperation
 from string import replace
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
@@ -375,7 +376,10 @@ def videos(request):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None):
-    id = slug[:find(slug, "-")]
+    try:
+        id = int(slug[:find(slug, "-")])
+    except ValueError:
+        raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Pod, id=id)
     show_report = getattr(settings, 'SHOW_REPORT', False)
     channel = None
@@ -410,14 +414,6 @@ def video(request, slug, slug_c=None, slug_t=None):
             if request.is_ajax():
                 return HttpResponse(_(u'The changes have been saved.'))
 
-    # Video url to share
-    share_url = request.get_host() + request.get_full_path()
-    if share_url.find('?') == -1:
-        share_url += '?'
-    else:
-        share_url += '&'
-    share_url += 'is_iframe=true&size=240'
-
     ####### VIDEO PASSWORD #########
     if video.password and not (request.user == video.owner or request.user.is_superuser):
         form = VideoPasswordForm()
@@ -425,7 +421,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'form': form, 'channel': channel,
-                    'theme': theme, 'share_url': share_url, 'show_report': show_report},
+                    'theme': theme, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
         else:
@@ -440,7 +436,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                         return render_to_response(
                             'videos/video.html',
                             {'video': video, 'channel': channel,
-                                'theme': theme, 'share_url': share_url, 'show_report': show_report},
+                                'theme': theme, 'show_report': show_report},
                             context_instance=RequestContext(request)
                         )
                 else:
@@ -449,7 +445,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                     return render_to_response(
                         'videos/video.html',
                         {'video': video, 'form': form, 'channel': channel,
-                            'theme': theme, 'share_url': share_url, 'show_report': show_report},
+                            'theme': theme, 'show_report': show_report},
                         context_instance=RequestContext(request)
                     )
             else:
@@ -458,7 +454,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                 return render_to_response(
                     'videos/video.html',
                     {'video': video, 'form': form, 'channel': channel,
-                        'theme': theme, 'share_url': share_url, 'show_report': show_report},
+                        'theme': theme, 'show_report': show_report},
                     context_instance=RequestContext(request)
                 )
 
@@ -472,7 +468,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'theme': theme,
-                    'notes_form': notes_form, 'share_url': share_url, 'show_report': show_report},
+                    'notes_form': notes_form, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
@@ -481,7 +477,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         return render_to_response(
             'videos/video.html',
             {'video': video, 'channel': channel,
-                'theme': theme, 'share_url': share_url, 'show_report': show_report},
+                'theme': theme, 'show_report': show_report},
             context_instance=RequestContext(request)
         )
 
@@ -1469,6 +1465,10 @@ def search_videos(request):
         page = int(page.encode('utf-8'))
     except:
         page = 0
+    try:
+        size = int(size.encode('utf-8'))
+    except:
+        size = DEFAULT_PER_PAGE
 
     search_from = page*size
 
