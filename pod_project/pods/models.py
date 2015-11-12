@@ -291,7 +291,7 @@ class Pod(Video):
 
     tags = MyTaggableManager(
         help_text=_(
-            u'Separate tags with spaces, enclose the tags consist of several words in quotation marks.'),
+            u'Separate tags with spaces, and enclose in quotation marks tags consisting of several words.'),
         verbose_name=_('Tags'), blank=True)
 
     type = models.ForeignKey(Type, verbose_name=_('Type'))

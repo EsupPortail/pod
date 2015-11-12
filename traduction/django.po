@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-23 17:34+0200\n"
-"PO-Revision-Date: 2015-11-12 17:20+0100\n"
+"PO-Revision-Date: 2015-11-12 17:56+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1468,10 +1468,10 @@ msgstr "Discipline"
 
 #: pods/models.py:294
 msgid ""
-"Separate tags with spaces, enclose the tags consist of several words in "
-"quotation marks."
+"Separate tags with spaces, and enclose in quotation marks tags consisting of "
+"several words."
 msgstr ""
-"Séparez les mots-clés avec des espaces, placez les mots-clés constitués de "
+"Séparez les mots-clés avec des espaces, et placez ceux constitués de "
 "plusieurs mots entre guillemets."
 
 #: pods/models.py:307

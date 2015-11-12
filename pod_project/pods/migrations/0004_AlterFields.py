@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import filer.fields.file
+import pods.models
 
 
 class Migration(migrations.Migration):
@@ -56,6 +57,12 @@ class Migration(migrations.Migration):
             model_name='pod',
             name='password',
             field=models.CharField(help_text='The video will be available with the specified password.', max_length=50, null=True, verbose_name='password', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='pod',
+            name='tags',
+            field=pods.models.MyTaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='Separate tags with spaces, and enclose in quotation marks tags consisting of several words.', verbose_name='Tags'),
             preserve_default=True,
         ),
         migrations.AlterField(
