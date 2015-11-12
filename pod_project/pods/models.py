@@ -291,7 +291,7 @@ class Pod(Video):
 
     tags = MyTaggableManager(
         help_text=_(
-            u'Separate tags with spaces, enclose the tags consist of several words in quotation marks.'),
+            u'Separate tags with spaces, and enclose in quotation marks tags consisting of several words.'),
         verbose_name=_('Tags'), blank=True)
 
     type = models.ForeignKey(Type, verbose_name=_('Type'))
@@ -305,11 +305,11 @@ class Pod(Video):
     #tags = TaggableManager(help_text=_(u'Séparez les tags par des espaces, mettez les tags constituées de plusieurs mots entre guillemets.'), verbose_name=_('Tags'), blank=True)
 
     is_draft = models.BooleanField(verbose_name=_('Draft'), help_text=_(
-        u'If you check this box, the video will be visible and accessible only by you.'), default=True)
+        u'If this box is checked, the video will be visible and accessible only by you.'), default=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
-        u'The video is only accessible to authenticated users.'), default=False)
+        u'If this box is checked, the video will only be accessible to authenticated users.'), default=False)
     password = models.CharField(_('password'), help_text=_(
-        u'The video is available with the specified password.'), max_length=50, blank=True, null=True)
+        u'The video will be available with the specified password.'), max_length=50, blank=True, null=True)
 
     class Meta:
         verbose_name = _("Video")
@@ -402,9 +402,9 @@ class Pod(Video):
                 'title': u'%s' %self.title,
                 'owner': u'%s' %self.owner.username,
                 'owner_full_name': u'%s' %self.owner.get_full_name(),
-                "date_added": u'%s' %self.date_added, 
-                "date_evt": u'%s' %self.date_evt if self.date_evt else None, 
-                "description": u'%s' %self.description, 
+                "date_added": u'%s' %self.date_added,
+                "date_evt": u'%s' %self.date_evt if self.date_evt else None,
+                "description": u'%s' %self.description,
                 "thumbnail": u'%s' %self.get_thumbnail_url(),
                 "duration": u'%s' %self.duration,
                 "tags" : list(self.tags.all().values_list('name', flat=True)),
@@ -548,7 +548,7 @@ class ContributorPods(models.Model):
             for element in list_contributorpods:
                 if self.name == element.name and self.role == element.role:
                     msg.append(_("there is already a contributor with the same name and role in the list."))
-                    return msg        
+                    return msg
         return []
 
     def __unicode__(self):
@@ -613,7 +613,7 @@ class TrackPods(models.Model):
             for element in list_trackpods:
                 if self.kind == element.kind and self.lang == element.lang:
                     msg.append(_("there is already a subtitle with the same kind and language in the list."))
-                    return msg        
+                    return msg
         return []
 
 
