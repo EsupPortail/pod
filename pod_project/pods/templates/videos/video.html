@@ -416,6 +416,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                         </div>
                         <!-- /TAB dl -->
                         <!-- TAB share -->
+                        {% if not video.is_draft %}
                         <div id="share" class="tab-pane fade container-fluid">
                             {% if not video.is_restricted and not video.password %}
                                 <label>{% trans 'Social Networks' %}</label>
@@ -468,6 +469,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 </form>
                             </div>
                         </div>
+                        {% endif %}
                         <!-- /TAB share -->
                     </div>
                 </div>
