@@ -283,7 +283,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
                                 </a>
                             </li>
                         {% endif %}
-                        {% if not request.GET.is_iframe %}
+                        {% if not video.is_draft and not request.GET.is_iframe %}
                             <li>
                                 <a href="#share" data-toggle="tab">
                                     <span class="glyphicon glyphicon-send"></span>
