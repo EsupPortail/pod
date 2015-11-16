@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-23 17:34+0200\n"
-"PO-Revision-Date: 2015-07-23 17:13+0200\n"
+"PO-Revision-Date: 2015-11-12 11:22+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.8.3\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: core/forms.py:56
 msgid "Please indicate the result of the following operation hereunder"
@@ -108,8 +108,7 @@ msgstr ""
 "étiquette formée uniquement de lettres (non accentuées), de chiffres, de "
 "l'underscore (barre de soulignement) et du tiret."
 
-#: core/models.py:157
-#: core/templates/admin/filer/folder/directory_table.html:30
+#: core/models.py:157 core/templates/admin/filer/folder/directory_table.html:30
 #: core/templates/admin/filer/folder/directory_table.html:70 pods/models.py:73
 #: pods/templates/search/search_video.html:163
 msgid "Owner"
@@ -180,8 +179,7 @@ msgstr "réglage d'encodage"
 msgid "encoding types"
 msgstr "réglages d'encodage"
 
-#: core/models.py:259
-#: core/templates/admin/filer/folder/directory_table.html:13
+#: core/models.py:259 core/templates/admin/filer/folder/directory_table.html:13
 msgid "Name"
 msgstr "Nom"
 
@@ -221,8 +219,7 @@ msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 #: core/templates/403.html:51 core/templates/404.html:51
 #: core/templates/admin/base.html:47 core/templates/base.html:97
 #: core/templates/contactus/contactus.html:43 core/templates/navbar.html:41
-#: core/templates/registration/login.html:99
-#: core/templates/userProfile.html:82
+#: core/templates/registration/login.html:99 core/templates/userProfile.html:82
 msgid "Home"
 msgstr "Accueil"
 
@@ -373,8 +370,8 @@ msgstr "Visualiser sur le site"
 
 #: core/templates/admin/filer/image/change_form.html:18
 #: core/templates/contactus/contactus.html:41
-#: core/templates/registration/login.html:97
-#: core/templates/userProfile.html:80 core/templates/userProfile.html.py:86
+#: core/templates/registration/login.html:97 core/templates/userProfile.html:80
+#: core/templates/userProfile.html.py:86
 msgid "Back"
 msgstr "Retour"
 
@@ -446,10 +443,10 @@ msgid "See all"
 msgstr "Afficher tout"
 
 #: core/templates/base.html:178 pods/models.py:295
-#: pods/templates/search/search_video.html:187
-#: pods/templates/tags/tags.html:25 pods/templates/tags/tags.html.py:86
-#: pods/templates/tags/tags.html:96 pods/templates/tags/tags.html.py:104
-#: pods/templates/videos/video.html:301 pods/templates/videos/videos.html:130
+#: pods/templates/search/search_video.html:187 pods/templates/tags/tags.html:25
+#: pods/templates/tags/tags.html.py:86 pods/templates/tags/tags.html:96
+#: pods/templates/tags/tags.html.py:104 pods/templates/videos/video.html:301
+#: pods/templates/videos/videos.html:130
 msgid "Tags"
 msgstr "Mots clés"
 
@@ -592,8 +589,7 @@ msgid "Log in"
 msgstr "Connexion"
 
 #: core/templates/navbar.html:45 core/templates/navbar.html.py:67
-#: pods/models.py:85 pods/models.py:301
-#: pods/templates/channels/channel.html:49
+#: pods/models.py:85 pods/models.py:301 pods/templates/channels/channel.html:49
 #: pods/templates/channels/channels.html:24
 #: pods/templates/channels/channels.html:31
 #: pods/templates/channels/channels.html:39
@@ -2276,7 +2272,7 @@ msgstr "Aucune données récupérées."
 msgid "This video is protected by password, please fill in and click send."
 msgstr ""
 "Cette vidéo est protégée par mot de passe, merci de le renseigner et de "
-"cliquez sur envoyer."
+"cliquer sur « Envoyer »."
 
 #: pods/templates/videos/video.html:180
 msgid "Password requiered"
