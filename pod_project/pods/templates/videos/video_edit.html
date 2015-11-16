@@ -51,6 +51,38 @@ voir http://www.gnu.org/licenses/
 <script src="{% static "JS/jquery.jqEasyCharCounter.js" %}" type="text/javascript"></script>
 
 <script>
+
+/*
+    Checking “is_draft” hides “is_restricted” and “password”
+
+*/
+setOnDraftChange = function( ) {
+
+    // Objects involved
+    var $isDraftCheckbox = $( '#id_is_draft' );
+    var $isRestrictedCheckboxGroup = $( '#id_is_restricted' ).closest( '.form-group' );
+    var $passwordTextInputGroup = $( '#id_password' ).parent( '.form-group' );
+
+    // Initial state
+    if ( $isDraftCheckbox.is( ':checked' ) ) {
+        $isRestrictedCheckboxGroup.hide( );
+        $passwordTextInputGroup.hide( );
+    }
+
+    // Dynamic update
+    $isDraftCheckbox.on( 'change', function( event ) {
+        if ( $( this ).is( ':checked' ) ) {
+            $passwordTextInputGroup.slideUp( );
+            $isRestrictedCheckboxGroup.slideUp( );
+        } else {
+            $isRestrictedCheckboxGroup.slideDown( );
+            $passwordTextInputGroup.slideDown( );
+        }
+    } );
+
+};
+
+
 var preventUnloadPrompt;
 var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 
@@ -65,6 +97,8 @@ var themetab = new Array();
 {% endfor %}
 
 $(document).ready(function() {
+
+    setOnDraftChange();
 
     $('#process').hide();
 
@@ -170,8 +204,6 @@ var name = "";
 {% block article %}
     {% block article_content %}
 
-
-
 {% if form.errors %}
 <p> {% trans "One or more errors have been found in the form." %}</p>
 {{form.errors}}
@@ -184,16 +216,9 @@ var name = "";
 {% endif %}
 {% csrf_token %}
 
-
 <fieldset>
-<legend></legend>
 
 {% bootstrap_form form %}
-
-<script>
-CKEDITOR.addCss('p{margin-left: auto; margin-right: auto;}');
-</script>
-
 
 {% buttons %}
 <div class="text-center">
