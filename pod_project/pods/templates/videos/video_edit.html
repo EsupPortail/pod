@@ -204,8 +204,6 @@ var name = "";
 {% block article %}
     {% block article_content %}
 
-
-
 {% if form.errors %}
 <p> {% trans "One or more errors have been found in the form." %}</p>
 {{form.errors}}
@@ -218,16 +216,9 @@ var name = "";
 {% endif %}
 {% csrf_token %}
 
-
 <fieldset>
-<legend></legend>
 
 {% bootstrap_form form %}
-
-<script>
-CKEDITOR.addCss('p{margin-left: auto; margin-right: auto;}');
-</script>
-
 
 {% buttons %}
 <div class="text-center">
