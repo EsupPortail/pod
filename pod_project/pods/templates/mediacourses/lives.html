@@ -55,9 +55,12 @@ voir http://www.gnu.org/licenses/
 	  {%else%}
 	      <img alt="img" src="{% static DEFAULT_IMG %}">
 	  {% endif %}
-	  <ul class="rooms_list">     
+	  <ul class="rooms_list" style="margin:5px">     
       {% for recorder in building.recorder_set.all%}
 		 <li>
+                {%if recorder.image %}
+                <img src="{{ recorder.image.icons.48 }}" alt="{{ recorder.image.label }}" />
+                {%endif %}
 			    {%if recorder.status %}
 				       <a href="{% url "live" pk=recorder.id %}" class="live_on">{{recorder.name}}</a>
 			    {%else%}
