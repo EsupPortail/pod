@@ -986,6 +986,8 @@ class Building(models.Model):
 @python_2_unicode_compatible
 class Recorder(models.Model):
     name = models.CharField(_('name'), max_length=200, unique=True)
+    building = models.ForeignKey('Building', verbose_name=_('Building'))
+    description = RichTextField(_('description'), config_name='complete', blank=True)
     image = FilerImageField(
         null=True, blank=True, verbose_name="Image", related_name="recorder_image")
     adress_ip = models.IPAddressField(unique=True)
@@ -994,8 +996,6 @@ class Recorder(models.Model):
     gmapurl = models.CharField(max_length=250, blank=True, null=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
         u'Live is accessible only to authenticated users.'), default=False)
-    building = models.ForeignKey('Building', verbose_name=_('Building'))
-
     def __unicode__(self):
         return "%s - %s" % (self.name, self.adress_ip)
 

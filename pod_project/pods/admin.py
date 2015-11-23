@@ -124,9 +124,22 @@ admin.site.register(EnrichPods)
 admin.site.register(Notes)
 
 #recorder
-admin.site.register(Mediacourses)
+class MediacoursesAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user', 'mediapath', 'started', 'date_added')
+    list_display_links = ('title',)
+    list_filter = ('user',)
+    #list_editable = ('status', 'slide' )
+
+admin.site.register(Mediacourses, MediacoursesAdmin)
 admin.site.register(Building)
-admin.site.register(Recorder)
+
+class RecorderAdmin(admin.ModelAdmin):
+    list_display = ('name', 'adress_ip', 'building', 'status', 'slide', 'is_restricted')
+    list_display_links = ('name',)
+    list_filter = ('building',)
+    list_editable = ('status', 'slide', 'is_restricted' )
+
+admin.site.register(Recorder, RecorderAdmin)
 
 
 #Report Video
