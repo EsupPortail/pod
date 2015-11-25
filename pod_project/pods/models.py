@@ -505,7 +505,7 @@ class ContributorPods(models.Model):
         ("designer", _("designer")),
         ("contributor", _("contributor")),
         ("actor", _("actor")),
-        ("voice-over", _("voice-off")),
+        ("voice-over", _("voice-over")),
         ("consultant", _("consultant")),
         ("writer", _("writer")),
         ("soundman", _("soundman")),
