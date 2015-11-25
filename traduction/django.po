@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-25 11:54+0100\n"
-"PO-Revision-Date: 2015-11-25 12:08+0100\n"
+"POT-Creation-Date: 2015-11-25 12:01+0100\n"
+"PO-Revision-Date: 2015-11-25 12:13+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1567,7 +1567,8 @@ msgid "actor"
 msgstr "acteur"
 
 #: pods/models.py:508
-msgid "voice-off"
+#| msgid "voice-off"
+msgid "voice-over"
 msgstr "voix-off"
 
 #: pods/models.py:509
@@ -1850,7 +1851,6 @@ msgid "Buildings"
 msgstr "Bâtiments"
 
 #: pods/models.py:990
-#| msgid "Description"
 msgid "description"
 msgstr "description"
 
@@ -2109,7 +2109,6 @@ msgid "List of chapters"
 msgstr "Liste des chapitres"
 
 #: pods/templates/videos/chapter/list_chapter.html:47
-#| msgid "The chapter"
 msgid "Edit the chapter"
 msgstr "Modifier le chapitre"
 
@@ -2119,7 +2118,6 @@ msgid "Modify"
 msgstr "Modifier"
 
 #: pods/templates/videos/chapter/list_chapter.html:55
-#| msgid "Delete the enrichment"
 msgid "Delete the chapter"
 msgstr "Supprimer le chapitre"
 
