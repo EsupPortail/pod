@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-25 12:01+0100\n"
-"PO-Revision-Date: 2015-11-25 12:13+0100\n"
+"POT-Creation-Date: 2015-11-26 17:27+0100\n"
+"PO-Revision-Date: 2015-11-26 17:40+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1492,27 +1492,37 @@ msgid "Draft"
 msgstr "Brouillon"
 
 #: pods/models.py:308
+#| msgid ""
+#| "If you check this box, the video will be visible and accessible only by "
+#| "you."
 msgid ""
-"If you check this box, the video will be visible and accessible only by you."
+"If this box is checked, the video will be visible and accessible only by you."
 msgstr ""
-"Si vous cochez cette case, la vidéo sera visible et accessible uniquement "
-"par vous."
+"Si cette case est cochée, la vidéo sera visible et accessible uniquement par "
+"vous"
 
 #: pods/models.py:309 pods/models.py:997
 msgid "Restricted access"
 msgstr "Accès restreint"
 
 #: pods/models.py:310
-msgid "The video is only accessible to authenticated users."
-msgstr "La vidéo est accessible uniquement aux utilisateurs authentifiés."
+#| msgid "The video is only accessible to authenticated users."
+msgid ""
+"If this box is checked, the video will only be accessible to authenticated "
+"users."
+msgstr ""
+"Si cette case est cochée, la vidéo sera accessible uniquement par les "
+"utilisateurs authentifiés."
 
 #: pods/models.py:311
 msgid "password"
 msgstr "Mot de passe"
 
 #: pods/models.py:312
-msgid "The video is available with the specified password."
-msgstr "La vidéo est disponible uniquement avec le mot de passe spécifié."
+msgid "Viewing this video will not be possible without this password."
+msgstr ""
+"Le visionnage de la vidéo ne pourra se faire qu'après avoir fourni ce mot de "
+"passe."
 
 #: pods/models.py:466
 msgid "encodingType"
@@ -1567,7 +1577,6 @@ msgid "actor"
 msgstr "acteur"
 
 #: pods/models.py:508
-#| msgid "voice-off"
 msgid "voice-over"
 msgstr "voix-off"
 
@@ -3083,3 +3092,6 @@ msgstr ""
 #: pods/views.py:1688
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
+
+#~ msgid "The video is available with the specified password."
+#~ msgstr "La vidéo est disponible uniquement avec le mot de passe spécifié."
