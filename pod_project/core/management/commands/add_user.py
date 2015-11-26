@@ -30,7 +30,7 @@ from django.core.mail import send_mail
 from random import choice
 from string import digits, letters
 from core.models import UserProfile
-
+import time
 
 class Command(NoArgsCommand):
 
@@ -39,20 +39,24 @@ class Command(NoArgsCommand):
         members = open('import_user.csv', "r")
         data = csv.reader(members, delimiter=';', quotechar='"')
         # data = csv.DictReader(members)
-
+        i=0
         for row in data:
+            i=i+1
+            if i%10==0:
+                print "----- i : %s" %i
+                time.sleep(480)
             # print u'%s' %row
-            nom = unicode(row[0], "utf8")
-            prenom = unicode(row[1], "utf8")
+            prenom = unicode(row[0], "utf8")
+            nom = unicode(row[1], "utf8")
             email = unicode(row[2], "utf8")
             is_staff = True if row[3] == "1" else False
             detail = unicode(row[4], "utf8")
-            # print nom, prenom, email, is_staff, detail
+            print nom, prenom, email, is_staff, detail
             try:
                 validate_email(email)
                 tokens = email.split('@')
                 username = tokens[0]
-                # print "email valide : %s" %username
+                print "email valide : %s" %username
                 add_user(nom, prenom, username, email, is_staff, detail)
             except ValidationError:
                 print "%s %s => invalid email" % (nom, prenom)
