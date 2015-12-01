@@ -192,6 +192,8 @@ LOGO_ETB = 'images/lille1_top-01.png'
 LOGO_PLAYER = 'images/logo_white_compact.png'
 SERV_LOGO = 'images/semm.png'
 
+SHOW_LATEST_VIDEOS = True
+
 HELP_MAIL = 'assistance@univ.fr'
 WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">' \
     'WEBTV<span class="glyphicon glyphicon-link"></span>' \
@@ -250,6 +252,7 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'TEMPLATE_THEME',
     'TITLE_ETB',
     'TITLE_SITE',
+    'SHOW_LATEST_VIDEOS',
     'WEBTV'
 )
 

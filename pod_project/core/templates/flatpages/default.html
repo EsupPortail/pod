@@ -53,12 +53,14 @@ voir http://www.gnu.org/licenses/
     {% block article_content %}
         {{ flatpage.content }}
     {% endblock article_content %}
-    {% block video_list %}
+    {% if SHOW_LATEST_VIDEOS %}
+        {% block video_list %}
         <h3>{% trans 'Here are the latest videos' %}</h3>
         <div id="objects_list_flatpage">
             {% get_last_videos %}
         </div>
-    {% endblock video_list %}
+        {% endblock video_list %}
+    {% endif %}
 {% endblock article %}
 
 
