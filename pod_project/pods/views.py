@@ -672,10 +672,12 @@ def video_edit(request, slug=None):
                 request, messages.ERROR, _(u'One or more errors have been found in the form.'))
 
     video_ext_accept = replace(' | '.join(settings.VIDEO_EXT_ACCEPT), ".", "")
+    video_ext_accept_text = replace(', '.join(settings.VIDEO_EXT_ACCEPT), ".", "").upper()
 
     return render_to_response("videos/video_edit.html",
                               {'form': video_form, "referer": referer,
-                                  "video_ext_accept": video_ext_accept},
+                                  "video_ext_accept": video_ext_accept,
+                                  "video_ext_accept_text": video_ext_accept_text},
                               context_instance=RequestContext(request))
 
 
@@ -1444,7 +1446,7 @@ def autocomplete(request):
 def search_videos(request):
     es = Elasticsearch(ES_URL)
     aggsAttrs = ['owner_full_name', 'type', 'disciplines', 'tags', 'channels']
-    
+
     #SEARCH FORM
     search_word = ""
     start_date = None
@@ -1460,7 +1462,7 @@ def search_videos(request):
     page = request.GET.get('page') if request.GET.get('page') else 0
     size = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
-    #page = request.GET.get('page') 
+    #page = request.GET.get('page')
     try:
         page = int(page.encode('utf-8'))
     except:
@@ -1486,7 +1488,7 @@ def search_videos(request):
                                         "query" : "%s" %filter_query
                                     }
                                 }
-    ##filter date range                            
+    ##filter date range
     if start_date or end_date :
         filter_search["range"] = {"date_added": {}}
         if start_date :
@@ -1500,7 +1502,7 @@ def search_videos(request):
         query = {
           "multi_match" : {
             "query":    "%s" %search_word,
-            "fields": [ "_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags^1", "contributors^0.6", "chapters^0.5", "enrichments^0.5" ] 
+            "fields": [ "_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags^1", "contributors^0.6", "chapters^0.5", "enrichments^0.5" ]
           }
         }
 
@@ -1543,8 +1545,8 @@ def search_videos(request):
                 "gauss": {
                     "date_added": {
                           "scale": "10d",
-                          "offset": "5d", 
-                          "decay" : 0.5 
+                          "offset": "5d",
+                          "decay" : 0.5
                     }
                 }
               }
@@ -1558,7 +1560,7 @@ def search_videos(request):
         bodysearch["query"]["function_score"]["query"]["filtered"]["filter"] = filter_search
     else :
         bodysearch["query"]["function_score"]["query"] = query
-    
+
     #bodysearch["query"] = query
 
     for attr in aggsAttrs:
@@ -1578,7 +1580,7 @@ def search_videos(request):
         search_pagination = paginator.page(page + 1)
     except:
         search_pagination = paginator.page(paginator.num_pages)
-    
+
     return render_to_response("search/search_video.html",
                               {"result": result, "page":page, "search_pagination":search_pagination, "form":searchForm},
                               context_instance=RequestContext(request))

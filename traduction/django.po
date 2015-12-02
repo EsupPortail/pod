@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-26 17:27+0100\n"
-"PO-Revision-Date: 2015-11-26 17:40+0100\n"
-"Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
+"POT-Creation-Date: 2015-12-02 14:42+0100\n"
+"PO-Revision-Date: 2015-12-02 14:47+0100\n"
+"Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: core/forms.py:63
 msgid "Please indicate the result of the following operation hereunder"
@@ -108,8 +108,7 @@ msgstr ""
 "étiquette formée uniquement de lettres (non accentuées), de chiffres, de "
 "l'underscore (barre de soulignement) et du tiret."
 
-#: core/models.py:157
-#: core/templates/admin/filer/folder/directory_table.html:30
+#: core/models.py:157 core/templates/admin/filer/folder/directory_table.html:30
 #: core/templates/admin/filer/folder/directory_table.html:70 pods/models.py:73
 #: pods/templates/search/search_video.html:163
 msgid "Owner"
@@ -180,8 +179,7 @@ msgstr "réglage d'encodage"
 msgid "encoding types"
 msgstr "réglages d'encodage"
 
-#: core/models.py:259
-#: core/templates/admin/filer/folder/directory_table.html:13
+#: core/models.py:259 core/templates/admin/filer/folder/directory_table.html:13
 msgid "Name"
 msgstr "Nom"
 
@@ -221,8 +219,7 @@ msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 #: core/templates/403.html:51 core/templates/404.html:51
 #: core/templates/admin/base.html:47 core/templates/base.html:97
 #: core/templates/contactus/contactus.html:43 core/templates/navbar.html:41
-#: core/templates/registration/login.html:99
-#: core/templates/userProfile.html:82
+#: core/templates/registration/login.html:99 core/templates/userProfile.html:82
 msgid "Home"
 msgstr "Accueil"
 
@@ -373,8 +370,8 @@ msgstr "Visualiser sur le site"
 
 #: core/templates/admin/filer/image/change_form.html:18
 #: core/templates/contactus/contactus.html:41
-#: core/templates/registration/login.html:97
-#: core/templates/userProfile.html:80 core/templates/userProfile.html.py:86
+#: core/templates/registration/login.html:97 core/templates/userProfile.html:80
+#: core/templates/userProfile.html.py:86
 msgid "Back"
 msgstr "Retour"
 
@@ -446,10 +443,10 @@ msgid "See all"
 msgstr "Afficher tout"
 
 #: core/templates/base.html:178 pods/models.py:295
-#: pods/templates/search/search_video.html:187
-#: pods/templates/tags/tags.html:25 pods/templates/tags/tags.html.py:86
-#: pods/templates/tags/tags.html:96 pods/templates/tags/tags.html.py:104
-#: pods/templates/videos/video.html:303 pods/templates/videos/videos.html:130
+#: pods/templates/search/search_video.html:187 pods/templates/tags/tags.html:25
+#: pods/templates/tags/tags.html.py:86 pods/templates/tags/tags.html:96
+#: pods/templates/tags/tags.html.py:104 pods/templates/videos/video.html:303
+#: pods/templates/videos/videos.html:130
 msgid "Tags"
 msgstr "Mots clés"
 
@@ -592,8 +589,7 @@ msgid "Log in"
 msgstr "Connexion"
 
 #: core/templates/navbar.html:45 core/templates/navbar.html.py:67
-#: pods/models.py:85 pods/models.py:301
-#: pods/templates/channels/channel.html:49
+#: pods/models.py:85 pods/models.py:301 pods/templates/channels/channel.html:49
 #: pods/templates/channels/channels.html:24
 #: pods/templates/channels/channels.html:31
 #: pods/templates/channels/channels.html:39
@@ -660,9 +656,6 @@ msgstr "N'hésitez pas à nous contacter pour toute assistance :"
 
 #: core/templates/registration/login.html:118
 #: core/templates/registration/login.html:119
-#: core/theme/ANSTIA/templates/footer.html:27
-#: core/theme/ANSTIA/templates/footer.html:28
-#: core/theme/ANSTIA/templates/footer.html:30
 #: core/theme/LILLE1/templates/footer.html:27
 #: core/theme/LILLE1/templates/footer.html:28 core/views.py:223
 #: pods/templates/videos/video.html:191
@@ -707,7 +700,6 @@ msgstr ""
 "Vos permissions actuelles ne vous permettent pas d’ajouter une photo à votre "
 "profil. Veuillez nous contacter pour vous ajouter ces droits."
 
-#: core/theme/ANSTIA/templates/footer.html:31
 #: core/theme/LILLE1/templates/footer.html:30
 #: core/theme/LILLE1/templates/footer.html:31
 msgid "FAQ"
@@ -718,6 +710,7 @@ msgid "Login"
 msgstr "Identifiant"
 
 #: core/views.py:95 pods/admin.py:98 pods/forms.py:288
+#: pods/templates/videos/video_edit.html:283
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -925,7 +918,7 @@ msgid "Dutch"
 msgstr ""
 
 #: pod_project/ISOLanguageCodes.py:38 pod_project/ISOLanguageCodes.py:159
-#: pod_project/settings-sample.py:104 pod_project/settings.py:107
+#: pod_project/settings-sample.py:104
 msgid "English"
 msgstr ""
 
@@ -1389,7 +1382,7 @@ msgstr ""
 msgid "Zulu"
 msgstr ""
 
-#: pod_project/settings-sample.py:103 pod_project/settings.py:106
+#: pod_project/settings-sample.py:103
 msgid "Français"
 msgstr "Français"
 
@@ -1492,21 +1485,18 @@ msgid "Draft"
 msgstr "Brouillon"
 
 #: pods/models.py:308
-#| msgid ""
-#| "If you check this box, the video will be visible and accessible only by "
-#| "you."
 msgid ""
 "If this box is checked, the video will be visible and accessible only by you."
 msgstr ""
 "Si cette case est cochée, la vidéo sera visible et accessible uniquement par "
-"vous"
+"vous."
 
 #: pods/models.py:309 pods/models.py:997
+#: pods/templates/videos/video_edit.html:276
 msgid "Restricted access"
 msgstr "Accès restreint"
 
 #: pods/models.py:310
-#| msgid "The video is only accessible to authenticated users."
 msgid ""
 "If this box is checked, the video will only be accessible to authenticated "
 "users."
@@ -2766,29 +2756,75 @@ msgstr "Enregistrer et voir la vidéo"
 msgid "Sending, please wait."
 msgstr "Envoi en cours, merci de patienter."
 
-#: pods/templates/videos/video_edit.html:255
-msgid "You can send an audio or video file."
-msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
+#: pods/templates/videos/video_edit.html:257
+msgid "Uploading"
+msgstr "Téléversement"
 
-#: pods/templates/videos/video_edit.html:256
-msgid "The following formats are supported:"
-msgstr "Les formats suivants sont supportés :"
-
-#: pods/templates/videos/video_edit.html:258
+#: pods/templates/videos/video_edit.html:259
 msgid ""
 "The send time depends on the size of your file and your download speed. This "
 "can be quite long."
 msgstr ""
 "Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
-"téléchargement. Cela peut être assez long."
+"transfert. Cela peut être assez long."
 
-#: pods/templates/videos/video_edit.html:259
+#: pods/templates/videos/video_edit.html:260
 msgid ""
 "During sending your file, do not close your browser until you have received "
 "a message of success or failure."
 msgstr ""
 "Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
 "d'avoir reçu un message de succès ou d'échec."
+
+#: pods/templates/videos/video_edit.html:264
+msgid "File format"
+msgstr "Format de fichier"
+
+#: pods/templates/videos/video_edit.html:266
+msgid "You can send an audio or video file."
+msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
+
+#: pods/templates/videos/video_edit.html:266
+msgid "The following formats are supported:"
+msgstr "Les formats suivants sont supportés :"
+
+#: pods/templates/videos/video_edit.html:272
+msgid ""
+"In “Draft mode”, the content shows nowhere and nobody else but you can see "
+"it."
+msgstr ""
+"En mode « Brouillon », le contenu n’apparaît nulle part et personne d’autre "
+"que vous ne le voit."
+
+#: pods/templates/videos/video_edit.html:278
+#: pods/templates/videos/video_edit.html:285
+msgid "If you don't select “Draft mode”,"
+msgstr "Si vous ne sélectionnez pas le mode « Brouillon »,"
+
+#: pods/templates/videos/video_edit.html:278
+msgid "you can restrict the content access to only people belonging to"
+msgstr ""
+"vous pouvez restreindre l’accès à votre contenu aux seules personnes "
+"appartenant à"
+
+#: pods/templates/videos/video_edit.html:285
+msgid ""
+"you can add a password which will be asked to anybody willing to watch your "
+"content."
+msgstr ""
+"vous pouvez ajouter un mot de passe qui sera demandé à toute personne "
+"souhaitant visionner votre contenu."
+
+#: pods/templates/videos/video_edit.html:289
+msgid "Keywords"
+msgstr "Mots-clés"
+
+#: pods/templates/videos/video_edit.html:291
+msgid ""
+"Please try to add only relevant keywords that can be useful to other users."
+msgstr ""
+"Merci de veiller à la pertinence des mots-clés que vous décidez d’utiliser, "
+"ainsi que de leur utilité du point de vue des autres utilisateurs."
 
 #: pods/templates/videos/video_enrich.html:29
 msgid "Enrichment of the video"
@@ -3092,6 +3128,3 @@ msgstr ""
 #: pods/views.py:1688
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
-
-#~ msgid "The video is available with the specified password."
-#~ msgstr "La vidéo est disponible uniquement avec le mot de passe spécifié."
