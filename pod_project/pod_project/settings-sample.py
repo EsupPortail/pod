@@ -200,6 +200,7 @@ WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">'
 # Paramètres des templates
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'core', 'templates'),
+    os.path.join(BASE_DIR, 'core', 'templates', 'flatpages'),
     os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
