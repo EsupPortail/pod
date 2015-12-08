@@ -54,6 +54,33 @@ http://www.gnu.org/licenses/
     <script>
 
 /*
+    Adding a filesize rule to form validation
+
+*/
+$.validator.addMethod( "maxfilesize", function( value, element, params ) {
+
+    var elementSize;
+
+    try {
+        elementSize = $( element )[0].files[0].size;
+    } catch( e ) {
+        return true;    // Bypass if HTML5 File API not supported.
+    }
+
+    var maxFileSize = params[0];
+    var fileSizeUnit = params[1];
+
+    if ( fileSizeUnit === "Mo" ) {
+        maxFileSize *= 1024 * 1024;
+    } else if ( fileSizeUnit === "Go" ) {
+        maxFileSize *= 1024 * 1024 * 1024;
+    }
+
+    return this.optional( element ) || elementSize < maxFileSize;
+}, $.validator.format( "{% trans "The file size exceeds the maximum allowed value ({0} {1})." %}" ) );
+
+
+/*
     Checking “is_draft” hides “is_restricted” and “password”
 
 */
@@ -99,8 +126,6 @@ var themetab = new Array();
 
 $(document).ready(function() {
 
-    setOnDraftChange();
-
     $('#process').hide();
 
     $('#id_title').jqEasyCounter({
@@ -111,6 +136,17 @@ $(document).ready(function() {
         'maxChars': 50,
         'maxCharsWarning': 45
     });
+
+    setOnDraftChange();
+
+    // Max file size setting
+    var sizeInfo = '{{ MAX_UPLOAD_FILE_SIZE }}'.split( " " );
+    if ( ! parseInt( sizeInfo[0], 10 )
+            || ! sizeInfo[1]
+            || ( sizeInfo[1] != 'Mo' && sizeInfo[1] != 'Go' ) ) {
+        // If setting is unreadable we set it to 1 GB.
+        sizeInfo = [ "1", "Go"];
+    }
 
     $("#video_form").validate({
         submitHandler: function(form) {
@@ -126,6 +162,7 @@ $(document).ready(function() {
             video: {
                 required: true,
                 extension: "{{video_ext_accept}}",
+                maxfilesize: sizeInfo,
             },
     {% else %}
             video: {
@@ -146,6 +183,7 @@ $(document).ready(function() {
             video: {
                 required: "{% trans "Please select a file to upload." %}",
                 extension: "{% trans "File format not supported." %}",
+                maxfilesize: "{% trans "The file size exceeds the maximum allowed value ({0} {1})." %}",
             },
     {% endif %}
             title: {

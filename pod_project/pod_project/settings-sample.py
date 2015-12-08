@@ -197,6 +197,19 @@ WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">'
     'WEBTV<span class="glyphicon glyphicon-link"></span>' \
     '</a>'
 
+
+##
+# Taille maxi fichier téléversable :
+#
+#   ce paramètre est une chaîne contenant un chiffre suivi d'une unité (Mo ou Go),
+#   séparés par une espace.
+#
+#   ATTENTION : cette valeur doit être inférieure ou égale à celle définie
+#               dans votre configuration Apache ou NGINX.
+#
+MAX_UPLOAD_FILE_SIZE = "1 Go"
+
+
 # Paramètres des templates
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'core', 'templates'),
@@ -246,6 +259,7 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'LOGO_ETB',
     'LOGO_PLAYER',
     'LOGO_SITE',
+    'MAX_UPLOAD_FILE_SIZE',
     'SERV_LOGO',
     'TEMPLATE_CUSTOM',
     'TEMPLATE_THEME',

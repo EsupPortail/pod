@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-08 16:11+0100\n"
-"PO-Revision-Date: 2015-12-07 16:44+0100\n"
+"POT-Creation-Date: 2015-12-08 16:28+0100\n"
+"PO-Revision-Date: 2015-12-08 16:35+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -108,8 +108,7 @@ msgstr ""
 "étiquette formée uniquement de lettres (non accentuées), de chiffres, de "
 "l'underscore (barre de soulignement) et du tiret."
 
-#: core/models.py:157
-#: core/templates/admin/filer/folder/directory_table.html:30
+#: core/models.py:157 core/templates/admin/filer/folder/directory_table.html:30
 #: core/templates/admin/filer/folder/directory_table.html:70 pods/models.py:73
 #: pods/templates/search/search_video.html:163
 msgid "Owner"
@@ -180,8 +179,7 @@ msgstr "réglage d'encodage"
 msgid "encoding types"
 msgstr "réglages d'encodage"
 
-#: core/models.py:259
-#: core/templates/admin/filer/folder/directory_table.html:13
+#: core/models.py:259 core/templates/admin/filer/folder/directory_table.html:13
 msgid "Name"
 msgstr "Nom"
 
@@ -221,8 +219,7 @@ msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 #: core/templates/403.html:51 core/templates/404.html:51
 #: core/templates/admin/base.html:47 core/templates/base.html:97
 #: core/templates/contactus/contactus.html:43 core/templates/navbar.html:41
-#: core/templates/registration/login.html:99
-#: core/templates/userProfile.html:82
+#: core/templates/registration/login.html:99 core/templates/userProfile.html:82
 msgid "Home"
 msgstr "Accueil"
 
@@ -373,8 +370,8 @@ msgstr "Visualiser sur le site"
 
 #: core/templates/admin/filer/image/change_form.html:18
 #: core/templates/contactus/contactus.html:41
-#: core/templates/registration/login.html:97
-#: core/templates/userProfile.html:80 core/templates/userProfile.html.py:86
+#: core/templates/registration/login.html:97 core/templates/userProfile.html:80
+#: core/templates/userProfile.html.py:86
 msgid "Back"
 msgstr "Retour"
 
@@ -446,10 +443,10 @@ msgid "See all"
 msgstr "Afficher tout"
 
 #: core/templates/base.html:178 pods/models.py:295
-#: pods/templates/search/search_video.html:187
-#: pods/templates/tags/tags.html:25 pods/templates/tags/tags.html.py:86
-#: pods/templates/tags/tags.html:96 pods/templates/tags/tags.html.py:104
-#: pods/templates/videos/video.html:303 pods/templates/videos/videos.html:130
+#: pods/templates/search/search_video.html:187 pods/templates/tags/tags.html:25
+#: pods/templates/tags/tags.html.py:86 pods/templates/tags/tags.html:96
+#: pods/templates/tags/tags.html.py:104 pods/templates/videos/video.html:303
+#: pods/templates/videos/videos.html:130
 msgid "Tags"
 msgstr "Mots clés"
 
@@ -469,8 +466,8 @@ msgstr "Notes"
 #: pods/templates/videos/chapter/form_chapter.html:43
 #: pods/templates/videos/enrich/form_enrich.html:43
 #: pods/templates/videos/video.html:491 pods/templates/videos/video.html:492
-#: pods/templates/videos/video_edit.html:241
-#: pods/templates/videos/video_edit.html:242
+#: pods/templates/videos/video_edit.html:279
+#: pods/templates/videos/video_edit.html:280
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -480,7 +477,7 @@ msgstr "Enregistrer"
 #: pods/templates/videos/my_videos.html:64
 #: pods/templates/videos/video_chapter.html:375
 #: pods/templates/videos/video_completion.html:521
-#: pods/templates/videos/video_edit.html:274
+#: pods/templates/videos/video_edit.html:312
 #: pods/templates/videos/video_enrich.html:480
 msgid "Information"
 msgstr "Information"
@@ -541,7 +538,7 @@ msgstr "Envoyer"
 #: pods/templates/channels/channel_edit.html:78
 #: pods/templates/mediacourses/mediacourses_add.html:53
 #: pods/templates/videos/video_chapter.html:253
-#: pods/templates/videos/video_edit.html:223
+#: pods/templates/videos/video_edit.html:261
 #: pods/templates/videos/video_enrich.html:253 pods/views.py:188
 #: pods/views.py:453 pods/views.py:672 pods/views.py:1624
 msgid "One or more errors have been found in the form."
@@ -592,8 +589,7 @@ msgid "Log in"
 msgstr "Connexion"
 
 #: core/templates/navbar.html:45 core/templates/navbar.html.py:67
-#: pods/models.py:85 pods/models.py:301
-#: pods/templates/channels/channel.html:49
+#: pods/models.py:85 pods/models.py:301 pods/templates/channels/channel.html:49
 #: pods/templates/channels/channels.html:24
 #: pods/templates/channels/channels.html:31
 #: pods/templates/channels/channels.html:39
@@ -622,8 +618,8 @@ msgid "Videos"
 msgstr "Vidéos"
 
 #: core/templates/navbar.html:119 pods/templates/videos/video_edit.html:26
-#: pods/templates/videos/video_edit.html:179
-#: pods/templates/videos/video_edit.html:213
+#: pods/templates/videos/video_edit.html:217
+#: pods/templates/videos/video_edit.html:251
 msgid "Add a new video"
 msgstr "Ajouter une nouvelle vidéo"
 
@@ -676,7 +672,7 @@ msgstr "Mon profil"
 #: pods/templates/mediacourses/mediacourses_add.html:32
 #: pods/templates/videos/video_chapter.html:131
 #: pods/templates/videos/video_completion.html:176
-#: pods/templates/videos/video_edit.html:88
+#: pods/templates/videos/video_edit.html:115
 #: pods/templates/videos/video_enrich.html:138
 msgid ""
 "Warning, you will leave this page. If you have made changes without clicking "
@@ -714,7 +710,7 @@ msgid "Login"
 msgstr "Identifiant"
 
 #: core/views.py:95 pods/admin.py:98 pods/forms.py:288
-#: pods/templates/videos/video_edit.html:313
+#: pods/templates/videos/video_edit.html:351
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -1484,7 +1480,7 @@ msgstr ""
 "Séparez les mots-clés avec des espaces, placez les mots-clés constitués de "
 "plusieurs mots entre guillemets."
 
-#: pods/models.py:307 pods/templates/videos/video_edit.html:295
+#: pods/models.py:307 pods/templates/videos/video_edit.html:333
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -1496,7 +1492,7 @@ msgstr ""
 "vous."
 
 #: pods/models.py:309 pods/models.py:997
-#: pods/templates/videos/video_edit.html:303
+#: pods/templates/videos/video_edit.html:341
 msgid "Restricted access"
 msgstr "Accès restreint"
 
@@ -2045,7 +2041,7 @@ msgstr "Ajouter un nouvel enregistrement"
 #: pods/templates/videos/video_chapter.html:335
 #: pods/templates/videos/video_completion.html:441
 #: pods/templates/videos/video_delete.html:35
-#: pods/templates/videos/video_edit.html:176
+#: pods/templates/videos/video_edit.html:214
 #: pods/templates/videos/video_enrich.html:442
 msgid "My videos"
 msgstr "Mes vidéos"
@@ -2705,62 +2701,67 @@ msgstr ""
 "d'encodage."
 
 #: pods/templates/videos/video_edit.html:24
-#: pods/templates/videos/video_edit.html:177
-#: pods/templates/videos/video_edit.html:211
+#: pods/templates/videos/video_edit.html:215
+#: pods/templates/videos/video_edit.html:249
 msgid "Editing the video"
 msgstr "Modification de la vidéo"
 
-#: pods/templates/videos/video_edit.html:147
+#: pods/templates/videos/video_edit.html:80
+#: pods/templates/videos/video_edit.html:186
+msgid "The file size exceeds the maximum allowed value ({0} {1})."
+msgstr "La taille du fichier dépasse la valeur maximum autorisée ({0} {1})."
+
+#: pods/templates/videos/video_edit.html:184
 msgid "Please select a file to upload."
 msgstr "Veuillez sélectionner un fichier à téléverser."
 
-#: pods/templates/videos/video_edit.html:148
+#: pods/templates/videos/video_edit.html:185
 msgid "File format not supported."
 msgstr "Ce format de fichier n'est pas supporté."
 
-#: pods/templates/videos/video_edit.html:152
+#: pods/templates/videos/video_edit.html:190
 msgid "Please, specify a title."
 msgstr "Veuillez indiquer un titre."
 
-#: pods/templates/videos/video_edit.html:153
+#: pods/templates/videos/video_edit.html:191
 msgid "Your title should contain more than two characters."
 msgstr "Votre titre doit contenir plus de deux caractères."
 
-#: pods/templates/videos/video_edit.html:154
+#: pods/templates/videos/video_edit.html:192
 msgid "Your title should contain less than two hundred fifty characters."
 msgstr "Votre titre doit contenir moins de deux cents cinquante caractères."
 
-#: pods/templates/videos/video_edit.html:157
+#: pods/templates/videos/video_edit.html:195
 msgid "Please, specify a type."
 msgstr "Veuillez spécifier un type."
 
-#: pods/templates/videos/video_edit.html:193
+#: pods/templates/videos/video_edit.html:231
 #: pods/templates/videos/video_player.html:118
 msgid "The video is currently being encoded."
 msgstr "Cette vidéo est en cours d'encodage."
 
-#: pods/templates/videos/video_edit.html:244
+#: pods/templates/videos/video_edit.html:282
 msgid "Save and go back to previous page"
 msgstr "Enregistrer et revenir à la page précédente"
 
-#: pods/templates/videos/video_edit.html:245
+#: pods/templates/videos/video_edit.html:283
 msgid "Save and return to the previous page"
 msgstr "Enregistrer et revenir à la page précédente"
 
-#: pods/templates/videos/video_edit.html:247
-#: pods/templates/videos/video_edit.html:248
+#: pods/templates/videos/video_edit.html:285
+#: pods/templates/videos/video_edit.html:286
 msgid "Save and watch the video"
 msgstr "Enregistrer et voir la vidéo"
 
-#: pods/templates/videos/video_edit.html:258
+#: pods/templates/videos/video_edit.html:296
 msgid "Sending, please wait."
 msgstr "Envoi en cours, merci de patienter."
 
-#: pods/templates/videos/video_edit.html:277
+#: pods/templates/videos/video_edit.html:315
 msgid "Uploading"
 msgstr "Téléversement"
 
-#: pods/templates/videos/video_edit.html:280
+#: pods/templates/videos/video_edit.html:318
 msgid ""
 "The send time depends on the size of your file and your download speed. This "
 "can be quite long."
@@ -2768,7 +2769,7 @@ msgstr ""
 "Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
 "transfert. Cela peut être assez long."
 
-#: pods/templates/videos/video_edit.html:281
+#: pods/templates/videos/video_edit.html:319
 msgid ""
 "During sending your file, do not close your browser until you have received "
 "a message of success or failure."
@@ -2776,19 +2777,19 @@ msgstr ""
 "Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
 "d'avoir reçu un message de succès ou d'échec."
 
-#: pods/templates/videos/video_edit.html:286
+#: pods/templates/videos/video_edit.html:324
 msgid "File format"
 msgstr "Format de fichier"
 
-#: pods/templates/videos/video_edit.html:289
+#: pods/templates/videos/video_edit.html:327
 msgid "You can send an audio or video file."
 msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 
-#: pods/templates/videos/video_edit.html:290
+#: pods/templates/videos/video_edit.html:328
 msgid "The following formats are supported:"
 msgstr "Les formats suivants sont supportés :"
 
-#: pods/templates/videos/video_edit.html:298
+#: pods/templates/videos/video_edit.html:336
 msgid ""
 "In “Draft mode”, the content shows nowhere and nobody else but you can see "
 "it."
@@ -2796,18 +2797,18 @@ msgstr ""
 "En mode « Brouillon », le contenu n’apparaît nulle part et personne d’autre "
 "que vous ne le voit."
 
-#: pods/templates/videos/video_edit.html:306
-#: pods/templates/videos/video_edit.html:316
+#: pods/templates/videos/video_edit.html:344
+#: pods/templates/videos/video_edit.html:354
 msgid "If you don't select “Draft mode”,"
 msgstr "Si vous ne sélectionnez pas le mode « Brouillon »,"
 
-#: pods/templates/videos/video_edit.html:307
+#: pods/templates/videos/video_edit.html:345
 msgid "you can restrict the content access to only people belonging to"
 msgstr ""
 "vous pouvez restreindre l’accès à votre contenu aux seules personnes "
 "appartenant à"
 
-#: pods/templates/videos/video_edit.html:316
+#: pods/templates/videos/video_edit.html:354
 msgid ""
 "you can add a password which will be asked to anybody willing to watch your "
 "content."
@@ -2815,11 +2816,11 @@ msgstr ""
 "vous pouvez ajouter un mot de passe qui sera demandé à toute personne "
 "souhaitant visionner votre contenu."
 
-#: pods/templates/videos/video_edit.html:321
+#: pods/templates/videos/video_edit.html:359
 msgid "Keywords"
 msgstr "Mots-clés"
 
-#: pods/templates/videos/video_edit.html:324
+#: pods/templates/videos/video_edit.html:362
 msgid ""
 "Please try to add only relevant keywords that can be useful to other users."
 msgstr ""
@@ -3128,9 +3129,6 @@ msgstr ""
 #: pods/views.py:1690
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
-
-#~ msgid "The file size exceeds the maximum allowed value ({0} {1})."
-#~ msgstr "La taille du fichier dépasse la valeur maximum autorisée ({0} {1})."
 
 #~ msgid "Wrong file MIME type."
 #~ msgstr "Le type MIME du ficher ne correspond pas."
