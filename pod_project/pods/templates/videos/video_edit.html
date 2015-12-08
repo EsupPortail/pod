@@ -265,9 +265,13 @@ var name = "";
     {% endif %}
 
     {% if form.instance.slug %}
-        <form method="post" action="{% url 'video_edit' slug=form.instance.slug %}" id="video_form" accept-charset="utf-8" enctype="multipart/form-data">
+        <form id="video_form" method="post"
+              action="{% url 'video_edit' slug=form.instance.slug %}"
+              accept-charset="utf-8" enctype="multipart/form-data">
     {% else %}
-        <form method="post" action="{% url 'video_edit' %}" id="video_form" accept-charset="utf-8" enctype="multipart/form-data">
+        <form id="video_form" method="post"
+              action="{% url 'video_edit' %}"
+              accept-charset="utf-8" enctype="multipart/form-data">
     {% endif %}
 
     {% csrf_token %}
@@ -278,13 +282,16 @@ var name = "";
 
             {% buttons %}
             <div class="text-center">
-                <button type="submit" class="btn btn-success" value="{% trans "Save" %}" name="action1">
+                <button type="submit" class="btn btn-success" name="action1"
+                        value="{% trans "Save" %}">
                     {% bootstrap_icon "save" %} {% trans "Save" %}
                 </button>
-                <button type="submit" class="btn btn-success" value="{% trans "Save and go back to previous page" %}" name="action2">
+                <button type="submit" class="btn btn-success" name="action2"
+                        value="{% trans "Save and go back to previous page" %}">
                     {% bootstrap_icon "save" %} {% trans "Save and return to the previous page" %}
                 </button>
-                <button type="submit" class="btn btn-success" value="{% trans "Save and watch the video" %}" name="action3">
+                <button type="submit" class="btn btn-success" name="action3"
+                        value="{% trans "Save and watch the video" %}">
                     {% bootstrap_icon "save" %} {% trans "Save and watch the video" %}
                 </button>
             </div>
@@ -318,7 +325,10 @@ var name = "";
 
     {% block box_info %}
         <div class="widget">
-            <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Information"%}</h4>
+            <h4>
+                <span class="glyphicon glyphicon-info-sign"></span>
+                {% trans "Information"%}
+            </h4>
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">{% trans "Uploading" %}</h3>
