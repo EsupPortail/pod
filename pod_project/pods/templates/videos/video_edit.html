@@ -228,7 +228,10 @@ var name = "";
             <div class="row">
                 <div class="col-sm-8">
         {% if form.instance.encoding_in_progress %}
-                    <p class="text-info">Info : {% trans "The video is currently being encoded." %}</p>
+                    <p class="text-info">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        {% trans "The video is currently being encoded." %}
+                    </p>
         {% endif %}
                 </div>
         {% block stats %}
