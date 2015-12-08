@@ -152,7 +152,6 @@ $(document).ready(function() {
         submitHandler: function(form) {
             preventUnloadPrompt = true;
             $('#video_form').slideUp('slow', function() {
-                $('#process').find('div.anim').html(ajax_image);
                 $('#process').fadeIn();
             });
             form.submit();
@@ -295,8 +294,15 @@ var name = "";
         </form>
 
         <!-- DIV PROCESS -->
-        <div id="process" class="loader" >
-            <div align="center"><div class="anim"></div><!-- <progress value="22" max="100"></progress> --><span>{% trans "Sending, please wait." %}</span></p></div>
+        <div id="process" class="panel panel-warning" align="center">
+            <div class="panel-heading">{% trans "Sending, please wait." %}</div>
+            <div class="panel-body">
+                <!-- progress value="22" max="100"></progress -->
+                <img src="{% static 'images/loading.gif' %}" />
+            </div>
+            <div class="panel-footer">
+                {% trans "The page will refresh after the upload completes." %}
+            </div>
         </div>
 
     {% endblock article_content %}
