@@ -286,26 +286,35 @@ var name = "";
                 <div class="panel-heading">
                     <h3 class="panel-title">{% trans "Draft" %}</h3>
                 </div>
-                <div class="panel-body">{% trans "In “Draft mode”, the content shows nowhere and nobody else but you can see it." %}</div>
+                <div class="panel-body">
+                    <p>{% trans "In “Draft mode”, the content shows nowhere and nobody else but you can see it." %}</p>
+                </div>
             </div>
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">{% trans "Restricted access" %}</h3>
                 </div>
-                <div class="panel-body">{% trans "If you don't select “Draft mode”,"%} {% trans "you can restrict the content access to only people belonging to" %}
-                {{TITLE_ETB}}.</div>
+                <div class="panel-body">
+                    <p>{% trans "If you don't select “Draft mode”,"%}
+                    {% trans "you can restrict the content access to only people belonging to" %}
+                    {{TITLE_ETB}}.</p>
+                </div>
             </div>
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">{% trans "Password" %}</h3>
                 </div>
-                <div class="panel-body">{% trans "If you don't select “Draft mode”,"%} {% trans "you can add a password which will be asked to anybody willing to watch your content." %}</div>
+                <div class="panel-body">
+                    <p>{% trans "If you don't select “Draft mode”,"%} {% trans "you can add a password which will be asked to anybody willing to watch your content." %}</p>
+                </div>
             </div>
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">{% trans "Keywords" %}</h3>
                 </div>
-                <div class="panel-body">{% trans "Please try to add only relevant keywords that can be useful to other users." %}</div>
+                <div class="panel-body">
+                    <p>{% trans "Please try to add only relevant keywords that can be useful to other users." %}</p>
+                </div>
             </div>
         </div>
     {% endblock box_info %}
