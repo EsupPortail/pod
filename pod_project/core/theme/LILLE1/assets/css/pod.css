@@ -88,6 +88,9 @@ legend {
   width: auto;
   padding: 0 5px;
 }
+label.error {
+  color: #A94442;
+}
 aside {
   background: #f0f0f0;
   padding: 10px;
