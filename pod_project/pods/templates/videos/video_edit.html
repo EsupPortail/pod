@@ -111,12 +111,20 @@ $(document).ready(function() {
     });
 
     $("#video_form").validate({
+        submitHandler: function(form) {
+            preventUnloadPrompt = true;
+            $('#video_form').slideUp('slow', function() {
+                $('#process').find('div.anim').html(ajax_image);
+                $('#process').fadeIn();
+            });
+            form.submit();
+        },
         rules: {
     {% if not form.instance.video %}
             video: {
                 required: true,
-                /*accept: "audio/*,video/*",*/
-                extension: "{{video_ext_accept}}",
+                //accept: "audio/*,video/*",
+                //extension: "{{video_ext_accept}}",
             },
     {% else %}
             video: {
@@ -136,7 +144,7 @@ $(document).ready(function() {
     {% if not form.instance.video %}
             video: {
                 required: "{% trans "Video field is required." %}",
-                /*accept: "{% trans "Wrong MIME type." %}",*/
+                //accept: "{% trans "Wrong MIME type." %}",
                 extension: "{% trans "File format not allowed." %}",
             },
     {% endif %}
