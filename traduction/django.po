@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-08 16:28+0100\n"
-"PO-Revision-Date: 2015-12-08 16:35+0100\n"
+"POT-Creation-Date: 2015-12-08 16:43+0100\n"
+"PO-Revision-Date: 2015-12-08 16:44+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -710,7 +710,7 @@ msgid "Login"
 msgstr "Identifiant"
 
 #: core/views.py:95 pods/admin.py:98 pods/forms.py:288
-#: pods/templates/videos/video_edit.html:351
+#: pods/templates/videos/video_edit.html:352
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -1480,7 +1480,7 @@ msgstr ""
 "Séparez les mots-clés avec des espaces, placez les mots-clés constitués de "
 "plusieurs mots entre guillemets."
 
-#: pods/models.py:307 pods/templates/videos/video_edit.html:333
+#: pods/models.py:307 pods/templates/videos/video_edit.html:334
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -1492,7 +1492,7 @@ msgstr ""
 "vous."
 
 #: pods/models.py:309 pods/models.py:997
-#: pods/templates/videos/video_edit.html:341
+#: pods/templates/videos/video_edit.html:342
 msgid "Restricted access"
 msgstr "Accès restreint"
 
@@ -2762,6 +2762,10 @@ msgid "Uploading"
 msgstr "Téléversement"
 
 #: pods/templates/videos/video_edit.html:318
+msgid "The file size must be lower than %(MAX_UPLOAD_FILE_SIZE)s."
+msgstr "La taille du fichier doit être inférieure à %(MAX_UPLOAD_FILE_SIZE)s."
+
+#: pods/templates/videos/video_edit.html:319
 msgid ""
 "The send time depends on the size of your file and your download speed. This "
 "can be quite long."
@@ -2769,7 +2773,7 @@ msgstr ""
 "Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
 "transfert. Cela peut être assez long."
 
-#: pods/templates/videos/video_edit.html:319
+#: pods/templates/videos/video_edit.html:320
 msgid ""
 "During sending your file, do not close your browser until you have received "
 "a message of success or failure."
@@ -2777,19 +2781,19 @@ msgstr ""
 "Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
 "d'avoir reçu un message de succès ou d'échec."
 
-#: pods/templates/videos/video_edit.html:324
+#: pods/templates/videos/video_edit.html:325
 msgid "File format"
 msgstr "Format de fichier"
 
-#: pods/templates/videos/video_edit.html:327
+#: pods/templates/videos/video_edit.html:328
 msgid "You can send an audio or video file."
 msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 
-#: pods/templates/videos/video_edit.html:328
+#: pods/templates/videos/video_edit.html:329
 msgid "The following formats are supported:"
 msgstr "Les formats suivants sont supportés :"
 
-#: pods/templates/videos/video_edit.html:336
+#: pods/templates/videos/video_edit.html:337
 msgid ""
 "In “Draft mode”, the content shows nowhere and nobody else but you can see "
 "it."
@@ -2797,18 +2801,18 @@ msgstr ""
 "En mode « Brouillon », le contenu n’apparaît nulle part et personne d’autre "
 "que vous ne le voit."
 
-#: pods/templates/videos/video_edit.html:344
-#: pods/templates/videos/video_edit.html:354
+#: pods/templates/videos/video_edit.html:345
+#: pods/templates/videos/video_edit.html:355
 msgid "If you don't select “Draft mode”,"
 msgstr "Si vous ne sélectionnez pas le mode « Brouillon »,"
 
-#: pods/templates/videos/video_edit.html:345
+#: pods/templates/videos/video_edit.html:346
 msgid "you can restrict the content access to only people belonging to"
 msgstr ""
 "vous pouvez restreindre l’accès à votre contenu aux seules personnes "
 "appartenant à"
 
-#: pods/templates/videos/video_edit.html:354
+#: pods/templates/videos/video_edit.html:355
 msgid ""
 "you can add a password which will be asked to anybody willing to watch your "
 "content."
@@ -2816,11 +2820,11 @@ msgstr ""
 "vous pouvez ajouter un mot de passe qui sera demandé à toute personne "
 "souhaitant visionner votre contenu."
 
-#: pods/templates/videos/video_edit.html:359
+#: pods/templates/videos/video_edit.html:360
 msgid "Keywords"
 msgstr "Mots-clés"
 
-#: pods/templates/videos/video_edit.html:362
+#: pods/templates/videos/video_edit.html:363
 msgid ""
 "Please try to add only relevant keywords that can be useful to other users."
 msgstr ""
@@ -3132,6 +3136,3 @@ msgstr "Nouveaux médiacours ajoutés."
 
 #~ msgid "Wrong file MIME type."
 #~ msgstr "Le type MIME du ficher ne correspond pas."
-
-#~ msgid "The file size must be lower than %(MAX_FILE_SIZE)s."
-#~ msgstr "La taille du fichier doit être inférieure à %(MAX_FILE_SIZE)s."

@@ -315,6 +315,7 @@ var name = "";
                     <h3 class="panel-title">{% trans "Uploading" %}</h3>
                 </div>
                 <div class="panel-body">
+                    <p>{% blocktrans %}The file size must be lower than {{ MAX_UPLOAD_FILE_SIZE }}.{% endblocktrans %}</p>
                     <p>{% trans "The send time depends on the size of your file and your download speed. This can be quite long." %}</p>
                     <p>{% trans "During sending your file, do not close your browser until you have received a message of success or failure." %}</p>
                 </div>
