@@ -125,7 +125,6 @@ $(document).ready(function() {
     {% if not form.instance.video %}
             video: {
                 required: true,
-                //accept: "audio/*,video/*",
                 extension: "{{video_ext_accept}}",
             },
     {% else %}
@@ -145,9 +144,8 @@ $(document).ready(function() {
         messages: {
     {% if not form.instance.video %}
             video: {
-                required: "{% trans "Video field is required." %}",
-                //accept: "{% trans "Wrong MIME type." %}",
-                extension: "{% trans "File format not allowed." %}",
+                required: "{% trans "Please select a file to upload." %}",
+                extension: "{% trans "File format not supported." %}",
             },
     {% endif %}
             title: {
