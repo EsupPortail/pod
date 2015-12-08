@@ -47,7 +47,8 @@ http://www.gnu.org/licenses/
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
     {{form.media}}
 
-    <script src="{% static "JS/jquery.validate.js" %}"></script>
+    <script src="{% static "JS/validate/jquery.validate.min.js" %}"></script>
+    <script src="{% static "JS/validate/additional-methods.min.js" %}"></script>
     <script src="{% static "JS/jquery.jqEasyCharCounter.js" %}"></script>
 
     <script>
@@ -125,7 +126,7 @@ $(document).ready(function() {
             video: {
                 required: true,
                 //accept: "audio/*,video/*",
-                //extension: "{{video_ext_accept}}",
+                extension: "{{video_ext_accept}}",
             },
     {% else %}
             video: {
