@@ -671,7 +671,7 @@ def video_edit(request, slug=None):
             messages.add_message(
                 request, messages.ERROR, _(u'One or more errors have been found in the form.'))
 
-    video_ext_accept = replace(' | '.join(settings.VIDEO_EXT_ACCEPT), ".", "")
+    video_ext_accept = replace('|'.join(settings.VIDEO_EXT_ACCEPT), ".", "")
     video_ext_accept_text = replace(', '.join(settings.VIDEO_EXT_ACCEPT), ".", "").upper()
 
     return render_to_response("videos/video_edit.html",
