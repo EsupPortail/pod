@@ -1445,7 +1445,7 @@ def autocomplete(request):
 
 def search_videos(request):
     es = Elasticsearch(ES_URL)
-    aggsAttrs = ['owner_full_name', 'type', 'disciplines', 'tags', 'channels']
+    aggsAttrs = ['owner_full_name', 'type.title', 'disciplines.title', 'tags.name', 'channels.title']
 
     #SEARCH FORM
     search_word = ""
@@ -1502,7 +1502,9 @@ def search_videos(request):
         query = {
           "multi_match" : {
             "query":    "%s" %search_word,
-            "fields": [ "_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags^1", "contributors^0.6", "chapters^0.5", "enrichments^0.5" ]
+            "fields": [ "_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1", 
+                        "contributors^0.6", "chapters.title^0.5", "enrichments.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6" 
+                    ]
           }
         }
 
@@ -1519,24 +1521,6 @@ def search_videos(request):
         }
     }
 
-    """
-    bodysearch["query"]= {
-        "function_score": {
-            "query": {},
-            "functions": [
-                {
-                    "gauss": {
-                        "date_added": {
-                            "scale": "130w",
-                            "offset": "26w",
-                            "decay": 0.8
-                        }
-                    }
-                }
-            ]
-        }
-    }
-    """
     bodysearch["query"]= {
         "function_score": {
             "query": {},
@@ -1564,7 +1548,7 @@ def search_videos(request):
     #bodysearch["query"] = query
 
     for attr in aggsAttrs:
-        bodysearch["aggs"][attr] = {"terms": {"field": attr+".raw", "size": 5, "order" : { "_count" : "asc" }}}
+        bodysearch["aggs"][attr.replace(".","_")] = {"terms": {"field": attr+".raw", "size": 5, "order" : { "_count" : "asc" }}}
 
     #print json.dumps(bodysearch, indent=4)
 
