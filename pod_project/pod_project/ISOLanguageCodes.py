@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 
-#http://www.w3schools.com/tags/ref_language_codes.asp
-#http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
-#http://en.wikipedia.org/wiki/ISO_639-1
+# http://www.w3schools.com/tags/ref_language_codes.asp
+# http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+# http://en.wikipedia.org/wiki/ISO_639-1
 ALL_LANG_CHOICES = (
     ('ab', _('Abkhazian')),
     ('aa', _('Afar')),
@@ -29,7 +29,8 @@ ALL_LANG_CHOICES = (
     ('be', _('Byelorussian (Belarusian)')),
     ('km', _('Cambodian')),
     ('ca', _('Catalan')),
-    ('zh', _('Chinese')),
+    ('zh-hans', _('Simplified Chinese')),
+    ('zh-hant', _('Traditional Chinese')),
     ('co', _('Corsican')),
     ('hr', _('Croatian')),
     ('cs', _('Czech')),
@@ -154,12 +155,14 @@ ALL_LANG_CHOICES = (
 )
 
 PREF_LANG_CHOICES = (
-    ('ar', _('Arabic')),
-    ('zh', _('Chinese')),
-    ('en', _('English')),
-    ('fr', _('French')),
     ('de', _('German')),
-    ('es', _('Spanish'))
+    ('en', _('English')),
+    ('ar', _('Arabic')),
+    ('zh-hans', _('Simplified Chinese')),
+    ('zh-hant', _('Traditional Chinese')),
+    ('es', _('Spanish')),
+    ('fr', _('French')),
+    ('it', _('Italian')),
+    ('ja', _('Japanese')),
+    ('ru', _('Russian')),
 )
-
-
