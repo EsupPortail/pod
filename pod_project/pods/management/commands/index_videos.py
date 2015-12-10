@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.utils import translation
 from pods.models import Pod
 from elasticsearch import Elasticsearch
 from django.conf import settings
@@ -11,6 +12,9 @@ class Command(BaseCommand):
 	help = 'Index in elasticsearch the specified video'
 	
 	def handle(self, *args, **options):	
+		# Activate a fixed locale fr
+		translation.activate('fr')
+
 		es = Elasticsearch(ES_URL)
 		if args:
 			if args[0]=='__ALL__':
