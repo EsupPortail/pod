@@ -169,8 +169,14 @@ def get_label_lang(lang):
     for tab in settings.ALL_LANG_CHOICES:
         if tab[0] == lang:
             return tab[1]
-    return ""
+    return lang
 
+@register.simple_tag()
+def get_label_cursus(cursus):
+    for tab in settings.CURSUS_CODES:
+        if tab[0] == cursus:
+            return tab[1]
+    return cursus
 
 @register.inclusion_tag("videos/videos_list.html")
 def get_last_videos():

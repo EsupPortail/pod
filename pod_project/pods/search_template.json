@@ -53,7 +53,8 @@
         "title": {
           "type":"string",
           "index_analyzer" : "custom_analyzer",
-          "search_analyzer" : "custom_search_analyzer"
+          "search_analyzer" : "custom_search_analyzer",
+          "term_vector": "yes"
         },
         "description": {
           "type":"string",
@@ -61,6 +62,14 @@
           "search_analyzer" : "custom_search_analyzer"
         },
         "owner": {
+          "type":"string",
+          "index" : "not_analyzed"
+        },
+        "cursus": {
+          "type":"string",
+          "index" : "not_analyzed"
+        },
+        "main_lang": {
           "type":"string",
           "index" : "not_analyzed"
         },
@@ -93,44 +102,76 @@
           "type": "integer"
         },
         "type": {
-          "type":"string",
-          "index_analyzer" : "standard",
-          "search_analyzer" : "standard",
-          "fields": {
-            "raw" : {
+          "properties" : {
+            "title": {
+              "type" : "string",
+              "index_analyzer" : "custom_analyzer",
+              "search_analyzer" : "custom_search_analyzer",
+              "fields": {
+                "raw" : {
+                  "type": "string",
+                  "index": "not_analyzed"
+                }
+              }
+            },
+            "slug": {
               "type": "string",
               "index": "not_analyzed"
             }
           }
         },
         "disciplines": {
-          "type":"string",
-          "index_analyzer" : "standard",
-          "search_analyzer" : "standard",
-          "fields": {
-            "raw" : {
+          "properties" : {
+            "title": {
+              "type" : "string",
+              "index_analyzer" : "custom_analyzer",
+              "search_analyzer" : "custom_search_analyzer",
+              "fields": {
+                "raw" : {
+                  "type": "string",
+                  "index": "not_analyzed"
+                }
+              }
+            },
+            "slug": {
               "type": "string",
               "index": "not_analyzed"
             }
           }
         },
         "channels": {
-          "type":"string",
-          "index_analyzer" : "standard",
-          "search_analyzer" : "standard",
-          "fields": {
-            "raw" : {
+          "properties" : {
+            "title": {
+              "type" : "string",
+              "index_analyzer" : "custom_analyzer",
+              "search_analyzer" : "custom_search_analyzer",
+              "fields": {
+                "raw" : {
+                  "type": "string",
+                  "index": "not_analyzed"
+                }
+              }
+            },
+            "slug": {
               "type": "string",
               "index": "not_analyzed"
             }
           }
         },
         "themes": {
-          "type":"string",
-          "index_analyzer" : "standard",
-          "search_analyzer" : "standard",
-          "fields": {
-            "raw" : {
+          "properties" : {
+            "title": {
+              "type" : "string",
+              "index_analyzer" : "custom_analyzer",
+              "search_analyzer" : "custom_search_analyzer",
+              "fields": {
+                "raw" : {
+                  "type": "string",
+                  "index": "not_analyzed"
+                }
+              }
+            },
+            "slug": {
               "type": "string",
               "index": "not_analyzed"
             }
@@ -142,21 +183,58 @@
           "search_analyzer" : "custom_search_analyzer"
         },
         "chapters": {
-          "type":"string",
-          "index_analyzer" : "custom_analyzer",
-          "search_analyzer" : "custom_search_analyzer"
+          "properties" : {
+            "title": {
+              "type" : "string",
+              "index_analyzer" : "custom_analyzer",
+              "search_analyzer" : "custom_search_analyzer",
+              "fields": {
+                "raw" : {
+                  "type": "string",
+                  "index": "not_analyzed"
+                }
+              }
+            },
+            "slug": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
         },
         "enrichments": {
-          "type":"string",
-          "index_analyzer" : "custom_analyzer",
-          "search_analyzer" : "custom_search_analyzer"
+          "properties" : {
+            "title": {
+              "type" : "string",
+              "index_analyzer" : "custom_analyzer",
+              "search_analyzer" : "custom_search_analyzer",
+              "fields": {
+                "raw" : {
+                  "type": "string",
+                  "index": "not_analyzed"
+                }
+              }
+            },
+            "slug": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
         },
         "tags" : {
-          "type" : "string",
-          "index_analyzer" : "custom_analyzer",
-          "search_analyzer" : "custom_search_analyzer",
-          "fields": {
-            "raw" : {
+          "properties" : {
+            "name": {
+              "type" : "string",
+              "index_analyzer" : "custom_analyzer",
+              "search_analyzer" : "custom_search_analyzer",
+              "fields": {
+                "raw" : {
+                  "type": "string",
+                  "index": "not_analyzed",
+                  "term_vector": "yes"
+                }
+              }
+            },
+            "slug": {
               "type": "string",
               "index": "not_analyzed"
             }

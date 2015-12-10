@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.utils.translation import ugettext_lazy as _
+from pod_project.ISOLanguageCodes import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+from pod_project.cursusCodes import CURSUS_CODES
+from pod_project.ckeditor import *
 
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -89,8 +93,6 @@ DATABASES = {
 """
 
 # Internationalisation
-from pod_project.ckeditor import *
-from pod_project.ISOLanguageCodes import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 
 LANGUAGE_CODE = 'fr'
 TIME_ZONE = 'Europe/Paris'
@@ -98,7 +100,6 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-from django.utils.translation import ugettext_lazy as _
 LANGUAGES = (
     ('fr', _('Français')),
     ('en', _('English'))
