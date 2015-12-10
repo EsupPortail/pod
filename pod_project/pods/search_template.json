@@ -65,6 +65,14 @@
           "type":"string",
           "index" : "not_analyzed"
         },
+        "cursus": {
+          "type":"string",
+          "index" : "not_analyzed"
+        },
+        "main_lang": {
+          "type":"string",
+          "index" : "not_analyzed"
+        },
         "owner_full_name": {
           "type":"string",
           "index_analyzer" : "custom_analyzer",

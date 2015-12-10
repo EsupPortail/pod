@@ -1550,7 +1550,12 @@ def search_videos(request):
     for attr in aggsAttrs:
         bodysearch["aggs"][attr.replace(".","_")] = {"terms": {"field": attr+".raw", "size": 5, "order" : { "_count" : "asc" }}}
 
-    #print json.dumps(bodysearch, indent=4)
+    #add cursus and main_lang 'cursus', 'main_lang', 
+    bodysearch["aggs"]['cursus'] = {"terms": {"field": "cursus", "size": 5, "order" : { "_count" : "asc" }}}
+    bodysearch["aggs"]['main_lang'] = {"terms": {"field": "main_lang", "size": 5, "order" : { "_count" : "asc" }}}
+
+
+    print json.dumps(bodysearch, indent=4)
 
     result = es.search(index="pod", body=bodysearch)
 

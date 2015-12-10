@@ -419,7 +419,9 @@ class Pod(Video):
                 "protected" : True if self.password != "" or self.is_restricted is True else False,
                 "duration_in_time": self.duration_in_time(),
                 "mediatype": self.get_mediatype()[0] if len(self.get_mediatype()) > 0 else "video",
-                "is_richmedia" : self.is_richmedia()
+                "is_richmedia" : self.is_richmedia(),
+                "cursus" : u'%s' %self.cursus,
+                "main_lang" : u'%s' %self.main_lang,
             }
 
         return json.dumps(data_to_dump)

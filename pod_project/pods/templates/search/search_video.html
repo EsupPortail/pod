@@ -221,6 +221,32 @@ voir http://www.gnu.org/licenses/
                                         {% endfor %}
                                     {% endif %}
 
+                                    {% if result.aggregations.main_lang and result.aggregations.main_lang.buckets %}
+                                        <dt>{% trans 'Main language' %}</dt>
+                                        {# Provide only the top 5 type #}
+                                        {% for main_lang in result.aggregations.main_lang.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=main_lang:{{ main_lang.key }}">
+                                                   {% get_label_lang main_lang.key %}
+                                                </a>
+                                                ({{ main_lang.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    {% if result.aggregations.cursus and result.aggregations.cursus.buckets %}
+                                        <dt>{% trans 'University course' %}</dt>
+                                        {# Provide only the top 5 type #}
+                                        {% for cursus in result.aggregations.cursus.buckets %}
+                                            <dd>
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=cursus:{{ cursus.key }}">
+                                                   {% get_label_cursus cursus.key %}
+                                                </a>
+                                                ({{ cursus.doc_count }})
+                                            </dd>
+                                        {% endfor %}
+                                    {% endif %}
+
                                 </dl>
                             </div>
                         </fieldset>

@@ -51,6 +51,9 @@ from filer.models import Folder
 import logging
 logger = logging.getLogger(__name__)
 
+VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
+MAIN_LANG_CHOICES = (
+        ("", settings.PREF_LANG_CHOICES), ("-----------", settings.ALL_LANG_CHOICES))
 
 @python_2_unicode_compatible
 class FileBrowse(models.Model):
@@ -131,9 +134,6 @@ def create_user_profile(sender, instance, created, **kwargs):
             logger.error(msg)
             print msg
 
-VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
-
-
 def get_storage_path(instance, filename):
     fname, dot, extension = filename.rpartition('.')
     try:
@@ -163,8 +163,6 @@ class Video(models.Model):
     cursus = models.CharField(
         _('University course'), max_length=1, choices=settings.CURSUS_CODES, default="0")
 
-    MAIN_LANG_CHOICES = (
-        ("", settings.PREF_LANG_CHOICES), ("-----------", settings.ALL_LANG_CHOICES))
     main_lang = models.CharField(
         _('Main language'), max_length=2, choices=MAIN_LANG_CHOICES, default=get_language())
 
