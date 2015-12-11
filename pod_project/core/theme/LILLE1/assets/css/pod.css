@@ -1,30 +1,23 @@
 @charset "utf-8";
 /*
 Copyright (C) 2014 Yannick Bonnaz
-Ce programme est un logiciel libre : vous pouvez
-le redistribuer et/ou le modifier sous les termes
-de la licence GNU Public Licence telle que publiée
-par la Free Software Foundation, soit dans la
-version 3 de la licence, ou (selon votre choix)
-toute version ultérieure.
-Ce programme est distribué avec l'espoir
-qu'il sera utile, mais SANS AUCUNE
-GARANTIE : sans même les garanties
-implicites de VALEUR MARCHANDE ou
-D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
-la licence GNU General Public License
-pour plus de détails.
-Vous devriez avoir reçu une copie de la licence
-GNU General Public Licence
-avec ce programme. Si ce n'est pas le cas,
-voir http://www.gnu.org/licenses/
+Ce programme est un logiciel libre : vous pouvez le redistribuer
+et/ou le modifier sous les termes de la licence GNU Public Licence
+telle que publiée par la Free Software Foundation, soit dans la version 3
+de la licence, ou (selon votre choix) toute version ultérieure.
+Ce programme est distribué avec l'espoir qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir la licence GNU General Public License
+pour plus de détails. Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence avec ce programme. Si ce n'est pas le cas, voir
+http://www.gnu.org/licenses/
 */
 /*******************************************************************************
 
         Body & page structure
 */
 body {
-  background-color: #222222;
+  background-color: #222;
   background-image: url("/static/images/binding_dark.png");
   background-position: top center;
   background-attachment: fixed;
@@ -71,7 +64,7 @@ body > .navbar[role="navigation"].navbar-default > .container > .navbar-header .
   width: 175px;
 }
 body > .navbar[role="navigation"].navbar-default > .container .navbar-nav > li:not(.open) > a {
-  color: #333333;
+  color: #333;
 }
 body > .container[role="main"] {
   background: #fff;
@@ -94,6 +87,9 @@ legend {
   border-bottom: none;
   width: auto;
   padding: 0 5px;
+}
+label.error {
+  color: #A94442;
 }
 aside {
   background: #f0f0f0;
@@ -323,14 +319,14 @@ aside .form-group.show-all .more {
 footer {
   padding-top: 10px;
   padding-bottom: 10px;
-  background-color: #333333;
-  background: -moz-linear-gradient(top, #333333 0%, #333333 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #333333), color-stop(100%, #333333));
-  background: -webkit-linear-gradient(top, #333333 0%, #333333 100%);
-  background: -o-linear-gradient(top, #333333 0%, #333333 100%);
-  background: -ms-linear-gradient(top, #333333 0%, #333333 100%);
-  background: linear-gradient(to bottom, #333333 0%, #333333 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333333',endColorstr='#333333',GradientType=0);
+  background-color: #333;
+  background: -moz-linear-gradient(top, #333 0%, #333 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #333), color-stop(100%, #333));
+  background: -webkit-linear-gradient(top, #333 0%, #333 100%);
+  background: -o-linear-gradient(top, #333 0%, #333 100%);
+  background: -ms-linear-gradient(top, #333 0%, #333 100%);
+  background: linear-gradient(to bottom, #333 0%, #333 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333',endColorstr='#333',GradientType=0);
 }
 footer #semmLOGO {
   width: 100%;
@@ -557,7 +553,7 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
 .nav-pills > li.active > a,
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus {
-  color: #ffffff;
+  color: #fff;
   background-color: #f8af19;
 }
 .pagination > .active > a,
@@ -566,7 +562,7 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
 .pagination > .active > span:hover,
 .pagination > .active > a:focus,
 .pagination > .active > span:focus {
-  color: #ffffff;
+  color: #fff;
   background-color: #f8af19;
   border-color: #f8af19;
 }

@@ -305,11 +305,11 @@ class Pod(Video):
     #tags = TaggableManager(help_text=_(u'Séparez les tags par des espaces, mettez les tags constituées de plusieurs mots entre guillemets.'), verbose_name=_('Tags'), blank=True)
 
     is_draft = models.BooleanField(verbose_name=_('Draft'), help_text=_(
-        u'If you check this box, the video will be visible and accessible only by you.'), default=True)
+        u'If this box is checked, the video will be visible and accessible only by you.'), default=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
-        u'The video is only accessible to authenticated users.'), default=False)
+        u'If this box is checked, the video will only be accessible to authenticated users.'), default=False)
     password = models.CharField(_('password'), help_text=_(
-        u'The video is available with the specified password.'), max_length=50, blank=True, null=True)
+        u'Viewing this video will not be possible without this password.'), max_length=50, blank=True, null=True)
 
     class Meta:
         verbose_name = _("Video")
@@ -402,24 +402,26 @@ class Pod(Video):
                 'title': u'%s' %self.title,
                 'owner': u'%s' %self.owner.username,
                 'owner_full_name': u'%s' %self.owner.get_full_name(),
-                "date_added": u'%s' %self.date_added, 
-                "date_evt": u'%s' %self.date_evt if self.date_evt else None, 
-                "description": u'%s' %self.description, 
+                "date_added": u'%s' %self.date_added,
+                "date_evt": u'%s' %self.date_evt.strftime('%Y-%m-%dT%H:%M:%S') if self.date_evt else None, 
+                "description": u'%s' %self.description,
                 "thumbnail": u'%s' %self.get_thumbnail_url(),
                 "duration": u'%s' %self.duration,
-                "tags" : list(self.tags.all().values_list('name', flat=True)),
-                "type" : u'%s' %self.type,
-                "disciplines" : list(self.discipline.values_list('title', flat=True)),
-                "channels" : list(self.channel.values_list('title', flat=True)),
-                "themes" : list(self.theme.values_list('title', flat=True)),
+                "tags" : list(self.tags.all().values('name', 'slug')),
+                "type" : {"title":self.type.title,"slug":self.type.slug},
+                "disciplines" : list(self.discipline.all().values('title', 'slug')),
+                "channels" : list(self.channel.all().values('title', 'slug')),
+                "themes" : list(self.theme.all().values('title', 'slug')),
                 "contributors" : list(self.contributorpods_set.values_list('name', 'role')),
-                "chapters" : list(self.chapterpods_set.values_list('title', flat=True)),
-                "enrichments" : list(self.enrichpods_set.values_list('title', flat=True)),
+                "chapters" : list(self.chapterpods_set.values('title', 'slug')),
+                "enrichments" : list(self.enrichpods_set.values('title', 'slug')),
                 "full_url" : self.get_full_url(),
                 "protected" : True if self.password != "" or self.is_restricted is True else False,
                 "duration_in_time": self.duration_in_time(),
                 "mediatype": self.get_mediatype()[0] if len(self.get_mediatype()) > 0 else "video",
-                "is_richmedia" : self.is_richmedia()
+                "is_richmedia" : self.is_richmedia(),
+                "cursus" : u'%s' %self.cursus,
+                "main_lang" : u'%s' %self.main_lang,
             }
 
         return json.dumps(data_to_dump)
@@ -505,7 +507,7 @@ class ContributorPods(models.Model):
         ("designer", _("designer")),
         ("contributor", _("contributor")),
         ("actor", _("actor")),
-        ("voice-over", _("voice-off")),
+        ("voice-over", _("voice-over")),
         ("consultant", _("consultant")),
         ("writer", _("writer")),
         ("soundman", _("soundman")),
@@ -548,7 +550,7 @@ class ContributorPods(models.Model):
             for element in list_contributorpods:
                 if self.name == element.name and self.role == element.role:
                     msg.append(_("there is already a contributor with the same name and role in the list."))
-                    return msg        
+                    return msg
         return []
 
     def __unicode__(self):
@@ -613,7 +615,7 @@ class TrackPods(models.Model):
             for element in list_trackpods:
                 if self.kind == element.kind and self.lang == element.lang:
                     msg.append(_("there is already a subtitle with the same kind and language in the list."))
-                    return msg        
+                    return msg
         return []
 
 
@@ -986,6 +988,8 @@ class Building(models.Model):
 @python_2_unicode_compatible
 class Recorder(models.Model):
     name = models.CharField(_('name'), max_length=200, unique=True)
+    building = models.ForeignKey('Building', verbose_name=_('Building'))
+    description = RichTextField(_('description'), config_name='complete', blank=True)
     image = FilerImageField(
         null=True, blank=True, verbose_name="Image", related_name="recorder_image")
     adress_ip = models.IPAddressField(unique=True)
@@ -994,8 +998,6 @@ class Recorder(models.Model):
     gmapurl = models.CharField(max_length=250, blank=True, null=True)
     is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
         u'Live is accessible only to authenticated users.'), default=False)
-    building = models.ForeignKey('Building', verbose_name=_('Building'))
-
     def __unicode__(self):
         return "%s - %s" % (self.name, self.adress_ip)
 
