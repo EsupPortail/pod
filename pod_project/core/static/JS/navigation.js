@@ -208,13 +208,16 @@ $(document).on('change', "#displaytime", function(e) {
     //$('#txtpartage').val(($('#displaytime:checked').val()) ? $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime())) : $('#txtpartage').val().replace(/(start=)\d+/, '$10'));
     if($('#displaytime').is(':checked')){
         if($('#txtpartage').val().indexOf('start')<0){
-             $('#txtpartage').val($('#txtpartage').val()+'&start='+parseInt(myPlayer.currentTime()));
-             var valeur = $('#txtintegration').val();
-             $('#txtintegration').val(valeur.replace('/?', '/?start=' + parseInt(myPlayer.currentTime())+'&'));
+            if($('#txtpartage').val().indexOf('?')<0)
+                $('#txtpartage').val($('#txtpartage').val()+'?start='+parseInt(myPlayer.currentTime()));
+            else
+                $('#txtpartage').val($('#txtpartage').val()+'&start='+parseInt(myPlayer.currentTime()));
+            var valeur = $('#txtintegration').val();
+            $('#txtintegration').val(valeur.replace('/?', '/?start=' + parseInt(myPlayer.currentTime())+'&'));
         }
         $('#txtposition').val(myPlayer.currentTime().toHHMMSS());
     }else{
-         $('#txtpartage').val($('#txtpartage').val().replace(/(&start=)\d+/, ''));
+         $('#txtpartage').val($('#txtpartage').val().replace(/((\?|&)start=)\d+/, ''));
          $('#txtintegration').val($('#txtintegration').val().replace(/(start=)\d+&/, ''));
          $('#txtposition').val("");
     }
