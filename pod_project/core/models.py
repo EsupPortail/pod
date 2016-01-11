@@ -25,7 +25,7 @@ from __future__ import unicode_literals
 from django.db import models
 from filer.fields.file import FilerFileField
 from filer.fields.image import FilerImageField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import get_language, ugettext_lazy as _
 from django.utils.encoding import iri_to_uri, python_2_unicode_compatible
 from django.contrib.auth.models import User, Group
 
@@ -51,6 +51,9 @@ from filer.models import Folder
 import logging
 logger = logging.getLogger(__name__)
 
+VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
+MAIN_LANG_CHOICES = (
+        ("", settings.PREF_LANG_CHOICES), ("-----------", settings.ALL_LANG_CHOICES))
 
 @python_2_unicode_compatible
 class FileBrowse(models.Model):
@@ -131,9 +134,6 @@ def create_user_profile(sender, instance, created, **kwargs):
             logger.error(msg)
             print msg
 
-VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
-
-
 def get_storage_path(instance, filename):
     fname, dot, extension = filename.rpartition('.')
     try:
@@ -159,6 +159,13 @@ class Video(models.Model):
     date_added = models.DateField(_('Date added'), default=datetime.now)
     date_evt = models.DateField(
         _(u'Date of event'), default=datetime.now, blank=True, null=True)
+
+    cursus = models.CharField(
+        _('University course'), max_length=1, choices=settings.CURSUS_CODES, default="0")
+
+    main_lang = models.CharField(
+        _('Main language'), max_length=2, choices=MAIN_LANG_CHOICES, default=get_language())
+
     description = RichTextField(
         _('Description'), config_name='complete', blank=True)
 
@@ -253,6 +260,7 @@ class EncodingType(models.Model):
 
     def __unicode__(self):
         return "%s %s %s" % (self.mediatype, self.name, self.output_height)
+
 
 @python_2_unicode_compatible
 class ContactUs(models.Model):

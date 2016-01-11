@@ -1,56 +1,116 @@
 {% extends "base.html" %}
-{%comment%}
+{% comment %}
 Copyright (C) 2014 Nicolas Can
-Ce programme est un logiciel libre : vous pouvez
-le redistribuer et/ou le modifier sous les termes
-de la licence GNU Public Licence telle que publiée
-par la Free Software Foundation, soit dans la
-version 3 de la licence, ou (selon votre choix)
-toute version ultérieure.
-Ce programme est distribué avec l'espoir
-qu'il sera utile, mais SANS AUCUNE
-GARANTIE : sans même les garanties
-implicites de VALEUR MARCHANDE ou
-D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
-la licence GNU General Public License
-pour plus de détails.
-Vous devriez avoir reçu une copie de la licence
-GNU General Public Licence
-avec ce programme. Si ce n'est pas le cas,
-voir http://www.gnu.org/licenses/
-{%endcomment%}
+Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le
+modifier sous les termes de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la version 3 de la licence,
+ou (selon votre choix) toute version ultérieure.
+Ce programme est distribué avec l'espoir qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS.
+Voir la licence GNU General Public License pour plus de détails.
+Vous devriez avoir reçu une copie de la licence GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas, voir
+http://www.gnu.org/licenses/
+{% endcomment %}
+
 {% load i18n staticfiles %}
 {% load bootstrap3 %}
 
+
 {% block bootstrap3_title %}
-{{ block.super }}
-{% if form.instance.title %}
-{% trans "Editing the video" %} {{form.instance.title}}
-{% else %}
-{% trans "Add a new video" %}
-{% endif %}{% endblock %}
+    {{ block.super }}
+    {% if form.instance.title %}
+        {% trans "Editing the video" %} {{form.instance.title}}
+    {% else %}
+        {% trans "Add a new video" %}
+    {% endif %}
+{% endblock %}
+
 
 {% block bootstrap3_extra_head %}
-<!-- media -->
-<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
-{% if user.is_staff %}
-    <script type="text/javascript" src="/admin/jsi18n/"></script>
-{% else %}
-    <script type="text/javascript" src="/dynamic-media/jsi18n/"></script>
-{% endif %}
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/actions.js"></script>
-<!-- form.media -->
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
-{{form.media}}
 
-<script src="{% static "JS/jquery.validate.js" %}"></script>
-<script src="{% static "JS/jquery.jqEasyCharCounter.js" %}" type="text/javascript"></script>
+    <!-- media -->
+    <script>window.__admin_media_prefix__ = "/static/admin/";</script>
+    {% if user.is_staff %}
+        <script src="/admin/jsi18n/"></script>
+    {% else %}
+        <script src="/dynamic-media/jsi18n/"></script>
+    {% endif %}
+    <script src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script src="{{ STATIC_URL }}admin/js/jquery.js"></script>
+    <script src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <!--
+    <script src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
+    <script src="{{ STATIC_URL }}admin/js/actions.js"></script>
+    <!-- form.media -->
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
+    {{form.media}}
 
-<script>
+    <script src="{% static "JS/validate/jquery.validate.min.js" %}"></script>
+    <script src="{% static "JS/validate/additional-methods.min.js" %}"></script>
+    <script src="{% static "JS/jquery.jqEasyCharCounter.js" %}"></script>
+
+    <script>
+
+/*
+    Adding a filesize rule to form validation
+
+*/
+$.validator.addMethod( "maxfilesize", function( value, element, params ) {
+
+    var elementSize;
+
+    try {
+        elementSize = $( element )[0].files[0].size;
+    } catch( e ) {
+        return true;    // Bypass if HTML5 File API not supported.
+    }
+
+    var maxFileSize = params[0];
+    var fileSizeUnit = params[1];
+
+    if ( fileSizeUnit === "Mo" ) {
+        maxFileSize *= 1024 * 1024;
+    } else if ( fileSizeUnit === "Go" ) {
+        maxFileSize *= 1024 * 1024 * 1024;
+    }
+
+    return this.optional( element ) || elementSize < maxFileSize;
+}, $.validator.format( "{% trans "The file size exceeds the maximum allowed value ({0} {1})." %}" ) );
+
+
+/*
+    Checking “is_draft” hides “is_restricted” and “password”
+
+*/
+setOnDraftChange = function( ) {
+
+    // Objects involved
+    var $isDraftCheckbox = $( '#id_is_draft' );
+    var $isRestrictedCheckboxGroup = $( '#id_is_restricted' ).closest( '.form-group' );
+    var $passwordTextInputGroup = $( '#id_password' ).parent( '.form-group' );
+
+    // Initial state
+    if ( $isDraftCheckbox.is( ':checked' ) ) {
+        $isRestrictedCheckboxGroup.hide( );
+        $passwordTextInputGroup.hide( );
+    }
+
+    // Dynamic update
+    $isDraftCheckbox.on( 'change', function( event ) {
+        if ( $( this ).is( ':checked' ) ) {
+            $passwordTextInputGroup.slideUp( );
+            $isRestrictedCheckboxGroup.slideUp( );
+        } else {
+            $isRestrictedCheckboxGroup.slideDown( );
+            $passwordTextInputGroup.slideDown( );
+        }
+    } );
+
+};
+
+
 var preventUnloadPrompt;
 var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 
@@ -68,180 +128,277 @@ $(document).ready(function() {
 
     $('#process').hide();
 
-	$('#id_title').jqEasyCounter({
-			'maxChars': 250,
-			'maxCharsWarning': 240
-	});
-	$('#id_password').jqEasyCounter({
-			'maxChars': 50,
-			'maxCharsWarning': 45
-	});
+    $('#id_title').jqEasyCounter({
+        'maxChars': 250,
+        'maxCharsWarning': 240
+    });
+    $('#id_password').jqEasyCounter({
+        'maxChars': 50,
+        'maxCharsWarning': 45
+    });
+
+    setOnDraftChange();
+
+    // Max file size setting
+    var sizeInfo = '{{ MAX_UPLOAD_FILE_SIZE }}'.split( " " );
+    if ( ! parseInt( sizeInfo[0], 10 )
+            || ! sizeInfo[1]
+            || ( sizeInfo[1] != 'Mo' && sizeInfo[1] != 'Go' ) ) {
+        // If setting is unreadable we set it to 1 GB.
+        sizeInfo = [ "1", "Go"];
+    }
 
     $("#video_form").validate({
-		rules: {
-		    {% if not form.instance.video %}
-		    video: {
-		      required: true,
-		      /*accept: "audio/*,video/*",*/
-		      extension: "{{video_ext_accept}}",
-		    },
-		    {% else %}
-		    video: {
-		      required: false,
-		    },
-		    {% endif %}
-			title: {
-			 required: true,
-			 minlength: 2,
-			 maxlength:250,
-			},
-			type: {
-		      required: true,
-		    },
-
-		},
-		messages: {
-		    {% if not form.instance.video %}
-			video: {
-				required: "{% trans "Video field is required." %}",
-				/*accept: "{% trans "Wrong MIME type." %}",*/
-				extension: "{% trans "File format not allowed." %}",
-			},
-			{% endif %}
-			title: {
-				required: "{% trans "Please, specify a title." %}",
-				minlength: "{% trans "Your title should contain more than two characters." %}",
-				maxlength: "{% trans "Your title should contain less than two hundred fifty characters." %}"
-			},
-			type: {
-				required: "{% trans "Please, specify a type." %}",
-			},
-		}
-	});
+        submitHandler: function(form) {
+            preventUnloadPrompt = true;
+            $('#video_form').slideUp('slow', function() {
+                $('#process').fadeIn();
+            });
+            form.submit();
+        },
+        rules: {
+    {% if not form.instance.video %}
+            video: {
+                required: true,
+                extension: "{{video_ext_accept}}",
+                maxfilesize: sizeInfo,
+            },
+    {% else %}
+            video: {
+                required: false,
+            },
+    {% endif %}
+            title: {
+                required: true,
+                minlength: 2,
+                maxlength: 250,
+            },
+            type: {
+                required: true,
+            },
+        },
+        messages: {
+    {% if not form.instance.video %}
+            video: {
+                required: "{% trans "Please select a file to upload." %}",
+                extension: "{% trans "File format not supported." %}",
+                maxfilesize: "{% trans "The file size exceeds the maximum allowed value ({0} {1})." %}",
+            },
+    {% endif %}
+            title: {
+                required: "{% trans "Please, specify a title." %}",
+                minlength: "{% trans "Your title should contain more than two characters." %}",
+                maxlength: "{% trans "Your title should contain less than two hundred fifty characters." %}"
+            },
+            type: {
+                required: "{% trans "Please, specify a type." %}",
+            },
+        }
+    });
 
 });
 
 var num=0;
 var name = "";
 
-</script>
+    </script>
+
 {% endblock bootstrap3_extra_head %}
 
 
 {% block breadcrumbs %}
 
-{{ block.super }}
+    {{ block.super }}
+    {% if form.instance.title %}
+        <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
+        <li class="active">{% trans "Editing the video" %} "{{form.instance.title}}"</li>
+    {% else %}
+        <li class="active">{% trans "Add a new video" %}</li>
+    {% endif %}
 
-{% if form.instance.title %}
-<li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li> <li class="active">{% trans "Editing the video" %} "{{form.instance.title}}"</li>
-{% else %}
-<li class="active">{% trans "Add a new video" %}</li>
-{% endif %}
+{% endblock %}
 
-{%endblock%}
 
 {% block mainToolbar %}
-{% if form.instance.video %}
-<div class="well well-sm">
-	<div class="row">
-		<div class="col-sm-8">
-			{% if form.instance.encoding_in_progress %}
-			<p class="text-info">Info : {% trans "The video is currently being encoded." %}</p>
-			{% endif %}
-		</div>
-		{% block stats %}
-		<div class="col-sm-4  text-right">
-			{% include "videos/ownertools.html" with video=form.instance %}
-		</div>
-		{% endblock stats %}
-	</div>
-</div>
-{%endif%}
+
+    {% if form.instance.video %}
+
+        <div class="well well-sm">
+            <div class="row">
+                <div class="col-sm-8">
+        {% if form.instance.encoding_in_progress %}
+                    <p class="text-info">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        {% trans "The video is currently being encoded." %}
+                    </p>
+        {% endif %}
+                </div>
+        {% block stats %}
+                <div class="col-sm-4 text-right">
+                    {% include "videos/ownertools.html" with video=form.instance %}
+                </div>
+        {% endblock stats %}
+            </div>
+        </div>
+
+    {%endif%}
+
 {% endblock mainToolbar %}
+
 
 {% block article_title %}
 {% if form.instance.title %}
-{% trans "Editing the video" %} "{{form.instance.title}}"
+    {% trans "Editing the video" %} "{{form.instance.title}}"
 {% else %}
-{% trans "Add a new video" %}
+    {% trans "Add a new video" %}
 {% endif %}
 {% endblock %}
 
+
 {% block article %}
+
     {% block article_content %}
 
+    {% if form.errors %}
+        <p>{% trans "One or more errors have been found in the form." %}</p>
+        {{form.errors}}
+    {% endif %}
 
+    {% if form.instance.slug %}
+        <form id="video_form" method="post"
+              action="{% url 'video_edit' slug=form.instance.slug %}"
+              accept-charset="utf-8" enctype="multipart/form-data">
+    {% else %}
+        <form id="video_form" method="post"
+              action="{% url 'video_edit' %}"
+              accept-charset="utf-8" enctype="multipart/form-data">
+    {% endif %}
 
-{% if form.errors %}
-<p> {% trans "One or more errors have been found in the form." %}</p>
-{{form.errors}}
-{% endif %}
+    {% csrf_token %}
 
-{% if form.instance.slug %}
-<form method="post" action="{% url 'video_edit' slug=form.instance.slug %}" id="video_form" accept-charset="utf-8" enctype="multipart/form-data">
-{% else %}
-<form method="post" action="{% url 'video_edit' %}" id="video_form" accept-charset="utf-8" enctype="multipart/form-data">
-{% endif %}
-{% csrf_token %}
+            <fieldset>
 
+            {% bootstrap_form form %}
 
-<fieldset>
-<legend></legend>
+            {% buttons %}
+            <div class="text-center">
+                <button type="submit" class="btn btn-success" name="action1"
+                        value="{% trans "Save" %}">
+                    {% bootstrap_icon "save" %} {% trans "Save" %}
+                </button>
+                <button type="submit" class="btn btn-success" name="action2"
+                        value="{% trans "Save and go back to previous page" %}">
+                    {% bootstrap_icon "save" %} {% trans "Save and return to the previous page" %}
+                </button>
+                <button type="submit" class="btn btn-success" name="action3"
+                        value="{% trans "Save and watch the video" %}">
+                    {% bootstrap_icon "save" %} {% trans "Save and watch the video" %}
+                </button>
+            </div>
+            {% endbuttons %}
 
-{% bootstrap_form form %}
+            </fieldset>
+        </form>
 
-<script>
-CKEDITOR.addCss('p{margin-left: auto; margin-right: auto;}');
-</script>
+        <!-- DIV PROCESS -->
+        <div id="process" class="panel panel-warning" align="center">
+            <div class="panel-heading">{% trans "Sending, please wait." %}</div>
+            <div class="panel-body">
+                <!-- progress value="22" max="100"></progress -->
+                <img src="{% static 'images/loading.gif' %}" />
+            </div>
+            <div class="panel-footer">
+                {% trans "The page will refresh after the upload completes." %}
+            </div>
+        </div>
 
-
-{% buttons %}
-<div class="text-center">
-    <button type="submit" class="btn btn-success" value="{% trans "Save" %}" name="action1">
-        {% bootstrap_icon "save" %} {% trans "Save" %}
-    </button>
-    <button type="submit" class="btn btn-success" value="{% trans "Save and go back to previous page" %}" name="action2">
-        {% bootstrap_icon "save" %} {% trans "Save and return to the previous page" %}
-    </button>
-    <button type="submit" class="btn btn-success" value="{% trans "Save and watch the video" %}" name="action3">
-        {% bootstrap_icon "save" %} {% trans "Save and watch the video" %}
-    </button>
-</div>
-{% endbuttons %}
-
-</fieldset>
-</form>
-
-<!-- DIV PROCESS -->
-<div id="process" class="loader" >
-    <div align="center"><div class="anim"></div><!-- <progress value="22" max="100"></progress> --><span>{% trans "Sending, please wait." %}</span></p></div>
-</div>
     {% endblock article_content %}
+
     {% block video_list %}
     {% endblock video_list %}
+
 {% endblock article %}
 
 
 {% block box %}
-<aside class="col-sm-3">
-{% block box_info %}
-<div class="widget" style="text-align: justify">
-    <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Information"%}</h4>
-	<p>{% trans "You can send an audio or video file." %}<br>
-{% trans "The following formats are supported:" %}<br/> {{video_ext_accept}}
-</p>
-<p>{% trans "The send time depends on the size of your file and your download speed. This can be quite long." %}</p>
-<p>{% trans "During sending your file, do not close your browser until you have received a message of success or failure." %}</p>
-</div>
-{% endblock box_info %}
-{% block box_discipline %}
-{{block.super}}
-{% endblock box_discipline %}
-{% block box_tags %}
-{{block.super}}
-{% endblock box_tags %}
-{% block box_social %} {% endblock box_social %}
-{% block box_note %} {% endblock box_note %}
-</aside>
+    <aside class="col-sm-3">
+
+    {% block box_info %}
+        <div class="widget">
+            <h4>
+                <span class="glyphicon glyphicon-info-sign"></span>
+                {% trans "Information"%}
+            </h4>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{% trans "Uploading" %}</h3>
+                </div>
+                <div class="panel-body">
+                    <p>{% blocktrans %}The file size must be lower than {{ MAX_UPLOAD_FILE_SIZE }}.{% endblocktrans %}</p>
+                    <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
+                    <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{% trans "File format" %}</h3>
+                </div>
+                <div class="panel-body">
+                    <p>{% trans "You can send an audio or video file." %}</p>
+                    <p>{% trans "The following formats are supported:" %} {{video_ext_accept_text}}.</p>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{% trans "Draft" %}</h3>
+                </div>
+                <div class="panel-body">
+                    <p>{% trans "In “Draft mode”, the content shows nowhere and nobody else but you can see it." %}</p>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{% trans "Restricted access" %}</h3>
+                </div>
+                <div class="panel-body">
+                    <p>{% trans "If you don't select “Draft mode”,"%}
+                    {% trans "you can restrict the content access to only people belonging to" %}
+                    {{TITLE_ETB}}.</p>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{% trans "Password" %}</h3>
+                </div>
+                <div class="panel-body">
+                    <p>{% trans "If you don't select “Draft mode”,"%} {% trans "you can add a password which will be asked to anybody willing to watch your content." %}</p>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{% trans "Keywords" %}</h3>
+                </div>
+                <div class="panel-body">
+                    <p>{% trans "Please try to add only relevant keywords that can be useful to other users." %}</p>
+                </div>
+            </div>
+        </div>
+    {% endblock box_info %}
+
+    {% block box_discipline %}
+        {{block.super}}
+    {% endblock box_discipline %}
+
+    {% block box_tags %}
+        {{block.super}}
+    {% endblock box_tags %}
+
+    {% block box_social %}
+    {% endblock box_social %}
+
+    {% block box_note %}
+    {% endblock box_note %}
+
+    </aside>
 {% endblock %}
 

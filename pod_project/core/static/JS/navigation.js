@@ -5,7 +5,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -25,7 +25,7 @@ voir http://www.gnu.org/licenses/
 $(document).ready(function() {
     /** NAVIGATION **/
     $("select.language").on('change',function(e) { $(this).parents("form").submit();});
-    
+
     $('#filters input:checkbox').change(function() {
         get_ajax_url($('#filters').attr('action'), $('#filters').serialize());
     });
@@ -39,14 +39,14 @@ $(document).ready(function() {
             $(this).parent("div.list-all").children("a.list-all-plus").removeClass("hide");
             $(this).addClass("hide");
             $(this).parents("fieldset:first").children("div.form-group").removeClass("show-all");
-        } 
+        }
         return false;
     });
-    
+
     setPerPage();
     setOrderBy();
     /** FIN NAVIGATION **/
-    
+
     /** SELECT USER **/
     $('#ownerbox').keyup(function(){
        var valThis = $(this).val().toLowerCase();
@@ -58,25 +58,26 @@ $(document).ready(function() {
            });
        }
     });
-    
+
     $('.navList>div>label>input:not(:checked)').parent("label").parent("div").hide();
     $(".navList>div>label>a.show-desc>span.user-description").hide();
-    
+
     $('.navList>div>label>input').on('change',function(e) {
         if(!this.checked) {
              $(this).parent("label").parent("div").hide();
-        } 
-    }); 
-    
-    /** FORM VIDEO **/
-    $('form').on('submit', function() { 
-        preventUnloadPrompt = true;
-        $('#process').find('div.anim').html(ajax_image);
-        $('#process').show(); 
-        $('form').hide(); 
-        return true; 
+        }
     });
-    
+
+    /** FORM VIDEO **/
+    $('form:not(#video_form)').on('submit', function() {
+    //$('form').on('submit', function() {
+        preventUnloadPrompt = true;
+        //$('#process').find('div.anim').html(ajax_image);
+        //$('#process').show();
+        $('form').hide();
+        return true;
+    });
+
     $(window).bind("beforeunload", function(e) {
         if(typeof messageBeforeUnload != 'undefined' && messageBeforeUnload != "") {
             if(preventUnloadPrompt) {
@@ -86,7 +87,7 @@ $(document).ready(function() {
             }
         }
     });
-    
+
     var initial = new Array();
     $('#id_theme option:selected').each(function () {
             initial.push($(this).val());
@@ -103,7 +104,7 @@ $(document).ready(function() {
             $('#id_theme').append('<option selected value="'+themetab[$(this).val()][i][0]+'">'+themetab[$(this).val()][i][1]+'</option>')
             else
             $('#id_theme').append('<option value="'+themetab[$(this).val()][i][0]+'">'+themetab[$(this).val()][i][1]+'</option>')
-        }; 
+        };
     });
 
     $('#id_channel').change(function(){
@@ -115,11 +116,11 @@ $(document).ready(function() {
         $("#id_channel option:selected").each(function () {
             for (var i = 0; i < themetab[$(this).val()].length; i++) {
                 $('#id_theme').append('<option value="'+themetab[$(this).val()][i][0]+'">'+themetab[$(this).val()][i][1]+'</option>')
-            }; 
+            };
         });
     });
     /** FIN FORM VIDEO **/
-    
+
     /** DJANGO FILER **/
     if (typeof num != 'undefined' && name == "") {
         showRelatedObjectLookupPopup = function(triggeringLink) {
@@ -138,7 +139,7 @@ $(document).ready(function() {
             });
             return false;
         };
-        
+
         dismissRelatedImageLookupPopup = function(win, chosenId, chosenThumbnailUrl, chosenDescriptionTxt) {
         	var img_name = name + '_thumbnail_img';
         	var txt_name = name + '_description_txt';
@@ -153,9 +154,9 @@ $(document).ready(function() {
         };
     }
     /** DJANGO FILER **/
-    
-    
-    
+
+
+
 });
 
 /*** DON'T TOUCH THIS ****/
@@ -207,13 +208,16 @@ $(document).on('change', "#displaytime", function(e) {
     //$('#txtpartage').val(($('#displaytime:checked').val()) ? $('#txtpartage').val().replace(/(start=)\d+/, '$1'+parseInt(myPlayer.currentTime())) : $('#txtpartage').val().replace(/(start=)\d+/, '$10'));
     if($('#displaytime').is(':checked')){
         if($('#txtpartage').val().indexOf('start')<0){
-             $('#txtpartage').val($('#txtpartage').val()+'&start='+parseInt(myPlayer.currentTime()));
-             var valeur = $('#txtintegration').val();
-             $('#txtintegration').val(valeur.replace('/?', '/?start=' + parseInt(myPlayer.currentTime())+'&'));
+            if($('#txtpartage').val().indexOf('?')<0)
+                $('#txtpartage').val($('#txtpartage').val()+'?start='+parseInt(myPlayer.currentTime()));
+            else
+                $('#txtpartage').val($('#txtpartage').val()+'&start='+parseInt(myPlayer.currentTime()));
+            var valeur = $('#txtintegration').val();
+            $('#txtintegration').val(valeur.replace('/?', '/?start=' + parseInt(myPlayer.currentTime())+'&'));
         }
-        $('#txtposition').val(myPlayer.currentTime().toHHMMSS()); 
+        $('#txtposition').val(myPlayer.currentTime().toHHMMSS());
     }else{
-         $('#txtpartage').val($('#txtpartage').val().replace(/(&start=)\d+/, ''));
+         $('#txtpartage').val($('#txtpartage').val().replace(/((\?|&)start=)\d+/, ''));
          $('#txtintegration').val($('#txtintegration').val().replace(/(start=)\d+&/, ''));
          $('#txtposition').val("");
     }
@@ -315,7 +319,7 @@ function writeInFrame() {
         if(link.indexOf('autoplay=true') <0){
                 link = link.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
             }
-        
+
     } else if (link.indexOf('autoplay=true') >0) {
        link = link.replace('&autoplay=true', '');
     }
@@ -368,7 +372,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-    
+
 function createCookie(name,value,days) {
     if (days) {
         var date = new Date();
@@ -395,7 +399,7 @@ function get_ajax_url(newurl, attrs) {
                     $( "#objects_list" ).fadeIn("fast");
                     $("#objects_list").css("height","auto");
                 });
-                
+
                 if(attrs){
                     if (window.history && window.history.pushState) {
                        history.replaceState(null, null, location.protocol + '//' + location.host + location.pathname +"?"+ attrs);
@@ -433,11 +437,11 @@ function getIframeWindow(iframe_object) {
 
     if (iframe_object.window) {
     return iframe_object.window;
-    } 
+    }
 
     if (!doc && iframe_object.contentDocument) {
     doc = iframe_object.contentDocument;
-    } 
+    }
 
     if (!doc && iframe_object.document) {
     doc = iframe_object.document;

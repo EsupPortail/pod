@@ -106,6 +106,7 @@ def encode_video(video_to_encode):
         is_video = False
         in_width = 0
         in_height = 0
+        in_rotation = 0
         nb_frames = 0
         in_audio_rate = 44100
         in_audio_bitrate = 128
@@ -113,11 +114,24 @@ def encode_video(video_to_encode):
             if stream.get("codec_type"):
                 if stream["codec_type"] == "video":
                     is_video = True
+                    # Rotation
+                    try:
+                        if stream.get("side_data_list"):
+                            in_rotation = int(stream.get("side_data_list")[0]["rotation"])
+                            if in_rotation == 270:
+                                in_rotation = -90
+                    except Exception:
+                        pass
+                    # Dimensions
                     try:
                         video_to_encode.encoding_status = "GET WIDTH AND HEIGHT"
                         video_to_encode.save()
-                        in_width = int(stream["width"])
-                        in_height = int(stream["height"])
+                        if abs(in_rotation) == 90:
+                            in_width = int(stream["height"])
+                            in_height = int(stream["width"])
+                        else:
+                            in_width = int(stream["width"])
+                            in_height = int(stream["height"])
                         addInfoVideo(video_to_encode, unicode(
                             "\n Width : %s - Height : %s" % (in_width, in_height), errors='ignore'))
                     except Exception as e:
@@ -225,7 +239,7 @@ def encode_video(video_to_encode):
                 add_overview(VIDEO_ID, in_width, in_height, nb_frames)
 
             list_encod_video = EncodingType.objects.filter(mediatype='video').order_by(
-                'output_height')  # .exclude(output_height=1080)
+                'output_height')#.exclude(output_height=1080).exclude(output_height=720).exclude(output_height=480)
             for encod_video in list_encod_video:
                 bufsize = encod_video.bitrate_video
                 try:
@@ -234,7 +248,7 @@ def encode_video(video_to_encode):
                     bufsize = "%sk" % (int_bufsize * 2)
                 except:
                     pass
-                if in_height >= encod_video.output_height:
+                if in_height >= encod_video.output_height or encod_video == list_encod_video.first():
                     video = Pod.objects.get(id=VIDEO_ID)
                     videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, "%s" % video.id,
                                                  "video_%s_%s.mp4" % (video.id, encod_video.output_height))
@@ -285,17 +299,10 @@ def encode_video(video_to_encode):
 
 
 def get_scale(in_w, in_h, out_h):
-    if in_w > in_h:
-        new_height = out_h
-        new_width = (1. * in_w * new_height / in_h)
-        if int(new_width) % 2 != 0:
-            new_width = new_width + 1
-    else:
-        new_width = out_h
-        new_height = (1. * in_h * new_width / in_w)
-        if int(new_height) % 2 != 0:
-            new_height = new_height + 1
-    return "%s:%s" % (int(new_width), int(new_height))
+    new_width = (1. * in_w * out_h / in_h)
+    if int(new_width) % 2 != 0:
+        new_width = new_width + 1
+    return "%s:%s" % (int(new_width), int(out_h))
 
 
 def send_email(msg, video):
