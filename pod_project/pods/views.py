@@ -634,7 +634,7 @@ def video_edit(request, slug=None):
             raise PermissionDenied
         video_form = PodForm(request, instance=video)
     else:
-        if settings.MAX_DAILY_USER_UPLOADS and Pod.objects.filter(
+        if not request.user.is_superuser and settings.MAX_DAILY_USER_UPLOADS and Pod.objects.filter(
                 owner_id=request.user.id,
                 date_added=date.today()).count() >= settings.MAX_DAILY_USER_UPLOADS:
             return render_to_response("videos/video_edit.html", {"referer": referer},

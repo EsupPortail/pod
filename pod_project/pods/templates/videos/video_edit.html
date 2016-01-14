@@ -344,7 +344,7 @@ var name = "";
                 </div>
                 <div class="panel-body">
                     <p>{% blocktrans %}The file size must be lower than {{ MAX_UPLOAD_FILE_SIZE }}.{% endblocktrans %}</p>
-                {% if MAX_DAILY_USER_UPLOADS %}
+                {% if not request.user.is_superuser and MAX_DAILY_USER_UPLOADS %}
                     <p>{% blocktrans %}You can upload up to {{ MAX_DAILY_USER_UPLOADS }} files per day.{% endblocktrans %}</p>
                 {% endif %}
                     <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
