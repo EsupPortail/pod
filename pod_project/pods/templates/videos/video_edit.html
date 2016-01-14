@@ -278,6 +278,7 @@ var name = "";
             <div class="panel-heading">{% trans "Upload limit reached." %}</div>
             <div class="panel-body">
             <p>{% blocktrans %}You have reached the {{ MAX_DAILY_USER_UPLOADS }} files per day upload limit.{% endblocktrans %}</p>
+            <p>{% trans "Please come back tomorrow!" %}</p>
             </div>
         </div>
     {% else %}
