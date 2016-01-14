@@ -210,6 +210,14 @@ WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">'
 #
 MAX_UPLOAD_FILE_SIZE = "1 Go"
 
+##
+# Nombre maxi de fichiers téléversables par utilisateur / jour :
+#
+#   ce paramètre est un entier, la valeur 0 supprime toute limite.
+#
+#
+MAX_DAILY_USER_UPLOADS = 0
+
 
 # Paramètres des templates
 TEMPLATE_DIRS = (
@@ -261,6 +269,7 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'LOGO_PLAYER',
     'LOGO_SITE',
     'MAX_UPLOAD_FILE_SIZE',
+    'MAX_DAILY_USER_UPLOADS',
     'SERV_LOGO',
     'TEMPLATE_CUSTOM',
     'TEMPLATE_THEME',

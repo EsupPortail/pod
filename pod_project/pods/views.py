@@ -39,7 +39,7 @@ from string import replace
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template.loader import render_to_string
-from datetime import datetime
+from datetime import datetime, date
 from django.utils import formats
 from django.utils.http import urlquote
 from django.core.mail import EmailMultiAlternatives
@@ -624,8 +624,8 @@ def video_edit(request, slug=None):
             owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
-    video_form = PodForm(request)
-    video = None
+    referer = request.META.get('HTTP_REFERER')
+
     if slug:
         video = get_object_or_404(Pod, slug=slug)
         if request.user != video.owner and not request.user.is_superuser:
@@ -633,8 +633,15 @@ def video_edit(request, slug=None):
                 request, messages.ERROR, _(u'You cannot edit this video.'))
             raise PermissionDenied
         video_form = PodForm(request, instance=video)
-
-    referer = request.META.get('HTTP_REFERER')
+    else:
+        if settings.MAX_DAILY_USER_UPLOADS and Pod.objects.filter(
+                owner_id=request.user.id,
+                date_added=date.today()).count() >= settings.MAX_DAILY_USER_UPLOADS:
+            return render_to_response("videos/video_edit.html", {"referer": referer},
+                                      context_instance=RequestContext(request))
+        else:
+            video = None
+            video_form = PodForm(request)
 
     if request.POST:
         if video:
@@ -1502,8 +1509,8 @@ def search_videos(request):
         query = {
           "multi_match" : {
             "query":    "%s" %search_word,
-            "fields": [ "_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1", 
-                        "contributors^0.6", "chapters.title^0.5", "enrichments.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6" 
+            "fields": [ "_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1",
+                        "contributors^0.6", "chapters.title^0.5", "enrichments.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6"
                     ]
           }
         }
@@ -1550,7 +1557,7 @@ def search_videos(request):
     for attr in aggsAttrs:
         bodysearch["aggs"][attr.replace(".","_")] = {"terms": {"field": attr+".raw", "size": 5, "order" : { "_count" : "asc" }}}
 
-    #add cursus and main_lang 'cursus', 'main_lang', 
+    #add cursus and main_lang 'cursus', 'main_lang',
     bodysearch["aggs"]['cursus'] = {"terms": {"field": "cursus", "size": 5, "order" : { "_count" : "asc" }}}
     bodysearch["aggs"]['main_lang'] = {"terms": {"field": "main_lang", "size": 5, "order" : { "_count" : "asc" }}}
 
