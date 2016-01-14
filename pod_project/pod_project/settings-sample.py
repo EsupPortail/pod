@@ -213,7 +213,8 @@ MAX_UPLOAD_FILE_SIZE = "1 Go"
 ##
 # Nombre maxi de fichiers téléversables par utilisateur / jour :
 #
-#   ce paramètre est un entier, la valeur 0 supprime toute limite.
+#   - ce paramètre est un entier, la valeur 0 supprime toute limite ;
+#   - ne s'applique pas aux super-utilisateurs.
 #
 #
 MAX_DAILY_USER_UPLOADS = 0
