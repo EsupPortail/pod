@@ -51,6 +51,7 @@ http://www.gnu.org/licenses/
     <script src="{% static "JS/validate/additional-methods.min.js" %}"></script>
     <script src="{% static "JS/jquery.jqEasyCharCounter.js" %}"></script>
 
+    {% if form %}
     <script>
 
 /*
@@ -151,8 +152,10 @@ $(document).ready(function() {
     $("#video_form").validate({
         submitHandler: function(form) {
             preventUnloadPrompt = true;
-            $('#video_form').slideUp('slow', function() {
-                $('#process').fadeIn();
+            $('html, body').animate({ scrollTop: 0 }, 'slow', function() {
+                $('#video_form').fadeOut('slow', function() {
+                    $('#process').fadeIn();
+                });
             });
             form.submit();
         },
@@ -202,6 +205,7 @@ var num=0;
 var name = "";
 
     </script>
+    {% endif %}
 
 {% endblock bootstrap3_extra_head %}
 
@@ -220,7 +224,6 @@ var name = "";
 
 
 {% block mainToolbar %}
-
     {% if form.instance.video %}
 
         <div class="well well-sm">
@@ -242,21 +245,19 @@ var name = "";
         </div>
 
     {%endif%}
-
 {% endblock mainToolbar %}
 
 
 {% block article_title %}
-{% if form.instance.title %}
-    {% trans "Editing the video" %} "{{form.instance.title}}"
-{% else %}
-    {% trans "Add a new video" %}
-{% endif %}
+    {% if form.instance.title %}
+        {% trans "Editing the video" %} "{{form.instance.title}}"
+    {% else %}
+        {% trans "Add a new video" %}
+    {% endif %}
 {% endblock %}
 
 
 {% block article %}
-
     {% block article_content %}
 
     {% if form.errors %}
@@ -274,8 +275,16 @@ var name = "";
               accept-charset="utf-8" enctype="multipart/form-data">
     {% endif %}
 
-    {% csrf_token %}
-
+    {% if not form %}
+        <div class="panel panel-warning">
+            <div class="panel-heading">{% trans "Upload limit reached." %}</div>
+            <div class="panel-body">
+            <p>{% blocktrans %}You have reached the {{ MAX_DAILY_USER_UPLOADS }} files per day upload limit.{% endblocktrans %}</p>
+            <p>{% trans "Please come back tomorrow!" %}</p>
+            </div>
+        </div>
+    {% else %}
+        {% csrf_token %}
             <fieldset>
 
             {% bootstrap_form form %}
@@ -312,6 +321,7 @@ var name = "";
             </div>
         </div>
 
+    {% endif %}
     {% endblock article_content %}
 
     {% block video_list %}
@@ -324,6 +334,7 @@ var name = "";
     <aside class="col-sm-3">
 
     {% block box_info %}
+        {% if form %}
         <div class="widget">
             <h4>
                 <span class="glyphicon glyphicon-info-sign"></span>
@@ -335,6 +346,9 @@ var name = "";
                 </div>
                 <div class="panel-body">
                     <p>{% blocktrans %}The file size must be lower than {{ MAX_UPLOAD_FILE_SIZE }}.{% endblocktrans %}</p>
+                {% if not request.user.is_superuser and MAX_DAILY_USER_UPLOADS %}
+                    <p>{% blocktrans %}You can upload up to {{ MAX_DAILY_USER_UPLOADS }} files per day.{% endblocktrans %}</p>
+                {% endif %}
                     <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
                     <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
                 </div>
@@ -383,6 +397,7 @@ var name = "";
                 </div>
             </div>
         </div>
+        {% endif %}
     {% endblock box_info %}
 
     {% block box_discipline %}
