@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-14 18:04+0100\n"
+"POT-Creation-Date: 2016-02-01 16:52+0100\n"
 "PO-Revision-Date: 2016-01-14 18:09+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
@@ -108,7 +108,8 @@ msgstr ""
 "étiquette formée uniquement de lettres (non accentuées), de chiffres, de "
 "l'underscore (barre de soulignement) et du tiret."
 
-#: core/models.py:157 core/templates/admin/filer/folder/directory_table.html:30
+#: core/models.py:157
+#: core/templates/admin/filer/folder/directory_table.html:30
 #: core/templates/admin/filer/folder/directory_table.html:70 pods/models.py:73
 #: pods/templates/search/search_video.html:163
 msgid "Owner"
@@ -187,7 +188,8 @@ msgstr "réglage d'encodage"
 msgid "encoding types"
 msgstr "réglages d'encodage"
 
-#: core/models.py:267 core/templates/admin/filer/folder/directory_table.html:13
+#: core/models.py:267
+#: core/templates/admin/filer/folder/directory_table.html:13
 msgid "Name"
 msgstr "Nom"
 
@@ -227,7 +229,8 @@ msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 #: core/templates/403.html:51 core/templates/404.html:51
 #: core/templates/admin/base.html:47 core/templates/base.html:97
 #: core/templates/contactus/contactus.html:43 core/templates/navbar.html:41
-#: core/templates/registration/login.html:99 core/templates/userProfile.html:82
+#: core/templates/registration/login.html:99
+#: core/templates/userProfile.html:82
 msgid "Home"
 msgstr "Accueil"
 
@@ -268,22 +271,45 @@ msgstr "Administration"
 msgid "Back to home"
 msgstr "Retour à l'accueil du site"
 
-#: core/templates/admin/filer/folder/directory_table.html:23
-#: core/templates/admin/filer/folder/directory_table.html:27
-#: core/templates/admin/filer/folder/directory_table.html:29
-#, python-format
-msgid "Change '%(item_label)s' folder details."
-msgstr "Modifier les informations du dossier '%(item_label)s'."
+#: core/templates/admin/filer/folder/directory_listing.html:68
+msgid "Adds a new Folder"
+msgstr "Créer un nouveau dossier"
 
-#: core/templates/admin/filer/folder/directory_table.html:23
-msgid "Folder Icon"
+#: core/templates/admin/filer/folder/directory_listing.html:68
+msgid "New Folder"
+msgstr "Nouveau dossier"
+
+#: core/templates/admin/filer/folder/directory_listing.html:69
+msgid "upload files"
+msgstr "Téléverser des fichiers"
+
+#: core/templates/admin/filer/folder/directory_listing.html:69
+msgid "Upload"
+msgstr "Téléverser"
+
+#: core/templates/admin/filer/folder/directory_listing.html:78
+msgid "Go back to the parent folder"
+msgstr "Revenir au dossier parent"
+
+#: core/templates/admin/filer/folder/directory_listing.html:78
+msgid "Go back to"
+msgstr "Revenir à"
+
+#: core/templates/admin/filer/folder/directory_listing.html:78
+msgid "root"
+msgstr "racine"
+
+#: core/templates/admin/filer/folder/directory_listing.html:78
+msgid "folder"
 msgstr "dossier"
 
-#: core/templates/admin/filer/folder/directory_table.html:27
-#: core/templates/admin/filer/folder/directory_table.html:55
-msgid "Change"
-msgstr "Modifier"
+#: core/templates/admin/filer/folder/directory_listing.html:79
+#: core/templates/admin/filer/folder/directory_listing.html:89
+#: core/templates/admin/filer/folder/directory_table.html:23
+msgid "Folder Icon"
+msgstr "Icône du dossier"
 
+#: core/templates/admin/filer/folder/directory_listing.html:80
 #: core/templates/admin/filer/folder/directory_table.html:29
 #, python-format
 msgid "%(counter)s folder"
@@ -291,12 +317,30 @@ msgid_plural "%(counter)s folders"
 msgstr[0] "%(counter)s dossier"
 msgstr[1] "%(counter)s dossiers"
 
+#: core/templates/admin/filer/folder/directory_listing.html:80
 #: core/templates/admin/filer/folder/directory_table.html:29
 #, python-format
 msgid "%(counter)s file"
 msgid_plural "%(counter)s files"
 msgstr[0] "%(counter)s fichier"
 msgstr[1] "%(counter)s fichiers"
+
+#: core/templates/admin/filer/folder/directory_listing.html:84
+msgid "Change current folder details"
+msgstr "Modifier les informations du dossier courant."
+
+#: core/templates/admin/filer/folder/directory_listing.html:84
+#: core/templates/admin/filer/folder/directory_table.html:27
+#: core/templates/admin/filer/folder/directory_table.html:55
+msgid "Change"
+msgstr "Modifier"
+
+#: core/templates/admin/filer/folder/directory_table.html:23
+#: core/templates/admin/filer/folder/directory_table.html:27
+#: core/templates/admin/filer/folder/directory_table.html:29
+#, python-format
+msgid "Change '%(item_label)s' folder details."
+msgstr "Modifier les informations du dossier '%(item_label)s'."
 
 #: core/templates/admin/filer/folder/directory_table.html:36
 #: core/templates/admin/filer/folder/directory_table.html:44
@@ -378,8 +422,8 @@ msgstr "Visualiser sur le site"
 
 #: core/templates/admin/filer/image/change_form.html:18
 #: core/templates/contactus/contactus.html:41
-#: core/templates/registration/login.html:97 core/templates/userProfile.html:80
-#: core/templates/userProfile.html.py:86
+#: core/templates/registration/login.html:97
+#: core/templates/userProfile.html:80 core/templates/userProfile.html.py:86
 msgid "Back"
 msgstr "Retour"
 
@@ -451,10 +495,10 @@ msgid "See all"
 msgstr "Afficher tout"
 
 #: core/templates/base.html:178 pods/models.py:295
-#: pods/templates/search/search_video.html:187 pods/templates/tags/tags.html:25
-#: pods/templates/tags/tags.html.py:86 pods/templates/tags/tags.html:96
-#: pods/templates/tags/tags.html.py:104 pods/templates/videos/video.html:303
-#: pods/templates/videos/videos.html:130
+#: pods/templates/search/search_video.html:187
+#: pods/templates/tags/tags.html:25 pods/templates/tags/tags.html.py:86
+#: pods/templates/tags/tags.html:96 pods/templates/tags/tags.html.py:104
+#: pods/templates/videos/video.html:303 pods/templates/videos/videos.html:130
 msgid "Tags"
 msgstr "Mots clés"
 
@@ -474,8 +518,8 @@ msgstr "Notes"
 #: pods/templates/videos/chapter/form_chapter.html:43
 #: pods/templates/videos/enrich/form_enrich.html:43
 #: pods/templates/videos/video.html:491 pods/templates/videos/video.html:492
-#: pods/templates/videos/video_edit.html:293
-#: pods/templates/videos/video_edit.html:294
+#: pods/templates/videos/video_edit.html:295
+#: pods/templates/videos/video_edit.html:296
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -485,7 +529,7 @@ msgstr "Enregistrer"
 #: pods/templates/videos/my_videos.html:64
 #: pods/templates/videos/video_chapter.html:375
 #: pods/templates/videos/video_completion.html:521
-#: pods/templates/videos/video_edit.html:339
+#: pods/templates/videos/video_edit.html:341
 #: pods/templates/videos/video_enrich.html:480
 msgid "Information"
 msgstr "Information"
@@ -546,7 +590,7 @@ msgstr "Envoyer"
 #: pods/templates/channels/channel_edit.html:78
 #: pods/templates/mediacourses/mediacourses_add.html:53
 #: pods/templates/videos/video_chapter.html:253
-#: pods/templates/videos/video_edit.html:262
+#: pods/templates/videos/video_edit.html:264
 #: pods/templates/videos/video_enrich.html:253 pods/views.py:188
 #: pods/views.py:453 pods/views.py:679 pods/views.py:1620
 msgid "One or more errors have been found in the form."
@@ -597,7 +641,8 @@ msgid "Log in"
 msgstr "Connexion"
 
 #: core/templates/navbar.html:45 core/templates/navbar.html.py:67
-#: pods/models.py:85 pods/models.py:301 pods/templates/channels/channel.html:49
+#: pods/models.py:85 pods/models.py:301
+#: pods/templates/channels/channel.html:49
 #: pods/templates/channels/channels.html:24
 #: pods/templates/channels/channels.html:31
 #: pods/templates/channels/channels.html:39
@@ -626,8 +671,8 @@ msgid "Videos"
 msgstr "Vidéos"
 
 #: core/templates/navbar.html:119 pods/templates/videos/video_edit.html:26
-#: pods/templates/videos/video_edit.html:218
-#: pods/templates/videos/video_edit.html:253
+#: pods/templates/videos/video_edit.html:220
+#: pods/templates/videos/video_edit.html:255
 msgid "Add a new video"
 msgstr "Ajouter une nouvelle vidéo"
 
@@ -718,7 +763,7 @@ msgid "Login"
 msgstr "Identifiant"
 
 #: core/views.py:95 pods/admin.py:98 pods/forms.py:288
-#: pods/templates/videos/video_edit.html:383
+#: pods/templates/videos/video_edit.html:385
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -1512,7 +1557,7 @@ msgstr ""
 "Séparez les mots-clés avec des espaces, placez les mots-clés constitués de "
 "plusieurs mots entre guillemets."
 
-#: pods/models.py:307 pods/templates/videos/video_edit.html:365
+#: pods/models.py:307 pods/templates/videos/video_edit.html:367
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -1524,7 +1569,7 @@ msgstr ""
 "vous."
 
 #: pods/models.py:309 pods/models.py:999
-#: pods/templates/videos/video_edit.html:373
+#: pods/templates/videos/video_edit.html:375
 msgid "Restricted access"
 msgstr "Accès restreint"
 
@@ -2073,7 +2118,7 @@ msgstr "Ajouter un nouvel enregistrement"
 #: pods/templates/videos/video_chapter.html:335
 #: pods/templates/videos/video_completion.html:441
 #: pods/templates/videos/video_delete.html:35
-#: pods/templates/videos/video_edit.html:215
+#: pods/templates/videos/video_edit.html:217
 #: pods/templates/videos/video_enrich.html:442
 msgid "My videos"
 msgstr "Mes vidéos"
@@ -2733,50 +2778,50 @@ msgstr ""
 "d'encodage."
 
 #: pods/templates/videos/video_edit.html:24
-#: pods/templates/videos/video_edit.html:216
-#: pods/templates/videos/video_edit.html:251
+#: pods/templates/videos/video_edit.html:218
+#: pods/templates/videos/video_edit.html:253
 msgid "Editing the video"
 msgstr "Modification de la vidéo"
 
 #: pods/templates/videos/video_edit.html:81
-#: pods/templates/videos/video_edit.html:186
+#: pods/templates/videos/video_edit.html:188
 msgid "The file size exceeds the maximum allowed value ({0} {1})."
 msgstr "La taille du fichier dépasse la valeur maximum autorisée ({0} {1})."
 
-#: pods/templates/videos/video_edit.html:184
+#: pods/templates/videos/video_edit.html:186
 msgid "Please select a file to upload."
 msgstr "Veuillez sélectionner un fichier à téléverser."
 
-#: pods/templates/videos/video_edit.html:185
+#: pods/templates/videos/video_edit.html:187
 msgid "File format not supported."
 msgstr "Ce format de fichier n'est pas supporté."
 
-#: pods/templates/videos/video_edit.html:190
+#: pods/templates/videos/video_edit.html:192
 msgid "Please, specify a title."
 msgstr "Veuillez indiquer un titre."
 
-#: pods/templates/videos/video_edit.html:191
+#: pods/templates/videos/video_edit.html:193
 msgid "Your title should contain more than two characters."
 msgstr "Votre titre doit contenir plus de deux caractères."
 
-#: pods/templates/videos/video_edit.html:192
+#: pods/templates/videos/video_edit.html:194
 msgid "Your title should contain less than two hundred fifty characters."
 msgstr "Votre titre doit contenir moins de deux cents cinquante caractères."
 
-#: pods/templates/videos/video_edit.html:195
+#: pods/templates/videos/video_edit.html:197
 msgid "Please, specify a type."
 msgstr "Veuillez spécifier un type."
 
-#: pods/templates/videos/video_edit.html:233
+#: pods/templates/videos/video_edit.html:235
 #: pods/templates/videos/video_player.html:118
 msgid "The video is currently being encoded."
 msgstr "Cette vidéo est en cours d'encodage."
 
-#: pods/templates/videos/video_edit.html:278
+#: pods/templates/videos/video_edit.html:280
 msgid "Upload limit reached."
 msgstr "Limite de téléversement atteinte."
 
-#: pods/templates/videos/video_edit.html:280
+#: pods/templates/videos/video_edit.html:282
 #, python-format
 msgid ""
 "You have reached the %(MAX_DAILY_USER_UPLOADS)s files per day upload limit."
@@ -2784,47 +2829,47 @@ msgstr ""
 "Vous avez atteint la limite de %(MAX_DAILY_USER_UPLOADS)s téléversements par "
 "jour."
 
-#: pods/templates/videos/video_edit.html:281
+#: pods/templates/videos/video_edit.html:283
 msgid "Please come back tomorrow!"
 msgstr "Merci de revenir demain !"
 
-#: pods/templates/videos/video_edit.html:297
+#: pods/templates/videos/video_edit.html:299
 msgid "Save and go back to previous page"
 msgstr "Enregistrer et revenir à la page précédente"
 
-#: pods/templates/videos/video_edit.html:298
+#: pods/templates/videos/video_edit.html:300
 msgid "Save and return to the previous page"
 msgstr "Enregistrer et revenir à la page précédente"
 
-#: pods/templates/videos/video_edit.html:301
-#: pods/templates/videos/video_edit.html:302
+#: pods/templates/videos/video_edit.html:303
+#: pods/templates/videos/video_edit.html:304
 msgid "Save and watch the video"
 msgstr "Enregistrer et voir la vidéo"
 
-#: pods/templates/videos/video_edit.html:312
+#: pods/templates/videos/video_edit.html:314
 msgid "Sending, please wait."
 msgstr "Envoi en cours, merci de patienter."
 
-#: pods/templates/videos/video_edit.html:318
+#: pods/templates/videos/video_edit.html:320
 msgid "The page will refresh after the upload completes."
 msgstr "La page sera actualisée lorsque le téléversement sera terminé."
 
-#: pods/templates/videos/video_edit.html:343
+#: pods/templates/videos/video_edit.html:345
 msgid "Uploading"
 msgstr "Téléversement"
 
-#: pods/templates/videos/video_edit.html:346
+#: pods/templates/videos/video_edit.html:348
 #, python-format
 msgid "The file size must be lower than %(MAX_UPLOAD_FILE_SIZE)s."
 msgstr "La taille du fichier doit être inférieure à %(MAX_UPLOAD_FILE_SIZE)s."
 
-#: pods/templates/videos/video_edit.html:348
+#: pods/templates/videos/video_edit.html:350
 #, python-format
 msgid "You can upload up to %(MAX_DAILY_USER_UPLOADS)s files per day."
 msgstr ""
 "Vous pouvez téléverser jusqu’à %(MAX_DAILY_USER_UPLOADS)s fichiers par jour."
 
-#: pods/templates/videos/video_edit.html:350
+#: pods/templates/videos/video_edit.html:352
 msgid ""
 "The sending time depends on the size of your file and your upload speed. "
 "This can be quite long."
@@ -2832,7 +2877,7 @@ msgstr ""
 "Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
 "transfert. Cela peut être assez long."
 
-#: pods/templates/videos/video_edit.html:351
+#: pods/templates/videos/video_edit.html:353
 msgid ""
 "While sending your file, do not close your browser until you have received a "
 "message of success or failure."
@@ -2840,19 +2885,19 @@ msgstr ""
 "Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
 "d'avoir reçu un message de succès ou d'échec."
 
-#: pods/templates/videos/video_edit.html:356
+#: pods/templates/videos/video_edit.html:358
 msgid "File format"
 msgstr "Format de fichier"
 
-#: pods/templates/videos/video_edit.html:359
+#: pods/templates/videos/video_edit.html:361
 msgid "You can send an audio or video file."
 msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 
-#: pods/templates/videos/video_edit.html:360
+#: pods/templates/videos/video_edit.html:362
 msgid "The following formats are supported:"
 msgstr "Les formats suivants sont supportés :"
 
-#: pods/templates/videos/video_edit.html:368
+#: pods/templates/videos/video_edit.html:370
 msgid ""
 "In “Draft mode”, the content shows nowhere and nobody else but you can see "
 "it."
@@ -2860,18 +2905,18 @@ msgstr ""
 "En mode « Brouillon », le contenu n’apparaît nulle part et personne d’autre "
 "que vous ne le voit."
 
-#: pods/templates/videos/video_edit.html:376
-#: pods/templates/videos/video_edit.html:386
+#: pods/templates/videos/video_edit.html:378
+#: pods/templates/videos/video_edit.html:388
 msgid "If you don't select “Draft mode”,"
 msgstr "Si vous ne sélectionnez pas le mode « Brouillon »,"
 
-#: pods/templates/videos/video_edit.html:377
+#: pods/templates/videos/video_edit.html:379
 msgid "you can restrict the content access to only people belonging to"
 msgstr ""
 "vous pouvez restreindre l’accès à votre contenu aux seules personnes "
 "appartenant à"
 
-#: pods/templates/videos/video_edit.html:386
+#: pods/templates/videos/video_edit.html:388
 msgid ""
 "you can add a password which will be asked to anybody willing to watch your "
 "content."
@@ -2879,11 +2924,11 @@ msgstr ""
 "vous pouvez ajouter un mot de passe qui sera demandé à toute personne "
 "souhaitant visionner votre contenu."
 
-#: pods/templates/videos/video_edit.html:391
+#: pods/templates/videos/video_edit.html:393
 msgid "Keywords"
 msgstr "Mots-clés"
 
-#: pods/templates/videos/video_edit.html:394
+#: pods/templates/videos/video_edit.html:396
 msgid ""
 "Please try to add only relevant keywords that can be useful to other users."
 msgstr ""
