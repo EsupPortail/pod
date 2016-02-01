@@ -292,16 +292,8 @@ msgid "Go back to the parent folder"
 msgstr "Revenir au dossier parent"
 
 #: core/templates/admin/filer/folder/directory_listing.html:78
-msgid "Go back to"
-msgstr "Revenir à"
-
-#: core/templates/admin/filer/folder/directory_listing.html:78
-msgid "root"
-msgstr "racine"
-
-#: core/templates/admin/filer/folder/directory_listing.html:78
-msgid "folder"
-msgstr "dossier"
+msgid "Go back to root folder"
+msgstr "Revenir au dossier racine"
 
 #: core/templates/admin/filer/folder/directory_listing.html:79
 #: core/templates/admin/filer/folder/directory_listing.html:89
