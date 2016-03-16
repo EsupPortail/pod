@@ -222,9 +222,9 @@ MAX_DAILY_USER_UPLOADS = 0
 
 # Paramètres des templates
 TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
     os.path.join(BASE_DIR, 'core', 'templates'),
     os.path.join(BASE_DIR, 'core', 'templates', 'flatpages'),
-    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
