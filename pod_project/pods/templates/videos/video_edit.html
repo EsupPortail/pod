@@ -152,12 +152,12 @@ $(document).ready(function() {
     $("#video_form").validate({
         submitHandler: function(form) {
             preventUnloadPrompt = true;
+            form.submit();
             $('html, body').animate({ scrollTop: 0 }, 'slow', function() {
                 $('#video_form').fadeOut('slow', function() {
                     $('#process').fadeIn();
                 });
             });
-            form.submit();
         },
         rules: {
     {% if not form.instance.video %}
