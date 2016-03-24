@@ -53,6 +53,9 @@ DEFAULT_PER_PAGE = 12
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
+referer = ''
+
+
 def get_pagination(page, paginator):
     try:
         page = int(page.encode('utf-8'))
@@ -617,6 +620,9 @@ def video_notes(request, slug):
 @csrf_protect
 @login_required
 def video_edit(request, slug=None):
+
+    global referer
+
     # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
@@ -624,7 +630,8 @@ def video_edit(request, slug=None):
             owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
-    referer = request.META.get('HTTP_REFERER')
+    if not request.POST:
+        referer = request.META.get('HTTP_REFERER', '/')
 
     if slug:
         video = get_object_or_404(Pod, slug=slug)
@@ -666,14 +673,13 @@ def video_edit(request, slug=None):
             # Without this next line the tags does not appear in search engine
             vid.save()
 
-            referer = request.POST.get("referer")
             # go back
-            if request.POST.get("action2") and request.POST.get("referer"):
-                return HttpResponseRedirect("%s" % request.POST.get("referer"))
-            if request.POST.get("action3"):
-                return HttpResponseRedirect(reverse('pods.views.video', args=(vid.slug,)))
-            else:
+            if request.POST.get("action1"):
                 return HttpResponseRedirect(reverse('pods.views.video_edit', args=(vid.slug,)))
+            elif request.POST.get("action2"):
+                return HttpResponseRedirect("%s" % referer)
+            else:
+                return HttpResponseRedirect(reverse('pods.views.video', args=(vid.slug,)))
         else:
             messages.add_message(
                 request, messages.ERROR, _(u'One or more errors have been found in the form.'))
