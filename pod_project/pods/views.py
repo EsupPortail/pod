@@ -674,9 +674,10 @@ def video_edit(request, slug=None):
             vid.save()
 
             # go back
-            if request.POST.get("action1"):
+            action = request.POST.get("action")
+            if action == "1":
                 return HttpResponseRedirect(reverse('pods.views.video_edit', args=(vid.slug,)))
-            elif request.POST.get("action2"):
+            elif action == "2":
                 return HttpResponseRedirect("%s" % referer)
             else:
                 return HttpResponseRedirect(reverse('pods.views.video', args=(vid.slug,)))
