@@ -152,12 +152,12 @@ $(document).ready(function() {
     $("#video_form").validate({
         submitHandler: function(form) {
             preventUnloadPrompt = true;
+            form.submit();
             $('html, body').animate({ scrollTop: 0 }, 'slow', function() {
                 $('#video_form').fadeOut('slow', function() {
                     $('#process').fadeIn();
                 });
             });
-            form.submit();
         },
         rules: {
     {% if not form.instance.video %}
@@ -291,16 +291,13 @@ var name = "";
 
             {% buttons %}
             <div class="text-center">
-                <button type="submit" class="btn btn-success" name="action1"
-                        value="{% trans "Save" %}">
+                <button type="submit" class="btn btn-success" name="action" value="1">
                     {% bootstrap_icon "save" %} {% trans "Save" %}
                 </button>
-                <button type="submit" class="btn btn-success" name="action2"
-                        value="{% trans "Save and go back to previous page" %}">
+                <button type="submit" class="btn btn-success" name="action" value="2">
                     {% bootstrap_icon "save" %} {% trans "Save and return to the previous page" %}
                 </button>
-                <button type="submit" class="btn btn-success" name="action3"
-                        value="{% trans "Save and watch the video" %}">
+                <button type="submit" class="btn btn-success" name="action" value="3">
                     {% bootstrap_icon "save" %} {% trans "Save and watch the video" %}
                 </button>
             </div>
