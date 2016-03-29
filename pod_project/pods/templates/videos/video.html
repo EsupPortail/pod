@@ -141,9 +141,6 @@ $(document).on('click', '#button_video_favorite', function (event) {
 {% block mainToolbar %}{% endblock mainToolbar %}
 
 {% block bootstrap3_content %}
-    <!--span id="show_messages" class="alert alert-info collapse" role="alert" >
-            &nbsp;
-    </span-->
     <article id="page-video" class="container{% if request.GET.is_iframe %} embed{% endif %}" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
         {% if not request.GET.is_iframe %}
             <ol class="breadcrumb">
