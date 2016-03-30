@@ -408,7 +408,7 @@ function verify_fields(form){
     }else if(form == "form_download"){
         if($("img#id_document_thumbnail_img").attr('src') == "/static/filer/icons/nofile_48x48.png" ){
             $("img#id_document_thumbnail_img")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a document.' %} </span>")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please select a document.' %} </span>")
             .parents('div.form-group').addClass('has-error');
         }
         $('#table_list_downloads tbody > tr').each(function() {

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-03-30 11:56+0200\n"
-"PO-Revision-Date: 2016-03-30 11:58+0200\n"
+"PO-Revision-Date: 2016-03-30 12:23+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 
 #: core/forms.py:63
 msgid "Please indicate the result of the following operation hereunder"
@@ -1729,7 +1729,7 @@ msgstr "Documents"
 
 #: pods/models.py:652
 msgid "please enter a document "
-msgstr "Veuillez renseigner un document. "
+msgstr "veuillez sélectionner un document "
 
 #: pods/models.py:667
 msgid "this document is already contained in the list."
@@ -1832,8 +1832,9 @@ msgid "Please enter a correct weblink."
 msgstr "Veuillez renseigner un lien internet."
 
 #: pods/models.py:759 pods/templates/videos/video_enrich.html:373
-msgid "Please enter a correct document."
-msgstr "Veuillez renseigner un document."
+#: pods/templates/videos/video_completion.html:411
+msgid "Please select a document."
+msgstr "Veuillez sélectionner un document."
 
 #: pods/models.py:763 pods/templates/videos/video_enrich.html:380
 msgid "Please enter a correct embed."
@@ -1845,16 +1846,16 @@ msgstr "Veuillez choisir un type d'enrichissement."
 
 #: pods/models.py:778
 msgid "The value of the start field is greater than the value of end field."
-msgstr "La valeur du commencement ne peut être supérieur à celle de la fin."
+msgstr "La valeur du commencement ne peut être supérieure à celle de la fin."
 
 #: pods/models.py:781
 msgid "The value of end field is greater than the video duration."
 msgstr ""
-"La valeur de fin d'enrichissement est supérieur à la durée de la vidéo."
+"La valeur de fin d'enrichissement est supérieure à la durée de la vidéo."
 
 #: pods/models.py:783
 msgid "End field and start field can't be equal."
-msgstr "Le commencement et la fin ne peuvent être équivalent."
+msgstr "Le commencement et la fin ne peuvent être équivalents."
 
 #: pods/models.py:801 pods/templates/videos/video_enrich.html:422
 msgid "There is an overlap with the enrichment "
@@ -2025,7 +2026,8 @@ msgstr "Édition de la chaîne"
 #: pods/templates/channels/channel_edit.html:96
 #: pods/templates/channels/channel_edit.html:176
 #: pods/templates/channels/channel_edit.html:177
-msgid "Save and back to previous page"
+#: pods/templates/videos/video_edit.html:298
+msgid "Save and return to previous page"
 msgstr "Enregistrer et revenir à la page précédente"
 
 #: pods/templates/channels/channel_edit.html:98
@@ -2661,10 +2663,6 @@ msgid ""
 "There is already a subtitle with this same kind and language in the list."
 msgstr "il y a déjà un fichier de même type et de même langue"
 
-#: pods/templates/videos/video_completion.html:411
-msgid "Please enter a document."
-msgstr "Veuillez renseigner un document."
-
 #: pods/templates/videos/video_completion.html:418
 msgid ""
 "There is already a download with this same name of document in the list."
@@ -2814,10 +2812,6 @@ msgstr ""
 #: pods/templates/videos/video_edit.html:283
 msgid "Please come back tomorrow!"
 msgstr "Merci de revenir demain !"
-
-#: pods/templates/videos/video_edit.html:298
-msgid "Save and return to the previous page"
-msgstr "Enregistrer et revenir à la page précédente"
 
 #: pods/templates/videos/video_edit.html:301
 msgid "Save and watch the video"
@@ -3214,6 +3208,3 @@ msgstr ""
 #: pods/views.py:1693
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
-
-#~ msgid "Save and go back to previous page"
-#~ msgstr "Enregistrer et revenir à la page précédente"
