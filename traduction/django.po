@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-03-30 11:56+0200\n"
-"PO-Revision-Date: 2016-03-30 12:23+0200\n"
+"PO-Revision-Date: 2016-03-30 16:13+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2491,6 +2491,7 @@ msgid "Are you sure you want to delete this chapter?"
 msgstr "Etes-vous sûr de vouloir supprimer ce chapitre ?"
 
 #: pods/templates/videos/video_chapter.html:215
+#: pods/templates/videos/video_completion.html:278
 #: pods/templates/videos/video_enrich.html:214
 msgid "Error during deletion."
 msgstr "Erreur lors de la suppression."
@@ -2606,10 +2607,6 @@ msgstr "Etes-vous sûr de vouloir supprimer ce contributeur ?"
 #: pods/templates/videos/video_completion.html:263
 msgid "Are you sure you want to delete this download?"
 msgstr "Etes-vous sûr de vouloir supprimer ce document à télécharger ?"
-
-#: pods/templates/videos/video_completion.html:278
-msgid "Error deleting. "
-msgstr "Erreur lors de la suppression."
 
 #: pods/templates/videos/video_completion.html:308
 #: pods/templates/videos/video_enrich.html:244

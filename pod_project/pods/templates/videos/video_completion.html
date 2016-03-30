@@ -275,7 +275,7 @@ $(document).on("submit", "#page-video form", function (e) {
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error deleting. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", false, 'danger');
+                show_messages("{% trans 'Error during deletion. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", false, 'danger');
             });
         }
     }else if(action == "save"){
