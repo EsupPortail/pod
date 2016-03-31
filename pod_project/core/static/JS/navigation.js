@@ -251,17 +251,17 @@ $(document).on('click', 'button#button_video_report', function (event) {
 
 
 /*
+
     Creates & shows BS alert boxes w close button
+
 */
 function show_messages( msg, reload, msgClass ) {
 
     var $msgContainer = $( '#show_messages' );
     var msgContent = "";
 
-    if ( typeof msgClass === 'undefined' || ! msgClass ) {
-
-        msgClass = 'danger';
-    }
+    reload = typeof reload !== 'undefined' ? reload : false;
+    msgClass = typeof msgClass !== 'undefined' ? msgClass : 'warning';
 
     msgContent += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + msg;
 
@@ -278,7 +278,6 @@ function show_messages( msg, reload, msgClass ) {
 
         $msgBox.delay( 4000 ).fadeOut( function( ) {
 
-            $msgBox.remove( );
             location.reload( );
         } );
 
