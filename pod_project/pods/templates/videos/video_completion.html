@@ -267,7 +267,7 @@ $(document).on("submit", "#page-video form", function (e) {
             jqxhr = $.post( window.location.origin + href, {"action":"delete", "id": id });
             jqxhr.done(function(data){
                 if(data.list_data) {
-                    refrech_list(data, form, list);
+                    refresh_list(data, form, list);
                     manageResize(name_form);
                 } else {
                     show_messages("{% trans 'You are no longer authenticated. Please log in again' %}", true, 'danger');
@@ -298,7 +298,7 @@ $(document).on("submit", "#page-video form", function (e) {
                             //alert(data.errors);
                             get_form(data.form, form);
                         }else{
-                            refrech_list(data, form, list);
+                            refresh_list(data, form, list);
                             if( name_form != "contributor"){
                                 $("span#"+form).unwrap();
                                 $("span#"+list).unwrap();
@@ -337,8 +337,8 @@ function hide_others_sections(name_form){
         }
     }
 }
-/*** refrech the list  ***/
-function refrech_list(data, form, list){
+/*** refreshes the list  ***/
+function refresh_list(data, form, list){
     $("#"+form).html("");
     $('form.form_new').show();
     $('form').show()
