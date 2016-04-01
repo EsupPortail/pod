@@ -249,25 +249,48 @@ $(document).on('click', 'button#button_video_report', function (event) {
     return false;
 });
 
-function show_messages(msg, reload, msgclass) {
 
-    if(!msgclass||msgclass==='undefined') msgclass='alert-danger';
-    $("#show_messages").attr('class','');
-    $("#show_messages").attr('class','alert '+msgclass+' collapse');
-    if($("#show_messages").length) {
-        if(reload==true) {
-            $("#show_messages").html(msg).fadeIn().delay(4000).fadeOut(function(){location.reload();});
-        } else {
-            if(msgclass=='alert-info')
-                $("#show_messages").html(msg).fadeIn().delay(3000).fadeOut();
-            else
-                $("#show_messages").html(msg).fadeIn();
-        }
+/*
+
+    Creates & shows BS alert boxes w close button
+
+*/
+function show_messages( msg, reload, msgClass ) {
+
+    var $msgContainer = $( '#show_messages' );
+    var msgContent = "";
+
+    reload = typeof reload !== 'undefined' ? reload : false;
+    msgClass = typeof msgClass !== 'undefined' ? msgClass : 'warning';
+
+    msgContent += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + msg;
+
+    var $msgBox = $( "<div>", {
+        // "fade in" class means the alert box will fade out when the close icon is clicked (!)
+        'class': "alert alert-" + msgClass + " alert-dismissable fade in",
+        'role': "alert",
+        'html': msgContent,
+    } );
+
+    $msgContainer.html( $msgBox );
+
+    if ( reload === true ) {
+
+        $msgBox.delay( 4000 ).fadeOut( function( ) {
+
+            location.reload( );
+        } );
+
+    } else if ( msgClass === "info" || msgClass === "success" ) {
+
+        $msgBox.delay( 3000 ).fadeOut( function( ) {
+
+            $msgBox.remove( );
+        } );
     }
+
 }
-$(document).on('click', 'input#close_messages', function() {
-    $("#show_messages").fadeOut();
-});
+
 /** END EVTS PERMANENT **/
 
 

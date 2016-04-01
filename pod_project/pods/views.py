@@ -511,7 +511,7 @@ def video_add_favorite(request, slug):
             favorite.delete()
             msg = _(u'The video has been removed from your favorites.')
         if request.is_ajax():
-            some_data_to_dump = {'msg': "%s." % msg}
+            some_data_to_dump = {'msg': "%s" % msg}
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
         messages.add_message(request, messages.INFO, msg)
