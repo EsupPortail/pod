@@ -255,30 +255,40 @@ $(document).on('click', 'button#button_video_report', function (event) {
     Creates & shows BS alert boxes w close button
 
 */
-function show_messages( msg, reload, msgClass ) {
+function show_messages( msgText, loadUrl, msgClass ) {
 
     var $msgContainer = $( '#show_messages' );
-    var msgContent = "";
+    var closeButton = "";
 
-    reload = typeof reload !== 'undefined' ? reload : false;
+    loadUrl = typeof loadUrl !== 'undefined' ? loadUrl : false;
     msgClass = typeof msgClass !== 'undefined' ? msgClass : 'warning';
 
-    msgContent += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + msg;
+    if ( loadUrl ) {
+
+        closeButton = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+    }
 
     var $msgBox = $( "<div>", {
         // "fade in" class means the alert box will fade out when the close icon is clicked (!)
         'class': "alert alert-" + msgClass + " alert-dismissable fade in",
         'role': "alert",
-        'html': msgContent,
+        'html': closeButton + msgText,
     } );
 
     $msgContainer.html( $msgBox );
 
-    if ( reload === true ) {
+    if ( loadUrl !== false ) {
 
         $msgBox.delay( 4000 ).fadeOut( function( ) {
 
-            location.reload( );
+            if ( loadUrl === true ) {
+
+                window.location.reload( );
+
+            } else {
+
+                window.location.assign( loadUrl );
+            }
         } );
 
     } else if ( msgClass === "info" || msgClass === "success" ) {
