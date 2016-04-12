@@ -263,7 +263,7 @@ function show_messages( msgText, loadUrl, msgClass ) {
     loadUrl = typeof loadUrl !== 'undefined' ? loadUrl : false;
     msgClass = typeof msgClass !== 'undefined' ? msgClass : 'warning';
 
-    if ( loadUrl ) {
+    if ( loadUrl === false ) {
 
         closeButton = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
     }
