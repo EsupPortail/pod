@@ -127,7 +127,13 @@ var themetab = new Array();
 
 $(document).ready(function() {
 
+    var $videoForm = $('#video_form');
+
     $('#process').hide();
+
+    $videoForm.on('click', '[type=submit]', function(event) {
+        $videoForm.find('input[type=hidden][name=action]').val($(this).data('action'));
+    });
 
     $('#id_title').jqEasyCounter({
         'maxChars': 250,
@@ -149,13 +155,13 @@ $(document).ready(function() {
         sizeInfo = [ "1", "Go"];
     }
 
-    $("#video_form").validate({
+    $videoForm.validate({
         submitHandler: function(form) {
             preventUnloadPrompt = true;
-            form.submit();
-            $('html, body').animate({ scrollTop: 0 }, 'slow', function() {
-                $('#video_form').fadeOut('slow', function() {
-                    $('#process').fadeIn();
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+            $videoForm.fadeOut('slow', function() {
+                $('#process').fadeIn('slow', function() {
+                    form.submit();
                 });
             });
         },
@@ -289,15 +295,17 @@ var name = "";
 
             {% bootstrap_form form %}
 
+            <input type="hidden" name="action" value="3">
+
             {% buttons %}
             <div class="text-center">
-                <button type="submit" class="btn btn-success" name="action" value="1">
+                <button type="submit" class="btn btn-success" data-action="1">
                     {% bootstrap_icon "save" %} {% trans "Save" %}
                 </button>
-                <button type="submit" class="btn btn-success" name="action" value="2">
+                <button type="submit" class="btn btn-success" data-action="2">
                     {% bootstrap_icon "save" %} {% trans "Save and return to previous page" %}
                 </button>
-                <button type="submit" class="btn btn-success" name="action" value="3">
+                <button type="submit" class="btn btn-success" data-action="3">
                     {% bootstrap_icon "save" %} {% trans "Save and watch the video" %}
                 </button>
             </div>
