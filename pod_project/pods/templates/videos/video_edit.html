@@ -186,7 +186,7 @@ $(document).ready(function() {
                     } else {
 
                         Pod.preventUnloadPrompt = true;
-                        $uploadMessageBox.children( 'div.panel-body > img' ).removeClass( 'hidden' );
+                        $uploadMessageBox.find( 'div.panel-body > img' ).removeClass( 'hidden' );
                         form.submit( );
                     }
                 } );
