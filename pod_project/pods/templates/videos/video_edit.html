@@ -52,6 +52,7 @@ http://www.gnu.org/licenses/
     <script src="{% static "JS/jquery.jqEasyCharCounter.js" %}"></script>
 
     {% if form %}
+    <script src="{% static 'JS/video_edit.js' %}"></script>
     <script>
 
 /*
@@ -78,6 +79,7 @@ $.validator.addMethod( "maxfilesize", function( value, element, params ) {
     }
 
     return this.optional( element ) || elementSize < maxFileSize;
+
 }, $.validator.format( "{% trans "The file size exceeds the maximum allowed value ({0} {1})." %}" ) );
 
 
@@ -112,9 +114,23 @@ setOnDraftChange = function( ) {
 };
 
 
-var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
+/*
+     Resets page display when an XHR upload attempt fails.
 
-var themetab = new Array();
+*/
+onUploadFailure = function( smText, smUrl, smType ) {
+
+    $( '#js-process' ).fadeOut( 'fast', function( ) {
+        $( '#video_form' ).fadeIn( 'slow', function( ) {
+            show_messages( smText, smUrl, smType );
+        } );
+    } );
+
+};
+
+
+var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}",
+    themetab = new Array();
 
 {% for c in form.fields.channel.queryset %}
     themetab[{{c.id}}] = [];
