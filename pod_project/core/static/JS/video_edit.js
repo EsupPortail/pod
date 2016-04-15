@@ -66,12 +66,6 @@ var Pod = ( function ( Pod ) {
 
         function uploadComplete( uploadEvent ) {
 
-            console.log( "status: " + uploadEvent.target.status );
-            console.log( "statusText: " + uploadEvent.target.statusText );
-            console.log( "responseType: " + uploadEvent.target.responseType );
-            console.log( "responseURL: " + uploadEvent.target.responseURL );
-            console.log( "response: " + uploadEvent.target.response );
-
             if ( uploadEvent.target.status == 200 ) {
 
                 var responseData = JSON.parse( uploadEvent.target.response );
