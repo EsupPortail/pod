@@ -132,7 +132,7 @@ $(document).ready(function() {
     $uploadMessageBox.hide();
 
     $videoForm.on('click', '[type=submit]', function(event) {
-        $videoForm.find('input[type=hidden][name=action]').val($(this).data('action'));
+        $videoForm.find('input[type=hidden][name=user_choice]').val($(this).data('action'));
     });
 
     $('#id_title').jqEasyCounter({
@@ -295,7 +295,7 @@ var name = "";
 
             {% bootstrap_form form %}
 
-            <input type="hidden" name="action" value="3">
+            <input type="hidden" name="user_choice" value="3">
 
             {% buttons %}
             <div class="text-center">

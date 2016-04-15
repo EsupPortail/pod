@@ -674,7 +674,7 @@ def video_edit(request, slug=None):
             vid.save()
 
             # go back
-            action = request.POST.get("action")
+            action = request.POST.get("user_choice")
             if action == "1":
                 return HttpResponseRedirect(reverse('pods.views.video_edit', args=(vid.slug,)))
             elif action == "2":
