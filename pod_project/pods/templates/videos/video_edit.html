@@ -171,15 +171,27 @@ $(document).ready(function() {
         sizeInfo = [ "1", "Go"];
     }
 
-    $videoForm.validate({
-        submitHandler: function(form) {
-            Pod.preventUnloadPrompt = true;
-            $('html, body').animate({ scrollTop: 0 }, 'slow');
-            $videoForm.fadeOut('slow', function() {
-                $uploadMessageBox.fadeIn('slow', function() {
-                    form.submit();
-                });
-            });
+    $videoForm.validate( {
+        submitHandler: function( form ) {
+
+            $( 'html, body' ).animate( { scrollTop: 0 }, 'slow' );
+
+            $videoForm.fadeOut( 'slow', function( ) {
+                $uploadMessageBox.fadeIn( 'fast', function( ) {
+
+                    if ( Pod.supportsAjaxUpload( ) ) {
+
+                        Pod.ajaxUpload( 'video_form', 'js-progress_bar', onUploadFailure );
+
+                    } else {
+
+                        Pod.preventUnloadPrompt = true;
+                        $uploadMessageBox.children( 'div.panel-body > img' ).removeClass( 'hidden' );
+                        form.submit( );
+                    }
+                } );
+            } );
+
         },
         rules: {
     {% if not form.instance.video %}
@@ -338,7 +350,7 @@ var name = "";
                         <span class="sr-only">0% Complete</span>
                     </div>
                 </div>
-                <img src="{% static 'images/loading.gif' %}" />
+                <img class="hidden" src="{% static 'images/loading.gif' %}" />
             </div>
             <div class="panel-footer">
                 {% trans "The page will refresh after the upload completes." %}
