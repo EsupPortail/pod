@@ -127,9 +127,10 @@ var themetab = new Array();
 
 $(document).ready(function() {
 
-    var $videoForm = $('#video_form');
+    var $videoForm = $('#video_form'),
+        $uploadMessageBox = $('#js-process');
 
-    $('#process').hide();
+    $uploadMessageBox.hide();
 
     $videoForm.on('click', '[type=submit]', function(event) {
         $videoForm.find('input[type=hidden][name=action]').val($(this).data('action'));
@@ -160,7 +161,7 @@ $(document).ready(function() {
             preventUnloadPrompt = true;
             $('html, body').animate({ scrollTop: 0 }, 'slow');
             $videoForm.fadeOut('slow', function() {
-                $('#process').fadeIn('slow', function() {
+                $uploadMessageBox.fadeIn('slow', function() {
                     form.submit();
                 });
             });
@@ -314,7 +315,7 @@ var name = "";
             </fieldset>
         </form>
 
-        <div id="process" class="panel panel-warning text-center">
+        <div id="js-process" class="panel panel-warning text-center">
             <div class="panel-heading">{% trans "Sending, please wait." %}</div>
             <div class="panel-body">
                 <div id="js-progress_bar" class="progress hidden">
