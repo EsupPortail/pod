@@ -112,7 +112,6 @@ setOnDraftChange = function( ) {
 };
 
 
-var preventUnloadPrompt;
 var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 
 var themetab = new Array();
@@ -158,7 +157,7 @@ $(document).ready(function() {
 
     $videoForm.validate({
         submitHandler: function(form) {
-            preventUnloadPrompt = true;
+            Pod.preventUnloadPrompt = true;
             $('html, body').animate({ scrollTop: 0 }, 'slow');
             $videoForm.fadeOut('slow', function() {
                 $uploadMessageBox.fadeIn('slow', function() {

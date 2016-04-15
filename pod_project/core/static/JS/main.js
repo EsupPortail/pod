@@ -21,7 +21,19 @@ voir http://www.gnu.org/licenses/
 /** VARIABLES **/
 
 
+var Pod = ( function ( Pod ) {
+
+    Pod.preventUnloadPrompt = false;
+
+    return Pod;
+
+} ( Pod || { } ) );
+
+
+
 /** DOC READY **/
+
+
 $(document).ready(function() {
 
     // Lancement de la recherche au clic sur le bouton de recherche
@@ -37,6 +49,7 @@ $(document).ready(function() {
 
 
     /** NAVIGATION **/
+
     $("select.language").on('change',function(e) { $(this).parents("form").submit();});
 
     $('#filters input:checkbox').change(function() {
@@ -58,10 +71,12 @@ $(document).ready(function() {
 
     setPerPage();
     setOrderBy();
+
     /** FIN NAVIGATION **/
 
 
     /** SELECT USER **/
+
     $('#ownerbox').keyup(function(){
        var valThis = $(this).val().toLowerCase();
        if(valThis == "") $('.navList>div>label>input:not(:checked)').parent("label").parent("div").hide();
@@ -82,10 +97,11 @@ $(document).ready(function() {
         }
     });
 
+
     /** FORM VIDEO **/
     $('form:not(#video_form)').on('submit', function() {
     //$('form').on('submit', function() {
-        preventUnloadPrompt = true;
+        Pod.preventUnloadPrompt = true;
         //$('#process').find('div.anim').html(ajax_image);
         //$('#process').show();
         $('form').hide();
@@ -93,8 +109,8 @@ $(document).ready(function() {
     });
 
     $(window).bind("beforeunload", function(e) {
-        if(typeof messageBeforeUnload != 'undefined' && messageBeforeUnload != "") {
-            if(preventUnloadPrompt) {
+        if (typeof messageBeforeUnload != 'undefined' && messageBeforeUnload != "") {
+            if (Pod.preventUnloadPrompt) {
                 return;
             } else {
                 return messageBeforeUnload;
@@ -104,7 +120,7 @@ $(document).ready(function() {
 
     var initial = new Array();
     $('#id_theme option:selected').each(function () {
-            initial.push($(this).val());
+        initial.push($(this).val());
     });
 
     $('#id_theme')
@@ -133,9 +149,12 @@ $(document).ready(function() {
             };
         });
     });
+
     /** FIN FORM VIDEO **/
 
+
     /** DJANGO FILER **/
+
     if (typeof num != 'undefined' && name == "") {
         showRelatedObjectLookupPopup = function(triggeringLink) {
             name = triggeringLink.id.replace(/^lookup_/, '');
@@ -167,11 +186,12 @@ $(document).ready(function() {
             $('#myModal').modal('hide');
         };
     }
+
     /** DJANGO FILER **/
 
-
-
 });
+
+
 
 /*** DON'T TOUCH THIS ****/
 function csrfSafeMethod(method) {
@@ -308,6 +328,8 @@ function show_messages( msgText, loadUrl, msgClass ) {
     $msgContainer.html( $msgBox );
 
     if ( loadUrl !== false ) {
+
+        Pod.preventUnloadPrompt = true;
 
         $msgBox.delay( 4000 ).fadeOut( function( ) {
 
