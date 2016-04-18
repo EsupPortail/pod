@@ -246,7 +246,7 @@ $(document).on("submit", "#page-video form", function (e) {
         });
         jqxhr.fail(function($xhr) {
             var data = $xhr.status+ " : " +$xhr.statusText;
-            show_messages("{% trans 'Error getting form. ' %} " + "("+data+")"+ "{% trans 'the form could not be recovered'%}", false, 'danger');
+            show_messages("{% trans 'Error getting form.' %} " + " ("+data+")"+ "{% trans 'The form could not be recovered.'%}", false, 'danger');
             $('form.form_modif').show();
             $('form.form_delete').show();
             $('form.form_new').show();
@@ -274,7 +274,7 @@ $(document).on("submit", "#page-video form", function (e) {
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error during deletion. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", false, 'danger');
+                show_messages("{% trans 'Error during deletion.' %} " + " ("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", false, 'danger');
             });
         }
     }else if(action == "save"){
@@ -312,7 +312,7 @@ $(document).on("submit", "#page-video form", function (e) {
                 });
                 jqxhr.fail(function($xhr) {
                     var data = $xhr.status+ " : " +$xhr.statusText;
-                    show_messages("{% trans 'Error recording. ' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", false, 'danger');
+                    show_messages("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", false, 'danger');
                 });
             }
         }else{
