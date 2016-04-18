@@ -181,6 +181,11 @@ $(document).ready(function() {
 
                     if ( Pod.supportsAjaxUpload( ) ) {
 
+                        Pod.setAjaxUploadMessages( {
+                            'UPLOAD_PROGRESS_NOT_COMPUTABLE': "{% trans 'Unable to compute upload progress.' %}",
+                            'UPLOAD_CANCELED': "{% trans 'Upload canceled.' %}",
+                            'UPLOAD_FAILED': "{% trans 'Error while uploading or connection dropped.' %}",
+                        } );
                         Pod.ajaxUpload( 'video_form', 'js-progress_bar', onUploadFailure );
 
                     } else {

@@ -11,6 +11,20 @@ var Pod = ( function ( Pod ) {
 
     "use strict";
 
+    // Stores localized alert messages
+    var _uploadMessages = { };
+
+
+    /**
+     *  Sets alert messages localization.
+     *
+     */
+    Pod.setAjaxUploadMessages = function( uploadMessages ) {
+
+        _uploadMessages = uploadMessages;
+
+    }
+
 
     /**
      *  Checks for necessary APIs (File, FormData) and AJAX upload progress support.
@@ -27,6 +41,7 @@ var Pod = ( function ( Pod ) {
 
             return false;
         }
+
     }
 
 
@@ -59,7 +74,7 @@ var Pod = ( function ( Pod ) {
 
             } else {
 
-                progressBar.innerHTML = "Unable to compute upload progress.";
+                progressBar.innerHTML = _uploadMessages.UPLOAD_PROGRESS_NOT_COMPUTABLE;
             }
         }
 
@@ -70,13 +85,13 @@ var Pod = ( function ( Pod ) {
 
                 var responseData = JSON.parse( uploadEvent.target.response );
 
-                if ( responseData[ 'success' ] ) {
+                if ( responseData.success ) {
 
-                    show_messages( responseData[ 'message' ], responseData[ 'url' ], 'info' );
+                    show_messages( responseData.message, responseData.url, 'info' );
 
                 } else {
 
-                    failureCallback( responseData[ 'message' ], false, 'danger' );
+                    failureCallback( responseData.message, false, 'danger' );
                 }
 
             } else {
@@ -92,13 +107,21 @@ var Pod = ( function ( Pod ) {
 
         function uploadCanceled( uploadEvent ) {
 
-            failureCallback( "Upload canceled.", false, 'warning' );
+            failureCallback(
+                _uploadMessages.UPLOAD_CANCELED,
+                false,
+                'warning'
+            );
         }
 
 
         function uploadFailed( uploadEvent ) {
 
-            failureCallback( "Error while uploading or connection dropped.", false, 'danger' );
+            failureCallback(
+                _uploadMessages.UPLOAD_FAILED,
+                false,
+                'danger'
+            );
         }
 
 
