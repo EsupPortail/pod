@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-18 15:28+0200\n"
-"PO-Revision-Date: 2016-04-18 15:32+0200\n"
+"POT-Creation-Date: 2016-04-21 15:32+0200\n"
+"PO-Revision-Date: 2016-04-21 15:33+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -507,7 +507,7 @@ msgstr "Notes"
 #: pods/templates/videos/chapter/form_chapter.html:43
 #: pods/templates/videos/enrich/form_enrich.html:43
 #: pods/templates/videos/video.html:484 pods/templates/videos/video.html:485
-#: pods/templates/videos/video_edit.html:336
+#: pods/templates/videos/video_edit.html:349
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -517,7 +517,7 @@ msgstr "Enregistrer"
 #: pods/templates/videos/my_videos.html:64
 #: pods/templates/videos/video_chapter.html:380
 #: pods/templates/videos/video_completion.html:519
-#: pods/templates/videos/video_edit.html:382
+#: pods/templates/videos/video_edit.html:395
 #: pods/templates/videos/video_enrich.html:482
 msgid "Information"
 msgstr "Information"
@@ -573,7 +573,7 @@ msgstr "Envoyer"
 #: pods/templates/channels/channel_edit.html:77
 #: pods/templates/mediacourses/mediacourses_add.html:52
 #: pods/templates/videos/video_chapter.html:258
-#: pods/templates/videos/video_edit.html:303
+#: pods/templates/videos/video_edit.html:316
 #: pods/templates/videos/video_enrich.html:255 pods/views.py:193
 #: pods/views.py:458 pods/views.py:707 pods/views.py:711 pods/views.py:1652
 msgid "One or more errors have been found in the form."
@@ -653,8 +653,8 @@ msgid "Videos"
 msgstr "Vidéos"
 
 #: core/templates/navbar.html:119 pods/templates/videos/video_edit.html:26
-#: pods/templates/videos/video_edit.html:259
-#: pods/templates/videos/video_edit.html:294
+#: pods/templates/videos/video_edit.html:272
+#: pods/templates/videos/video_edit.html:307
 msgid "Add a new video"
 msgstr "Ajouter une nouvelle vidéo"
 
@@ -707,7 +707,7 @@ msgstr "Mon profil"
 #: pods/templates/mediacourses/mediacourses_add.html:31
 #: pods/templates/videos/video_chapter.html:131
 #: pods/templates/videos/video_completion.html:175
-#: pods/templates/videos/video_edit.html:132
+#: pods/templates/videos/video_edit.html:145
 #: pods/templates/videos/video_enrich.html:137
 msgid ""
 "Warning, you will leave this page. If you have made changes without clicking "
@@ -745,7 +745,7 @@ msgid "Login"
 msgstr "Identifiant"
 
 #: core/views.py:95 pods/admin.py:98 pods/forms.py:288
-#: pods/templates/videos/video_edit.html:426
+#: pods/templates/videos/video_edit.html:439
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -1539,7 +1539,7 @@ msgstr ""
 "Séparez les mots-clés avec des espaces, placez les mots-clés constitués de "
 "plusieurs mots entre guillemets."
 
-#: pods/models.py:307 pods/templates/videos/video_edit.html:408
+#: pods/models.py:307 pods/templates/videos/video_edit.html:421
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -1551,7 +1551,7 @@ msgstr ""
 "vous."
 
 #: pods/models.py:309 pods/models.py:999
-#: pods/templates/videos/video_edit.html:416
+#: pods/templates/videos/video_edit.html:429
 msgid "Restricted access"
 msgstr "Accès restreint"
 
@@ -2026,7 +2026,7 @@ msgstr "Édition de la chaîne"
 #: pods/templates/channels/channel_edit.html:95
 #: pods/templates/channels/channel_edit.html:175
 #: pods/templates/channels/channel_edit.html:176
-#: pods/templates/videos/video_edit.html:339
+#: pods/templates/videos/video_edit.html:352
 msgid "Save and return to previous page"
 msgstr "Enregistrer et revenir à la page précédente"
 
@@ -2102,7 +2102,7 @@ msgstr "Ajouter un nouvel enregistrement"
 #: pods/templates/videos/video_chapter.html:340
 #: pods/templates/videos/video_completion.html:439
 #: pods/templates/videos/video_delete.html:35
-#: pods/templates/videos/video_edit.html:256
+#: pods/templates/videos/video_edit.html:269
 #: pods/templates/videos/video_enrich.html:444
 msgid "My videos"
 msgstr "Mes vidéos"
@@ -2746,62 +2746,70 @@ msgstr ""
 "d'encodage."
 
 #: pods/templates/videos/video_edit.html:24
-#: pods/templates/videos/video_edit.html:257
-#: pods/templates/videos/video_edit.html:292
+#: pods/templates/videos/video_edit.html:270
+#: pods/templates/videos/video_edit.html:305
 msgid "Editing the video"
 msgstr "Modification de la vidéo"
 
 #: pods/templates/videos/video_edit.html:83
-#: pods/templates/videos/video_edit.html:227
+#: pods/templates/videos/video_edit.html:240
 msgid "The file size exceeds the maximum allowed value ({0} {1})."
 msgstr "La taille du fichier dépasse la valeur maximum autorisée ({0} {1})."
 
-#: pods/templates/videos/video_edit.html:185
+#: pods/templates/videos/video_edit.html:124
+msgid "Your data have been successfully sent."
+msgstr "Vos données ont été envoyées avec succès."
+
+#: pods/templates/videos/video_edit.html:125
+msgid "The page will refresh in a few seconds."
+msgstr "La page sera actualisée dans quelques secondes."
+
+#: pods/templates/videos/video_edit.html:198
 msgid "Unable to compute upload progress."
 msgstr "Calcul de la progression du téléversement impossible"
 
-#: pods/templates/videos/video_edit.html:186
+#: pods/templates/videos/video_edit.html:199
 msgid "Upload canceled."
 msgstr "Téléversement annulé."
 
-#: pods/templates/videos/video_edit.html:187
+#: pods/templates/videos/video_edit.html:200
 msgid "Error while uploading or connection dropped."
 msgstr "Erreur durant le téléversement ou connexion interrompue."
 
-#: pods/templates/videos/video_edit.html:225
+#: pods/templates/videos/video_edit.html:238
 msgid "Please select a file to upload."
 msgstr "Veuillez sélectionner un fichier à téléverser."
 
-#: pods/templates/videos/video_edit.html:226
+#: pods/templates/videos/video_edit.html:239
 msgid "File format not supported."
 msgstr "Ce format de fichier n'est pas supporté."
 
-#: pods/templates/videos/video_edit.html:231
+#: pods/templates/videos/video_edit.html:244
 msgid "Please, specify a title."
 msgstr "Veuillez indiquer un titre."
 
-#: pods/templates/videos/video_edit.html:232
+#: pods/templates/videos/video_edit.html:245
 msgid "Your title should contain more than two characters."
 msgstr "Votre titre doit contenir plus de deux caractères."
 
-#: pods/templates/videos/video_edit.html:233
+#: pods/templates/videos/video_edit.html:246
 msgid "Your title should contain less than two hundred fifty characters."
 msgstr "Votre titre doit contenir moins de deux cents cinquante caractères."
 
-#: pods/templates/videos/video_edit.html:236
+#: pods/templates/videos/video_edit.html:249
 msgid "Please, specify a type."
 msgstr "Veuillez spécifier un type."
 
-#: pods/templates/videos/video_edit.html:274
+#: pods/templates/videos/video_edit.html:287
 #: pods/templates/videos/video_player.html:118
 msgid "The video is currently being encoded."
 msgstr "Cette vidéo est en cours d'encodage."
 
-#: pods/templates/videos/video_edit.html:319
+#: pods/templates/videos/video_edit.html:332
 msgid "Upload limit reached."
 msgstr "Limite de téléversement atteinte."
 
-#: pods/templates/videos/video_edit.html:321
+#: pods/templates/videos/video_edit.html:334
 #, python-format
 msgid ""
 "You have reached the %(MAX_DAILY_USER_UPLOADS)s files per day upload limit."
@@ -2809,38 +2817,38 @@ msgstr ""
 "Vous avez atteint la limite de %(MAX_DAILY_USER_UPLOADS)s téléversements par "
 "jour."
 
-#: pods/templates/videos/video_edit.html:322
+#: pods/templates/videos/video_edit.html:335
 msgid "Please come back tomorrow!"
 msgstr "Merci de revenir demain !"
 
-#: pods/templates/videos/video_edit.html:342
+#: pods/templates/videos/video_edit.html:355
 msgid "Save and watch the video"
 msgstr "Enregistrer et voir la vidéo"
 
-#: pods/templates/videos/video_edit.html:351
+#: pods/templates/videos/video_edit.html:364
 msgid "Sending, please wait."
 msgstr "Envoi en cours, merci de patienter."
 
-#: pods/templates/videos/video_edit.html:361
+#: pods/templates/videos/video_edit.html:374
 msgid "The page will refresh after the upload completes."
 msgstr "La page sera actualisée lorsque le téléversement sera terminé."
 
-#: pods/templates/videos/video_edit.html:386
+#: pods/templates/videos/video_edit.html:399
 msgid "Uploading"
 msgstr "Téléversement"
 
-#: pods/templates/videos/video_edit.html:389
+#: pods/templates/videos/video_edit.html:402
 #, python-format
 msgid "The file size must be lower than %(MAX_UPLOAD_FILE_SIZE)s."
 msgstr "La taille du fichier doit être inférieure à %(MAX_UPLOAD_FILE_SIZE)s."
 
-#: pods/templates/videos/video_edit.html:391
+#: pods/templates/videos/video_edit.html:404
 #, python-format
 msgid "You can upload up to %(MAX_DAILY_USER_UPLOADS)s files per day."
 msgstr ""
 "Vous pouvez téléverser jusqu’à %(MAX_DAILY_USER_UPLOADS)s fichiers par jour."
 
-#: pods/templates/videos/video_edit.html:393
+#: pods/templates/videos/video_edit.html:406
 msgid ""
 "The sending time depends on the size of your file and your upload speed. "
 "This can be quite long."
@@ -2848,7 +2856,7 @@ msgstr ""
 "Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
 "transfert. Cela peut être assez long."
 
-#: pods/templates/videos/video_edit.html:394
+#: pods/templates/videos/video_edit.html:407
 msgid ""
 "While sending your file, do not close your browser until you have received a "
 "message of success or failure."
@@ -2856,19 +2864,19 @@ msgstr ""
 "Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
 "d'avoir reçu un message de succès ou d'échec."
 
-#: pods/templates/videos/video_edit.html:399
+#: pods/templates/videos/video_edit.html:412
 msgid "File format"
 msgstr "Format de fichier"
 
-#: pods/templates/videos/video_edit.html:402
+#: pods/templates/videos/video_edit.html:415
 msgid "You can send an audio or video file."
 msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 
-#: pods/templates/videos/video_edit.html:403
+#: pods/templates/videos/video_edit.html:416
 msgid "The following formats are supported:"
 msgstr "Les formats suivants sont supportés :"
 
-#: pods/templates/videos/video_edit.html:411
+#: pods/templates/videos/video_edit.html:424
 msgid ""
 "In “Draft mode”, the content shows nowhere and nobody else but you can see "
 "it."
@@ -2876,18 +2884,18 @@ msgstr ""
 "En mode « Brouillon », le contenu n’apparaît nulle part et personne d’autre "
 "que vous ne le voit."
 
-#: pods/templates/videos/video_edit.html:419
-#: pods/templates/videos/video_edit.html:429
+#: pods/templates/videos/video_edit.html:432
+#: pods/templates/videos/video_edit.html:442
 msgid "If you don't select “Draft mode”,"
 msgstr "Si vous ne sélectionnez pas le mode « Brouillon »,"
 
-#: pods/templates/videos/video_edit.html:420
+#: pods/templates/videos/video_edit.html:433
 msgid "you can restrict the content access to only people belonging to"
 msgstr ""
 "vous pouvez restreindre l’accès à votre contenu aux seules personnes "
 "appartenant à"
 
-#: pods/templates/videos/video_edit.html:429
+#: pods/templates/videos/video_edit.html:442
 msgid ""
 "you can add a password which will be asked to anybody willing to watch your "
 "content."
@@ -2895,11 +2903,11 @@ msgstr ""
 "vous pouvez ajouter un mot de passe qui sera demandé à toute personne "
 "souhaitant visionner votre contenu."
 
-#: pods/templates/videos/video_edit.html:434
+#: pods/templates/videos/video_edit.html:447
 msgid "Keywords"
 msgstr "Mots-clés"
 
-#: pods/templates/videos/video_edit.html:437
+#: pods/templates/videos/video_edit.html:450
 msgid ""
 "Please try to add only relevant keywords that can be useful to other users."
 msgstr ""
@@ -3121,10 +3129,6 @@ msgstr "La vidéo a été signalée."
 #: pods/views.py:642
 msgid "You cannot edit this video."
 msgstr "Vous ne pouvez pas éditer cette vidéo."
-
-#: pods/views.py:697
-msgid "Your file has been successfully uploaded."
-msgstr "Votre fichier a été téléversé avec succès."
 
 #: pods/views.py:739 pods/views.py:773 pods/views.py:907 pods/views.py:1038
 msgid "You cannot complement this video."
