@@ -693,7 +693,6 @@ def video_edit(request, slug=None):
             if request.is_ajax():
                 response_data = {}
                 response_data['success'] = True
-                response_data['message'] = _(u'Your file has been successfully uploaded.')
                 response_data['url'] = "%s" % urlToLoad
                 return HttpResponse(json.dumps(response_data), content_type='application/json')
             else:

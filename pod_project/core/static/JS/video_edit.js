@@ -50,7 +50,7 @@ var Pod = ( function ( Pod ) {
      *      and displays upload progression with BS progress-bar.
      *
      */
-    Pod.ajaxUpload = function ( formID, progressBarID, failureCallback ) {
+    Pod.ajaxUpload = function ( formID, progressBarID, successCallback, failureCallback ) {
 
 
         function uploadStarted( uploadEvent ) {
@@ -87,7 +87,7 @@ var Pod = ( function ( Pod ) {
 
                 if ( responseData.success ) {
 
-                    show_messages( responseData.message, responseData.url, 'info' );
+                    successCallback( responseData.url );
 
                 } else {
 

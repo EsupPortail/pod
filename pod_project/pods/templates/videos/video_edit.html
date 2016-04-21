@@ -115,7 +115,25 @@ setOnDraftChange = function( ) {
 
 
 /*
-     Resets page display when an XHR upload attempt fails.
+     Alerts, refreshes upload box message and
+        reloads current / loads new page on successful XHR upload attempts.
+
+*/
+onUploadSuccess = function( smUrl ) {
+
+    $( '#js-process' )
+            .removeClass( 'panel-warning' )
+            .addClass( 'panel-success' )
+            .find( 'div.panel-heading' )
+            .text( "{% trans 'Your data have been successfully sent.' %}" );
+
+    show_messages( "{% trans 'The page will refresh in a few seconds.' %}", smUrl, 'warning' );
+
+};
+
+
+/*
+     Alerts and resets page display on failed XHR upload attempts.
 
 */
 onUploadFailure = function( smText, smUrl, smType ) {
@@ -186,7 +204,7 @@ $(document).ready(function() {
                             'UPLOAD_CANCELED': "{% trans 'Upload canceled.' %}",
                             'UPLOAD_FAILED': "{% trans 'Error while uploading or connection dropped.' %}",
                         } );
-                        Pod.ajaxUpload( 'video_form', 'js-progress_bar', onUploadFailure );
+                        Pod.ajaxUpload( 'video_form', 'js-progress_bar', onUploadSuccess, onUploadFailure );
 
                     } else {
 
