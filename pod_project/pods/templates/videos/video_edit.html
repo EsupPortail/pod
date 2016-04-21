@@ -52,7 +52,9 @@ http://www.gnu.org/licenses/
     <script src="{% static "JS/jquery.jqEasyCharCounter.js" %}"></script>
 
     {% if form %}
+    {% if USE_XHR_FORM_UPLOAD %}
     <script src="{% static 'JS/video_edit.js' %}"></script>
+    {% endif %}
     <script>
 
 /*
@@ -113,7 +115,7 @@ setOnDraftChange = function( ) {
 
 };
 
-
+{% if USE_XHR_FORM_UPLOAD %}
 /*
      Alerts, refreshes upload box message and
         reloads current / loads new page on successful XHR upload attempts.
@@ -145,7 +147,7 @@ onUploadFailure = function( smText, smUrl, smType ) {
     } );
 
 };
-
+{% endif %}
 
 var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}",
     themetab = new Array();
@@ -197,7 +199,7 @@ $(document).ready(function() {
             $videoForm.fadeOut( 'slow', function( ) {
                 $uploadMessageBox.fadeIn( 'fast', function( ) {
 
-                    if ( Pod.supportsAjaxUpload( ) ) {
+                    if ( {{ USE_XHR_FORM_UPLOAD }} && Pod.supportsAjaxUpload( ) ) {
 
                         Pod.setAjaxUploadMessages( {
                             'UPLOAD_PROGRESS_NOT_COMPUTABLE': "{% trans 'Unable to compute upload progress.' %}",
