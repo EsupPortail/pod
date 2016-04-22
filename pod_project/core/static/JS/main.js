@@ -23,7 +23,11 @@ voir http://www.gnu.org/licenses/
 
 var Pod = ( function ( Pod ) {
 
+    // Prevents page unload alert box
     Pod.preventUnloadPrompt = false;
+
+    // Prevents XHR form upload
+    Pod.preventAjaxUpload = false;
 
     return Pod;
 
