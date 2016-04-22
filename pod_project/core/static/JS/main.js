@@ -23,11 +23,11 @@ voir http://www.gnu.org/licenses/
 
 var Pod = ( function ( Pod ) {
 
-    // Prevents page unload alert box
+    // Prevents page unload alert box.
     Pod.preventUnloadPrompt = false;
 
-    // Prevents XHR form upload
-    Pod.preventAjaxUpload = false;
+    // Used to prevent XHR video form upload when file field is empty.
+    Pod.allowAjaxUpload = true;
 
     return Pod;
 

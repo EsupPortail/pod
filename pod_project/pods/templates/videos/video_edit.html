@@ -169,7 +169,7 @@ $(document).ready(function() {
 
     $videoForm.on('click', '[type=submit]', function(event) {
 
-        Pod.preventAjaxUpload = $('#id_video').val( ) !== '' ? true : false;
+        Pod.allowAjaxUpload = $('#id_video').val( ) !== '' ? true : false;
         $videoForm.find('input[type=hidden][name=user_choice]').val($(this).data('action'));
     });
 
@@ -201,7 +201,7 @@ $(document).ready(function() {
             $videoForm.fadeOut( 'slow', function( ) {
                 $uploadMessageBox.fadeIn( 'fast', function( ) {
 
-                    if ( {{ USE_XHR_FORM_UPLOAD }} && Pod.preventAjaxUpload && Pod.supportsAjaxUpload( ) ) {
+                    if ( {{ USE_XHR_FORM_UPLOAD }} && Pod.allowAjaxUpload && Pod.supportsAjaxUpload( ) ) {
 
                         Pod.setAjaxUploadMessages( {
                             'UPLOAD_PROGRESS_NOT_COMPUTABLE': "{% trans 'Unable to compute upload progress.' %}",
