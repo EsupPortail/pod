@@ -309,13 +309,13 @@ $(document).on('click', 'button#button_video_report', function (event) {
     Creates & shows BS alert boxes w close button
 
 */
-function show_messages( msgText, loadUrl, msgClass ) {
+function show_messages( msgText, msgClass, loadUrl ) {
 
     var $msgContainer = $( '#show_messages' );
     var closeButton = "";
 
-    loadUrl = typeof loadUrl !== 'undefined' ? loadUrl : false;
     msgClass = typeof msgClass !== 'undefined' ? msgClass : 'warning';
+    loadUrl = typeof loadUrl !== 'undefined' ? loadUrl : false;
 
     if ( loadUrl === false ) {
 

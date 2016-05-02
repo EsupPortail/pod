@@ -238,7 +238,7 @@ $(document).on("submit", "#page-video form", function (e) {
         }
         jqxhr.done(function(data){
             if(data.indexOf(form)==-1) {
-                show_messages("{% trans 'You are no longer authenticated. Please log in again' %}", true, 'danger');
+                show_messages("{% trans 'You are no longer authenticated. Please log in again' %}", 'danger', true);
             } else {
                 get_form(data, form);
                 elt.addClass('info');
@@ -246,7 +246,7 @@ $(document).on("submit", "#page-video form", function (e) {
         });
         jqxhr.fail(function($xhr) {
             var data = $xhr.status+ " : " +$xhr.statusText;
-            show_messages("{% trans 'Error getting form.' %} " + " ("+data+")"+ "{% trans 'The form could not be recovered.'%}", false, 'danger');
+            show_messages("{% trans 'Error getting form.' %} " + " ("+data+")"+ "{% trans 'The form could not be recovered.'%}", 'danger');
             $('form.form_modif').show();
             $('form.form_delete').show();
             $('form.form_new').show();
@@ -269,12 +269,12 @@ $(document).on("submit", "#page-video form", function (e) {
                     refresh_list(data, form, list);
                     manageResize(name_form);
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %}", true, 'danger');
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again' %}", 'danger', true);
                 }
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error during deletion.' %} " + " ("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", false, 'danger');
+                show_messages("{% trans 'Error during deletion.' %} " + " ("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", 'danger');
             });
         }
     }else if(action == "save"){
@@ -286,7 +286,7 @@ $(document).on("submit", "#page-video form", function (e) {
         msg = verify_fields(form);
         if (!($("span").hasClass("form-help-inline"))){
             if(msg != "")
-                show_messages(msg, false, 'danger');
+                show_messages(msg, 'danger');
             else {
                 var data_form = $("form#"+form).serializeArray();
                 var href = $("form#" + form).attr("action");
@@ -304,19 +304,19 @@ $(document).on("submit", "#page-video form", function (e) {
 
                             }manageResize(name_form);
                             $(window).scrollTop(100);
-                            show_messages("{% trans 'Changes have been saved.' %}", false, 'info');
+                            show_messages("{% trans 'Changes have been saved.' %}", 'info');
                         }
                     } else {
-                       show_messages("{% trans 'You are no longer authenticated. Please log in again' %}", true, 'danger');
+                       show_messages("{% trans 'You are no longer authenticated. Please log in again' %}", 'danger', true);
                     }
                 });
                 jqxhr.fail(function($xhr) {
                     var data = $xhr.status+ " : " +$xhr.statusText;
-                    show_messages("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", false, 'danger');
+                    show_messages("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", 'danger');
                 });
             }
         }else{
-            show_messages("{% trans 'Errors found in the form, please correct it.' %}", false, 'danger');
+            show_messages("{% trans 'Errors found in the form, please correct it.' %}", 'danger');
         }
     }
 });

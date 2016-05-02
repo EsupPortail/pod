@@ -129,7 +129,7 @@ onUploadSuccess = function( smUrl ) {
             .find( 'div.panel-heading' )
             .text( "{% trans 'Your data have been successfully sent.' %}" );
 
-    show_messages( "{% trans 'The page will refresh in a few seconds.' %}", smUrl, 'warning' );
+    show_messages( "{% trans 'The page will refresh in a few seconds.' %}", 'warning', smUrl );
 
 };
 
@@ -142,7 +142,7 @@ onUploadFailure = function( smText, smUrl, smType ) {
 
     $( '#js-process' ).fadeOut( 'fast', function( ) {
         $( '#video_form' ).fadeIn( 'slow', function( ) {
-            show_messages( smText, smUrl, smType );
+            show_messages( smText, smType, smUrl );
         } );
     } );
 
