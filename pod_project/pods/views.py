@@ -28,7 +28,9 @@ from pods.forms import EnrichPodsForm
 from pods.forms import SearchForm
 from pods.models import *
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
+# Replaced to allow JSON serialization of localized messages.
+from django.utils.translation import ugettext as _
+# from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.forms.models import inlineformset_factory
@@ -651,6 +653,7 @@ def video_edit(request, slug=None):
             video_form = PodForm(request)
 
     if request.POST:
+
         if video:
             video_form = PodForm(
                 request, request.POST, request.FILES, instance=video)
@@ -658,13 +661,17 @@ def video_edit(request, slug=None):
             video_form = PodForm(request, request.POST, request.FILES)
 
         if video_form.is_valid():
+
             vid = video_form.save(commit=False)
+
             if request.POST.get('owner') and request.POST.get('owner') != "":
                 vid.owner = video_form.cleaned_data['owner']
             else:
                 vid.owner = request.user
+
             if request.FILES:
                 vid.to_encode = True
+
             vid.save()
             # Without this next line the tags won't be saved.
             video_form.save_m2m()
@@ -674,16 +681,32 @@ def video_edit(request, slug=None):
             vid.save()
 
             # go back
-            action = request.POST.get("action")
+            action = request.POST.get("user_choice")
+
             if action == "1":
-                return HttpResponseRedirect(reverse('pods.views.video_edit', args=(vid.slug,)))
+                urlToLoad = reverse('pods.views.video_edit', args=(vid.slug,))
             elif action == "2":
-                return HttpResponseRedirect("%s" % referer)
+                urlToLoad = "%s" % referer
             else:
-                return HttpResponseRedirect(reverse('pods.views.video', args=(vid.slug,)))
+                urlToLoad = reverse('pods.views.video', args=(vid.slug,))
+
+            if request.is_ajax():
+                response_data = {}
+                response_data['success'] = True
+                response_data['url'] = "%s" % urlToLoad
+                return HttpResponse(json.dumps(response_data), content_type='application/json')
+            else:
+                return HttpResponseRedirect(urlToLoad)
+
         else:
-            messages.add_message(
-                request, messages.ERROR, _(u'One or more errors have been found in the form.'))
+            if request.is_ajax():
+                response_data = {}
+                response_data['success'] = False
+                response_data['message'] = _(u'One or more errors have been found in the form.')
+                return HttpResponse(json.dumps(response_data), content_type='application/json')
+            else:
+                messages.add_message(
+                    request, messages.ERROR, _(u'One or more errors have been found in the form.'))
 
     video_ext_accept = replace('|'.join(settings.VIDEO_EXT_ACCEPT), ".", "")
     video_ext_accept_text = replace(', '.join(settings.VIDEO_EXT_ACCEPT), ".", "").upper()

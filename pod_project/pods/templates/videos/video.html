@@ -37,16 +37,16 @@ voir http://www.gnu.org/licenses/
             var jqxhr = $.post( $(this).attr("action"), {"comment":comment });
             jqxhr.done(function(data){
                 if(data.msg) {
-                    show_messages(data.msg, false, 'info');
+                    show_messages(data.msg, 'info');
                     $("#button_video_report").attr('disabled','disabled');
                     $("#mark-as-report").attr('style','color: #ee7d19');
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'danger');
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", 'danger', true);
                 }
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}", false, 'danger');
+                show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}", 'danger');
             });
             $('form#video_report_form').show();
             $('#modal_report_form').modal('hide');
@@ -70,9 +70,9 @@ $(document).on('click', '#button_video_favorite', function (event) {
             $( "#video_favorite_form" ).serialize(),
             function(data) {
                 if(data.msg) {
-                    show_messages(data.msg, false, 'info');
+                    show_messages(data.msg, 'info');
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'danger');
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", 'danger', true);
                 }
                 if(spanchild.attr('id')=="fav") spanchild.attr('id', 'mark-as-fav');
                 else spanchild.attr('id', 'fav');
@@ -91,7 +91,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
             });
         jqxhr.fail(function(data) {
             var data = $xhr.status+ " : " +$xhr.statusText;
-            show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}", false, 'danger');
+            show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}", 'danger');
         });
         } else {
             alert(expiredsession);
