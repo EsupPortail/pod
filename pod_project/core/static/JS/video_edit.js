@@ -69,8 +69,8 @@ var Pod = ( function ( Pod ) {
                     percentComplete = 100;
                 }
 
-                progressBarDiv.setAttribute( 'style', "width:" + percentComplete + "%" );
-                progressBarSpan.textContent = percentComplete + '% Complete';
+                progressBarDiv.setAttribute( 'style', "width: " + percentComplete + "%" );
+                progressBarSpan.textContent = '\u00a0' + percentComplete + '%\u00a0';
 
             } else {
 
@@ -128,7 +128,7 @@ var Pod = ( function ( Pod ) {
         var form = document.getElementById( formID ),
             progressBar = document.getElementById( progressBarID ),
             progressBarDiv = progressBar.querySelector( ':scope > div.progress-bar' ),
-            progressBarSpan = progressBarDiv.querySelector( ':scope > span.sr-only' );
+            progressBarSpan = progressBarDiv.querySelector( ':scope > span' );
 
         var formData = new FormData( form ),
             xhr = new XMLHttpRequest( );
