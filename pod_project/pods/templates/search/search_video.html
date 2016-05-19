@@ -103,15 +103,15 @@ voir http://www.gnu.org/licenses/
                                 <span class="time">{{ video.duration_in_time }}</span>
                                 <span class="icons">
                                     {% if video.protected %}
-                                        <span title="verrouillée" class="glyphicon glyphicon-lock"></span>
-                                    {% endif %}
-                                    {% if video.mediatype == 'video' %}
-                                        <span title="video" class="glyphicon glyphicon-film"></span>
-                                    {% elif video.mediatype == 'audio' %}
-                                        <span title="audio" class="glyphicon glyphicon-headphones"></span>
+                                        <span title="{% trans 'This content is protected by authentication and/or password.' %}" class="glyphicon glyphicon-lock"></span>
                                     {% endif %}
                                     {% if video.is_richmedia %}
-                                        <span title="chapitres" class="glyphicon glyphicon-list"></span>
+                                        <span title="{% trans 'This content has enrichments (files, web links, etc.).' %}" class="glyphicon glyphicon-briefcase"></span>
+                                    {% endif %}
+                                    {% if video.mediatype == 'video' %}
+                                        <span title="{% trans 'Video content.' %}" class="glyphicon glyphicon-film"></span>
+                                    {% elif video.mediatype == 'audio' %}
+                                        <span title="{% trans 'Audio content.' %}" class="glyphicon glyphicon-headphones"></span>
                                     {% endif %}
                                 </span>
                             </span>
