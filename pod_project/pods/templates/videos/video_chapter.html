@@ -127,11 +127,10 @@ function manageResize() {
 }
 
 /*** end table scroll ***/
-var preventUnloadPrompt;
+
 //var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 var num = 0;
 var name = '';
-var button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
 /*** For the form ***/;
 var video_duration = {{video.duration}};
 /*** For the Cancel button ***/
@@ -145,10 +144,16 @@ $(document).on("reset", "form", function (e) {
     manageResize();
 
 });
-/*** Function for all buttons expect cancel
-    When the action is modify or new, all button in the first page of chapter are hide and the form is displayed.
-    When the action is delete, a request sent with the chapter id
-    When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
+
+
+/*** Every button processing expects cancel
+
+    On modify or new action, all buttons in the first page of enrichment
+        are hidden and the form is displayed.
+    On delete action, a request is sent with the enrich id.
+    On save action, a request is sent with the form after a pair of
+        validation functions are runned.
+***/
 
 $(document).on("submit", "#page-video form", function (e) {
     $('form').show();
@@ -176,7 +181,7 @@ $(document).on("submit", "#page-video form", function (e) {
         }
         jqxhr.done(function(data){
             if(data.indexOf("form_chapter")==-1) {
-                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'alert-danger');
+                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
             } else {
                 get_form(data);
                 elt.addClass('info');
@@ -185,7 +190,7 @@ $(document).on("submit", "#page-video form", function (e) {
         });
         jqxhr.fail(function($xhr) {
             var data = $xhr.status+ " : " +$xhr.statusText;
-            show_messages("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%} "+button, false, 'alert-danger');
+            show_messages("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%}", 'danger');
             $('form.form_modif').show();
             $('form.form_delete').show();
             $('form#form_new').show();
@@ -200,14 +205,14 @@ $(document).on("submit", "#page-video form", function (e) {
             jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
             jqxhr.done(function(data){
                 if(data.list_chapter) {
-                    refrech_list_and_player(data);
+                    refresh_list_and_player(data);
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} "+button, true, 'alert-danger');
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
                 }
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error during deletion.' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}"+button, false, 'alert-danger');
+                show_messages("{% trans 'Error during deletion.' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", 'danger');
             });
         }
     }else if(action == "save"){
@@ -222,7 +227,7 @@ $(document).on("submit", "#page-video form", function (e) {
             var msg = "";
             msg += overlaptest();
             if(msg != "") {
-                show_messages(msg+button, false, 'alert-danger');
+                show_messages(msg, 'danger');
             } else {
                 var data_form = $( "form#form_chapter" ).serializeArray();
                 jqxhr = $.post(
@@ -235,22 +240,22 @@ $(document).on("submit", "#page-video form", function (e) {
                             //alert(data.errors);
                             get_form(data.form);
                         }else{
-                            refrech_list_and_player(data);
+                            refresh_list_and_player(data);
                             $('span#form_chapter').unwrap();
                             $('span#list_chapter').unwrap();
                             manageResize();
                         }
                     } else {
-                        show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} "+button, true, 'alert-danger');
+                        show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
                     }
                 });
                 jqxhr.fail(function($xhr) {
                     var data = $xhr.status+ " : " +$xhr.statusText;
-                    show_messages("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}"+button, false, 'alert-danger');
+                    show_messages("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", 'danger');
                 });
             }
         }else{
-            show_messages("{% trans 'One or more errors have been found in the form.' %}"+button, false, 'alert-danger');
+            show_messages("{% trans 'One or more errors have been found in the form.' %}", 'danger');
         }
 
     }
@@ -258,8 +263,8 @@ $(document).on("submit", "#page-video form", function (e) {
 });
 
 
-/*** refrech the player with modification and show the list of enrich ***/
-function refrech_list_and_player(data){
+/*** Refreshes the player with updates and shows the list of enrichments ***/
+function refresh_list_and_player(data){
     delete videojs.players['player_video']
     $("#form_chapter").html("");
     $('form#form_new').show();

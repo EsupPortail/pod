@@ -45,7 +45,6 @@ voir http://www.gnu.org/licenses/
         <!--FontAwesome for Bootstrap-->
         <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" />
         <!--link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" /-->
-        <script src="{% static 'JS/navigation.js' %}"></script>
         <script src="{% static 'JS/main.js' %}"></script>
         {% if not request.GET.is_iframe %}
             <script>
@@ -265,25 +264,24 @@ voir http://www.gnu.org/licenses/
                             <h3>{% trans 'Report this video' %}</h3>
                         </div>
                         <form method="post" action="{% url 'video_add_report' slug=video.slug %}" id="video_report_form" >
-                        {% csrf_token %}
-                        <div class="modal-body" >
-                            <div class="form-group">
-                            <label for="commentreport">{% trans 'Please, specify the problem:' %}</label><br/>
-                            <textarea rows="5" name="comment" id="commentreport" class="form-control" placeholder="message"></textarea>
+                            {% csrf_token %}
+                            <div class="modal-body" >
+                                <div class="form-group">
+                                    <label for="commentreport">{% trans 'Please, specify the problem:' %}</label><br/>
+                                    <textarea rows="5" name="comment" id="commentreport" class="form-control" placeholder="message"></textarea>
+                                </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
+                            <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
                                 <button type="submit" class="btn btn-default" >{% trans 'Send' %}</button>
-                        </div>
+                            </div>
                         </form>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
         </div>
         {%endif%}
 
-        <span id="show_messages" class="alert alert-danger collapse" role="alert" >
-            &nbsp;
-        </span>
+        <div id="show_messages"></div>
+
     </body>
 </html>

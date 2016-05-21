@@ -134,11 +134,9 @@ function manageResize() {
 }
 
 
-var preventUnloadPrompt;
 //var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 var num = 0;
 var name = '';
-var button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
 /*** For the form ***/;
 var video_duration = {{video.duration}};
 
@@ -151,10 +149,14 @@ $(document).on("reset", "#page-video form", function (e) {
     manageResize();
 });
 
-/*** Function for all buttons expect cancel
-    When the action is modify or new, all button in the first page of enrich are hide and the form is displayed.
-    When the action is delete, a request sent with the enrich id
-    When the action is save, a request sent with the form. Previous, there is two fucntions which verify fields ***/
+/*** Every button processing expects cancel
+
+    On modify or new action, all buttons in the first page of enrichment
+        are hidden and the form is displayed.
+    On delete action, a request is sent with the enrich id.
+    On save action, a request is sent with the form after a pair of
+        validation functions are runned.
+***/
 
 $(document).on("submit", "#page-video form", function (e) {
     $('form').show();
@@ -177,7 +179,7 @@ $(document).on("submit", "#page-video form", function (e) {
         }
         jqxhr.done(function(data){
             if(data.indexOf("form_enrich")==-1) {
-                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} "+button, true, 'alert-danger');
+                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
             } else {
                 get_form(data);
                 elt.addClass('info');
@@ -186,7 +188,7 @@ $(document).on("submit", "#page-video form", function (e) {
         });
         jqxhr.fail(function($xhr) {
             var data = $xhr.status+ " : " +$xhr.statusText;
-            show_messages("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%} "+button, false, 'alert-danger');
+            show_messages("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%}", 'danger');
             $('form.form_modif').show();
             $('form.form_delete').show();
             $('form#form_new').show();
@@ -201,14 +203,14 @@ $(document).on("submit", "#page-video form", function (e) {
             jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
             jqxhr.done(function(data){
                 if(data.list_enrich) {
-                    refrech_list_and_player(data);
+                    refresh_list_and_player(data);
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} "+button, true, 'alert-danger');
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
                 }
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error during deletion.' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}"+button, false, 'alert-danger');
+                show_messages("{% trans 'Error during deletion.' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", 'danger');
             });
         }
     }else if(action == "save"){
@@ -223,7 +225,7 @@ $(document).on("submit", "#page-video form", function (e) {
             msg += verify_end_start_items();
             msg += overlaptest();
             if(msg != "") {
-                show_messages(msg+button, false, 'alert-danger');
+                show_messages(msg, 'danger');
             } else {
                 var data_form = $( "form#form_enrich" ).serializeArray();
                 jqxhr = $.post(
@@ -236,21 +238,21 @@ $(document).on("submit", "#page-video form", function (e) {
                             //alert(data.errors);
                             get_form(data.form);
                         }else{
-                            refrech_list_and_player(data);
+                            refresh_list_and_player(data);
                             $(window).scrollTop(360);
-                            show_messages("{% trans 'Changes have been saved.' %}", false, 'alert-info');
+                            show_messages("{% trans 'Changes have been saved.' %}", 'info');
                         }
                     } else {
-                        show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} "+button, true, 'alert-danger');
+                        show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
                     }
                 });
                 jqxhr.fail(function($xhr) {
                     var data = $xhr.status+ " : " +$xhr.statusText;
-                    show_messages("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}"+button, false, 'alert-danger');
+                    show_messages("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", 'danger');
                 });
             }
         }else{
-            show_messages("{% trans 'One or more errors have been found in the form.' %}"+button, false, 'alert-danger');
+            show_messages("{% trans 'One or more errors have been found in the form.' %}", 'danger');
         }
     }
 
@@ -260,8 +262,8 @@ $(document).on("submit", "#page-video form", function (e) {
 $(document).on('change', '#page-video select#id_type', function() {
     enrich_type();
 });
-/*** refrech the player with modification and show the list of enrich ***/
-function refrech_list_and_player(data){
+/*** refreshes the player with modification and show the list of enrich ***/
+function refresh_list_and_player(data){
     delete videojs.players['player_video']
     $("#form_enrich").html("");
     $('form#form_new').show();
@@ -367,7 +369,7 @@ function verify_fields(){
         case "document":
             if($("#id_document_thumbnail_img").attr('src') == "/static/filer/icons/nofile_48x48.png"){ //check with id_document value
                 $("img#id_document_thumbnail_img")
-                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct document.' %} </span>")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please select a document.' %} </span>")
                     .parents('div.form-group').addClass('has-error');
             }
             break;

@@ -44,7 +44,6 @@ voir http://www.gnu.org/licenses/
         <script src="{{ STATIC_URL }}js/jquery.formset.js"></script>
 
 <script>
-var preventUnloadPrompt;
 var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
 
 var num=0;
@@ -92,8 +91,8 @@ jQuery(function($) {
     <button type="submit" class="btn btn-success" value="{% trans "Save" %}" name="action1">
         {% bootstrap_icon "save" %} {% trans "Save" %}
     </button>
-    <button type="submit" class="btn btn-success" value="{% trans "Save and back to previous page" %}" name="action2">
-        {% bootstrap_icon "save" %} {% trans "Save and back to previous page" %}
+    <button type="submit" class="btn btn-success" value="{% trans "Save and return to previous page" %}" name="action2">
+        {% bootstrap_icon "save" %} {% trans "Save and return to previous page" %}
     </button>
     <button type="submit" class="btn btn-success" value="{% trans "Save and see channel" %}" name="action3">
         {% bootstrap_icon "save" %} {% trans "Save and see channel" %}
@@ -173,8 +172,8 @@ jQuery(function($) {
     <button type="submit" class="btn btn-success" value="{% trans "Save" %}" name="action1">
         {% bootstrap_icon "save" %} {% trans "Save" %}
     </button>
-    <button type="submit" class="btn btn-success" value="{% trans "Save and back to previous page" %}" name="action2">
-        {% bootstrap_icon "save" %} {% trans "Save and back to previous page" %}
+    <button type="submit" class="btn btn-success" value="{% trans "Save and return to previous page" %}" name="action2">
+        {% bootstrap_icon "save" %} {% trans "Save and return to previous page" %}
     </button>
     <button type="submit" class="btn btn-success" value="{% trans "Save and see channel" %}" name="action3">
         {% bootstrap_icon "save" %} {% trans "Save and see channel" %}

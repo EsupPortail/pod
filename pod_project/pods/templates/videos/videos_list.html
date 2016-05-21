@@ -44,28 +44,34 @@ voir http://www.gnu.org/licenses/
                     <span class="time-icons">
                         <span class="time">{{ video.duration_in_time }}</span>
                         <span class="icons">
-                            {% if video.password or video.is_restricted %}
-                                <span title="verrouillée" class="glyphicon glyphicon-lock"></span>
+                            {% if video.is_restricted %}
+                                <span title="{% trans 'This content is only accessible to authenticated users.' %}" class="glyphicon glyphicon-log-in"></span>
+                            {% endif %}
+                            {% if video.password %}
+                                <span title="{% trans 'This content is password protected.' %}" class="glyphicon glyphicon-lock"></span>
+                            {% endif %}
+                            {% if video.is_richmedia %}
+                                <span title="{% trans 'This content has enrichments (files, web links, etc.).' %}" class="glyphicon glyphicon-briefcase"></span>
+                            {% endif %}
+                            {% if video.chapterpods_set.all %}
+                                <span title="{% trans 'This content is chaptered.' %}" class="glyphicon glyphicon-list"></span>
                             {% endif %}
                             {% with mediatype=video.get_mediatype|first %}
                                 {% if mediatype %}
                                   {% if mediatype == "video" %}
-                                      <span title="video" class="glyphicon glyphicon-film"></span>
+                                      <span title="{% trans 'Video content.' %}" class="glyphicon glyphicon-film"></span>
                                   {% endif %}
                                   {% if mediatype == "audio" %}
-                                      <span title="audio" class="glyphicon glyphicon-headphones"></span>
+                                      <span title="{% trans 'Audio content.' %}" class="glyphicon glyphicon-headphones"></span>
                                   {% endif %}
                                 {% endif %}
                             {% endwith %}
                             {% if request.user and request.user == video.owner %}
                                 {% if video.is_draft %}
-                                    <span title="en ligne" class="glyphicon glyphicon-circle"></span>
+                                    <span title="{% trans 'This content is offline (draft mode activated).' %}" class="glyphicon glyphicon-ban-circle"></span>
                                 {% else %}
-                                    <span title="en ligne" class="glyphicon glyphicon-ok-circle"></span>
+                                    <span title="{% trans 'This content is online (draft mode desactivated).' %}" class="glyphicon glyphicon-ok-circle"></span>
                                 {% endif %}
-                            {% endif %}
-                            {% if video.chapterpods_set.all or video.enrichpods_set.all %}
-                                <span title="chapitres" class="glyphicon glyphicon-list"></span>
                             {% endif %}
                         </span>
                     </span>

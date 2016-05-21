@@ -403,7 +403,7 @@ class Pod(Video):
                 'owner': u'%s' %self.owner.username,
                 'owner_full_name': u'%s' %self.owner.get_full_name(),
                 "date_added": u'%s' %self.date_added,
-                "date_evt": u'%s' %self.date_evt.strftime('%Y-%m-%dT%H:%M:%S') if self.date_evt else None, 
+                "date_evt": u'%s' %self.date_evt.strftime('%Y-%m-%dT%H:%M:%S') if self.date_evt else None,
                 "description": u'%s' %self.description,
                 "thumbnail": u'%s' %self.get_thumbnail_url(),
                 "duration": u'%s' %self.duration,
@@ -756,7 +756,7 @@ class EnrichPods(models.Model):
 
         elif (self.type == "document"):
             if(not self.document):
-                msg.append(_('Please enter a correct document.'))
+                msg.append(_('Please select a document.'))
 
         elif (self.type == "embed"):
             if(not self.embed):
