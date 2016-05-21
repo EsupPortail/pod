@@ -1076,7 +1076,7 @@ class Video_edit_testCase(TestCase):
         login = self.client.login(username='remi', password='hello')
         self.assertEqual(login, True)
         response = self.client.post('/video_edit/%s/' % pod.slug, {u'password': [u''], u'description': [u'<p>sdfsdf</p>\r\n'], u'title': [u'Bunny'], u'tags': [u''], u'action2': [u'Save and back to previous page'], u'date_evt': [
-                                    u''], u'video': [u''], u'date_added': [u'20/04/2015'], u'allow_downloading': [u'on'], u'type': [u'1'], u'referer': [
+                                    u''], u'cursus':0, u'main_lang':'en', u'video': [u''], u'date_added': [u'20/04/2015'], u'allow_downloading': [u'on'], u'type': [u'1'], u'referer': [
             u'/channels/']})
         self.assertEqual(response.status_code, 302)
         video = Pod.objects.get(id=1)
@@ -1094,7 +1094,7 @@ class Video_edit_testCase(TestCase):
         login = self.client.login(username='remi', password='hello')
         self.assertEqual(login, True)
         response = self.client.post('/video_edit/%s/' % pod.slug, {u'password': [u'b'], u'description': [u'<p>bbla</p>\r\n'], u'title': [u'Bunny'], u'tags': [u''], u'action3': [u'Save and watch the video'], u'date_evt': [
-                                    u''], u'video': [u''], u'date_added': [u'20/04/2015'], u'allow_downloading': [u'on'], u'type': [u'1']})
+                                    u''], u'cursus':0, u'main_lang':'en', u'video': [u''], u'date_added': [u'20/04/2015'], u'allow_downloading': [u'on'], u'type': [u'1']})
         self.assertEqual(response.status_code, 302)
         video = Pod.objects.get(id=1)
         self.assertEqual(video.password, "b")
@@ -1761,7 +1761,7 @@ class Video_search_videos(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['result']["hits"]["total"], 0)
 
-        response = self.client.get("/search/?selected_facets=type:Other") #test search filtre
+        response = self.client.get("/search/?q=Other") #test type filtre
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['result']["hits"]["total"], 1)
         self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")

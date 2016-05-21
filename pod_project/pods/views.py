@@ -159,9 +159,7 @@ def channel_edit(request, slug_c):
         request.session['filer_last_folder_id'] = folder.id
 
     channel = get_object_or_404(Channel, slug=slug_c)
-    if not request.user.is_superuser or channel.owner != request.user:
-        # return HttpResponseForbidden("<h1>Vous n'avez pas accès à cette
-        # ressource</h1>")
+    if request.user != channel.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this channel.'))
         raise PermissionDenied
