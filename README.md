@@ -27,7 +27,7 @@
 
 -------------------------
 
-> Documentation : [https://github.com/SemmLille/pod/wiki] (https://github.com/SemmLille/pod/wiki "documentation/wiki")
+> Documentation : [https://github.com/EsupPortail/pod/wiki] (https://github.com/EsupPortail/pod/wiki "documentation/wiki")
 
 -------------------------
 
