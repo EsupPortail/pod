@@ -340,7 +340,7 @@ var name = "";
         <div class="panel panel-warning">
             <div class="panel-heading">{% trans "Upload limit reached." %}</div>
             <div class="panel-body">
-            <p>{% blocktrans %}You have reached the {{ MAX_DAILY_USER_UPLOADS }} files per day upload limit.{% endblocktrans %}</p>
+            <p>{% blocktrans count MAX_DAILY_USER_UPLOADS as counter %}You have reached the {{ counter }} file per day upload limit.{% plural %}{{ counter }} files per day upload limit.{% endblocktrans %}</p>
             <p>{% trans "Please come back tomorrow!" %}</p>
             </div>
         </div>
