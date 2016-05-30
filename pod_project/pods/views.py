@@ -28,7 +28,9 @@ from pods.forms import EnrichPodsForm
 from pods.forms import SearchForm
 from pods.models import *
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
+# Replaced to allow JSON serialization of localized messages.
+from django.utils.translation import ugettext as _
+# from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.forms.models import inlineformset_factory
@@ -39,7 +41,7 @@ from string import replace
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template.loader import render_to_string
-from datetime import datetime
+from datetime import datetime, date
 from django.utils import formats
 from django.utils.http import urlquote
 from django.core.mail import EmailMultiAlternatives
@@ -52,6 +54,9 @@ from django.core.servers.basehttp import FileWrapper
 DEFAULT_PER_PAGE = 12
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
+
+referer = ''
+
 
 def get_pagination(page, paginator):
     try:
@@ -154,9 +159,7 @@ def channel_edit(request, slug_c):
         request.session['filer_last_folder_id'] = folder.id
 
     channel = get_object_or_404(Channel, slug=slug_c)
-    if not request.user.is_superuser or channel.owner != request.user:
-        # return HttpResponseForbidden("<h1>Vous n'avez pas accès à cette
-        # ressource</h1>")
+    if request.user != channel.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this channel.'))
         raise PermissionDenied
@@ -508,7 +511,7 @@ def video_add_favorite(request, slug):
             favorite.delete()
             msg = _(u'The video has been removed from your favorites.')
         if request.is_ajax():
-            some_data_to_dump = {'msg': "%s." % msg}
+            some_data_to_dump = {'msg': "%s" % msg}
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
         messages.add_message(request, messages.INFO, msg)
@@ -617,6 +620,9 @@ def video_notes(request, slug):
 @csrf_protect
 @login_required
 def video_edit(request, slug=None):
+
+    global referer
+
     # Add this to improve folder selection and view list
     if not request.session.get('filer_last_folder_id'):
         from filer.models import Folder
@@ -624,8 +630,9 @@ def video_edit(request, slug=None):
             owner=request.user, name=request.user.username)
         request.session['filer_last_folder_id'] = folder.id
 
-    video_form = PodForm(request)
-    video = None
+    if not request.POST:
+        referer = request.META.get('HTTP_REFERER', '/')
+
     if slug:
         video = get_object_or_404(Pod, slug=slug)
         if request.user != video.owner and not request.user.is_superuser:
@@ -633,10 +640,18 @@ def video_edit(request, slug=None):
                 request, messages.ERROR, _(u'You cannot edit this video.'))
             raise PermissionDenied
         video_form = PodForm(request, instance=video)
-
-    referer = request.META.get('HTTP_REFERER')
+    else:
+        if not request.user.is_superuser and settings.MAX_DAILY_USER_UPLOADS and Pod.objects.filter(
+                owner_id=request.user.id,
+                date_added=date.today()).count() >= settings.MAX_DAILY_USER_UPLOADS:
+            return render_to_response("videos/video_edit.html", {"referer": referer},
+                                      context_instance=RequestContext(request))
+        else:
+            video = None
+            video_form = PodForm(request)
 
     if request.POST:
+
         if video:
             video_form = PodForm(
                 request, request.POST, request.FILES, instance=video)
@@ -644,13 +659,17 @@ def video_edit(request, slug=None):
             video_form = PodForm(request, request.POST, request.FILES)
 
         if video_form.is_valid():
+
             vid = video_form.save(commit=False)
+
             if request.POST.get('owner') and request.POST.get('owner') != "":
                 vid.owner = video_form.cleaned_data['owner']
             else:
                 vid.owner = request.user
+
             if request.FILES:
                 vid.to_encode = True
+
             vid.save()
             # Without this next line the tags won't be saved.
             video_form.save_m2m()
@@ -659,17 +678,33 @@ def video_edit(request, slug=None):
             # Without this next line the tags does not appear in search engine
             vid.save()
 
-            referer = request.POST.get("referer")
             # go back
-            if request.POST.get("action2") and request.POST.get("referer"):
-                return HttpResponseRedirect("%s" % request.POST.get("referer"))
-            if request.POST.get("action3"):
-                return HttpResponseRedirect(reverse('pods.views.video', args=(vid.slug,)))
+            action = request.POST.get("user_choice")
+
+            if action == "1":
+                urlToLoad = reverse('pods.views.video_edit', args=(vid.slug,))
+            elif action == "2":
+                urlToLoad = "%s" % referer
             else:
-                return HttpResponseRedirect(reverse('pods.views.video_edit', args=(vid.slug,)))
+                urlToLoad = reverse('pods.views.video', args=(vid.slug,))
+
+            if request.is_ajax():
+                response_data = {}
+                response_data['success'] = True
+                response_data['url'] = "%s" % urlToLoad
+                return HttpResponse(json.dumps(response_data), content_type='application/json')
+            else:
+                return HttpResponseRedirect(urlToLoad)
+
         else:
-            messages.add_message(
-                request, messages.ERROR, _(u'One or more errors have been found in the form.'))
+            if request.is_ajax():
+                response_data = {}
+                response_data['success'] = False
+                response_data['message'] = _(u'One or more errors have been found in the form.')
+                return HttpResponse(json.dumps(response_data), content_type='application/json')
+            else:
+                messages.add_message(
+                    request, messages.ERROR, _(u'One or more errors have been found in the form.'))
 
     video_ext_accept = replace('|'.join(settings.VIDEO_EXT_ACCEPT), ".", "")
     video_ext_accept_text = replace(', '.join(settings.VIDEO_EXT_ACCEPT), ".", "").upper()
@@ -1502,8 +1537,8 @@ def search_videos(request):
         query = {
           "multi_match" : {
             "query":    "%s" %search_word,
-            "fields": [ "_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1", 
-                        "contributors^0.6", "chapters.title^0.5", "enrichments.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6" 
+            "fields": [ "_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1",
+                        "contributors^0.6", "chapters.title^0.5", "enrichments.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6"
                     ]
           }
         }
@@ -1550,7 +1585,7 @@ def search_videos(request):
     for attr in aggsAttrs:
         bodysearch["aggs"][attr.replace(".","_")] = {"terms": {"field": attr+".raw", "size": 5, "order" : { "_count" : "asc" }}}
 
-    #add cursus and main_lang 'cursus', 'main_lang', 
+    #add cursus and main_lang 'cursus', 'main_lang',
     bodysearch["aggs"]['cursus'] = {"terms": {"field": "cursus", "size": 5, "order" : { "_count" : "asc" }}}
     bodysearch["aggs"]['main_lang'] = {"terms": {"field": "main_lang", "size": 5, "order" : { "_count" : "asc" }}}
 

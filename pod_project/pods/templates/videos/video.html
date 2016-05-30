@@ -37,18 +37,16 @@ voir http://www.gnu.org/licenses/
             var jqxhr = $.post( $(this).attr("action"), {"comment":comment });
             jqxhr.done(function(data){
                 if(data.msg) {
-                    button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
-                    show_messages(data.msg+button, false, 'alert-info');
+                    show_messages(data.msg, 'info');
                     $("#button_video_report").attr('disabled','disabled');
                     $("#mark-as-report").attr('style','color: #ee7d19');
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'alert-danger');
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", 'danger', true);
                 }
             });
             jqxhr.fail(function($xhr) {
                 var data = $xhr.status+ " : " +$xhr.statusText;
-                button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
-                show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}"+button, false, 'alert-danger');
+                show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}", 'danger');
             });
             $('form#video_report_form').show();
             $('#modal_report_form').modal('hide');
@@ -60,7 +58,7 @@ voir http://www.gnu.org/licenses/
         return false;
     });
 
-$(document).on('click', 'button#button_video_favorite', function (event) {
+$(document).on('click', '#button_video_favorite', function (event) {
     event.preventDefault();
     if($( "#video_favorite_form" ).length==0){
         alert($(this).children('span.sr-only').text());
@@ -72,10 +70,9 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
             $( "#video_favorite_form" ).serialize(),
             function(data) {
                 if(data.msg) {
-                    button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
-                    $("#show_messages").html(data.msg+button, false, 'alert-info').fadeIn();
+                    show_messages(data.msg, 'info');
                 } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", true, 'alert-danger');
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", 'danger', true);
                 }
                 if(spanchild.attr('id')=="fav") spanchild.attr('id', 'mark-as-fav');
                 else spanchild.attr('id', 'fav');
@@ -94,8 +91,7 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
             });
         jqxhr.fail(function(data) {
             var data = $xhr.status+ " : " +$xhr.statusText;
-            button='<br/><br/><input type="button" value="{% trans 'Close' %}" id="close_messages" class="btn btn-info btn-sm">';
-            show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}"+button, false, 'alert-danger');
+            show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}", 'danger');
         });
         } else {
             alert(expiredsession);
@@ -145,9 +141,6 @@ $(document).on('click', 'button#button_video_favorite', function (event) {
 {% block mainToolbar %}{% endblock mainToolbar %}
 
 {% block bootstrap3_content %}
-    <span id="show_messages" class="alert alert-info collapse" role="alert" >
-            &nbsp;
-    </span>
     <article id="page-video" class="container{% if request.GET.is_iframe %} embed{% endif %}" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
         {% if not request.GET.is_iframe %}
             <ol class="breadcrumb">

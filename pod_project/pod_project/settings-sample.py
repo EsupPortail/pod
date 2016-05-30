@@ -210,12 +210,32 @@ WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">'
 #
 MAX_UPLOAD_FILE_SIZE = "1 Go"
 
+##
+# Nombre maxi de fichiers téléversables par utilisateur / jour :
+#
+#   - ce paramètre est un entier, la valeur 0 supprime toute limite ;
+#   - ne s'applique pas aux super-utilisateurs.
+#
+#
+MAX_DAILY_USER_UPLOADS = 0
+
+
+##
+# Activation du téléversement asynchrone des fichiers à encoder :
+#
+#   - ce paramètre est un entier ;
+#   - activation = 1, désactivation = 0 ;
+#   - permet d'obtenir la barre de progression de téléversement.
+#
+#
+USE_XHR_FORM_UPLOAD = 1
+
 
 # Paramètres des templates
 TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
     os.path.join(BASE_DIR, 'core', 'templates'),
     os.path.join(BASE_DIR, 'core', 'templates', 'flatpages'),
-    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -261,11 +281,13 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'LOGO_PLAYER',
     'LOGO_SITE',
     'MAX_UPLOAD_FILE_SIZE',
+    'MAX_DAILY_USER_UPLOADS',
     'SERV_LOGO',
     'TEMPLATE_CUSTOM',
     'TEMPLATE_THEME',
     'TITLE_ETB',
     'TITLE_SITE',
+    'USE_XHR_FORM_UPLOAD',
     'WEBTV'
 )
 
