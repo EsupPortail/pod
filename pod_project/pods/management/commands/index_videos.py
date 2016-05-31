@@ -18,7 +18,18 @@ class Command(BaseCommand):
 		es = Elasticsearch(ES_URL)
 		if args:
 			if args[0]=='__ALL__':
-				delete = es.delete_by_query(index="pod", doc_type='pod', body={"query":{"match_all":{}}})
+				delete = es.indices.delete(index='pod', ignore=[400, 404])
+				#delete = es.delete_by_query(index="pod", doc_type='pod', body={"query":{"match_all":{}}})
+				json_data = open('pods/search_template.json')   
+				es_template = json.load(json_data)
+				try:
+				    create = es.indices.create(index='pod', body=es_template) #ignore=[400, 404]
+				except TransportError as e:
+			            # (400, u'IndexAlreadyExistsException[[pod] already exists]')
+				    if e.status_code==400:
+				        print "l'index Pod est existant : %s" %e.error
+			            else:
+				        print "Une erreur est survenue lors de la creation de l'index : %s-%s" %( e.status_code, e.error)
 				from pods.views import VIDEOS
 				for pod in VIDEOS:
 					res = es.index(index="pod", doc_type='pod', id=pod.id, body=pod.get_json_to_index(), refresh=True)
