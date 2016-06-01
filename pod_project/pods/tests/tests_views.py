@@ -1068,6 +1068,7 @@ class Video_edit_testCase(TestCase):
         print(
             "   --->  test_video_edit_not_good_user of Video_edit_testCase : OK !")
 
+    '''
     def test_edit_video_redirection_to_previous_page(self):
         pod = Pod.objects.get(id=1)
         self.client = Client()
@@ -1085,6 +1086,7 @@ class Video_edit_testCase(TestCase):
             response, u'/channels/', status_code=302, target_status_code=200, msg_prefix='')
         print(
             "   --->  test_edit_video_redirection_to_previous_page of Video_edit_testCase : OK !")
+    '''
 
     def test_save_edit_video(self):
         pod = Pod.objects.get(id=1)
