@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-05-19 16:18+0200\n"
-"PO-Revision-Date: 2016-05-19 16:21+0200\n"
+"PO-Revision-Date: 2016-05-30 14:45+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2830,11 +2830,11 @@ msgstr "Limite de téléversement atteinte."
 
 #: pods/templates/videos/video_edit.html:343
 #, python-format
-msgid ""
-"You have reached the %(MAX_DAILY_USER_UPLOADS)s files per day upload limit."
-msgstr ""
-"Vous avez atteint la limite de %(MAX_DAILY_USER_UPLOADS)s téléversements par "
-"jour."
+msgid "You have reached the %(counter)s file per day upload limit."
+msgid_plural "You have reached the %(counter)s files per day upload limit."
+msgstr[0] "Vous avez atteint la limite de %(counter)s téléversement par jour."
+msgstr[1] "Vous avez atteint la limite de %(counter)s téléversements par jour."
+
 
 #: pods/templates/videos/video_edit.html:344
 msgid "Please come back tomorrow!"
