@@ -3,9 +3,6 @@
 ![Pod, plateforme de gestion de vidéo](http://pod.univ-lille1.fr/static/images/share.png "Pod, plateforme de gestion de vidéo")        
 ![Esup Portail](https://www.esup-portail.org/sites/esup-portail.org/files/logo-esup%2Baccroche_2.png "Esup Portail")
 
-# Pod
-=======
-
 > La plateforme Pod, développée et déployée par l'université de Lille, sciences et technologies, est maintenu et promu par le consortium Esup Portail.
 
 > Elle a pour objectif de faciliter la mise à disposition de vidéos et de ce fait, d'encourager l'utilisation de celles-ci dans le cadre de l'enseignement et la recherche.
@@ -35,6 +32,9 @@
 -------------------------
 
 > Avec la participation de :
+
 >  ![Université de Lille, Sciences et technologies](http://www.univ-lille1.fr/digitalAssets/38/38040_logo-trans.png "Université de Lille, Sciences et technologies")
+
 >  [UNR Nord pas de calais] (http://www.unr-npdc.org/) ![UNR Nord pas de calais] (http://www.unr-npdc.org/sites/www.unr-npdc.org/themes/unrnpdc/img/logo_unr.gif "UNR Nord pas de calais")
+
 >  [Ministère de l'éducation nationale, de l'enseignement supérieur et de la recherche](http://www.enseignementsup-recherche.gouv.fr/) ![ministère de l'éducation nationale, de l'enseignement supérieur et de la recherche](http://cache.media.enseignementsup-recherche.gouv.fr/image/Global/16/8/Logo_MENESR_312537_313168.jpg "ministère de l'éducation nationale, de l'enseignement supérieur et de la recherche")
