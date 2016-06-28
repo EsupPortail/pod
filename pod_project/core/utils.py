@@ -49,6 +49,14 @@ DEBUG = getattr(settings, 'DEBUG', True)
 ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
 ENCODE_WAV=getattr(settings, 'ENCODE_WAV', True)
 
+ENCODE_VIDEO_CMD=getattr(settings, 'ENCODE_VIDEO_CMD', "%(ffprobe)s -v quiet -show_format -show_streams -print_format json -i %(src)s")
+ADD_THUMBNAILS_CMD=getattr(settings, 'ADD_THUMBNAILS_CMD', "%(ffmpeg)s -i \"%(src)s\" -vf fps=\"fps=1/%(thumbnail)s,scale=%(scale)s\" -an -vsync 0 -threads 0 -f image2 -y %(out)s_%(num)s.png")
+ADD_OVERVIEW_CMD=getattr(settings, 'ADD_OVERVIEW_CMD', "%(ffmpeg)s -i \"%(src)s\" -vf \"thumbnail=%(thumbnail)s,scale=%(scale)s,tile=100x1:nb_frames=100:padding=0:margin=0\" -an -vsync 0 -threads 0 -y %(out)s")
+ENCODE_MP4_CMD=getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ar %(ar)s -ac 2 -b:a %(ba)s -movflags faststart -y %(out)s")
+ENCODE_WEBM_CMD=getattr(settings, 'ENCODE_WEBM_CMD', "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s")
+ENCODE_MP3_CMD=getattr(settings, 'ENCODE_MP3_CMD', "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s")
+ENCODE_WAV_CMD=getattr(settings, 'ENCODE_WAV_CMD', "%(ffmpeg)s -i %(src)s -ar %(ar)s -ab %(ab)s -f wav -threads 0 -y %(out)s")
+
 log = logging.getLogger(__name__)
 
 
@@ -75,7 +83,7 @@ def encode_video(video_to_encode):
         if DEBUG:
             print "get video data"
         # GET VIDEO DATA
-        command = "%(ffprobe)s -v quiet -show_format -show_streams -print_format json -i %(src)s " % {  # add -count_frames to get nb_read_frames but it's quite long
+        command = ENCODE_VIDEO_CMD % {  # add -count_frames to get nb_read_frames but it's quite long
             'ffprobe': FFPROBE,
             'src': video_to_encode.video.path,
         }
@@ -339,9 +347,14 @@ def add_thumbnails(video_id, in_w, in_h, folder):
     tempfile = NamedTemporaryFile()
     scale = get_scale(in_w, in_h, DEFAULT_THUMBNAIL_OUT_SIZE_HEIGHT)
     thumbnails = int(video.duration / 3)
-    #com = "%s -i \"%s\" -vf \"thumbnail=%s,scale=%s\" -an -vsync 0 -threads 0 -y %s_%s.jpg" %(FFMPEG, video.video.path, thumbnails, scale, tempfile.name, "%d")
-    com = "%s -i \"%s\" -vf fps=\"fps=1/%s,scale=%s\" -an -vsync 0 -threads 0 -f image2 -y %s_%s.png" % (
-        FFMPEG, video.video.path, thumbnails, scale, tempfile.name, "%d")
+    com = ADD_THUMBNAILS_CMD % {
+        'ffmpeg': FFMPEG,
+        'src': video.video.path,
+        'thumbnail': thumbnails,
+        'scale': scale,
+        'out': tempfile.name,
+        'num': "%d"
+    }
     if DEBUG:
         print "%s" % com
     thumbresult = commands.getoutput(com)
@@ -402,8 +415,13 @@ def add_overview(video_id, in_w, in_h, frames):
     overviewurl = os.path.join(
         VIDEOS_DIR, video.owner.username, "%s" % video.id, "overview.jpg")
 
-    com = "%s -i \"%s\" -vf \"thumbnail=%s,scale=%s,tile=100x1:nb_frames=100:padding=0:margin=0\" -an -vsync 0 -threads 0 -y %s" % (
-        FFMPEG, video.video.path, thumbnails, scale, overviewfilename)
+    com = ADD_OVERVIEW_CMD % {
+        'ffmpeg': FFMPEG,
+        'src': video.video.path,
+        'thumbnail': thumbnails,
+        'scale': scale,
+        'out': overviewfilename
+    }
     if DEBUG:
         print "%s" % com
     overviewresult = commands.getoutput(com)
@@ -456,7 +474,7 @@ def encode_mp4(video_id, in_w, in_h, bufsize, in_ar, encod_video, videofilename,
     video.save()
     #video.infoVideo +=  "\nSTART ENCOD_VIDEO MP4 %s - %s - %s - %s" %(encod_video.output_height, bufsize, scale, time.ctime())
 
-    com = "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ar %(ar)s -ac 2 -b:a %(ba)s -movflags faststart -y %(out)s" % {
+    com = ENCODE_MP4_CMD % {
         'ffmpeg': FFMPEG,
         'src': video.video.path,
         'bv': encod_video.bitrate_video,
@@ -523,8 +541,7 @@ def encode_webm(video_id, videofilename, encod_video, bufsize):
     webmurl = os.path.join(VIDEOS_DIR, video.owner.username, "%s" % video.id,
                            "video_%s_%s.webm" % (video.id, encod_video.output_height))
 
-    #com = "%(ffmpeg)s -i %(src)s -c:v libvpx -b:v %(bv)s -crf 25 -c:a libvorbis -b:a %(ba)s -threads 0 -y %(out)s"
-    com = "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s" % {
+    com = ENCODE_WEBM_CMD % {
         'ffmpeg': FFMPEG,
         'src': videofilename,
         'bv': encod_video.bitrate_video,
@@ -584,7 +601,7 @@ def encode_mp3(video_id, audiofilename, audiourl, encod_audio, in_ar):
     addInfoVideo(video, "\nStart ENCOD_VIDEO MP3 %s" % (time.ctime()))
     video.save()
 
-    com = "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s" % {
+    com = ENCODE_MP3_CMD % {
         'ffmpeg': FFMPEG,
         'src': video.video.path,
         'ar': in_ar,
@@ -643,8 +660,7 @@ def encode_wav(video_id, audiofilename, in_ar, encod_audio):
                                "audio_%s_%s.wav" % (video.id, encod_audio.output_height))
     wavurl = os.path.join(VIDEOS_DIR, video.owner.username, "%s" % video.id,
                           "audio_%s_%s.wav" % (video.id, encod_audio.output_height))
-    # ffmpeg -i monMorceau.mp3 monMorceau.wav
-    com = "%(ffmpeg)s -i %(src)s -ar %(ar)s -ab %(ab)s -f wav -threads 0 -y %(out)s" % {
+    com = ENCODE_WAV_CMD % {
         'ffmpeg': FFMPEG,
         'src': audiofilename,
         'ar': in_ar,
