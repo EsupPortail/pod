@@ -311,6 +311,9 @@ THUMBNAIL_PROCESSORS = (
 # Paramètres vidéo
 FFMPEG = '/usr/local/ffmpeg/ffmpeg'
 FFPROBE = '/usr/local/ffmpeg/ffprobe'
+# Enable low priority for performance
+# FFMPEG = 'nice -19  /usr/local/ffmpeg/ffmpeg'
+# FFPROBE = 'nice -19  /usr/local/ffmpeg/ffprobe'
 VIDEO_EXT_ACCEPT = (
     '.3gp',
     '.avi',
@@ -332,6 +335,15 @@ VIDEO_EXT_ACCEPT = (
 )
 ENCODE_WEBM = True
 ENCODE_WAV = True
+
+# Options to override encoding parameters
+#ENCODE_VIDEO_CMD = "%(ffprobe)s -v quiet -show_format -show_streams -print_format json -i %(src)s"
+#ADD_THUMBNAILS_CMD = "%(ffmpeg)s -i \"%(src)s\" -vf fps=\"fps=1/%(thumbnail)s,scale=%(scale)s\" -an -vsync 0 -threads 0 -f image2 -y %(out)s_%(num)s.png"
+#ADD_OVERVIEW_CMD = "%(ffmpeg)s -i \"%(src)s\" -vf \"thumbnail=%(thumbnail)s,scale=%(scale)s,tile=100x1:nb_frames=100:padding=0:margin=0\" -an -vsync 0 -threads 0 -y %(out)s"
+#ENCODE_MP4_CMD = "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ar %(ar)s -ac 2 -b:a %(ba)s -movflags faststart -y %(out)s"
+#ENCODE_WEBM_CMD = "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s"
+#ENCODE_MP3_CMD = "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s"
+#ENCODE_WAV_CMD = "%(ffmpeg)s -i %(src)s -ar %(ar)s -ab %(ab)s -f wav -threads 0 -y %(out)s"
 
 # AUDIOVIDEOCOURS
 SKIP_FIRST_IMAGE = True
