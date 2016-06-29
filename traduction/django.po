@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-19 16:18+0200\n"
-"PO-Revision-Date: 2016-05-30 14:45+0200\n"
+"POT-Creation-Date: 2016-06-29 11:42+0200\n"
+"PO-Revision-Date: 2016-06-29 11:48+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.8\n"
 
 #: core/forms.py:63
 msgid "Please indicate the result of the following operation hereunder"
@@ -513,7 +513,7 @@ msgstr "Enregistrer"
 
 #: core/templates/base.html:215 core/templates/registration/login.html:116
 #: core/templates/userProfile.html:102
-#: pods/templates/channels/my_channels.html:72
+#: pods/templates/channels/my_channels.html:76
 #: pods/templates/videos/my_videos.html:64
 #: pods/templates/videos/video_chapter.html:380
 #: pods/templates/videos/video_completion.html:519
@@ -574,8 +574,8 @@ msgstr "Envoyer"
 #: pods/templates/mediacourses/mediacourses_add.html:52
 #: pods/templates/videos/video_chapter.html:258
 #: pods/templates/videos/video_edit.html:325
-#: pods/templates/videos/video_enrich.html:255 pods/views.py:193
-#: pods/views.py:458 pods/views.py:705 pods/views.py:709 pods/views.py:1650
+#: pods/templates/videos/video_enrich.html:255 pods/views.py:191
+#: pods/views.py:456 pods/views.py:703 pods/views.py:707 pods/views.py:1648
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 
@@ -629,7 +629,6 @@ msgstr "Connexion"
 #: pods/templates/channels/channels.html:31
 #: pods/templates/channels/channels.html:39
 #: pods/templates/channels/channels.html:41
-#: pods/templates/channels/my_channels.html:52
 #: pods/templates/videos/video.html:150
 msgid "Channels"
 msgstr "Chaînes"
@@ -1994,8 +1993,10 @@ msgstr[0] "%(counter)s thème"
 msgstr[1] "%(counter)s thèmes"
 
 #: pods/templates/channels/channel.html:87
-#: pods/templates/channels/channels.html:63 pods/templates/maintoolbar.html:46
-#: pods/templates/owners/owners.html:66 pods/templates/types/types.html:66
+#: pods/templates/channels/channels.html:63
+#: pods/templates/channels/my_channels.html:55
+#: pods/templates/maintoolbar.html:46 pods/templates/owners/owners.html:66
+#: pods/templates/types/types.html:66
 #, python-format
 msgid "%(counter)s video"
 msgid_plural "%(counter)s videos"
@@ -2042,25 +2043,25 @@ msgid "Add"
 msgstr "Ajouter"
 
 #: pods/templates/channels/channels.html:60
+#: pods/templates/channels/my_channels.html:52
 #, python-format
 msgid "%(counter)s channel"
 msgid_plural "%(counter)s channels"
 msgstr[0] "%(counter)s chaîne"
 msgstr[1] "%(counter)s chaînes"
 
-#: pods/templates/channels/my_channels.html:51
+#: pods/templates/channels/my_channels.html:65
+msgid "Edit your channels"
+msgstr "Modifier vos chaînes"
+
+#: pods/templates/channels/my_channels.html:77
+msgid "Click the pencil to edit the channel."
+msgstr "Cliquez sur le crayon pour modifier la chaîne."
+
 #: pods/templates/disciplines/disciplines.html:73
 #: pods/templates/favorites/my_favorites.html:39
 msgid "videos"
 msgstr "vidéos"
-
-#: pods/templates/channels/my_channels.html:61
-msgid "Edit your channels"
-msgstr "Modifier vos chaînes"
-
-#: pods/templates/channels/my_channels.html:73
-msgid "Click the pencil to edit the channel."
-msgstr "Cliquez sur le crayon pour modifier la chaîne."
 
 #: pods/templates/favorites/my_favorites.html:4
 #: pods/templates/favorites/my_favorites.html:10
@@ -2536,8 +2537,8 @@ msgid "No data could be stored."
 msgstr "Aucune donnée n'a pu être enregistrée."
 
 #: pods/templates/videos/video_chapter.html:274
-#: pods/templates/videos/video_enrich.html:275 pods/views.py:183
-#: pods/views.py:420 pods/views.py:612 pods/views.py:614 pods/views.py:679
+#: pods/templates/videos/video_enrich.html:275 pods/views.py:181
+#: pods/views.py:418 pods/views.py:610 pods/views.py:612 pods/views.py:677
 msgid "The changes have been saved."
 msgstr "Les modifications ont été enregistrées."
 
@@ -2835,7 +2836,6 @@ msgid_plural "You have reached the %(counter)s files per day upload limit."
 msgstr[0] "Vous avez atteint la limite de %(counter)s téléversement par jour."
 msgstr[1] "Vous avez atteint la limite de %(counter)s téléversements par jour."
 
-
 #: pods/templates/videos/video_edit.html:344
 msgid "Please come back tomorrow!"
 msgstr "Merci de revenir demain !"
@@ -3054,35 +3054,35 @@ msgstr "Nouveau"
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction disponible --"
 
-#: pods/views.py:166
+#: pods/views.py:164
 msgid "You cannot edit this channel."
 msgstr "Vous ne pouvez pas modifier cette chaîne."
 
-#: pods/views.py:405 pods/views.py:1437
+#: pods/views.py:403 pods/views.py:1435
 msgid "You cannot watch this video."
 msgstr "Vous ne pouvez pas regarder cette vidéo."
 
-#: pods/views.py:449
+#: pods/views.py:447
 msgid "Incorrect password"
 msgstr "Mot de passe incorrect"
 
-#: pods/views.py:509
+#: pods/views.py:507
 msgid "The video has been added to your favorites."
 msgstr "La vidéo a été ajoutée à vos vidéos favorites."
 
-#: pods/views.py:514
+#: pods/views.py:512
 msgid "The video has been removed from your favorites."
 msgstr "La vidéo a été supprimée de vos vidéos favorites."
 
-#: pods/views.py:523 pods/views.py:596 pods/views.py:618
+#: pods/views.py:521 pods/views.py:594 pods/views.py:616
 msgid "You cannot acces this page."
 msgstr "Vous ne pouvez pas accéder à cette page."
 
-#: pods/views.py:534
+#: pods/views.py:532
 msgid "Video report confirmation"
 msgstr "Confirmation de signalement de vidéo"
 
-#: pods/views.py:536
+#: pods/views.py:534
 #, python-format
 msgid ""
 "\n"
@@ -3101,7 +3101,7 @@ msgstr ""
 "Cordialement.\n"
 "L'équipe Pod."
 
-#: pods/views.py:541
+#: pods/views.py:539
 #, python-format
 msgid ""
 "<p>You just report the video: \"%(title)s\" with this comment:<br/> "
@@ -3112,11 +3112,11 @@ msgstr ""
 "<br/> \"%(comment)s\".</p><p>Un courriel vient de nous être envoyé et votre "
 "signalement enregistré.</p><p>Cordialement</p><p>L'équipe Pod</p>"
 
-#: pods/views.py:551
+#: pods/views.py:549
 msgid "A video has just been reported."
 msgstr "Une vidéo vient d'être signalée."
 
-#: pods/views.py:553
+#: pods/views.py:551
 #, python-format
 msgid ""
 "The video intitled \"%(video_title)s\" has just been reported by "
@@ -3140,7 +3140,7 @@ msgstr ""
 "%(owner_email)s>.\n"
 "Vidéo mise en ligne le : %(video_date_added)s.\n"
 
-#: pods/views.py:567
+#: pods/views.py:565
 #, python-format
 msgid ""
 "<p>The video intitled \"%(video_title)s\" has just been reported by "
@@ -3161,58 +3161,58 @@ msgstr ""
 "href=\"mailto:%(owner_email)s\">%(owner_email)s&gt;</a>.<br/>Vidéo mise en "
 "ligne le : %(video_date_added)s.</p>"
 
-#: pods/views.py:587
+#: pods/views.py:585
 msgid "This video has been reported."
 msgstr "La vidéo a été signalée."
 
-#: pods/views.py:642
+#: pods/views.py:640
 msgid "You cannot edit this video."
 msgstr "Vous ne pouvez pas éditer cette vidéo."
 
-#: pods/views.py:737 pods/views.py:771 pods/views.py:905 pods/views.py:1036
+#: pods/views.py:735 pods/views.py:769 pods/views.py:903 pods/views.py:1034
 msgid "You cannot complement this video."
 msgstr "Vous ne pouvez pas compléter cette vidéo."
 
-#: pods/views.py:829 pods/views.py:962 pods/views.py:1095
+#: pods/views.py:827 pods/views.py:960 pods/views.py:1093
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs."
 
-#: pods/views.py:1171
+#: pods/views.py:1169
 msgid "You cannot chapter this video."
 msgstr "Vous ne pouvez pas chapitrer cette vidéo."
 
-#: pods/views.py:1217 pods/views.py:1335
+#: pods/views.py:1215 pods/views.py:1333
 msgid "Please correct errors."
 msgstr "Veuillez corriger les erreurs."
 
-#: pods/views.py:1288
+#: pods/views.py:1286
 msgid "You cannot enrich this video."
 msgstr "Vous ne pouvez pas enrichir cette vidéo."
 
-#: pods/views.py:1399
+#: pods/views.py:1397
 msgid "You cannot delete this video."
 msgstr "Vous ne pouvez pas supprimer cette vidéo."
 
-#: pods/views.py:1415
+#: pods/views.py:1413
 msgid "The video has been deleted."
 msgstr "La vidéo a été supprimée."
 
-#: pods/views.py:1622
+#: pods/views.py:1620
 msgid "Mediapath should be indicated."
 msgstr "MediaPath doit être indiqué."
 
-#: pods/views.py:1646
+#: pods/views.py:1644
 msgid ""
 "Your publication is saved. Adding it to your videos will be in a few minutes."
 msgstr ""
 "Votre publication est enregistrée. Son ajout à vos vidéos se fera dans "
 "quelques minutes."
 
-#: pods/views.py:1703
+#: pods/views.py:1701
 msgid "Recording"
 msgstr "En cours d'enregistrement"
 
-#: pods/views.py:1705
+#: pods/views.py:1703
 #, python-format
 msgid ""
 "Hello, \n"
@@ -3238,7 +3238,7 @@ msgstr ""
 "\n"
 "Cordialement"
 
-#: pods/views.py:1709
+#: pods/views.py:1707
 #, python-format
 msgid ""
 "Hello, <p>a new mediacourse has just be added on %(title_site)s from the "
@@ -3252,6 +3252,6 @@ msgstr ""
 "%(link_url)s</a><br/><i>Si le lien n'est pas actif, il faut le copier-coller "
 "dans la barre d'adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
-#: pods/views.py:1716
+#: pods/views.py:1714
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
