@@ -47,10 +47,14 @@ voir http://www.gnu.org/licenses/
 			</form>
 		</div>
 		{% block stats %}
-		<div class="col-sm-4  text-right">
-			<div class="results">{{video_count}} {% trans "videos" %}</div>
-			<div class="resultschannel">{{channels.paginator.count}} {% trans "Channels"%}</div>
-		</div>
+        <div class="col-sm-4 text-right">
+            <div class="resultschannel">
+                {% blocktrans count counter=channels.paginator.count %}{{ counter }} channel{% plural %}{{ counter }} channels{% endblocktrans %}
+            </div>
+            <div class="results">
+                {% blocktrans count counter=video_count %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}
+            </div>
+        </div>
 		{% endblock stats %}
 	</div>
 </div>
