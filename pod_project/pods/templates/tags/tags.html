@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -25,7 +25,7 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{{ block.super }}{% trans 'Tags' %}{% endblock %}
 
 {% block bootstrap3_extra_head %}
-    <link rel="stylesheet" type="text/css" href="{% static "JS/jqcloud/jqcloud.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "js/jqcloud/jqcloud.css" %}" />
     <style type="text/css">
         #wordcloud {
             margin: 30px auto;
@@ -45,7 +45,7 @@ voir http://www.gnu.org/licenses/
         }
     </style>
 
-    <script type="text/javascript" src="{% static 'JS/jqcloud/jqcloud-1.0.4.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jqcloud/jqcloud-1.0.4.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             {% get_tagcloud as tagscloud %}
@@ -87,7 +87,7 @@ voir http://www.gnu.org/licenses/
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
 	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
-	<meta property="og:description" content="" /> 
+	<meta property="og:description" content="" />
 	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
