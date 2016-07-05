@@ -48,7 +48,6 @@ INSTALLED_APPS = (
     'django_cas_gateway',
     'taggit',
     'taggit_templatetags',
-    'jquery',
     'djangoformsetjs',
     'captcha',
     'bootstrap3',
@@ -257,7 +256,7 @@ FMS_LIVE_URL = 'rtmp://fms.univ.fr'
 FMS_ROOT_URL = 'http://root.univ.fr'
 
 BOOTSTRAP3 = {
-    'jquery_url': os.path.join(STATIC_URL, 'js/jquery.js'),
+    'jquery_url': os.path.join(STATIC_URL, 'js/jquery.min.js'),
     'base_url': os.path.join(STATIC_URL, 'bootstrap/'),
     'css_url': None,
     'theme_url': os.path.join(STATIC_URL, 'css/pod.css'),
