@@ -477,6 +477,11 @@ class EncodingPods(models.Model):
     encodingFormat = models.CharField(
         _('Format'), max_length=12, choices=FORMAT_CHOICES, default="video/mp4")
 
+    @property
+    def owner(self):
+        """ return video owner """
+        return self.video.owner
+
     class Meta:
         verbose_name = _("encoding")
         verbose_name_plural = _("encodings")

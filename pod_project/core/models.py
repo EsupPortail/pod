@@ -135,12 +135,14 @@ def create_user_profile(sender, instance, created, **kwargs):
             print msg
 
 def get_storage_path(instance, filename):
+    """ Get the storage path. Instance needs to implement owner """
     fname, dot, extension = filename.rpartition('.')
+    username = instance.owner.username
     try:
-        i = fname.index("/")
-        return os.path.join(VIDEOS_DIR, instance.owner.username, '%s/%s.%s' % (os.path.dirname(fname), slugify(os.path.basename(fname)), extension))
+        fname.index("/")
+        return os.path.join(VIDEOS_DIR, username, '%s/%s.%s' % (os.path.dirname(fname), slugify(os.path.basename(fname)), extension))
     except:
-        return os.path.join(VIDEOS_DIR, instance.owner.username, '%s.%s' % (slugify(fname), extension))
+        return os.path.join(VIDEOS_DIR, username, '%s.%s' % (slugify(fname), extension))
 
 
 @python_2_unicode_compatible
