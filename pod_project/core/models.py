@@ -188,7 +188,7 @@ class Video(models.Model):
         _('Overview'), null=True, upload_to=get_storage_path, blank=True, max_length=255, editable=False)
 
     duration = models.IntegerField(
-        _('Duration'), max_length=12, default=0, editable=False, blank=True)
+        _('Duration'), default=0, editable=False, blank=True)
     infoVideo = models.TextField(null=True, blank=True, editable=False)
 
     class Meta:
@@ -245,7 +245,7 @@ class EncodingType(models.Model):
         (1080, '1080'),
     )
     output_height = models.IntegerField(
-        _('output_height'), max_length=4, choices=HEIGHT_CHOICES, default=240)
+        _('output_height'), choices=HEIGHT_CHOICES, default=240)
     TYPE_CHOICES = (
         ("audio", 'Audio'),
         ("video", 'Video'),

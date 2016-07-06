@@ -73,7 +73,7 @@ class Channel(models.Model):
         User, related_name='owner_channels', verbose_name=_('Owner'))
 
     users = models.ManyToManyField(User, related_name='users_channels', verbose_name=_('Users'),
-                                   null=True, blank=True)
+                                  blank=True)
     visible = models.BooleanField(verbose_name=_('Visible'),
                                   help_text=_(
                                       u'If checked, the channel appear in a list of available channels on the platform.'),
@@ -298,9 +298,9 @@ class Pod(Video):
     discipline = models.ManyToManyField(
         Discipline, blank=True, verbose_name=_('Disciplines'))
     channel = models.ManyToManyField(
-        Channel, blank=True, null=True, verbose_name=_('Channels'))
+        Channel, verbose_name=_('Channels'), blank=True)
     theme = models.ManyToManyField(
-        Theme, blank=True, null=True, verbose_name=_('Themes'))
+        Theme, verbose_name=_('Themes'), blank=True)
 
     #tags = TaggableManager(help_text=_(u'Séparez les tags par des espaces, mettez les tags constituées de plusieurs mots entre guillemets.'), verbose_name=_('Tags'), blank=True)
 
@@ -997,7 +997,7 @@ class Recorder(models.Model):
     description = RichTextField(_('description'), config_name='complete', blank=True)
     image = FilerImageField(
         null=True, blank=True, verbose_name="Image", related_name="recorder_image")
-    adress_ip = models.IPAddressField(unique=True)
+    adress_ip = models.GenericIPAddressField(unique=True)
     status = models.BooleanField(default=0)
     slide = models.BooleanField(default=1)
     gmapurl = models.CharField(max_length=250, blank=True, null=True)
