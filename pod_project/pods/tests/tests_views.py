@@ -2001,7 +2001,7 @@ class Video_mediacourses(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/mediacourses_add/?mediapath=abcdefg.zip")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.client.session['_auth_user_id'], user.pk)
+        self.assertEqual(int(self.client.session['_auth_user_id']), user.pk)
         self.client.logout()
         self.assertTrue(self.client.session.get('_auth_user_id') == None)
         print(
@@ -2015,7 +2015,7 @@ class Video_mediacourses(TestCase):
         login = self.client.login(
             username='remi2', password='hello')
         self.assertEqual(login, True)
-        self.assertEqual(self.client.session['_auth_user_id'], user.pk)
+        self.assertEqual(int(self.client.session['_auth_user_id']), user.pk)
         response = self.client.get("/mediacourses_add/?mediapath=abcdefg.zip")
         version = django.get_version()
         if version < 1.7:

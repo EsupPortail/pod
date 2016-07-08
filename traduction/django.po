@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-29 11:42+0200\n"
-"PO-Revision-Date: 2016-06-29 11:48+0200\n"
+"POT-Creation-Date: 2016-07-08 15:40+0200\n"
+"PO-Revision-Date: 2016-07-08 15:44+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -46,7 +46,7 @@ msgstr ""
 "Ce champ vous permet d'ajouter une photo d'identité. L'image sera affichée "
 "avec vos vidéos."
 
-#: core/models.py:91 core/models.py:170 pods/models.py:64
+#: core/models.py:91 core/models.py:172 pods/models.py:64
 msgid "Description"
 msgstr "Description"
 
@@ -58,7 +58,7 @@ msgstr ""
 "Ce champ vous permet d'écrire quelques mots sur vous-même. Le texte sera "
 "affiché avec vos vidéos."
 
-#: core/models.py:93 pods/models.py:518 pods/models.py:707
+#: core/models.py:93 pods/models.py:523 pods/models.py:712
 #: pods/templates/videos/completion/contributor/list_contributor.html:35
 msgid "Web link"
 msgstr "Lien web"
@@ -67,7 +67,7 @@ msgstr "Lien web"
 msgid "This field allows you to add an url."
 msgstr "Ce champ vous permet d'ajouter une adresse web."
 
-#: core/models.py:98 pods/models.py:1022
+#: core/models.py:98 pods/models.py:1027
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -79,27 +79,27 @@ msgstr "Profil"
 msgid "Profiles"
 msgstr "Profils"
 
-#: core/models.py:149 pods/models.py:315 pods/models.py:466 pods/models.py:631
-#: pods/models.py:1019
+#: core/models.py:151 pods/models.py:315 pods/models.py:466 pods/models.py:636
+#: pods/models.py:1024
 msgid "Video"
 msgstr "Vidéo"
 
-#: core/models.py:151
+#: core/models.py:153
 msgid "allow downloading"
 msgstr "Autoriser le téléchargement"
 
-#: core/models.py:152 pods/models.py:59 pods/models.py:109 pods/models.py:148
+#: core/models.py:154 pods/models.py:59 pods/models.py:109 pods/models.py:148
 #: pods/templates/videos/chapter/list_chapter.html:31
 #: pods/templates/videos/enrich/list_enrich.html:32
 msgid "Title"
 msgstr "Titre"
 
-#: core/models.py:153 pods/models.py:60 pods/models.py:110 pods/models.py:149
+#: core/models.py:155 pods/models.py:60 pods/models.py:110 pods/models.py:149
 msgid "Slug"
 msgstr "Titre web"
 
-#: core/models.py:155 pods/models.py:61 pods/models.py:111 pods/models.py:150
-#: pods/models.py:184 pods/models.py:682 pods/models.py:832
+#: core/models.py:157 pods/models.py:61 pods/models.py:111 pods/models.py:150
+#: pods/models.py:184 pods/models.py:687 pods/models.py:837
 msgid ""
 "Used to access this instance, the \"slug\" is a short label containing only "
 "letters, numbers, underscore or dash top."
@@ -108,106 +108,106 @@ msgstr ""
 "étiquette formée uniquement de lettres (non accentuées), de chiffres, de "
 "l'underscore (barre de soulignement) et du tiret."
 
-#: core/models.py:157 core/templates/admin/filer/folder/directory_table.html:30
+#: core/models.py:159 core/templates/admin/filer/folder/directory_table.html:30
 #: core/templates/admin/filer/folder/directory_table.html:70 pods/models.py:73
 #: pods/templates/search/search_video.html:163
 msgid "Owner"
 msgstr "Propriétaire"
 
-#: core/models.py:159
+#: core/models.py:161
 msgid "Date added"
 msgstr "Date de mise en ligne"
 
-#: core/models.py:161
+#: core/models.py:163
 msgid "Date of event"
 msgstr "Date de l'évènement"
 
-#: core/models.py:164 pods/templates/search/search_video.html:238
+#: core/models.py:166 pods/templates/search/search_video.html:238
 msgid "University course"
 msgstr "Cursus universitaire"
 
-#: core/models.py:167 pods/templates/search/search_video.html:225
+#: core/models.py:169 pods/templates/search/search_video.html:225
 msgid "Main language"
 msgstr "Langue principale"
 
-#: core/models.py:173
+#: core/models.py:175
 msgid "View count"
 msgstr "Nombre de vues"
 
-#: core/models.py:176
+#: core/models.py:178
 msgid "Encoding in progress"
 msgstr "Encodage en cours"
 
-#: core/models.py:178
+#: core/models.py:180
 msgid "Encoding status"
 msgstr "Statut d'encodage"
 
-#: core/models.py:181 core/models.py:216
+#: core/models.py:183 core/models.py:218
 msgid "Thumbnail"
 msgstr "Vignette"
 
-#: core/models.py:186
+#: core/models.py:188
 msgid "Overview"
 msgstr "Vue d'ensemble"
 
-#: core/models.py:189 core/models.py:222 pods/templates/videos/video.html:322
+#: core/models.py:191 core/models.py:224 pods/templates/videos/video.html:322
 msgid "Duration"
 msgstr "Durée"
 
-#: core/models.py:195 core/models.py:196 pods/models.py:499 pods/models.py:571
-#: pods/models.py:678 pods/models.py:828
+#: core/models.py:197 core/models.py:198 pods/models.py:504 pods/models.py:576
+#: pods/models.py:683 pods/models.py:833
 msgid "video"
 msgstr "video"
 
-#: core/models.py:232 pods/models.py:973 pods/models.py:990
+#: core/models.py:234 pods/models.py:978 pods/models.py:995
 msgid "name"
 msgstr "nom"
 
-#: core/models.py:234
+#: core/models.py:236
 msgid "bitrate_audio"
 msgstr "bitrate audio"
 
-#: core/models.py:236
+#: core/models.py:238
 msgid "bitrate_video"
 msgstr "bitrate video"
 
-#: core/models.py:246
+#: core/models.py:248
 msgid "output_height"
 msgstr "hauteur de sortie"
 
-#: core/models.py:252
+#: core/models.py:254
 msgid "mediatype"
 msgstr "type du media"
 
-#: core/models.py:255
+#: core/models.py:257
 msgid "encoding type"
 msgstr "réglage d'encodage"
 
-#: core/models.py:256
+#: core/models.py:258
 msgid "encoding types"
 msgstr "réglages d'encodage"
 
-#: core/models.py:267 core/templates/admin/filer/folder/directory_table.html:13
+#: core/models.py:269 core/templates/admin/filer/folder/directory_table.html:13
 msgid "Name"
 msgstr "Nom"
 
-#: core/models.py:268
+#: core/models.py:270
 msgid "Email"
 msgstr "Courriel"
 
-#: core/models.py:269
+#: core/models.py:271
 msgid "Subject"
 msgstr "Sujet"
 
-#: core/models.py:270
+#: core/models.py:272
 msgid "Message"
 msgstr "Message"
 
-#: core/models.py:273
+#: core/models.py:275
 msgid "Contact"
 msgstr "Contact"
 
-#: core/models.py:274
+#: core/models.py:276
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -495,7 +495,7 @@ msgstr "Mots clés"
 msgid "See the cloud"
 msgstr "Voir le nuage"
 
-#: core/templates/base.html:197 pods/models.py:928
+#: core/templates/base.html:197 pods/models.py:933
 msgid "Notes"
 msgstr "Notes"
 
@@ -588,7 +588,7 @@ msgstr "Effacer"
 msgid "Here are the latest videos"
 msgstr "Voici les dernières vidéos"
 
-#: core/templates/header.html:41 pods/models.py:581
+#: core/templates/header.html:41 pods/models.py:586
 #: pods/templates/videos/completion/subtitle/list_subtitle.html:34
 msgid "Language"
 msgstr "Langue"
@@ -855,7 +855,7 @@ msgstr ""
 msgid "Amharic"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:14 pod_project/ISOLanguageCodes.py:160
+#: pod_project/ISOLanguageCodes.py:14 pod_project/ISOLanguageCodes.py:159
 msgid "Arabic"
 msgstr ""
 
@@ -927,496 +927,492 @@ msgstr ""
 msgid "Catalan"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:32 pod_project/ISOLanguageCodes.py:161
-msgid "Simplified Chinese"
+#: pod_project/ISOLanguageCodes.py:32 pod_project/ISOLanguageCodes.py:160
+msgid "Chinese"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:33 pod_project/ISOLanguageCodes.py:162
-msgid "Traditional Chinese"
-msgstr ""
-
-#: pod_project/ISOLanguageCodes.py:34
+#: pod_project/ISOLanguageCodes.py:33
 msgid "Corsican"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:35
+#: pod_project/ISOLanguageCodes.py:34
 msgid "Croatian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:36
+#: pod_project/ISOLanguageCodes.py:35
 msgid "Czech"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:37
+#: pod_project/ISOLanguageCodes.py:36
 msgid "Danish"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:38
+#: pod_project/ISOLanguageCodes.py:37
 msgid "Dutch"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:39 pod_project/ISOLanguageCodes.py:159
+#: pod_project/ISOLanguageCodes.py:38 pod_project/ISOLanguageCodes.py:158
 #: pod_project/settings-sample.py:105
 msgid "English"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:40
+#: pod_project/ISOLanguageCodes.py:39
 msgid "Esperanto"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:41
+#: pod_project/ISOLanguageCodes.py:40
 msgid "Estonian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:42
+#: pod_project/ISOLanguageCodes.py:41
 msgid "Faeroese"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:43
+#: pod_project/ISOLanguageCodes.py:42
 msgid "Farsi"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:44
+#: pod_project/ISOLanguageCodes.py:43
 msgid "Fiji"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:45
+#: pod_project/ISOLanguageCodes.py:44
 msgid "Finnish"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:46 pod_project/ISOLanguageCodes.py:164
+#: pod_project/ISOLanguageCodes.py:45 pod_project/ISOLanguageCodes.py:162
 msgid "French"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:47
+#: pod_project/ISOLanguageCodes.py:46
 msgid "Frisian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:48
+#: pod_project/ISOLanguageCodes.py:47
 msgid "Galician"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:49
+#: pod_project/ISOLanguageCodes.py:48
 msgid "Gaelic (Scottish)"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:50
+#: pod_project/ISOLanguageCodes.py:49
 msgid "Gaelic (Manx)"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:51
+#: pod_project/ISOLanguageCodes.py:50
 msgid "Georgian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:52 pod_project/ISOLanguageCodes.py:158
+#: pod_project/ISOLanguageCodes.py:51 pod_project/ISOLanguageCodes.py:157
 msgid "German"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:53
+#: pod_project/ISOLanguageCodes.py:52
 msgid "Greek"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:54
+#: pod_project/ISOLanguageCodes.py:53
 msgid "Greenlandic"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:55
+#: pod_project/ISOLanguageCodes.py:54
 msgid "Guarani"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:56
+#: pod_project/ISOLanguageCodes.py:55
 msgid "Gujarati"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:57
+#: pod_project/ISOLanguageCodes.py:56
 msgid "Haitian Creole"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:58
+#: pod_project/ISOLanguageCodes.py:57
 msgid "Hausa"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:59
+#: pod_project/ISOLanguageCodes.py:58
 msgid "Hebrew"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:60
+#: pod_project/ISOLanguageCodes.py:59
 msgid "Hindi"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:61
+#: pod_project/ISOLanguageCodes.py:60
 msgid "Hungarian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:62
+#: pod_project/ISOLanguageCodes.py:61
 msgid "Icelandic"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:63
+#: pod_project/ISOLanguageCodes.py:62
 msgid "Ido"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:64
+#: pod_project/ISOLanguageCodes.py:63
 msgid "Indonesian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:65
+#: pod_project/ISOLanguageCodes.py:64
 msgid "Interlingua"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:66
+#: pod_project/ISOLanguageCodes.py:65
 msgid "Interlingue"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:67
+#: pod_project/ISOLanguageCodes.py:66
 msgid "Inuktitut"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:68
+#: pod_project/ISOLanguageCodes.py:67
 msgid "Inupiak"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:69
+#: pod_project/ISOLanguageCodes.py:68
 msgid "Irish"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:70 pod_project/ISOLanguageCodes.py:165
+#: pod_project/ISOLanguageCodes.py:69 pod_project/ISOLanguageCodes.py:163
 msgid "Italian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:71 pod_project/ISOLanguageCodes.py:166
+#: pod_project/ISOLanguageCodes.py:70 pod_project/ISOLanguageCodes.py:164
 msgid "Japanese"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:72
+#: pod_project/ISOLanguageCodes.py:71
 msgid "Javanese"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:73
+#: pod_project/ISOLanguageCodes.py:72
 msgid "Kannada"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:74
+#: pod_project/ISOLanguageCodes.py:73
 msgid "Kashmiri"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:75
+#: pod_project/ISOLanguageCodes.py:74
 msgid "Kazakh"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:76
+#: pod_project/ISOLanguageCodes.py:75
 msgid "Kinyarwanda (Ruanda)"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:77
+#: pod_project/ISOLanguageCodes.py:76
 msgid "Kirghiz"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:78
+#: pod_project/ISOLanguageCodes.py:77
 msgid "Kirundi (Rundi)"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:79
+#: pod_project/ISOLanguageCodes.py:78
 msgid "Korean"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:80
+#: pod_project/ISOLanguageCodes.py:79
 msgid "Kurdish"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:81
+#: pod_project/ISOLanguageCodes.py:80
 msgid "Laothian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:82
+#: pod_project/ISOLanguageCodes.py:81
 msgid "Latin"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:83
+#: pod_project/ISOLanguageCodes.py:82
 msgid "Latvian (Lettish)"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:84
+#: pod_project/ISOLanguageCodes.py:83
 msgid "Limburgish ( Limburger)"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:85
+#: pod_project/ISOLanguageCodes.py:84
 msgid "Lingala"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:86
+#: pod_project/ISOLanguageCodes.py:85
 msgid "Lithuanian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:87
+#: pod_project/ISOLanguageCodes.py:86
 msgid "Macedonian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:88
+#: pod_project/ISOLanguageCodes.py:87
 msgid "Malagasy"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:89
+#: pod_project/ISOLanguageCodes.py:88
 msgid "Malay"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:90
+#: pod_project/ISOLanguageCodes.py:89
 msgid "Malayalam"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:91
+#: pod_project/ISOLanguageCodes.py:90
 msgid "Maltese"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:92
+#: pod_project/ISOLanguageCodes.py:91
 msgid "Maori"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:93
+#: pod_project/ISOLanguageCodes.py:92
 msgid "Marathi"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:94
+#: pod_project/ISOLanguageCodes.py:93
 msgid "Moldavian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:95
+#: pod_project/ISOLanguageCodes.py:94
 msgid "Mongolian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:96
+#: pod_project/ISOLanguageCodes.py:95
 msgid "Nauru"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:97
+#: pod_project/ISOLanguageCodes.py:96
 msgid "Nepali"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:98
+#: pod_project/ISOLanguageCodes.py:97
 msgid "Norwegian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:99
+#: pod_project/ISOLanguageCodes.py:98
 msgid "Occitan"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:100
+#: pod_project/ISOLanguageCodes.py:99
 msgid "Oriya"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:101
+#: pod_project/ISOLanguageCodes.py:100
 msgid "Oromo (Afaan Oromo)"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:102
+#: pod_project/ISOLanguageCodes.py:101
 msgid "Pashto (Pushto)"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:103
+#: pod_project/ISOLanguageCodes.py:102
 msgid "Polish"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:104
+#: pod_project/ISOLanguageCodes.py:103
 msgid "Portuguese"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:105
+#: pod_project/ISOLanguageCodes.py:104
 msgid "Punjabi"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:106
+#: pod_project/ISOLanguageCodes.py:105
 msgid "Quechua"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:107
+#: pod_project/ISOLanguageCodes.py:106
 msgid "Rhaeto-Romance"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:108
+#: pod_project/ISOLanguageCodes.py:107
 msgid "Romanian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:109 pod_project/ISOLanguageCodes.py:167
+#: pod_project/ISOLanguageCodes.py:108 pod_project/ISOLanguageCodes.py:165
 msgid "Russian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:110
+#: pod_project/ISOLanguageCodes.py:109
 msgid "Samoan"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:111
+#: pod_project/ISOLanguageCodes.py:110
 msgid "Sangro"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:112
+#: pod_project/ISOLanguageCodes.py:111
 msgid "Sanskrit"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:113
+#: pod_project/ISOLanguageCodes.py:112
 msgid "Serbian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:114
+#: pod_project/ISOLanguageCodes.py:113
 msgid "Serbo-Croatian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:115
+#: pod_project/ISOLanguageCodes.py:114
 msgid "Sesotho"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:116
+#: pod_project/ISOLanguageCodes.py:115
 msgid "Setswana"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:117
+#: pod_project/ISOLanguageCodes.py:116
 msgid "Shona"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:118
+#: pod_project/ISOLanguageCodes.py:117
 msgid "Sichuan Yi"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:119
+#: pod_project/ISOLanguageCodes.py:118
 msgid "Sindhi"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:120
+#: pod_project/ISOLanguageCodes.py:119
 msgid "Sinhalese"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:121
+#: pod_project/ISOLanguageCodes.py:120
 msgid "Siswati"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:122
+#: pod_project/ISOLanguageCodes.py:121
 msgid "Slovak"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:123
+#: pod_project/ISOLanguageCodes.py:122
 msgid "Slovenian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:124
+#: pod_project/ISOLanguageCodes.py:123
 msgid "Somali"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:125 pod_project/ISOLanguageCodes.py:163
+#: pod_project/ISOLanguageCodes.py:124 pod_project/ISOLanguageCodes.py:161
 msgid "Spanish"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:126
+#: pod_project/ISOLanguageCodes.py:125
 msgid "Sundanese"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:127
+#: pod_project/ISOLanguageCodes.py:126
 msgid "Swahili (Kiswahili)"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:128
+#: pod_project/ISOLanguageCodes.py:127
 msgid "Swedish"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:129
+#: pod_project/ISOLanguageCodes.py:128
 msgid "Tagalog"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:130
+#: pod_project/ISOLanguageCodes.py:129
 msgid "Tajik"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:131
+#: pod_project/ISOLanguageCodes.py:130
 msgid "Tamil"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:132
+#: pod_project/ISOLanguageCodes.py:131
 msgid "Tatar"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:133
+#: pod_project/ISOLanguageCodes.py:132
 msgid "Telugu"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:134
+#: pod_project/ISOLanguageCodes.py:133
 msgid "Thai"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:135
+#: pod_project/ISOLanguageCodes.py:134
 msgid "Tibetan"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:136
+#: pod_project/ISOLanguageCodes.py:135
 msgid "Tigrinya"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:137
+#: pod_project/ISOLanguageCodes.py:136
 msgid "Tonga"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:138
+#: pod_project/ISOLanguageCodes.py:137
 msgid "Tsonga"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:139
+#: pod_project/ISOLanguageCodes.py:138
 msgid "Turkish"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:140
+#: pod_project/ISOLanguageCodes.py:139
 msgid "Turkmen"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:141
+#: pod_project/ISOLanguageCodes.py:140
 msgid "Twi"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:142
+#: pod_project/ISOLanguageCodes.py:141
 msgid "Uighur"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:143
+#: pod_project/ISOLanguageCodes.py:142
 msgid "Ukrainian"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:144
+#: pod_project/ISOLanguageCodes.py:143
 msgid "Urdu"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:145
+#: pod_project/ISOLanguageCodes.py:144
 msgid "Uzbek"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:146
+#: pod_project/ISOLanguageCodes.py:145
 msgid "Vietnamese"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:147
+#: pod_project/ISOLanguageCodes.py:146
 msgid "Volapük"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:148
+#: pod_project/ISOLanguageCodes.py:147
 msgid "Wallon"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:149
+#: pod_project/ISOLanguageCodes.py:148
 msgid "Welsh"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:150
+#: pod_project/ISOLanguageCodes.py:149
 msgid "Wolof"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:151
+#: pod_project/ISOLanguageCodes.py:150
 msgid "Xhosa"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:152
+#: pod_project/ISOLanguageCodes.py:151
 msgid "Yiddish"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:153
+#: pod_project/ISOLanguageCodes.py:152
 msgid "Yoruba"
 msgstr ""
 
-#: pod_project/ISOLanguageCodes.py:154
+#: pod_project/ISOLanguageCodes.py:153
 msgid "Zulu"
 msgstr ""
 
@@ -1510,18 +1506,18 @@ msgstr "Thème"
 msgid "Themes"
 msgstr "Thèmes"
 
-#: pods/models.py:167 pods/models.py:297 pods/models.py:701
+#: pods/models.py:167 pods/models.py:297 pods/models.py:706
 #: pods/templates/search/search_video.html:175
 #: pods/templates/videos/enrich/list_enrich.html:33
 #: pods/templates/videos/video.html:328
 msgid "Type"
 msgstr "Type"
 
-#: pods/models.py:182 pods/models.py:679 pods/models.py:829 pods/models.py:942
+#: pods/models.py:182 pods/models.py:684 pods/models.py:834 pods/models.py:947
 msgid "title"
 msgstr "titre"
 
-#: pods/models.py:183 pods/models.py:680 pods/models.py:830
+#: pods/models.py:183 pods/models.py:685 pods/models.py:835
 msgid "slug"
 msgstr "titre court"
 
@@ -1549,7 +1545,7 @@ msgstr ""
 "Si cette case est cochée, la vidéo sera visible et accessible uniquement par "
 "vous."
 
-#: pods/models.py:309 pods/models.py:999
+#: pods/models.py:309 pods/models.py:1004
 #: pods/templates/videos/video_edit.html:438
 msgid "Restricted access"
 msgstr "Accès restreint"
@@ -1584,359 +1580,359 @@ msgstr "Fichier résultant"
 msgid "Format"
 msgstr "format"
 
-#: pods/models.py:481
+#: pods/models.py:486
 msgid "encoding"
 msgstr "encodage"
 
-#: pods/models.py:482
+#: pods/models.py:487
 msgid "encodings"
 msgstr "encodages"
 
-#: pods/models.py:500
+#: pods/models.py:505
 msgid "lastname / firstname"
 msgstr "Nom / Prénom"
 
-#: pods/models.py:502
+#: pods/models.py:507
 msgid "mail"
 msgstr "courriel"
 
-#: pods/models.py:504
+#: pods/models.py:509
 msgid "author"
 msgstr "auteur"
 
-#: pods/models.py:505
+#: pods/models.py:510
 msgid "director"
 msgstr "directeur"
 
-#: pods/models.py:506
+#: pods/models.py:511
 msgid "editor"
 msgstr "éditeur"
 
-#: pods/models.py:507
+#: pods/models.py:512
 msgid "designer"
 msgstr "concepteur"
 
-#: pods/models.py:508
+#: pods/models.py:513
 msgid "contributor"
 msgstr "contributeur"
 
-#: pods/models.py:509
+#: pods/models.py:514
 msgid "actor"
 msgstr "acteur"
 
-#: pods/models.py:510
+#: pods/models.py:515
 msgid "voice-over"
 msgstr "voix-off"
 
-#: pods/models.py:511
+#: pods/models.py:516
 msgid "consultant"
 msgstr "consultant"
 
-#: pods/models.py:512
+#: pods/models.py:517
 msgid "writer"
 msgstr "écrivain"
 
-#: pods/models.py:513
+#: pods/models.py:518
 msgid "soundman"
 msgstr "preneur de son"
 
-#: pods/models.py:514
+#: pods/models.py:519
 msgid "technician"
 msgstr "technicien"
 
-#: pods/models.py:516
+#: pods/models.py:521
 msgid "role"
 msgstr "rôle"
 
-#: pods/models.py:516
+#: pods/models.py:521
 msgid "authors"
 msgstr "auteurs"
 
-#: pods/models.py:521
+#: pods/models.py:526
 msgid "Contributor Pod"
 msgstr "Contributeur"
 
-#: pods/models.py:522
+#: pods/models.py:527
 msgid "Contributors Pod"
 msgstr "Contributeurs"
 
-#: pods/models.py:534
+#: pods/models.py:539
 msgid "please enter a name from 2 to 200 caracteres."
 msgstr "Veuillez renseigner un titre contenant entre 2 et 100 caractères. "
 
-#: pods/models.py:536
+#: pods/models.py:541
 msgid "you cannot enter a weblink with more than 200 caracteres."
 msgstr "les liens internet doivent être inférieur à 200 caractères. "
 
-#: pods/models.py:538
+#: pods/models.py:543
 msgid "please enter a role."
 msgstr "Veuillez renseigner un rôle."
 
-#: pods/models.py:552
+#: pods/models.py:557
 msgid "there is already a contributor with the same name and role in the list."
 msgstr "Un contributeur avec le même nom et le même role existe déjà."
 
-#: pods/models.py:574
+#: pods/models.py:579
 msgid "subtitles"
 msgstr "sous-titres"
 
-#: pods/models.py:575
+#: pods/models.py:580
 msgid "captions"
 msgstr "légendes"
 
-#: pods/models.py:578
+#: pods/models.py:583
 #: pods/templates/videos/completion/subtitle/list_subtitle.html:33
 msgid "Kind"
 msgstr "Genre"
 
-#: pods/models.py:583
+#: pods/models.py:588
 msgid "subtitle file"
 msgstr "fichier de sous-titres"
 
-#: pods/models.py:586
+#: pods/models.py:591
 msgid "Track Pod"
 msgstr "Piste"
 
-#: pods/models.py:587
+#: pods/models.py:592
 msgid "Tracks Pod"
 msgstr "Pistes"
 
-#: pods/models.py:599
+#: pods/models.py:604
 msgid "please enter a correct kind."
 msgstr "Veuillez renseigner le type de piste."
 
-#: pods/models.py:601
+#: pods/models.py:606
 msgid "please enter a correct lang."
 msgstr "Veuillez renseigner une langue."
 
-#: pods/models.py:603
+#: pods/models.py:608
 msgid "please specify a track file."
 msgstr "Veuillez spécifier un fichier de sous-titre ou de légende."
 
-#: pods/models.py:617
+#: pods/models.py:622
 msgid ""
 "there is already a subtitle with the same kind and language in the list."
 msgstr "Un sous-titrage de même nature et de même langue existe déjà."
 
-#: pods/models.py:635
+#: pods/models.py:640
 msgid "Document Pod"
 msgstr "Document"
 
-#: pods/models.py:636
+#: pods/models.py:641
 msgid "Documents Pod"
 msgstr "Documents"
 
-#: pods/models.py:652
+#: pods/models.py:657
 msgid "please enter a document "
 msgstr "veuillez sélectionner un document "
 
-#: pods/models.py:667
+#: pods/models.py:672
 msgid "this document is already contained in the list."
 msgstr "Ce document a déjà été envoyé."
 
-#: pods/models.py:686
+#: pods/models.py:691
 msgid "Stop video"
 msgstr "Arrêter la lecture"
 
-#: pods/models.py:687
+#: pods/models.py:692
 msgid "The video will pause when displaying this enrichment."
 msgstr "La vidéo se met en pause lors de l'affichage de cet enrichissement."
 
-#: pods/models.py:689 pods/templates/videos/enrich/list_enrich.html:34
+#: pods/models.py:694 pods/templates/videos/enrich/list_enrich.html:34
 msgid "Start"
 msgstr "Début"
 
-#: pods/models.py:689
+#: pods/models.py:694
 msgid "Start of enrichment display in seconds"
 msgstr "Début d'affichage de l'enrichissement en secondes"
 
-#: pods/models.py:691 pods/templates/videos/enrich/list_enrich.html:35
+#: pods/models.py:696 pods/templates/videos/enrich/list_enrich.html:35
 msgid "End"
 msgstr "Fin"
 
-#: pods/models.py:691
+#: pods/models.py:696
 msgid "End of enrichment display in seconds"
 msgstr "Fin d'affichage de l'enrichissement en secondes"
 
-#: pods/models.py:694
+#: pods/models.py:699
 msgid "image"
 msgstr "image"
 
-#: pods/models.py:695 pods/models.py:705
+#: pods/models.py:700 pods/models.py:710
 msgid "richtext"
 msgstr "texte enrichi et mis en forme"
 
-#: pods/models.py:696
+#: pods/models.py:701
 msgid "weblink"
 msgstr "lien web"
 
-#: pods/models.py:697
+#: pods/models.py:702
 msgid "document"
 msgstr "document"
 
-#: pods/models.py:698
+#: pods/models.py:703
 msgid "embed"
 msgstr "intégrer"
 
-#: pods/models.py:709
+#: pods/models.py:714
 msgid "Integrate an document (PDF, text, html)"
 msgstr "Afficher un document (PDF, texte ou html)"
 
-#: pods/models.py:710
+#: pods/models.py:715
 msgid "Embed"
 msgstr "Intégrer"
 
-#: pods/models.py:711
+#: pods/models.py:716
 msgid "Integrate an external source"
 msgstr "Afficher une source externe (video youtube par exemple)"
 
-#: pods/models.py:714
+#: pods/models.py:719
 msgid "Enrichment"
 msgstr "Enrichissement"
 
-#: pods/models.py:715
+#: pods/models.py:720
 msgid "Enrichments"
 msgstr "Enrichissements"
 
-#: pods/models.py:736 pods/models.py:859
+#: pods/models.py:741 pods/models.py:864
 #: pods/templates/videos/video_chapter.html:281
 #: pods/templates/videos/video_enrich.html:327
 msgid "Please enter a title from 2 to 100 characters."
 msgstr "Veuillez renseigner un titre contenant entre 2 et 100 caractères."
 
-#: pods/models.py:739 pods/models.py:862
+#: pods/models.py:744 pods/models.py:867
 #, python-format
 msgid "Please enter a correct start field between 0 and %(duration)s."
 msgstr ""
 "Veuillez renseigner une valeur de début d'enrichissement comprise entre 0 et "
 "%(duration)s."
 
-#: pods/models.py:743
+#: pods/models.py:748
 #, python-format
 msgid "Please enter a correct end field between 1 and %(duration)s."
 msgstr ""
 "Veuillez renseigner une valeur de fin d'enrichissement comprise entre 1 et "
 "%(duration)s."
 
-#: pods/models.py:747 pods/templates/videos/video_enrich.html:345
+#: pods/models.py:752 pods/templates/videos/video_enrich.html:345
 msgid "Please enter a correct image."
 msgstr "Veuillez renseigner une image."
 
-#: pods/models.py:751 pods/templates/videos/video_enrich.html:352
+#: pods/models.py:756 pods/templates/videos/video_enrich.html:352
 msgid "Please enter a correct richtext."
 msgstr "Veuillez renseigner un texte."
 
-#: pods/models.py:755 pods/templates/videos/video_enrich.html:359
+#: pods/models.py:760 pods/templates/videos/video_enrich.html:359
 msgid "Please enter a correct weblink."
 msgstr "Veuillez renseigner un lien internet."
 
-#: pods/models.py:759 pods/templates/videos/video_completion.html:410
+#: pods/models.py:764 pods/templates/videos/video_completion.html:410
 #: pods/templates/videos/video_enrich.html:372
 msgid "Please select a document."
 msgstr "Veuillez sélectionner un document."
 
-#: pods/models.py:763 pods/templates/videos/video_enrich.html:379
+#: pods/models.py:768 pods/templates/videos/video_enrich.html:379
 msgid "Please enter a correct embed."
 msgstr "Veuillez renseigner un code embed."
 
-#: pods/models.py:765 pods/templates/videos/video_enrich.html:391
+#: pods/models.py:770 pods/templates/videos/video_enrich.html:391
 msgid "Please enter a type in index field."
 msgstr "Veuillez choisir un type d'enrichissement."
 
-#: pods/models.py:778
+#: pods/models.py:783
 msgid "The value of the start field is greater than the value of end field."
 msgstr "La valeur du commencement ne peut être supérieure à celle de la fin."
 
-#: pods/models.py:781
+#: pods/models.py:786
 msgid "The value of end field is greater than the video duration."
 msgstr ""
 "La valeur de fin d'enrichissement est supérieure à la durée de la vidéo."
 
-#: pods/models.py:783
+#: pods/models.py:788
 msgid "End field and start field can't be equal."
 msgstr "Le commencement et la fin ne peuvent être équivalents."
 
-#: pods/models.py:801 pods/templates/videos/video_enrich.html:421
+#: pods/models.py:806 pods/templates/videos/video_enrich.html:421
 msgid "There is an overlap with the enrichment "
 msgstr "Il y a un chevauchement avec l'enrichissement "
 
-#: pods/models.py:836 pods/templates/videos/chapter/list_chapter.html:32
+#: pods/models.py:841 pods/templates/videos/chapter/list_chapter.html:32
 msgid "Start time"
 msgstr "Début de la vidéo"
 
-#: pods/models.py:836
+#: pods/models.py:841
 msgid "Start time of the chapter, in seconds."
 msgstr "Début d'affichage du chapitre, en secondes."
 
-#: pods/models.py:839
+#: pods/models.py:844
 msgid "Chapter"
 msgstr "Chapitre"
 
-#: pods/models.py:840
+#: pods/models.py:845
 msgid "Chapters"
 msgstr "Chapitres"
 
-#: pods/models.py:880
+#: pods/models.py:885
 msgid "There is an overlap with the chapter "
 msgstr "Il y a un chevauchement avec le chapitre "
 
-#: pods/models.py:910
+#: pods/models.py:915
 msgid "Favorite"
 msgstr "Favoris"
 
-#: pods/models.py:911
+#: pods/models.py:916
 msgid "Favorites"
 msgstr "Mes favoris"
 
-#: pods/models.py:924 pods/models.py:927
+#: pods/models.py:929 pods/models.py:932
 msgid "Note"
 msgstr "Note"
 
-#: pods/models.py:950
+#: pods/models.py:955
 msgid "Mediacourse"
 msgstr "Mediacours"
 
-#: pods/models.py:951
+#: pods/models.py:956
 msgid "Mediacourses"
 msgstr "Mediacours"
 
-#: pods/models.py:984 pods/models.py:991
+#: pods/models.py:989 pods/models.py:996
 msgid "Building"
 msgstr "Bâtiment"
 
-#: pods/models.py:985
+#: pods/models.py:990
 msgid "Buildings"
 msgstr "Bâtiments"
 
-#: pods/models.py:992
+#: pods/models.py:997
 msgid "description"
 msgstr "description"
 
-#: pods/models.py:1000
+#: pods/models.py:1005
 msgid "Live is accessible only to authenticated users."
 msgstr "La vidéo est accessible uniquement aux utilisateurs authentifiés."
 
-#: pods/models.py:1011
+#: pods/models.py:1016
 msgid "Recorder"
 msgstr "Enregistreur"
 
-#: pods/models.py:1012
+#: pods/models.py:1017
 msgid "Recorders"
 msgstr "Enregistreurs"
 
-#: pods/models.py:1020
+#: pods/models.py:1025
 msgid "User"
 msgstr "Utilisateur"
 
-#: pods/models.py:1023
+#: pods/models.py:1028
 msgid "Answer"
 msgstr "Réponse"
 
-#: pods/models.py:1039
+#: pods/models.py:1044
 msgid "Report"
 msgstr "Signaler"
 
-#: pods/models.py:1040
+#: pods/models.py:1045
 msgid "Reports"
 msgstr "Signalements"
 
