@@ -2,6 +2,8 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import RedirectView
+from core.rest_router import router
+
 from django.contrib import admin
 admin.autodiscover()
 
@@ -11,6 +13,8 @@ urlpatterns = patterns(
         url=settings.STATIC_URL + '/images/favicon.ico')),
     (r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^core-rest/', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # ACCOUNT
     url(r'^accounts/login/$', 'core.views.core_login', name='account_login'),
     url(r'^accounts/logout/$', 'core.views.core_logout',
