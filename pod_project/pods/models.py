@@ -402,7 +402,7 @@ class Pod(Video):
                 'title': u'%s' %self.title,
                 'owner': u'%s' %self.owner.username,
                 'owner_full_name': u'%s' %self.owner.get_full_name(),
-                "date_added": u'%s' %self.date_added,
+                "date_added": u'%s' %self.date_added.strftime('%Y-%m-%dT%H:%M:%S') if self.date_added else None,
                 "date_evt": u'%s' %self.date_evt.strftime('%Y-%m-%dT%H:%M:%S') if self.date_evt else None,
                 "description": u'%s' %self.description,
                 "thumbnail": u'%s' %self.get_thumbnail_url(),
