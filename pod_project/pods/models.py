@@ -69,8 +69,7 @@ class Channel(models.Model):
 
     style = models.TextField(_('Extra style'), null=True, blank=True)
 
-    owner = models.ForeignKey(
-        User, related_name='owner_channels', verbose_name=_('Owner'))
+    owners = models.ManyToManyField(User, related_name='owners_channels', verbose_name=_('Owners'), blank=True)
 
     users = models.ManyToManyField(User, related_name='users_channels', verbose_name=_('Users'),
                                   blank=True)
