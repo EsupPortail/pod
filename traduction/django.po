@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-08 15:40+0200\n"
-"PO-Revision-Date: 2016-07-08 15:44+0200\n"
+"POT-Creation-Date: 2016-09-02 17:03+0200\n"
+"PO-Revision-Date: 2016-09-02 17:09+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -108,8 +108,9 @@ msgstr ""
 "étiquette formée uniquement de lettres (non accentuées), de chiffres, de "
 "l'underscore (barre de soulignement) et du tiret."
 
-#: core/models.py:159 core/templates/admin/filer/folder/directory_table.html:30
-#: core/templates/admin/filer/folder/directory_table.html:70 pods/models.py:73
+#: core/models.py:159 core/templates/admin/filer/folder/directory_table.html:14
+#: core/templates/admin/filer/folder/directory_table.html:33
+#: core/templates/admin/filer/folder/directory_table.html:81 pods/models.py:73
 #: pods/templates/search/search_video.html:163
 msgid "Owner"
 msgstr "Propriétaire"
@@ -187,7 +188,7 @@ msgstr "réglage d'encodage"
 msgid "encoding types"
 msgstr "réglages d'encodage"
 
-#: core/models.py:269 core/templates/admin/filer/folder/directory_table.html:13
+#: core/models.py:269 core/templates/admin/filer/folder/directory_table.html:12
 msgid "Name"
 msgstr "Nom"
 
@@ -268,89 +269,79 @@ msgstr "Administration"
 msgid "Back to home"
 msgstr "Retour à l'accueil du site"
 
-#: core/templates/admin/filer/folder/directory_listing.html:68
-msgid "Adds a new Folder"
-msgstr "Créer un nouveau dossier"
+#: core/templates/admin/filer/folder/directory_table.html:13
+msgid "Size"
+msgstr "Taille"
 
-#: core/templates/admin/filer/folder/directory_listing.html:68
-msgid "New Folder"
-msgstr "Nouveau dossier"
+#: core/templates/admin/filer/folder/directory_table.html:24
+#: core/templates/admin/filer/folder/directory_table.html:27
+#: core/templates/admin/filer/folder/directory_table.html:37
+#, fuzzy, python-format
+#| msgid "Change '%(item_label)s' folder details."
+msgid "Change '%(item_label)s' folder details"
+msgstr "Modifier les informations du dossier '%(item_label)s'."
 
-#: core/templates/admin/filer/folder/directory_listing.html:69
-msgid "upload files"
-msgstr "Téléverser des fichiers"
-
-#: core/templates/admin/filer/folder/directory_listing.html:69
-msgid "Upload"
-msgstr "Téléverser"
-
-#: core/templates/admin/filer/folder/directory_listing.html:78
-msgid "Go back to the parent folder"
-msgstr "Revenir au dossier parent"
-
-#: core/templates/admin/filer/folder/directory_listing.html:78
-msgid "Go back to root folder"
-msgstr "Revenir au dossier racine"
-
-#: core/templates/admin/filer/folder/directory_listing.html:79
-#: core/templates/admin/filer/folder/directory_listing.html:89
-#: core/templates/admin/filer/folder/directory_table.html:23
+#: core/templates/admin/filer/folder/directory_table.html:24
 msgid "Folder Icon"
 msgstr "Icône du dossier"
 
-#: core/templates/admin/filer/folder/directory_listing.html:80
-#: core/templates/admin/filer/folder/directory_table.html:29
+#: core/templates/admin/filer/folder/directory_table.html:30
 #, python-format
 msgid "%(counter)s folder"
 msgid_plural "%(counter)s folders"
 msgstr[0] "%(counter)s dossier"
 msgstr[1] "%(counter)s dossiers"
 
-#: core/templates/admin/filer/folder/directory_listing.html:80
-#: core/templates/admin/filer/folder/directory_table.html:29
+#: core/templates/admin/filer/folder/directory_table.html:30
 #, python-format
 msgid "%(counter)s file"
 msgid_plural "%(counter)s files"
 msgstr[0] "%(counter)s fichier"
 msgstr[1] "%(counter)s fichiers"
 
-#: core/templates/admin/filer/folder/directory_listing.html:84
-msgid "Change current folder details"
-msgstr "Modifier les informations du dossier courant."
-
-#: core/templates/admin/filer/folder/directory_listing.html:84
-#: core/templates/admin/filer/folder/directory_table.html:27
-#: core/templates/admin/filer/folder/directory_table.html:55
+#: core/templates/admin/filer/folder/directory_table.html:37
+#: core/templates/admin/filer/folder/directory_table.html:85
 msgid "Change"
 msgstr "Modifier"
 
-#: core/templates/admin/filer/folder/directory_table.html:23
-#: core/templates/admin/filer/folder/directory_table.html:27
-#: core/templates/admin/filer/folder/directory_table.html:29
-#, python-format
-msgid "Change '%(item_label)s' folder details."
-msgstr "Modifier les informations du dossier '%(item_label)s'."
-
-#: core/templates/admin/filer/folder/directory_table.html:36
-#: core/templates/admin/filer/folder/directory_table.html:44
-#: core/templates/admin/filer/folder/directory_table.html:61
+#: core/templates/admin/filer/folder/directory_table.html:43
+#: core/templates/admin/filer/folder/directory_table.html:52
+#: core/templates/admin/filer/folder/directory_table.html:67
 msgid "Select this file"
 msgstr "Sélectionner ce fichier"
 
-#: core/templates/admin/filer/folder/directory_table.html:40
-#: core/templates/admin/filer/folder/directory_table.html:46
-#: core/templates/admin/filer/folder/directory_table.html:55
-#: core/templates/admin/filer/folder/directory_table.html:63
+#: core/templates/admin/filer/folder/directory_table.html:47
+#: core/templates/admin/filer/folder/directory_table.html:85
+#, fuzzy, python-format
+#| msgid "Change '%(item_label)s' details."
+msgid "Change '%(item_label)s' details"
+msgstr "Modifier les informations de '%(item_label)s'."
+
+#: core/templates/admin/filer/folder/directory_table.html:54
+#: core/templates/admin/filer/folder/directory_table.html:69
 #, python-format
 msgid "Change '%(item_label)s' details."
 msgstr "Modifier les informations de '%(item_label)s'."
 
-#: core/templates/admin/filer/folder/directory_table.html:54
-#, python-format
-msgid "Delete '%(item_label)s'."
+#: core/templates/admin/filer/folder/directory_table.html:74
+msgid "Permissions"
+msgstr "Permissions"
+
+#: core/templates/admin/filer/folder/directory_table.html:74
+msgid "disabled"
+msgstr "désactivé"
+
+#: core/templates/admin/filer/folder/directory_table.html:74
+msgid "enabled"
+msgstr "activé"
+
+#: core/templates/admin/filer/folder/directory_table.html:86
+#, fuzzy, python-format
+#| msgid "Delete '%(item_label)s'."
+msgid "Delete '%(item_label)s'"
 msgstr "Supprimer '%(item_label)s'."
 
-#: core/templates/admin/filer/folder/directory_table.html:54
+#: core/templates/admin/filer/folder/directory_table.html:86
 #: pods/templates/channels/channel_edit.html:129
 #: pods/templates/channels/channel_edit.html:156
 #: pods/templates/videos/chapter/list_chapter.html:55
@@ -362,31 +353,21 @@ msgstr "Supprimer '%(item_label)s'."
 msgid "Delete"
 msgstr "Supprimer"
 
-#: core/templates/admin/filer/folder/directory_table.html:71
-msgid "Permissions"
-msgstr "Permissions"
-
-#: core/templates/admin/filer/folder/directory_table.html:71
-msgid "disabled"
-msgstr "désactivé"
-
-#: core/templates/admin/filer/folder/directory_table.html:71
-msgid "enabled"
-msgstr "activé"
-
-#: core/templates/admin/filer/folder/directory_table.html:75
-msgid "Move to clipboard."
+#: core/templates/admin/filer/folder/directory_table.html:88
+#, fuzzy
+#| msgid "Move to clipboard."
+msgid "Move to clipboard"
 msgstr "Déplacer vers le presse-papier."
 
-#: core/templates/admin/filer/folder/directory_table.html:83
-msgid "There are no files or subfolders."
-msgstr "Il n’y a aucun fichier ni sous-dossier."
+#: core/templates/admin/filer/folder/directory_table.html:96
+msgid "there are no files or subfolders"
+msgstr "il n'y a pas de fichier ni de sous-dossier"
 
-#: core/templates/admin/filer/folder/directory_table.html:90
+#: core/templates/admin/filer/folder/directory_table.html:104
 msgid "previous"
 msgstr "précédent"
 
-#: core/templates/admin/filer/folder/directory_table.html:94
+#: core/templates/admin/filer/folder/directory_table.html:108
 #, python-format
 msgid ""
 "\n"
@@ -397,7 +378,7 @@ msgstr ""
 "            Page %(number)s sur %(num_pages)s.\n"
 "            "
 
-#: core/templates/admin/filer/folder/directory_table.html:100
+#: core/templates/admin/filer/folder/directory_table.html:114
 msgid "next"
 msgstr "suivant"
 
@@ -409,52 +390,73 @@ msgstr "Historique"
 msgid "View on site"
 msgstr "Visualiser sur le site"
 
-#: core/templates/admin/filer/image/change_form.html:18
-#: core/templates/contactus/contactus.html:41
-#: core/templates/registration/login.html:97 core/templates/userProfile.html:79
-#: core/templates/userProfile.html.py:85
-msgid "Back"
-msgstr "Retour"
-
-#: core/templates/admin/filer/image/change_form.html:25
+#: core/templates/admin/filer/image/change_form.html:22
 msgid "Full size preview"
 msgstr "Aperçu en taille maximale"
 
-#: core/templates/admin/filer/widgets/admin_file.html:10
-#: core/templates/admin/filer/widgets/admin_file.html:11
-#: core/templates/admin/filer/widgets/admin_file.html:13
-#: pods/templates/videos/video.html:315 pods/templates/videos/videos.html:67
-msgid "File missing"
+#: core/templates/admin/filer/tools/clipboard/clipboard.html:8
+#, fuzzy
+#| msgid "Empty Clipboard"
+msgid "Clipboard"
+msgstr "Vider"
+
+#: core/templates/admin/filer/tools/clipboard/clipboard.html:20
+msgid "Paste all items here"
+msgstr "Coller tous les éléments ici"
+
+#: core/templates/admin/filer/tools/clipboard/clipboard.html:20
+msgid "Paste"
+msgstr "Coller"
+
+#: core/templates/admin/filer/tools/clipboard/clipboard.html:27
+#, fuzzy
+#| msgid "Move to clipboard."
+msgid "Move all clipboard files to"
+msgstr "Déplacer vers le presse-papier."
+
+#: core/templates/admin/filer/tools/clipboard/clipboard.html:27
+#, fuzzy
+#| msgid "upload files"
+msgid "unfiled files"
+msgstr "Téléverser des fichiers"
+
+#: core/templates/admin/filer/tools/clipboard/clipboard.html:27
+#, fuzzy
+#| msgid "Folder"
+msgid "folder"
+msgstr "Dossier"
+
+#: core/templates/admin/filer/tools/clipboard/clipboard.html:27
+msgid "Empty Clipboard"
+msgstr "Vider"
+
+#: core/templates/admin/filer/tools/clipboard/clipboard.html:44
+msgid "the clipboard is empty"
+msgstr "le presse-papiers est vide"
+
+#: core/templates/admin/filer/widgets/admin_file.html:8
+#: core/templates/admin/filer/widgets/admin_file.html:9
+#, fuzzy
+#| msgid "File missing"
+msgid "file missing"
 msgstr "Fichier manquant"
 
-#: core/templates/admin/filer/widgets/admin_file.html:14
-msgid "Thumbnail missing"
-msgstr "Vignette manquante"
-
-#: core/templates/admin/filer/widgets/admin_file.html:18
-msgid "No file selected"
+#: core/templates/admin/filer/widgets/admin_file.html:12
+#, fuzzy
+#| msgid "No file selected"
+msgid "no file selected"
 msgstr "Aucun fichier sélectionné"
 
-#: core/templates/admin/filer/widgets/admin_file.html:21
-#: core/templates/admin/filer/widgets/admin_file.html:22
-#: core/templates/admin/filer/widgets/admin_folder.html:7
-#: core/templates/admin/filer/widgets/admin_folder.html:8
-msgid "Lookup"
-msgstr "Rechercher un fichier"
-
-#: core/templates/admin/filer/widgets/admin_file.html:24
-#: core/templates/admin/filer/widgets/admin_folder.html:10
+#: core/templates/admin/filer/widgets/admin_file.html:16
 msgid "Clear"
 msgstr "Effacer"
 
-#: core/templates/admin/filer/widgets/admin_folder.html:3
-#: core/templates/admin/filer/widgets/admin_folder.html:5
-msgid "Folder"
-msgstr "Dossier"
-
-#: core/templates/admin/filer/widgets/admin_folder.html:5
-msgid "None selected"
-msgstr "Aucune sélection"
+#: core/templates/admin/filer/widgets/lookup.html:4
+#: core/templates/admin/filer/widgets/lookup.html:5
+#: core/templates/admin/filer/widgets/lookup.html:8
+#: core/templates/admin/filer/widgets/lookup.html:9
+msgid "Lookup"
+msgstr "Rechercher un fichier"
 
 #: core/templates/base.html:54
 msgid "Warning, your session will expire soon."
@@ -583,6 +585,12 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: core/templates/registration/login.html:93
 msgid "Erase"
 msgstr "Effacer"
+
+#: core/templates/contactus/contactus.html:41
+#: core/templates/registration/login.html:97 core/templates/userProfile.html:79
+#: core/templates/userProfile.html.py:85
+msgid "Back"
+msgstr "Retour"
 
 #: core/templates/flatpages/video_list.html:57
 msgid "Here are the latest videos"
@@ -952,7 +960,7 @@ msgid "Dutch"
 msgstr ""
 
 #: pod_project/ISOLanguageCodes.py:38 pod_project/ISOLanguageCodes.py:158
-#: pod_project/settings-sample.py:105
+#: pod_project/settings-sample.py:104
 msgid "English"
 msgstr ""
 
@@ -1436,7 +1444,7 @@ msgstr "Doctorat"
 msgid "Other"
 msgstr "Autre"
 
-#: pod_project/settings-sample.py:104
+#: pod_project/settings-sample.py:103
 msgid "Français"
 msgstr "Français"
 
@@ -2423,6 +2431,10 @@ msgstr "Télécharger"
 msgid "Embed/Share"
 msgstr "Intégrer / Partager"
 
+#: pods/templates/videos/video.html:315 pods/templates/videos/videos.html:67
+msgid "File missing"
+msgstr "Fichier manquant"
+
 #: pods/templates/videos/video.html:325
 msgid "Number of view(s)"
 msgstr "Nombre de vues"
@@ -2826,9 +2838,11 @@ msgid "Upload limit reached."
 msgstr "Limite de téléversement atteinte."
 
 #: pods/templates/videos/video_edit.html:343
-#, python-format
+#, fuzzy, python-format
+#| msgid "You have reached the %(counter)s file per day upload limit."
+#| msgid_plural "You have reached the %(counter)s files per day upload limit."
 msgid "You have reached the %(counter)s file per day upload limit."
-msgid_plural "You have reached the %(counter)s files per day upload limit."
+msgid_plural "%(counter)s files per day upload limit."
 msgstr[0] "Vous avez atteint la limite de %(counter)s téléversement par jour."
 msgstr[1] "Vous avez atteint la limite de %(counter)s téléversements par jour."
 
@@ -3251,3 +3265,47 @@ msgstr ""
 #: pods/views.py:1714
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
+
+# DJANGO-FILER FIX
+#~ msgid "Adds a new Folder"
+#~ msgstr "Créer un nouveau dossier"
+
+# DJANGO-FILER FIX
+#~ msgid "New Folder"
+#~ msgstr "Nouveau dossier"
+
+# DJANGO-FILER FIX
+#~ msgid "Upload"
+#~ msgstr "Téléverser"
+
+# DJANGO-FILER FIX
+#~ msgid "Go back to the parent folder"
+#~ msgstr "Revenir au dossier parent"
+
+# DJANGO-FILER FIX
+#~ msgid "Go back to root folder"
+#~ msgstr "Revenir au dossier racine"
+
+# DJANGO-FILER FIX
+#~ msgid "Change current folder details"
+#~ msgstr "Modifier les informations du dossier courant."
+
+# DJANGO-FILER FIX
+#~ msgid "There are no files or subfolders."
+#~ msgstr "Il n’y a aucun fichier ni sous-dossier."
+
+# DJANGO-FILER FIX
+#~ msgid "Thumbnail missing"
+#~ msgstr "Vignette manquante"
+
+# DJANGO-FILER FIX
+#~ msgid "None selected"
+#~ msgstr "Aucune sélection"
+
+# DJANGO-FILER FIX
+#~ msgid "There are no files and/or folders available to move."
+#~ msgstr "Il n'y a aucun fichier ni dossier à déplacer."
+
+# DJANGO-FILER FIX
+#~ msgid "There are no files available to rename."
+#~ msgstr "Il n'y a pas de fichier à renommer."
