@@ -198,7 +198,7 @@ def is_new(video):
 def is_new_date(date_added):
     if date_added == "":
         return ""
-    date_added = datetime.datetime.strptime(date_added, "%Y-%m-%d")
+    date_added = datetime.datetime.strptime(date_added, "%Y-%m-%dT%H:%M:%S")
     diff = datetime.datetime.now().date() - date_added.date()
     if diff.total_seconds() < 604800:
         return '<span class="label label-danger">%s !</span>' % _('New')
