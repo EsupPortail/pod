@@ -86,7 +86,7 @@ voir http://www.gnu.org/licenses/
                                         </a>
                                     </li>
                                 {% endif %}
-                                {% if request.user.owner_channels.all %}
+                                {% if request.user.owners_channels.all %}
                                     <li>
                                         <a href="{% url 'pods.views.owner_channels_list' %}">
                                             <span class="glyphicon glyphicon-th-large"></span>
