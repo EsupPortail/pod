@@ -149,8 +149,8 @@ class PodForm(ModelForm):
         if not request.user.is_superuser:
             del self.fields['date_added']
             del self.fields['owner']
-            user_channels = request.user.owner_channels.all(
-            ) | request.user.users_channels.all()
+            user_channels = request.user.owners_channels.all(
+                ) | request.user.users_channels.all()
             if user_channels:
                 self.fields["channel"].queryset = user_channels
                 list_theme = Theme.objects.filter(
