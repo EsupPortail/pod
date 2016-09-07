@@ -62,7 +62,7 @@ class ChannelsTestView(TestCase):
         i = 1
         while i <= 15:
             Channel.objects.create(title="ChannelTest" + str(i), visible=True,
-                                   color="Black", owner=remi, style="italic", description="blabla")
+                                   color="Black", style="italic", description="blabla")
             i += 1
 
         t = Theme.objects.create(
@@ -147,8 +147,9 @@ class Owner_channels_listTestView(TestCase):
 
         i = 1
         while i <= 5:
-            Channel.objects.create(title="ChannelTest" + str(i), visible=True,
-                                   color="Black", owner=remi, style="italic", description="blabla")
+            c = Channel.objects.create(title="ChannelTest" + str(i), visible=True,
+                                   color="Black", style="italic", description="blabla")
+            c.owners.add(remi)
             i += 1
         print(" --->  SetUp of Owner_channels_listTestView : OK !")
 
@@ -157,7 +158,7 @@ class Owner_channels_listTestView(TestCase):
         self.user = User.objects.get(username="testuser")
         self.user = authenticate(username='testuser', password='hello')
         login = self.client.login(username='testuser', password='hello')
-        channels = list(Channel.objects.filter(owner=self.user))
+        channels = list(Channel.objects.filter(owners=self.user))
         self.assertEqual(login, True)
         response = self.client.get("/owner_channels_list/")
         self.assertEqual(response.status_code, 200)
@@ -198,7 +199,7 @@ class ChannelTestView(TestCase):
     def setUp(self):
         remi = User.objects.create(username='testuser')
         c = Channel.objects.create(title="ChannelTest1", visible=True,
-                                   color="Black", owner=remi, style="italic", description="blabla")
+                                   color="Black", style="italic", description="blabla")
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
@@ -271,8 +272,9 @@ class Channel_edit_TestView(TestCase):
             username='testuser2', password='12345', is_active=True, is_staff=True, is_superuser=False)
         user2.set_password('hello')
         user2.save()
-        Channel.objects.create(title="ChannelTest1", visible=True,
-                               color="Black", owner=self.user, style="italic", description="blabla")
+        c = Channel.objects.create(title="ChannelTest1", visible=True,
+                               color="Black", style="italic", description="blabla")
+        c.owners.add(self.user)
         print(" --->  SetUp of Channel_edit_TestView : OK !")
 
     def test_channel_edit_get_request(self):
@@ -911,7 +913,7 @@ class VideoTestView(TestCase):
         user2.set_password('hello')
         user2.save()
         c = Channel.objects.create(title="ChannelTest1", visible=True,
-                                   color="Black", owner=user, style="italic", description="blabla")
+                                   color="Black", style="italic", description="blabla")
         t = Theme.objects.create(
             title="Theme1", channel=c)
         type1 = Type.objects.create(title="type1")
@@ -1028,7 +1030,7 @@ class Video_edit_testCase(TestCase):
         user2.set_password('hello')
         user2.save()
         c = Channel.objects.create(title="ChannelTest1", visible=True,
-                                   color="Black", owner=user, style="italic", description="blabla")
+                                   color="Black", style="italic", description="blabla")
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
@@ -1129,7 +1131,7 @@ class Video_notesTestView(TestCase):
         user2.set_password('hello')
         user2.save()
         c = Channel.objects.create(title="ChannelTest1", visible=True,
-                                   color="Black", owner=user, style="italic", description="blabla")
+                                   color="Black", style="italic", description="blabla")
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
@@ -1204,7 +1206,7 @@ class Video_completion_TestView(TestCase):
         userNoStaff.set_password('hello')
         userNoStaff.save()
         c = Channel.objects.create(title="ChannelTest1", visible=True,
-                                   color="Black", owner=user, style="italic", description="blabla")
+                                   color="Black", style="italic", description="blabla")
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
@@ -1532,7 +1534,7 @@ class Video_chapterTestView(TestCase):
         user2.set_password('hello')
         user2.save()
         c = Channel.objects.create(title="ChannelTest1", visible=True,
-                                   color="Black", owner=user, style="italic", description="blabla")
+                                   color="Black", style="italic", description="blabla")
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
@@ -1800,7 +1802,7 @@ class Video_enrichTestView(TestCase):
         user2.set_password('hello')
         user2.save()
         c = Channel.objects.create(title="ChannelTest1", visible=True,
-                                   color="Black", owner=user, style="italic", description="blabla")
+                                   color="Black", style="italic", description="blabla")
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
