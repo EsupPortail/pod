@@ -44,7 +44,7 @@ class ChannelForm(TranslationModelForm):
 
     class Meta:
         model = Channel
-        exclude = ('title', 'slug', 'owners', 'users')
+        exclude = ('title', 'slug', 'owners')
 
 
 class ThemeForm(ModelForm):
