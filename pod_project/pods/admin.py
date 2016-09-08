@@ -34,7 +34,7 @@ from modeltranslation.admin import TranslationAdmin
 class ChannelAdmin(TranslationAdmin):
     list_display = ('title','visible',)
     prepopulated_fields = {'slug': ('title',)}
-    filter_horizontal = ('users',)
+    filter_horizontal = ('owners','users',)
     list_editable = ('visible', )
 admin.site.register(Channel, ChannelAdmin)
 
