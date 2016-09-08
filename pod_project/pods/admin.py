@@ -32,7 +32,16 @@ User._meta.ordering=["username"]
 from modeltranslation.admin import TranslationAdmin
 
 class ChannelAdmin(TranslationAdmin):
-    list_display = ('title','visible',)
+
+    def get_owners(self, obj):
+        owners = []
+        for owner in obj.owners.all():
+            owners.append(u'%s %s (%s)' % (
+                owner.first_name, owner.last_name, owner.username))
+        return ', '.join(owners)
+
+    get_owners.short_description = _('Owners')
+    list_display = ('title','get_owners','visible',)
     prepopulated_fields = {'slug': ('title',)}
     filter_horizontal = ('owners','users',)
     list_editable = ('visible', )
