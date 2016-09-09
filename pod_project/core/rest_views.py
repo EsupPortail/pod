@@ -1,7 +1,14 @@
 from django.contrib.auth.models import User, Group
+from core.models import UserProfile
 from rest_framework import viewsets
-from core.serializers import UserSerializer, GroupSerializer
+from core.serializers import UserProfileSerializer, UserSerializer, GroupSerializer
 
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows userprofiles to be viewed or edited.
+    """
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     """
