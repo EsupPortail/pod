@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'captcha',
     'bootstrap3',
     'rest_framework',
+    'rest_framework.authtoken',
     # Applications locales
     'pods',
     'core'
