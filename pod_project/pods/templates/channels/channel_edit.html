@@ -27,73 +27,39 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{% trans "Edition of the channel" %} {{form.instance.title}}{% endblock %}
 {% block bootstrap3_extra_head %}
 
-        <!-- media -->
-        <!-- form.media -->
-        {{form.media}}
-        <!-- {{formset.media}} -->
-        <!-- {{docformset.media}} -->
-        <script src="{{ STATIC_URL }}js/jquery.formset.js"></script>
+    <!-- media -->
+    <!-- form.media -->
+    {{form.media}}
+    <!-- {{formset.media}} -->
+    <!-- {{docformset.media}} -->
+    <script src="{{ STATIC_URL }}js/jquery.formset.js"></script>
 
-        <!-- M2M select box
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css" /> -->
-        <style>
-            .selector {
-            }
-            .selector select {
-                height: 8.7em;
-                width: 100%;
-            }
-            .selector h2 {
-                margin: 0;
-                font-size: 14px;
-                border: 1px solid #ccc;
-                background: white url({{ STATIC_URL }}admin/img/nav-bg.gif) bottom left repeat-x;
-            }
-            .selector-available, .selector-chosen {
-                text-align: center;
-                margin-bottom: 5px;
-            }
-            .selector-chooser {
-                list-style-type: none;
-            }
-            .selector .selector-filter {
-                background: white;
-                border: 1px solid #ccc;
-                border-width: 0 1px;
-                padding: 3px;
-                color: #999;
-                font-size: 10px;
-                margin: 0;
-                text-align: left;
-            }
-            .selector select {
-                border: 1px solid #ccc;
-            }
-            #id_users_input {
-                width: 92%;
-            }
-        </style>
-        <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
-        <script type="text/javascript" src="/admin/jsi18n/"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/SelectBox.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/SelectFilter2.js"></script>
+    <!-- Admin-like selector (channel users) -->
+    <style>
+        .selector h2 {
+            background: white url({{ STATIC_URL }}admin/img/nav-bg.gif) bottom left repeat-x;
+        }
+    </style>
+    <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+    <script type="text/javascript" src="/admin/jsi18n/"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/SelectBox.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/SelectFilter2.js"></script>
+    <!-- /Admin-like selector -->
 
-<script>
-var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
+    <script>
+        var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
+        var num = 0;
+        var name = "";
 
-var num=0;
-var name = "";
-
-jQuery(function($) {
-    $("#formset").formset({
-        animateForms: true
-    });
-});
-
-</script>
+        jQuery(function($) {
+            $("#formset").formset({
+                animateForms: true
+            });
+        });
+    </script>
 {% endblock bootstrap3_extra_head %}
 
 
