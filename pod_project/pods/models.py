@@ -73,8 +73,6 @@ class Channel(models.Model):
         blank=True)
     users = models.ManyToManyField(
         User, related_name='users_channels', verbose_name=_('Users'),
-        help_text=_(
-            u'Hold down "Control", or "Command" on a Mac, to select more than one.'),
         blank=True)
     visible = models.BooleanField(
         verbose_name=_('Visible'),
