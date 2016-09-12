@@ -186,13 +186,13 @@ voir http://www.gnu.org/licenses/
     {% endbuttons %}
 
     <script type="text/javascript">
-        $( document ).ready(function( ) {
+        $(document).ready(function() {
             SelectFilter.init("id_users", "{% trans 'Utilisateurs' %}", 0, "{{ STATIC_URL }}admin/");
             $('.selector').addClass('row');
             $('.selector-available').addClass('col-sm-5');
             $('.selector-chosen').addClass('col-sm-5');
             $('.selector-chooser').addClass('col-sm-2');
-            $('.selector-chooser > li > a').addClass('center-block btn btn-sm btn-default');
+            $('.selector-chooser > li > a').addClass('btn btn-sm btn-block btn-default');
             $('.selector-chooseall').addClass('btn btn-default btn-sm');
             $('.selector-clearall').addClass('btn btn-default btn-sm');
             $('#id_users_add_all_link').append(' <i class="fa fa-arrow-right"></i>');
