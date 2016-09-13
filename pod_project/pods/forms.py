@@ -34,10 +34,13 @@ from django.forms.widgets import HiddenInput
 ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = getattr(
     settings, 'ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS', True)
 
+
 class ChannelForm(TranslationModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ChannelForm, self).__init__(*args, **kwargs)
+        self.fields['users'].label_from_instance = lambda obj: "%s %s (%s)" % (
+            obj.first_name, obj.last_name, obj.username)
         for myField in self.fields:
             if self.fields[myField].required:
                 self.fields[myField].widget.attrs['class'] = 'required'
