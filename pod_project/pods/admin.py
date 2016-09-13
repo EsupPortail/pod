@@ -21,31 +21,45 @@ voir http://www.gnu.org/licenses/
 """
 from django.contrib import admin
 from pods.models import *
-from django import forms
+# from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin import widgets
+# from django.contrib.admin import widgets
+
+from modeltranslation.admin import TranslationAdmin
+from django.core.urlresolvers import reverse
+from django.utils.html import format_html
 
 from django.contrib.auth.models import User
 #Ordering user by username !
-User._meta.ordering=["username"]
+User._meta.ordering = ["username"]
 
-from modeltranslation.admin import TranslationAdmin
+
+def url_to_edit_object(obj):
+    url = reverse(
+        'admin:%s_%s_change' % (obj._meta.app_label, obj._meta.model_name), args=[obj.id])
+    return format_html('<a href="{}">{}</a>', url, obj.__unicode__())
+
 
 class ChannelAdmin(TranslationAdmin):
 
     def get_owners(self, obj):
         owners = []
         for owner in obj.owners.all():
+            url = url_to_edit_object(owner)
             owners.append(u'%s %s (%s)' % (
-                owner.first_name, owner.last_name, owner.username))
+                owner.first_name, owner.last_name, url))
         return ', '.join(owners)
+    get_owners.allow_tags = True
 
     get_owners.short_description = _('Owners')
-    list_display = ('title','get_owners','visible',)
+    list_display = ('title', 'get_owners', 'visible',)
     prepopulated_fields = {'slug': ('title',)}
-    filter_horizontal = ('owners','users',)
+    filter_horizontal = ('owners', 'users',)
     list_editable = ('visible', )
+
+
 admin.site.register(Channel, ChannelAdmin)
+
 
 class ThemeAdmin(admin.ModelAdmin):
     list_display = ('title', 'channel')
