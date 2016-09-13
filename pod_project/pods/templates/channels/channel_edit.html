@@ -188,13 +188,13 @@ voir http://www.gnu.org/licenses/
     <script type="text/javascript">
         $(document).ready(function() {
             SelectFilter.init("id_users", "{% trans 'Utilisateurs' %}", 0, "{{ STATIC_URL }}admin/");
-            $('.selector').addClass('row');
-            $('.selector-available').addClass('col-sm-5');
-            $('.selector-chosen').addClass('col-sm-5');
-            $('.selector-chooser').addClass('col-sm-2');
-            $('.selector-chooser > li > a').addClass('btn btn-sm btn-block btn-default');
-            $('.selector-chooseall').addClass('btn btn-default btn-sm');
-            $('.selector-clearall').addClass('btn btn-default btn-sm');
+            $('#channel_form .selector').addClass('row');
+            $('#channel_form .selector-available').addClass('col-sm-5');
+            $('#channel_form .selector-chosen').addClass('col-sm-5');
+            $('#channel_form .selector-chooser').addClass('col-sm-2');
+            $('#channel_form .selector-chooser > li > a').addClass('btn btn-sm btn-block btn-default');
+            $('#channel_form .selector-chooseall').addClass('btn btn-default btn-sm');
+            $('#channel_form .selector-clearall').addClass('btn btn-default btn-sm');
             $('#id_users_add_all_link').append(' <i class="fa fa-arrow-right"></i>');
             $('#id_users_remove_all_link').prepend('<i class="fa fa-arrow-left"></i> ');
             $('#id_users_add_link').append(' <i class="fa fa-arrow-right"></i>');
