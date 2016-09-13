@@ -31,6 +31,9 @@ from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods
 from modeltranslation.forms import TranslationModelForm
 from django.forms.widgets import HiddenInput
 
+ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = getattr(
+    settings, 'ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS', True)
+
 class ChannelForm(TranslationModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -44,7 +47,10 @@ class ChannelForm(TranslationModelForm):
 
     class Meta:
         model = Channel
-        exclude = ('title', 'slug', 'owners')
+        if ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS:
+            exclude = ('title', 'slug', 'owners')
+        else:
+            exclude = ('title', 'slug', 'owners', 'visible')
 
 
 class ThemeForm(ModelForm):
