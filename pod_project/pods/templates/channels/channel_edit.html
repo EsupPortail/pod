@@ -27,20 +27,23 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{% trans "Edition of the channel" %} {{form.instance.title}}{% endblock %}
 {% block bootstrap3_extra_head %}
 
-    <!-- Admin-like selector (channel users) -->
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+
+{% if user.is_staff %}
+     <!-- Admin-like selector (channel users) -->
     <style>
         .selector h2 {
             background: white url({{ STATIC_URL }}admin/img/nav-bg.gif) bottom left repeat-x;
         }
     </style>
-    <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+    <!--script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script-->
     <script type="text/javascript" src="/admin/jsi18n/"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}admin/js/SelectBox.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}admin/js/SelectFilter2.js"></script>
     <!-- /Admin-like selector -->
+{% endif %}
 
     <!-- media -->
     <!-- form.media -->
@@ -185,6 +188,7 @@ voir http://www.gnu.org/licenses/
     </div>
     {% endbuttons %}
 
+    {% if user.is_staff %}
     <script type="text/javascript">
         $(document).ready(function() {
             SelectFilter.init("id_users", "{% trans 'Utilisateurs' %}", 0, "{{ STATIC_URL }}admin/");
@@ -201,6 +205,7 @@ voir http://www.gnu.org/licenses/
             $('#id_users_remove_link').prepend('<i class="fa fa-arrow-left"></i> ');
         } );
     </script>
+    {% endif %}
 
 </form>
     {% endblock article_content %}

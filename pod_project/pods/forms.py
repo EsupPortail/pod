@@ -38,9 +38,18 @@ ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = getattr(
 class ChannelForm(TranslationModelForm):
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(ChannelForm, self).__init__(*args, **kwargs)
-        self.fields['users'].label_from_instance = lambda obj: "%s %s (%s)" % (
-            obj.first_name, obj.last_name, obj.username)
+        try:
+            if not user.is_staff:
+                del self.fields['headband']
+                del self.fields['users']
+            else:
+                self.fields['users'].label_from_instance = lambda obj: "%s %s (%s)" % (
+                    obj.first_name, obj.last_name, obj.username)
+        except:
+            del self.fields['headband']
+            del self.fields['users']
         for myField in self.fields:
             if self.fields[myField].required:
                 self.fields[myField].widget.attrs['class'] = 'required'

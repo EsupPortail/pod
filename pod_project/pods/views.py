@@ -167,12 +167,13 @@ def channel_edit(request, slug_c):
     ThemeInlineFormSet = inlineformset_factory(
         Channel, Theme, form=ThemeForm, extra=0)
 
-    channel_form = ChannelForm(instance=channel)
+    channel_form = ChannelForm(instance=channel, user=request.user)
     #formset = ThemeInlineFormSet(instance=channel)
     referer = request.META.get('HTTP_REFERER')
 
     if request.POST:
-        channel_form = ChannelForm(request.POST, instance=channel)
+        channel_form = ChannelForm(
+            request.POST, instance=channel, user=request.user)
         formset = ThemeInlineFormSet(request.POST, instance=channel)
         if channel_form.is_valid() and formset.is_valid():
             channel = channel_form.save()
