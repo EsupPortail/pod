@@ -93,21 +93,6 @@ voir http://www.gnu.org/licenses/
     <input type='hidden' name='referer' value='{{ referer }}' />
     </fieldset>
 
-    {% buttons %}
-    <div class="text-center">
-        <button type="submit" class="btn btn-success" value="{% trans "Save" %}" name="action1">
-            {% bootstrap_icon "save" %} {% trans "Save" %}
-        </button>
-        <button type="submit" class="btn btn-success" value="{% trans "Save and return to previous page" %}" name="action2">
-            {% bootstrap_icon "save" %} {% trans "Save and return to previous page" %}
-        </button>
-        <button type="submit" class="btn btn-success" value="{% trans "Save and see channel" %}" name="action3">
-            {% bootstrap_icon "save" %} {% trans "Save and see channel" %}
-        </button>
-    </div>
-    {% endbuttons %}
-
-
     <fieldset id="themes">
         <legend>{% trans "Themes" %}</legend>
         <div id="formset" data-formset-prefix="{{ formset.prefix }}">
