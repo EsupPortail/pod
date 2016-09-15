@@ -23,6 +23,7 @@ import os
 from django import forms
 from django.forms import ModelForm, DateField, ValidationError, FileField, CharField, Form, PasswordInput
 from django.contrib.admin import widgets
+from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from itertools import chain
 from django.conf import settings
@@ -45,6 +46,7 @@ class ChannelForm(TranslationModelForm):
                 del self.fields['headband']
                 del self.fields['users']
             else:
+                self.fields['users'].queryset = User.objects.exclude(id=user.id)
                 self.fields['users'].label_from_instance = lambda obj: "%s %s (%s)" % (
                     obj.first_name, obj.last_name, obj.username)
         except:
