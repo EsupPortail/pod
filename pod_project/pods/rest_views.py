@@ -1,6 +1,14 @@
-from pods.models import Pod
+from pods.models import Pod, Type
 from rest_framework import viewsets
-from pods.serializers import PodSerializer
+from pods.serializers import PodSerializer, TypeSerializer
+
+class TypeViewSet(viewsets.ModelViewSet):
+
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Type.objects.all()
+    serializer_class = TypeSerializer
 
 
 class PodViewSet(viewsets.ModelViewSet):

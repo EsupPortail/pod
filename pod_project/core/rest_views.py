@@ -1,8 +1,7 @@
 from django.contrib.auth.models import User, Group
 from core.models import UserProfile
-from pods.models import Pod
 from rest_framework import viewsets
-from core.serializers import UserProfileSerializer, UserSerializer, GroupSerializer, PodSerializer
+from core.serializers import UserProfileSerializer, UserSerializer, GroupSerializer
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):
