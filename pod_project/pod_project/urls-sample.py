@@ -38,7 +38,7 @@ urlpatterns = patterns(
         {'packages': ('django.conf', 'django.contrib.admin')}
     ),
 
-    url(r'^search/$','pods.views.search_videos', name='search_videos'),
+    url(r'^search/$', 'pods.views.search_videos', name='search_videos'),
 
     # MEDIACOURSES
     url(r'^mediacourses_add/$',

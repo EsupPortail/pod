@@ -2,7 +2,9 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import RedirectView
-from core.rest_router import router
+
+from core.rest_router import router as core_router
+from pods.rest_router import router as pods_router
 
 from django.contrib import admin
 admin.autodiscover()
@@ -13,8 +15,10 @@ urlpatterns = patterns(
         url=settings.STATIC_URL + '/images/favicon.ico')),
     (r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^core-rest/', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^core-rest/', include(core_router.urls)),
+    url(r'^pods-rest/', include(pods_router.urls)),
+    url(r'^api-auth/',
+        include('rest_framework.urls', namespace='rest_framework')),
     # ACCOUNT
     url(r'^accounts/login/$', 'core.views.core_login', name='account_login'),
     url(r'^accounts/logout/$', 'core.views.core_logout',
@@ -34,7 +38,7 @@ urlpatterns = patterns(
     # TEXT EDITOR
     url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^browse/', 'core.views.file_browse', name='ckeditor_browse'),
-    
+
     # Add for no staff users
     (r'^dynamic-media/jsi18n/$', 'django.views.i18n.javascript_catalog'),
     (
@@ -43,8 +47,8 @@ urlpatterns = patterns(
         {'packages': ('django.conf', 'django.contrib.admin')}
     ),
 
-    url(r'^search/$','pods.views.search_videos', name='search_videos'),
-    url(r'^contact_us/$','core.views.contact_us', name='contact_us'),
+    url(r'^search/$', 'pods.views.search_videos', name='search_videos'),
+    url(r'^contact_us/$', 'core.views.contact_us', name='contact_us'),
     url(r'^captcha/', include('captcha.urls')),
 
     # MEDIACOURSES
