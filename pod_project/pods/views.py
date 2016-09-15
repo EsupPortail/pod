@@ -164,8 +164,12 @@ def channel_edit(request, slug_c):
             request, messages.ERROR, _(u'You cannot edit this channel.'))
         raise PermissionDenied
 
-    ThemeInlineFormSet = inlineformset_factory(
-        Channel, Theme, form=ThemeForm, extra=0)
+    if request.user.is_staff:
+        ThemeInlineFormSet = inlineformset_factory(
+            Channel, Theme, form=ThemeForm, extra=0)
+    else:
+        ThemeInlineFormSet = inlineformset_factory(
+            Channel, Theme, form=ThemeForm, exclude=('headband',), extra=0)
 
     channel_form = ChannelForm(instance=channel, user=request.user)
     #formset = ThemeInlineFormSet(instance=channel)
