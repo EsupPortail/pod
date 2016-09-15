@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User, Group
 from core.models import UserProfile
+from pods.models import Pod
 from rest_framework import viewsets
-from core.serializers import UserProfileSerializer, UserSerializer, GroupSerializer
+from core.serializers import UserProfileSerializer, UserSerializer, GroupSerializer, PodSerializer
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     """
@@ -17,10 +18,16 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
-
 class GroupViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+class PodViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Pod.objects.all().order_by('-date_added')
+    serializer_class = PodSerializer
