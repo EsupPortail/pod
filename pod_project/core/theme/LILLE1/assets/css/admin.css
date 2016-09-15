@@ -46,3 +46,7 @@ body {
 #changelist table thead th {
   white-space: normal;
 }
+.filerFile .related-lookup {
+  display: inline;
+  background-image: none;
+}

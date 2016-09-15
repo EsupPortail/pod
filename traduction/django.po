@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 17:03+0200\n"
-"PO-Revision-Date: 2016-09-02 17:09+0200\n"
+"PO-Revision-Date: 2016-09-15 11:19+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: LANGUAGE <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.9\n"
 
 #: core/forms.py:63
 msgid "Please indicate the result of the following operation hereunder"
@@ -3267,45 +3267,45 @@ msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
 
 # DJANGO-FILER FIX
-#~ msgid "Adds a new Folder"
-#~ msgstr "Créer un nouveau dossier"
+msgid "Adds a new Folder"
+msgstr "Créer un nouveau dossier"
 
 # DJANGO-FILER FIX
-#~ msgid "New Folder"
-#~ msgstr "Nouveau dossier"
+msgid "New Folder"
+msgstr "Nouveau dossier"
 
 # DJANGO-FILER FIX
-#~ msgid "Upload"
-#~ msgstr "Téléverser"
+msgid "Upload"
+msgstr "Téléverser"
 
 # DJANGO-FILER FIX
-#~ msgid "Go back to the parent folder"
-#~ msgstr "Revenir au dossier parent"
+msgid "Go back to the parent folder"
+msgstr "Revenir au dossier parent"
 
 # DJANGO-FILER FIX
-#~ msgid "Go back to root folder"
-#~ msgstr "Revenir au dossier racine"
+msgid "Go back to root folder"
+msgstr "Revenir au dossier racine"
 
 # DJANGO-FILER FIX
-#~ msgid "Change current folder details"
-#~ msgstr "Modifier les informations du dossier courant."
+msgid "Change current folder details"
+msgstr "Modifier les informations du dossier courant."
 
 # DJANGO-FILER FIX
-#~ msgid "There are no files or subfolders."
-#~ msgstr "Il n’y a aucun fichier ni sous-dossier."
+msgid "There are no files or subfolders."
+msgstr "Il n’y a aucun fichier ni sous-dossier."
 
 # DJANGO-FILER FIX
-#~ msgid "Thumbnail missing"
-#~ msgstr "Vignette manquante"
+msgid "Thumbnail missing"
+msgstr "Vignette manquante"
 
 # DJANGO-FILER FIX
-#~ msgid "None selected"
-#~ msgstr "Aucune sélection"
+msgid "None selected"
+msgstr "Aucune sélection"
 
 # DJANGO-FILER FIX
-#~ msgid "There are no files and/or folders available to move."
-#~ msgstr "Il n'y a aucun fichier ni dossier à déplacer."
+msgid "There are no files and/or folders available to move."
+msgstr "Il n'y a aucun fichier ni dossier à déplacer."
 
 # DJANGO-FILER FIX
-#~ msgid "There are no files available to rename."
-#~ msgstr "Il n'y a pas de fichier à renommer."
+msgid "There are no files available to rename."
+msgstr "Il n'y a pas de fichier à renommer."
