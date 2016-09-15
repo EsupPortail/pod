@@ -176,7 +176,7 @@ voir http://www.gnu.org/licenses/
     {% if user.is_staff %}
     <script type="text/javascript">
         $(document).ready(function() {
-            SelectFilter.init("id_users", "{% trans 'Utilisateurs' %}", 0, "{{ STATIC_URL }}admin/");
+            SelectFilter.init("id_users", "{% trans 'Users' %}", 0, "{{ STATIC_URL }}admin/");
             $('#channel_form .selector').addClass('row');
             $('#channel_form .selector-available').addClass('col-sm-5');
             $('#channel_form .selector-chosen').addClass('col-sm-5');
