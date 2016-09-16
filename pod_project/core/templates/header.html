@@ -42,7 +42,7 @@ voir http://www.gnu.org/licenses/
                             <select class="language form-control input-sm" name="language">
                                 {% for language in languages %}
                                     <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
-                                        {{ language.name_local }} ({{ language.code|upper }})
+                                        {{ language.name_local|capfirst }} ({{ language.code|upper }})
                                     </option>
                                 {% endfor %}
                             </select>

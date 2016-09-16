@@ -49,8 +49,8 @@ class ChannelAdmin(TranslationAdmin):
             owners.append(u'%s %s (%s)' % (
                 owner.first_name, owner.last_name, url))
         return ', '.join(owners)
-    get_owners.allow_tags = True
 
+    get_owners.allow_tags = True
     get_owners.short_description = _('Owners')
     list_display = ('title', 'get_owners', 'visible',)
     prepopulated_fields = {'slug': ('title',)}
@@ -97,7 +97,16 @@ class EnrichPodsInline(admin.TabularInline):
 
 
 class PodAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'owner', 'type', 'date_added', 'view_count', 'is_draft', 'is_restricted', 'is_password', 'duration_in_time', 'encoding_in_progress', 'encoding_status', 'admin_thumbnail')
+
+    def get_owner_by_name(self, obj):
+        owner = obj.owner
+        url = url_to_edit_object(owner)
+        return u'%s %s (%s)' % (owner.first_name, owner.last_name, url)
+
+    get_owner_by_name.allow_tags = True
+    get_owner_by_name.short_description = _('Owner')
+
+    list_display = ('id', 'title', 'get_owner_by_name', 'type', 'date_added', 'view_count', 'is_draft', 'is_restricted', 'is_password', 'duration_in_time', 'encoding_in_progress', 'encoding_status', 'admin_thumbnail')
     list_display_links = ('id', 'title')
     list_filter = ('date_added', 'channel', 'type', 'is_draft')
     list_editable = ('is_draft', 'is_restricted')
@@ -121,6 +130,7 @@ class PodAdmin(admin.ModelAdmin):
     is_password.short_description = _('Password')
 
     actions = ['encode_video']
+
     def encode_video(self, request, queryset):
         for item in queryset:
             item.encoding_in_progress=False
@@ -130,6 +140,7 @@ class PodAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Pod, PodAdmin)
+
 
 class EncodingPodsAdmin(admin.ModelAdmin):
     list_display = ('video', 'encodingType', 'encodingFile', 'encodingFormat')
