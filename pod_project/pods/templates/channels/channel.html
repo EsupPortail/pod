@@ -87,7 +87,7 @@ voir http://www.gnu.org/licenses/
                     {% blocktrans count counter=videos.paginator.count %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}
                 </div>
             {% endif %}
-            {% if user.is_authenticated and channel.owner == request.user%}
+            {% if user.is_authenticated and request.user in channel.owners.all%}
                 <div class="resultschannel">
                     <a href="{% url 'channel_edit' slug_c=channel.slug %}" title="{% trans 'edit' %}">
                         <span class="glyphicon glyphicon-pencil"></span>

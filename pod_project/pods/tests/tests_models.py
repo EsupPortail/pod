@@ -39,7 +39,7 @@ import os
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -51,10 +51,9 @@ class ChannelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        remi = User.objects.create_user("Remi")
-        Channel.objects.create(title="ChannelTest1", slug="blabla", owner=remi)
+        Channel.objects.create(title="ChannelTest1", slug="blabla")
         Channel.objects.create(title="ChannelTest2", visible=True,
-                               color="Black", owner=remi, style="italic", description="blabla")
+                               color="Black", style="italic", description="blabla")
 
         print (" --->  SetUp of ChannelTestCase : OK !")
     """
@@ -69,7 +68,6 @@ class ChannelTestCase(TestCase):
         self.assertEqual(channel.description, '')
         self.assertEqual(channel.headband, None)
         self.assertEqual(channel.style, None)
-        self.assertEqual(channel.owner, User.objects.get(username="Remi"))
         self.assertEqual(channel.__unicode__(), 'ChannelTest1')
         self.assertEqual(channel.video_count(), 0)
         self.assertEqual(channel.get_absolute_url(), "/" + channel.slug + "/")
@@ -89,7 +87,6 @@ class ChannelTestCase(TestCase):
         self.assertEqual(channel.description, 'blabla')
         self.assertEqual(channel.headband, None)
         self.assertEqual(channel.style, "italic")
-        self.assertEqual(channel.owner, User.objects.get(username="Remi"))
         self.assertEqual(channel.__unicode__(), 'ChannelTest2')
         self.assertEqual(channel.video_count(), 0)
         self.assertEqual(channel.get_absolute_url(), "/" + channel.slug + "/")
@@ -97,7 +94,7 @@ class ChannelTestCase(TestCase):
         print (
             "   --->  test_Channel_with_attributs of ChannelTestCase : OK !")
 
-    """ 
+    """
         test delete object
     """
 
@@ -114,7 +111,7 @@ class ChannelTestCase(TestCase):
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -127,8 +124,7 @@ class ThemeTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        remi = User.objects.create_user("Remi")
-        Channel.objects.create(title="ChannelTest1", owner=remi)
+        Channel.objects.create(title="ChannelTest1")
         Theme.objects.create(
             title="Theme1", slug="blabla", channel=Channel.objects.get(title="ChannelTest1"))
 
@@ -178,7 +174,7 @@ class ThemeTestCase(TestCase):
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -238,7 +234,7 @@ class TypeTestCase(TestCase):
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -298,7 +294,7 @@ class DisciplineTestCase(TestCase):
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -334,7 +330,7 @@ class NextAutoIncrementTestCase(TestCase):
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -467,7 +463,7 @@ class VideoTestCase(TestCase):
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -518,7 +514,7 @@ class FavoritesTestCase(TestCase):
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -576,7 +572,7 @@ class NotesTestCase(TestCase):
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -641,7 +637,7 @@ class MediaCoursesTestCase(TestCase):
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -679,12 +675,12 @@ class BuildingTestCase(TestCase):
         print (
             "   --->  test_delete_object of BuildingTestCase : OK !")
 
-"""              
+"""
 	test recorder object
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -738,12 +734,12 @@ class RecoderTestCase(TestCase):
         print (
             "   --->  test_delete_object of RecoderTestCase : OK !")
 
-"""              
+"""
     test reportVideo object
 """
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
