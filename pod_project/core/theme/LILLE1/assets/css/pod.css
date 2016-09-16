@@ -172,6 +172,12 @@ aside .form-group.show-all .more {
   border: 1px dashed #ccc !important;
   padding: 10px;
 }
+#themes {
+  margin-bottom: 2rem;
+}
+#themes legend {
+  margin-bottom: 0;
+}
 #doc {
   margin-bottom: 10px;
 }
