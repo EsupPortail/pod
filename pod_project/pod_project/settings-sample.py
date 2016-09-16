@@ -100,8 +100,8 @@ USE_L10N = True
 USE_TZ = True
 
 LANGUAGES = (
-    ('fr', _('Français')),
-    ('en', _('English'))
+    ('fr', 'Français'),
+    ('en', 'English')
 )
 DEFAULT_LANGUAGE = 1
 
