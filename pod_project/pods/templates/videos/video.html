@@ -117,6 +117,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
     {% if video.date_added %}<meta name="dc.date" content="{{ video.date_added|date:'Y/m/d' }}" />{% endif %}
     <meta name="dc.type" content="{{ video.get_mediatype|first }}" />
     <meta name="dc.identifier" content="{{ request.build_absolute_uri }}" />
+    <meta name="dc.language" content="{{ video.main_lang|upper }}" />
     {% if not video.is_restricted and not video.password %}<meta name="dc.rights" content="CC-By-ND-NC" />{% endif %}
     <!-- /Dublin Core -->
     {% endif %}
