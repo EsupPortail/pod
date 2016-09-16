@@ -19,7 +19,7 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('user', 'description', 'url', 'auth_type',
+        fields = ('id', 'url', 'user', 'description', 'url', 'auth_type',
                   'affiliation', 'commentaire')  # 'image',
 
 

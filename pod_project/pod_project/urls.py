@@ -3,9 +3,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import RedirectView
 
-from core.rest_router import router as core_router
 from pods.rest_router import router as pods_router
-from core.rest_views import GetUserView
 
 from django.contrib import admin
 admin.autodiscover()
@@ -16,9 +14,8 @@ urlpatterns = patterns(
         url=settings.STATIC_URL + '/images/favicon.ico')),
     (r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^core-rest/', include(core_router.urls)),
+    url(r'^core-rest/', include('core.rest_router')),
     url(r'^pods-rest/', include(pods_router.urls)),
-     url(r'^User_by_username/$', GetUserView.as_view(), name='get_user_by_username'),
     url(r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')),
     # ACCOUNT
