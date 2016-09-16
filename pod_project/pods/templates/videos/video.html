@@ -118,6 +118,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
     <meta name="dc.type" content="{{ video.get_mediatype|first }}" />
     <meta name="dc.identifier" content="{{ request.build_absolute_uri }}" />
     <meta name="dc.language" content="{{ video.main_lang|upper }}" />
+    <meta name="dc.coverage" content="{{DC_COVERAGE}}" />
     {% if not video.is_restricted and not video.password %}<meta name="dc.rights" content="{{DC_RIGHTS}}" />{% endif %}
     <!-- /Dublin Core -->
     {% endif %}

@@ -201,8 +201,10 @@ WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">'
 ##
 # Dublin Core :
 #
-#   rights :    licence CC pour les contenus publics
+#   coverage        nom, ville et pays de l'établissement
+#   rights          licence CC pour les contenus publics
 #
+DC_COVERAGE = TITLE_ETB + " - Ville - Pays"
 DC_RIGHTS = "CC-By-ND-NC"
 
 
@@ -290,6 +292,7 @@ TEMPLATE_CUSTOM = 'custom'  # None
 
 # Constantes utilisables depuis les templates
 TEMPLATE_VISIBLE_SETTINGS = (
+    'DC_COVERAGE',
     'DC_RIGHTS',
     'DEFAULT_IMG',
     'FILTER_USER_MENU',
