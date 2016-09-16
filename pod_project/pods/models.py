@@ -57,27 +57,28 @@ def remove_accents(input_str):
 @python_2_unicode_compatible
 class Channel(models.Model):
     title = models.CharField(_('Title'), max_length=100, unique=True)
-    slug = models.SlugField(_('Slug'), unique=True, max_length=100,
-                            help_text=_('Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
-
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
     description = RichTextField(
         _('Description'), config_name='complete', blank=True)
     headband = FilerImageField(
         null=True, blank=True, verbose_name=_('Headband'))
     color = models.CharField(
         _('Background color'), max_length=10, blank=True, null=True)
-
     style = models.TextField(_('Extra style'), null=True, blank=True)
-
-    owner = models.ForeignKey(
-        User, related_name='owner_channels', verbose_name=_('Owner'))
-
-    users = models.ManyToManyField(User, related_name='users_channels', verbose_name=_('Users'),
-                                  blank=True)
-    visible = models.BooleanField(verbose_name=_('Visible'),
-                                  help_text=_(
-                                      u'If checked, the channel appear in a list of available channels on the platform.'),
-                                  default=False)
+    owners = models.ManyToManyField(
+        User, related_name='owners_channels', verbose_name=_('Owners'),
+        blank=True)
+    users = models.ManyToManyField(
+        User, related_name='users_channels', verbose_name=_('Users'),
+        blank=True)
+    visible = models.BooleanField(
+        verbose_name=_('Visible'),
+        help_text=_(
+            u'If checked, the channel appear in a list of available channels on the platform.'),
+        default=False)
 
     class Meta:
         ordering = ['title']
@@ -107,8 +108,10 @@ class Channel(models.Model):
 @python_2_unicode_compatible
 class Theme(models.Model):
     title = models.CharField(_('Title'), max_length=100, unique=True)
-    slug = models.SlugField(_('Slug'), unique=True, max_length=100,
-                            help_text=_('Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
     headband = FilerImageField(
         null=True, blank=True, verbose_name=_('Headband'))
@@ -146,8 +149,10 @@ class Theme(models.Model):
 @python_2_unicode_compatible
 class Type(models.Model):
     title = models.CharField(_('Title'), max_length=100, unique=True)
-    slug = models.SlugField(_('Slug'), unique=True, max_length=100,
-                            help_text=_('Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
     headband = FilerImageField(
         null=True, blank=True, verbose_name=_('Headband'))
@@ -180,8 +185,10 @@ class Type(models.Model):
 @python_2_unicode_compatible
 class Discipline(models.Model):
     title = models.CharField(_('title'), max_length=100, unique=True)
-    slug = models.SlugField(_('slug'), unique=True, max_length=100,
-                            help_text=_('Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
+    slug = models.SlugField(
+        _('slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
     headband = FilerImageField(
         null=True, blank=True, verbose_name=_('Headband'))
@@ -288,12 +295,10 @@ class _MyTaggableManager(_TaggableManager):
 
 @python_2_unicode_compatible
 class Pod(Video):
-
     tags = MyTaggableManager(
         help_text=_(
             u'Separate tags with spaces, enclose the tags consist of several words in quotation marks.'),
         verbose_name=_('Tags'), blank=True)
-
     type = models.ForeignKey(Type, verbose_name=_('Type'))
     discipline = models.ManyToManyField(
         Discipline, blank=True, verbose_name=_('Disciplines'))
@@ -304,12 +309,21 @@ class Pod(Video):
 
     #tags = TaggableManager(help_text=_(u'Séparez les tags par des espaces, mettez les tags constituées de plusieurs mots entre guillemets.'), verbose_name=_('Tags'), blank=True)
 
-    is_draft = models.BooleanField(verbose_name=_('Draft'), help_text=_(
-        u'If this box is checked, the video will be visible and accessible only by you.'), default=True)
-    is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
-        u'If this box is checked, the video will only be accessible to authenticated users.'), default=False)
-    password = models.CharField(_('password'), help_text=_(
-        u'Viewing this video will not be possible without this password.'), max_length=50, blank=True, null=True)
+    is_draft = models.BooleanField(
+        verbose_name=_('Draft'),
+        help_text=_(
+            u'If this box is checked, the video will be visible and accessible only by you.'),
+        default=True)
+    is_restricted = models.BooleanField(
+        verbose_name=_(u'Restricted access'),
+        help_text=_(
+            u'If this box is checked, the video will only be accessible to authenticated users.'),
+        default=False)
+    password = models.CharField(
+        _('password'),
+        help_text=_(
+            u'Viewing this video will not be possible without this password.'),
+        max_length=50, blank=True, null=True)
 
     class Meta:
         verbose_name = _("Video")
@@ -682,18 +696,20 @@ class DocPods(models.Model):
 class EnrichPods(models.Model):
     video = models.ForeignKey(Pod, verbose_name=_('video'))
     title = models.CharField(_('title'), max_length=100)
-    slug = models.SlugField(_('slug'), unique=True, max_length=105,
-                            help_text=_(
-                                'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'),
-                            editable=False)
-
+    slug = models.SlugField(
+        _('slug'), unique=True, max_length=105,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'),
+        editable=False)
     #is_chapter = models.BooleanField(_('Is chapter ?'), default=False, help_text=_('Is chapter ?'))
     stop_video = models.BooleanField(_('Stop video'), default=False, help_text=_(
         'The video will pause when displaying this enrichment.'))
     start = models.PositiveIntegerField(
-        _('Start'), default=0, help_text=_('Start of enrichment display in seconds'))
+        _('Start'), default=0,
+        help_text=_('Start of enrichment display in seconds'))
     end = models.PositiveIntegerField(
-        _('End'), default=1, help_text=_('End of enrichment display in seconds'))
+        _('End'), default=1,
+        help_text=_('End of enrichment display in seconds'))
 
     ENRICH_CHOICES = (
         ("image", _("image")),
@@ -710,10 +726,14 @@ class EnrichPods(models.Model):
     richtext = RichTextField(_('richtext'), config_name='complete', blank=True)
     weblink = models.URLField(
         _(u'Web link'), max_length=200, null=True, blank=True)
-    document = FilerFileField(null=True, blank=True, verbose_name="Document", help_text=_(
-        'Integrate an document (PDF, text, html)'))
-    embed = models.TextField(_('Embed'), max_length=300, null=True, blank=True, help_text=_(
-        'Integrate an external source'))
+    document = FilerFileField(
+        null=True, blank=True, verbose_name="Document",
+        help_text=_(
+            u'Integrate an document (PDF, text, html)'))
+    embed = models.TextField(
+        _('Embed'), max_length=300, null=True, blank=True,
+        help_text=_(
+            u'Integrate an external source'))
 
     class Meta:
         verbose_name = _("Enrichment")
@@ -832,13 +852,14 @@ class EnrichPods(models.Model):
 class ChapterPods(models.Model):
     video = models.ForeignKey(Pod, verbose_name=_('video'))
     title = models.CharField(_('title'), max_length=100)
-    slug = models.SlugField(_('slug'), unique=True, max_length=105,
-                            help_text=_(
-                                'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'),
-                            editable=False)
-
+    slug = models.SlugField(
+        _('slug'), unique=True, max_length=105,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'),
+        editable=False)
     time = models.PositiveIntegerField(
-        _('Start time'), default=0, help_text=_('Start time of the chapter, in seconds.'))
+        _('Start time'), default=0,
+        help_text=_(u'Start time of the chapter, in seconds.'))
 
     class Meta:
         verbose_name = _("Chapter")
@@ -977,7 +998,8 @@ class Mediacourses(models.Model):
 class Building(models.Model):
     name = models.CharField(_('name'), max_length=200, unique=True)
     image = FilerImageField(
-        null=True, blank=True, verbose_name="Image", related_name="building_image")
+        null=True, blank=True, verbose_name="Image",
+        related_name="building_image")
 
     def __unicode__(self):
         return self.name
@@ -994,15 +1016,21 @@ class Building(models.Model):
 class Recorder(models.Model):
     name = models.CharField(_('name'), max_length=200, unique=True)
     building = models.ForeignKey('Building', verbose_name=_('Building'))
-    description = RichTextField(_('description'), config_name='complete', blank=True)
+    description = RichTextField(
+        _('description'), config_name='complete', blank=True)
     image = FilerImageField(
-        null=True, blank=True, verbose_name="Image", related_name="recorder_image")
+        null=True, blank=True, verbose_name="Image",
+        related_name="recorder_image")
     adress_ip = models.GenericIPAddressField(unique=True)
     status = models.BooleanField(default=0)
     slide = models.BooleanField(default=1)
     gmapurl = models.CharField(max_length=250, blank=True, null=True)
-    is_restricted = models.BooleanField(verbose_name=_(u'Restricted access'), help_text=_(
-        u'Live is accessible only to authenticated users.'), default=False)
+    is_restricted = models.BooleanField(
+        verbose_name=_(u'Restricted access'),
+        help_text=_(
+            u'Live is accessible only to authenticated users.'),
+        default=False)
+
     def __unicode__(self):
         return "%s - %s" % (self.name, self.adress_ip)
 

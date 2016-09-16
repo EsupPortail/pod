@@ -198,9 +198,17 @@ aside {
     margin-bottom: 10px;
 }
 
-[data-formset-body-contributor], [data-formset-body-chapter], [data-formset-body-track], [data-formset-body-doc], [data-formset-body] {
+[data-formset-body-contributor],
+[data-formset-body-chapter],
+[data-formset-body-track],
+[data-formset-body-doc],
+[data-formset-body] {
     max-height: 400px;
     overflow-y: auto;
+}
+
+.help-tooltip {
+    cursor: help;
 }
 
 
@@ -372,6 +380,66 @@ aside {
 #video_favorite_form {
     display: inline-block;
     vertical-align: middle;
+}
+
+
+
+/*******************************************************************************
+
+        Admin-like selector
+*/
+
+.form-group {
+
+    .selector {
+
+        select {
+            height: 8.7em;
+            width: 100%;
+            border: 1px solid #ccc;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 1em;
+            line-height: 1.6em;
+            border: 1px solid #ccc;
+            border-bottom: 0 none;
+            background-color: #eee;
+            background-image: none;
+        }
+
+        .selector-available, .selector-chosen {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .selector-chosen {
+            border-top: 0 none;
+        }
+
+        .selector-chooser {
+            list-style-type: none;
+        }
+
+        .selector-filter {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-width: 0 1px;
+            padding: 3px;
+            color: #999;
+            margin: 0;
+            text-align: left;
+
+            input[type="text"] {
+                width: 92%;
+            }
+        }
+
+        .btn-default:focus:not(:active) {
+            background-color: white;
+        }
+    }
 }
 
 

@@ -183,6 +183,9 @@ aside .form-group.show-all .more {
   max-height: 400px;
   overflow-y: auto;
 }
+.help-tooltip {
+  cursor: help;
+}
 /*******************************************************************************
 
         Video thumb
@@ -311,6 +314,50 @@ aside .form-group.show-all .more {
 #video_favorite_form {
   display: inline-block;
   vertical-align: middle;
+}
+/*******************************************************************************
+
+        Admin-like selector
+*/
+.form-group .selector select {
+  height: 8.7em;
+  width: 100%;
+  border: 1px solid #ccc;
+}
+.form-group .selector h2 {
+  margin: 0;
+  font-size: 1em;
+  line-height: 1.6em;
+  border: 1px solid #ccc;
+  border-bottom: 0 none;
+  background-color: #eee;
+  background-image: none;
+}
+.form-group .selector .selector-available,
+.form-group .selector .selector-chosen {
+  text-align: center;
+  margin-bottom: 5px;
+}
+.form-group .selector .selector-chosen {
+  border-top: 0 none;
+}
+.form-group .selector .selector-chooser {
+  list-style-type: none;
+}
+.form-group .selector .selector-filter {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-width: 0 1px;
+  padding: 3px;
+  color: #999;
+  margin: 0;
+  text-align: left;
+}
+.form-group .selector .selector-filter input[type="text"] {
+  width: 92%;
+}
+.form-group .selector .btn-default:focus:not(:active) {
+  background-color: white;
 }
 /*******************************************************************************
 

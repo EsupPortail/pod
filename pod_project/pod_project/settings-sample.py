@@ -230,6 +230,17 @@ MAX_DAILY_USER_UPLOADS = 0
 USE_XHR_FORM_UPLOAD = 1
 
 
+##
+# Possibilité pour les propriétaires de chaînes d'agir sur leur visibilité :
+#
+#   - ce paramètre est un entier ;
+#   - activation = 1, désactivation = 0 ;
+#   - si activé, le champ « Visible » est affiché dans le formulaire d'édition des chaînes.
+#
+#
+ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = 1
+
+
 # Paramètres des templates
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
