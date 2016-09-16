@@ -1,16 +1,22 @@
+# POD French JS localization file
+# Copyright (C) 2016 ESUP Portail
+# This file is distributed under the same license as the POD package.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: Pod\n"
+"Report-Msgid-Bugs-To: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Philippe Pom�dio <philippe.pomedio@unice.fr>\n"
-"Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
+"Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.9\n"
 
+# "Content-Type: text/plain; charset=UTF-8\n"
 #, javascript-format
 msgid "Available %s"
 msgstr "%s disponibles"
