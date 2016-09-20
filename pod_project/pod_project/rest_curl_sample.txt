@@ -1,7 +1,7 @@
 Pour utiliser l'API Rest, il faut créer un token pour un utilisateur "admin" via l'interface d'administration de pod.
 #########################################################################
 # CREATE USER 
-curl -H "Content-Type: application/json" -H 'Authorization: Token 0ba74b7f2082d13f3edf4de844726fff5597334e' -X POST -d '{
+curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X POST -d '{
     "username": "test",
     "first_name": "lol",
     "last_name": "youpi",
