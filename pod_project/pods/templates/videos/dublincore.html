@@ -25,11 +25,11 @@ voir http://www.gnu.org/licenses/
 {% endif %}
 {% for key, value in video.get_dublin_core.items %}
 {% if xml = True %}
-<{{key}}>{{value|metaformat|safe|striptags|truncatechars:300}}<{{key}}/>
+<{{key}}>{{value|metaformat|safe|striptags|truncatechars:300}}</{{key}}>
 {% else %}
 <meta name="{{key}}" content="{{value|metaformat|safe|striptags|truncatechars:300}}" />
 {% endif %}
 {% endfor %} 
 {% if xml = True %}
-</rdf:RDF>
+</rdf:Description>
 {% endif %}
