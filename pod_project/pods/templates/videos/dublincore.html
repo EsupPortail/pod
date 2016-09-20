@@ -19,34 +19,17 @@ GNU General Public Licence
 avec ce programme. Si ce n'est pas le cas,
 voir http://www.gnu.org/licenses/
 {%endcomment%}
-
-<?xml version="1.0"?>
-<!DOCTYPE rdf:RDF PUBLIC "-//DUBLIN CORE//DCMES DTD 2002/07/31//EN"
-    "http://dublincore.org/documents/2002/07/31/dcmes-xml/dcmes-xml-dtd.dtd">
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-         xmlns:dc ="http://purl.org/dc/elements/1.1/">
-
-{% for video in video_list %}
+{% load pod_filters %}
+{% if xml = True %}
 <rdf:Description rdf:about="http://dublincore.org/">
-<meta name="dc.title" content="{{ video.title }}" />
-<meta name="dc.creator" content="{{ video.owner.get_full_name }}" />
-{% if video.discipline.all %}<meta name="dc.subject" content="{% for disc in video.discipline.all %}{{ disc.title }}{% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
-{% if video.description %}<meta name="dc.description" content="{{ video.description|metaformat|safe|striptags|truncatechars:300 }}" />{% endif %}
-{% if TITLE_ETB %}<meta name="dc.publisher" content="{{TITLE_ETB}}" />{% endif %}
-{% if video.contributorpods_set.all %}<meta name="dc.contributor" content="{% for contrib in video.contributorpods_set.all %}{{ contrib.name }} {% if contrib.role %}({{ contrib.role }}){%endif%}{% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
-{% if video.date_added %}<meta name="dc.date" content="{{ video.date_added|date:'Y/m/d' }}" />{% endif %}
-<meta name="dc.type" content="{{ video.get_mediatype|first }}" />
-<meta name="dc.identifier" content="{{  video.get_full_url }}" />
-<meta name="dc.language" content="{{ video.main_lang|upper }}" />
-<meta name="dc.coverage" content="{{DC_COVERAGE}}" />
-{% if not video.is_restricted and not video.password %}<meta name="dc.rights" content="{{DC_RIGHTS}}" />{% endif %}
-{% with mediatype=video.get_mediatype|first %}
-{% if mediatype == 'audio' %}
-<meta name="dc.format" content="audio/mp3" />
-{% else %}
-<meta name="dc.format" content="video/mp4" />
 {% endif %}
-{% endwith %}
-
-{% endfor %}
+{% for key, value in video.get_dublin_core.items %}
+{% if xml = True %}
+<{{key}}>{{value|metaformat|safe|striptags|truncatechars:300}}<{{key}}/>
+{% else %}
+<meta name="{{key}}" content="{{value|metaformat|safe|striptags|truncatechars:300}}" />
+{% endif %}
+{% endfor %} 
+{% if xml = True %}
 </rdf:RDF>
+{% endif %}

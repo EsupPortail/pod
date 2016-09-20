@@ -409,6 +409,28 @@ class Pod(Video):
         iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % self.get_full_url()
         return iframe_url
 
+    def get_dublin_core(self):
+        contributors = []
+        for contrib in self.contributorpods_set.values_list('name', 'role'):
+            contributors.append(" ".join(contrib))
+            
+        data_to_dump = {
+            'dc.title': u'%s' %self.title,
+            'dc.creator': u'%s' %self.owner.get_full_name(),
+            'dc.description': u'%s' %self.description,
+            'dc.subject': u'%s' %', '.join(self.discipline.all().values_list('title', flat=True)),
+            'dc.publisher': settings.TITLE_ETB if settings.TITLE_ETB else "",
+            'dc.contributor': ", ".join(contributors),
+            "dc.date": u'%s' %self.date_added.strftime('%Y/%m/%d') if self.date_added else "",
+            "dc.type": self.get_mediatype()[0] if len(self.get_mediatype()) > 0 else "video",
+            "dc.identifier" : self.get_full_url(),
+            "dc.language" : u'%s' %self.main_lang,
+            'dc.coverage': settings.DC_COVERAGE if settings.DC_COVERAGE else "",
+            'dc.rights': settings.DC_RIGHTS if settings.DC_RIGHTS and not self.is_restricted and not self.password else "",
+            "dc.format":  "audio/mp3" if len(self.get_mediatype()) > 0 and self.get_mediatype()[0]=="audio" else "video/mp4"
+        }
+        return data_to_dump
+
     def get_json_to_index(self):
 
         data_to_dump = {
