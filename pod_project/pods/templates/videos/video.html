@@ -120,6 +120,13 @@ $(document).on('click', '#button_video_favorite', function (event) {
     <meta name="dc.language" content="{{ video.main_lang|upper }}" />
     <meta name="dc.coverage" content="{{DC_COVERAGE}}" />
     {% if not video.is_restricted and not video.password %}<meta name="dc.rights" content="{{DC_RIGHTS}}" />{% endif %}
+     {% with mediatype=video.get_mediatype|first %}
+        {% if mediatype == 'audio' %}
+    <meta name="dc.format" content="audio/mp3" />
+        {% else %}
+    <meta name="dc.format" content="video/mp4" />
+        {% endif %}
+      {% endwith %}      
     <!-- /Dublin Core -->
     {% endif %}
 {% endblock %}
