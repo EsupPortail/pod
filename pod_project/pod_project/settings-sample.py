@@ -51,6 +51,8 @@ INSTALLED_APPS = (
     'djangoformsetjs',
     'captcha',
     'bootstrap3',
+    'rest_framework',
+    'rest_framework.authtoken',
     # Applications locales
     'pods',
     'core'
@@ -144,6 +146,17 @@ CACHES = {
         'LOCATION': 'cache_host',
     }
 }
+
+# WEBservices with rest API
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication'
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+    )
+}
+#curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
 
 # Login
 LOGIN_URL = '/accounts/login/'

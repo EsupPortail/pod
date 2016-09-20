@@ -11,6 +11,9 @@ urlpatterns = patterns(
         url=settings.STATIC_URL + '/images/favicon.ico')),
     (r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^rest/', include('pod_project.rest_router')),
+    url(r'^api-auth/',
+        include('rest_framework.urls', namespace='rest_framework')),
     # ACCOUNT
     url(r'^accounts/login/$', 'core.views.core_login', name='account_login'),
     url(r'^accounts/logout/$', 'core.views.core_logout',
@@ -38,7 +41,7 @@ urlpatterns = patterns(
         {'packages': ('django.conf', 'django.contrib.admin')}
     ),
 
-    url(r'^search/$','pods.views.search_videos', name='search_videos'),
+    url(r'^search/$', 'pods.views.search_videos', name='search_videos'),
 
     # MEDIACOURSES
     url(r'^mediacourses_add/$',

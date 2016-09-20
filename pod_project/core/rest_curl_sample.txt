@@ -1,0 +1,16 @@
+# CREATE USER 
+curl -H "Content-Type: application/json" -H 'Authorization: Token 0ba74b7f2082d13f3edf4de844726fff5597334e' -X POST -d '{
+    "username": "test",
+    "first_name": "lol",
+    "last_name": "youpi",
+    "email": "y@t.com",
+    "groups": []
+}' http://127.0.0.1:8000/rest/users/
+#
+# Attention il faut définir par la suite le mot de passe via l'interface d'admin
+#
+# GET USER BY USERNAME
+curl -H "Content-Type: application/json" -H 'Authorization: Token 0ba74b7f2082d13f3edf4de844726fff5597334e' -X POST -d '{
+    "username": "test"
+}' http://127.0.0.1:8000/rest/get_user_by_username/
+

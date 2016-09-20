@@ -47,7 +47,6 @@ import sys
 import logging
 logger = logging.getLogger(__name__)
 
-
 @login_required
 def file_browse(request):
     # Add this to improve folder selection and view list
