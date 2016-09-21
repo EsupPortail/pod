@@ -413,7 +413,7 @@ class Pod(Video):
         contributors = []
         for contrib in self.contributorpods_set.values_list('name', 'role'):
             contributors.append(" ".join(contrib))
-            
+
         data_to_dump = {
             'dc.title': u'%s' %self.title,
             'dc.creator': u'%s' %self.owner.get_full_name(),
@@ -542,17 +542,18 @@ class ContributorPods(models.Model):
     email_address = models.EmailField(
         _('mail'), null=True, blank=True, default="")
     ROLE_CHOICES = (
-        ("author", _("author")),
-        ("director", _("director")),
-        ("editor", _("editor")),
-        ("designer", _("designer")),
-        ("contributor", _("contributor")),
         ("actor", _("actor")),
-        ("voice-over", _("voice-over")),
+        ("author", _("author")),
+        ("designer", _("designer")),
         ("consultant", _("consultant")),
-        ("writer", _("writer")),
+        ("contributor", _("contributor")),
+        ("editor", _("editor")),
+        ("speaker", _("speaker")),
         ("soundman", _("soundman")),
-        ("technician", _("technician"))
+        ("director", _("director")),
+        ("writer", _("writer")),
+        ("technician", _("technician")),
+        ("voice-over", _("voice-over"))
     )
     role = models.CharField(_(u'role'), max_length=200, choices=ROLE_CHOICES, default=_("authors"))
     weblink = models.URLField(
