@@ -64,5 +64,7 @@ curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715
 {"id":3,"title":"test chapter","time":5,"video":1}
 """
 
-
+#########################################################################
+# dublin core
+curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X GET http://127.0.0.1:8000/rest/dublincore/
 
