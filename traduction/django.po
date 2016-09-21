@@ -1588,7 +1588,7 @@ msgstr "auteur"
 
 #: pods/models.py:524
 msgid "director"
-msgstr "directeur"
+msgstr "réalisateur"
 
 #: pods/models.py:525
 msgid "editor"
