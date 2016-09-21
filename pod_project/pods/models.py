@@ -542,18 +542,18 @@ class ContributorPods(models.Model):
     email_address = models.EmailField(
         _('mail'), null=True, blank=True, default="")
     ROLE_CHOICES = (
-        ("author", _("author")),
-        ("director", _("director")),
-        ("editor", _("editor")),
-        ("designer", _("designer")),
-        ("contributor", _("contributor")),
         ("actor", _("actor")),
-        ("voice-over", _("voice-over")),
+        ("author", _("author")),
+        ("designer", _("designer")),
         ("consultant", _("consultant")),
-        ("writer", _("writer")),
+        ("contributor", _("contributor")),
+        ("editor", _("editor")),
+        ("speaker", _("speaker")),
         ("soundman", _("soundman")),
+        ("director", _("director")),
+        ("writer", _("writer")),
         ("technician", _("technician")),
-        ("speaker", _("speaker"))
+        ("voice-over", _("voice-over"))
     )
     role = models.CharField(_(u'role'), max_length=200, choices=ROLE_CHOICES, default=_("authors"))
     weblink = models.URLField(
