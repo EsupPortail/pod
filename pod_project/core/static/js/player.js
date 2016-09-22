@@ -292,7 +292,9 @@ function loadVideo() {
 
             logoLink.setAttribute( 'href', player_logo_url );
             logoLink.setAttribute( 'title', player_logo_title );
+            logoLink.setAttribute( 'style', "font-size: 1.5em; font-weight: bold; line-height: 1.9em;" );
             logoImg.setAttribute( 'src', player_logo_img );
+            logoImg.setAttribute('alt', player_logo_alt);
             logoImg.setAttribute( 'height', '90%' );
 
             logoLink.appendChild( logoImg );
