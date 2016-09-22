@@ -80,9 +80,12 @@ voir http://www.gnu.org/licenses/
         var overview = '';
     {% endif %}
     {% if LOGO_PLAYER != '' %}
-        var logo_player = '{% static LOGO_PLAYER %}';
+        var player_logo_img = '{% static LOGO_PLAYER %}',
+            player_logo_title = '{% blocktrans %}Click to reach this content on {{ TITLE_SITE }}.{% endblocktrans %}',
+            player_logo_alt = '{{ TITLE_SITE }}';
+            player_logo_url = '{{ request.build_absolute_uri }}';
     {% else %}
-        var logo_player = '';
+        var player_logo_img = '';
     {% endif %}
     {% if request.GET.is_iframe %}
         is_iframe = true;

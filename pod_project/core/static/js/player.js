@@ -5,7 +5,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -57,7 +57,7 @@ function loadVideo() {
     //reinitialize somes var :
     currentslide = '';
     timestamps = [];
-    
+
     videojs.options.flash.swf = 'video-js.swf';
     videojs('player_video').ready(function() {
         // PLAYER READY
@@ -116,10 +116,10 @@ function loadVideo() {
 			});
 			$('ul#chapters').hide();
         }
-        
+
         $('div.vjs-slide').hide();
         $('div.vjs-title').hide();
-        
+
         myPlayer.on('changeRes', function() {
             changeRes = true;
         });
@@ -127,7 +127,7 @@ function loadVideo() {
             isPlaying = !myPlayer.paused();
             changeDisplay(myPlayer.getCurrentDisp());
         });
-        
+
         // LOAD Z-INDEX
         $('video').css('zIndex', videozindex + 1);
         $('.vjs-slide').css('zIndex', videozindex + 2);
@@ -178,7 +178,7 @@ function loadVideo() {
             videojs.Info.prototype.onClick = function() {
                 if ($('div#info_video').is(':visible')) {
                     $('div#info_video').hide();
-                } else { 
+                } else {
                     $('div#info_video').show();
                 }
             };
@@ -205,7 +205,7 @@ function loadVideo() {
 
             myPlayer.info({});
         }
-        /*************************************************************************/        
+        /*************************************************************************/
         if (IS_MOBILE) {
             if (is_iframe === false && ($('ul#slides li[data-type!="None"]').length > 0 || $('ul#chapters li').length > 0)) {
                 $('#player').after('<nav class="navbar navbar-default" role="navigation"><div class="collapse navbar-collapse" ><ul class="nav navbar-nav" id="mobile_info"></ul></div></nav>');
@@ -285,12 +285,22 @@ function loadVideo() {
             }
         }
         /*************************************************************************/
-        if (logo_player != '') {
-            var elem = document.createElement('img');
-            elem.setAttribute('src', logo_player);
-            elem.setAttribute('height', '90%');
-            elem.setAttribute('alt', 'Flower');
-            myPlayer.controlBar.el().appendChild(elem);
+        if ( player_logo_img ) {
+
+            var logoLink = document.createElement( 'a' ),
+                logoImg = document.createElement( 'img' );
+
+            logoLink.setAttribute( 'href', player_logo_url );
+            logoLink.setAttribute( 'title', player_logo_title );
+            logoLink.setAttribute( 'role', "link" );
+            logoLink.setAttribute( 'style', "font-size: 1.5em; font-weight: bold; line-height: 1.9em;" );
+            logoImg.setAttribute( 'src', player_logo_img );
+            logoImg.setAttribute('alt', player_logo_alt);
+            logoImg.setAttribute( 'height', '90%' );
+
+            logoLink.appendChild( logoImg );
+
+            myPlayer.controlBar.el( ).appendChild( logoLink );
         }
         /*************************************************************************/
         start = decodeURIComponent($.urlParam('start'));
@@ -301,7 +311,7 @@ function changeDisplay(disp, duration) {
     duration = (typeof duration == 'undefined' ? 500 : duration);
     vid_width = parseInt(disp.split('/')[0]);
     slide_width = parseInt(disp.split('/')[1]);
-    
+
     if (animation_complete === true) {
         animation_complete = false;
         if (vid_width == 100 && slide_width > 0) {
@@ -441,7 +451,7 @@ function timeupdate(event) {
                     myPlayer.pause();
                 }
                 isPlaying = !myPlayer.paused();
-                
+
                 if ($(timestamps[i].elm).data('type') != 'None') {
                     if(!$('.vjs-slide').is(':visible')) {
                         $('.vjs-slide').show();
@@ -485,7 +495,7 @@ function timeupdate(event) {
         } else {
             changeDisplay('100/0');
         }
-    } 
+    }
     if (currentslide != '' && slide == false ){
         for (i = 0; i < all; i++) {
             if (t < timestamps[i].start) {
@@ -500,7 +510,7 @@ function timeupdate(event) {
             changeDisplay('100/0', 1000);
         }
     }
-    
+
 }
 
 $.urlParam = function(name) {
