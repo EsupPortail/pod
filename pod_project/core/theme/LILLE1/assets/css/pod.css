@@ -189,6 +189,19 @@ aside .form-group.show-all .more {
   max-height: 400px;
   overflow-y: auto;
 }
+.channelheader > .img-responsive {
+  width: 100%;
+  max-height: 13rem;
+  object-fit: cover;
+}
+.theme_list > li > a.btn {
+  padding: 0;
+  height: 34px;
+  line-height: 34px;
+}
+.theme_list > li > a.btn > img {
+  float: left;
+}
 .help-tooltip {
   cursor: help;
 }

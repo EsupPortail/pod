@@ -215,6 +215,25 @@ aside {
     overflow-y: auto;
 }
 
+.channelheader {
+
+    & > .img-responsive {
+        width: 100%;
+        max-height: @headbandHeight;
+        object-fit: cover;
+    }
+}
+
+.theme_list > li > a.btn {
+    padding: 0;
+    height: 34px;
+    line-height: 34px;
+
+    & > img {
+        float: left;
+    }
+}
+
 .help-tooltip {
     cursor: help;
 }
