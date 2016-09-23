@@ -141,10 +141,10 @@ voir http://www.gnu.org/licenses/
                         </li>
                     {% else %}
                         <li class="col-sm-4 col-xs-6">
+                            <a class="btn btn-default btn-sm btn-block" href="{% url 'theme' slug_c=channel.slug slug_t=th.slug %}">
                             {% if th.headband %}
                                 <img src="{{ th.headband.icons.32 }}" alt="{% trans 'Headband' %} {{ th.title }}" />
                             {% endif %}
-                            <a class="btn btn-default btn-sm btn-block" href="{% url 'theme' slug_c=channel.slug slug_t=th.slug %}">
                                 {{ th.title }}
                             </a>
                         </li>
