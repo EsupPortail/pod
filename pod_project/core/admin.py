@@ -80,6 +80,7 @@ class UserAdmin(UserAdmin):
         'last_name',
         'first_name',
         'clickable_email',
+        'date_joined',
         'last_login',
         'is_active',
         'is_staff',
