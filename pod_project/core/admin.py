@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -53,20 +53,31 @@ admin.site.register(FlatPage, CustomFlatPageAdmin)
 
 admin.site.register(PagesMenuBas)
 
+
 # Define an inline admin descriptor for Employee model
 # which acts a bit like a singleton
-
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
     verbose_name_plural = 'profiles'
 
+
 # Define a new User admin
 
-
 class UserAdmin(UserAdmin):
+    list_display = (
+        'username',
+        'last_name',
+        'first_name',
+        'email',
+        'last_login',
+        'is_active',
+        'is_staff',
+        'is_superuser'
+    )
     inlines = (UserProfileInline, )
+
 
 # Re-register UserAdmin
 admin.site.unregister(User)
