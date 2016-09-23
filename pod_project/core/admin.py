@@ -26,6 +26,8 @@ from django.contrib.flatpages.models import FlatPage
 from ckeditor.widgets import CKEditorWidget
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
+from django.utils.html import format_html
 from core.models import UserProfile, PagesMenuBas, EncodingType, ContactUs
 
 
@@ -66,11 +68,18 @@ class UserProfileInline(admin.StackedInline):
 # Define a new User admin
 
 class UserAdmin(UserAdmin):
+
+    def clickable_email(self, obj):
+        email = obj.email
+        return format_html('<a href="mailto:{}">{}</a>', email, email)
+
+    clickable_email.allow_tags = True
+    clickable_email.short_description = _('Email')
     list_display = (
         'username',
         'last_name',
         'first_name',
-        'email',
+        'clickable_email',
         'last_login',
         'is_active',
         'is_staff',
