@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -26,6 +26,8 @@ from django.contrib.flatpages.models import FlatPage
 from ckeditor.widgets import CKEditorWidget
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
+from django.utils.html import format_html
 from core.models import UserProfile, PagesMenuBas, EncodingType, ContactUs
 
 
@@ -53,20 +55,39 @@ admin.site.register(FlatPage, CustomFlatPageAdmin)
 
 admin.site.register(PagesMenuBas)
 
+
 # Define an inline admin descriptor for Employee model
 # which acts a bit like a singleton
-
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
     verbose_name_plural = 'profiles'
 
+
 # Define a new User admin
 
-
 class UserAdmin(UserAdmin):
+
+    def clickable_email(self, obj):
+        email = obj.email
+        return format_html('<a href="mailto:{}">{}</a>', email, email)
+
+    clickable_email.allow_tags = True
+    clickable_email.short_description = _('Email')
+    list_display = (
+        'username',
+        'last_name',
+        'first_name',
+        'clickable_email',
+        'date_joined',
+        'last_login',
+        'is_active',
+        'is_staff',
+        'is_superuser'
+    )
     inlines = (UserProfileInline, )
+
 
 # Re-register UserAdmin
 admin.site.unregister(User)
