@@ -65,7 +65,7 @@ class PodViewSet(viewsets.ModelViewSet):
 class ContributorPodsViewSet(viewsets.ModelViewSet):
 
     """
-    API endpoint that allows video to be viewed or edited.
+    API endpoint that allows contributor to be viewed or edited.
     """
     queryset = ContributorPods.objects.all()
     serializer_class = ContributorPodsSerializer
@@ -74,7 +74,7 @@ class ContributorPodsViewSet(viewsets.ModelViewSet):
 class EncodingPodsViewSet(viewsets.ModelViewSet):
 
     """
-    API endpoint that allows video to be viewed or edited.
+    API endpoint that allows encoding to be viewed or edited.
     """
     queryset = EncodingPods.objects.all()
     serializer_class = EncodingPodsSerializer
@@ -83,7 +83,7 @@ class EncodingPodsViewSet(viewsets.ModelViewSet):
 class ChapterPodsViewSet(viewsets.ModelViewSet):
 
     """
-    API endpoint that allows video to be viewed or edited.
+    API endpoint that allows chapter to be viewed or edited.
     """
     queryset = ChapterPods.objects.all()
     serializer_class = ChapterPodsSerializer

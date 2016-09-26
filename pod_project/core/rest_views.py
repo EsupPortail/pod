@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User, Group
 # -*- coding: utf-8 -*-
 """
 Copyright (C) 2016 Nicolas Can
@@ -23,6 +22,7 @@ voir http://www.gnu.org/licenses/
 
 from __future__ import unicode_literals
 
+from django.contrib.auth.models import User, Group
 from core.models import UserProfile
 from rest_framework import viewsets
 from core.serializers import UserProfileSerializer
