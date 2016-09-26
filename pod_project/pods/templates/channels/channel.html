@@ -106,7 +106,7 @@ voir http://www.gnu.org/licenses/
     {% block article_content %}
         {% if channel.headband %}
         <div align="center" class="channelheader">
-            <img src="{{ channel.headband.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="img-responsive"/>
+            <img src="{{ channel.headband.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="img-responsive" />
         </div>
         {% endif %}
         {% if channel.description %}
@@ -141,10 +141,10 @@ voir http://www.gnu.org/licenses/
                         </li>
                     {% else %}
                         <li class="col-sm-4 col-xs-6">
+                            <a class="btn btn-default btn-sm btn-block" href="{% url 'theme' slug_c=channel.slug slug_t=th.slug %}">
                             {% if th.headband %}
                                 <img src="{{ th.headband.icons.32 }}" alt="{% trans 'Headband' %} {{ th.title }}" />
                             {% endif %}
-                            <a class="btn btn-default btn-sm btn-block" href="{% url 'theme' slug_c=channel.slug slug_t=th.slug %}">
                                 {{ th.title }}
                             </a>
                         </li>
@@ -155,7 +155,9 @@ voir http://www.gnu.org/licenses/
 
         {% if theme %}
             {% if theme.headband %}
-                <img src="{{ theme.headband.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" />
+            <div align="center" class="channelheader">
+                <img src="{{ theme.headband.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />
+            </div>
             {% endif %}
             <h3>{{ theme.title }}</h3>
             {% if theme.description %}
