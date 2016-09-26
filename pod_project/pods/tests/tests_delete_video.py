@@ -64,7 +64,7 @@ class Video_deleteTestView(TestCase):
         user2.set_password('hello')
         user2.save()
         c = Channel.objects.create(title="ChannelTest1", visible=True,
-                                   color="Black", owner=user, style="italic", description="blabla")
+                                   color="Black", style="italic", description="blabla")
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)

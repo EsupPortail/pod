@@ -26,36 +26,43 @@ voir http://www.gnu.org/licenses/
 
 {% block bootstrap3_title %}{% trans "Edition of the channel" %} {{form.instance.title}}{% endblock %}
 {% block bootstrap3_extra_head %}
-        <!-- media -->
-        <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
-        <script type="text/javascript" src="/admin/jsi18n/"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/actions.js"></script>
 
-        <!-- form.media -->
-        {{form.media}}
-        <!-- {{formset.media}} -->
-        <!-- {{docformset.media}} -->
-        <script type="text/javascript" src="{{ STATIC_URL }}filer/js/popup_handling.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}ckeditor/ckeditor/ckeditor.js"></script>
-        <script src="{{ STATIC_URL }}js/jquery.formset.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
 
-<script>
-var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
+{% if user.is_staff %}
+     <!-- Admin-like selector (channel users) -->
+    <style>
+        .selector h2 {
+            background: white url({{ STATIC_URL }}admin/img/nav-bg.gif) bottom left repeat-x;
+        }
+    </style>
+    <!--script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script-->
+    <script type="text/javascript" src="/admin/jsi18n/"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/SelectBox.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/SelectFilter2.js"></script>
+    <!-- /Admin-like selector -->
+{% endif %}
 
-var num=0;
-var name = "";
+    <!-- media -->
+    <!-- form.media -->
+    {{form.media}}
+    <!-- {{formset.media}} -->
+    <!-- {{docformset.media}} -->
+    <script src="{{ STATIC_URL }}js/jquery.formset.js"></script>
 
-jQuery(function($) {
-    $("#formset").formset({
-        animateForms: true
-    });
-});
+    <script>
+        var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
+        var num = 0;
+        var name = "";
 
-</script>
+        jQuery(function($) {
+            $("#formset").formset({
+                animateForms: true
+            });
+        });
+    </script>
 {% endblock bootstrap3_extra_head %}
 
 
@@ -80,108 +87,111 @@ jQuery(function($) {
 
 <form method="post" action="{% url 'channel_edit' slug_c=form.instance.slug %}" id="channel_form">
 {% csrf_token %}
-<fieldset>
-<legend>{{form.instance.title}}</legend>
-{% bootstrap_form form %}
-<input type='hidden' name='referer' value='{{ referer }}' />
-</fieldset>
+    <fieldset>
+    <legend>{{form.instance.title}}</legend>
+    {% bootstrap_form form %}
+    <input type='hidden' name='referer' value='{{ referer }}' />
+    </fieldset>
 
-{% buttons %}
-<div class="text-center">
-    <button type="submit" class="btn btn-success" value="{% trans "Save" %}" name="action1">
-        {% bootstrap_icon "save" %} {% trans "Save" %}
-    </button>
-    <button type="submit" class="btn btn-success" value="{% trans "Save and return to previous page" %}" name="action2">
-        {% bootstrap_icon "save" %} {% trans "Save and return to previous page" %}
-    </button>
-    <button type="submit" class="btn btn-success" value="{% trans "Save and see channel" %}" name="action3">
-        {% bootstrap_icon "save" %} {% trans "Save and see channel" %}
-    </button>
-</div>
-{% endbuttons %}
+    <fieldset id="themes">
+        <legend>{% trans "Themes" %}</legend>
+        <div id="formset" data-formset-prefix="{{ formset.prefix }}">
+            {{ formset.management_form }}
 
-
-<fieldset id="themes">
-    <legend>{% trans "Themes" %}</legend>
-    <div id="formset" data-formset-prefix="{{ formset.prefix }}">
-        {{ formset.management_form }}
-
-        <div data-formset-body class="data-formset-body" >
-            <!-- New forms will be inserted in here -->
-            {% for form in formset %}
-                <div data-formset-form class="form-container" >
-                    {% for field_hidden in form.hidden_fields %}
-                    {{ field_hidden }}
-                    {% endfor %}
-                    {% for field in form.visible_fields %}
-                    {% if 'DELETE' in field.id_for_label %}
-                        <div class="form-group hide">
-                            <div class="checkbox">
-                                <label>
-                                    {{field.label_tag}} {{field}}
-                                </label>
+            <div data-formset-body class="data-formset-body" >
+                <!-- New forms will be inserted in here -->
+                {% for form in formset %}
+                    <div data-formset-form class="form-container" >
+                        {% for field_hidden in form.hidden_fields %}
+                        {{ field_hidden }}
+                        {% endfor %}
+                        {% for field in form.visible_fields %}
+                        {% if 'DELETE' in field.id_for_label %}
+                            <div class="form-group hide">
+                                <div class="checkbox">
+                                    <label>
+                                        {{field.label_tag}} {{field}}
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                    {% else %}
-                        {% bootstrap_field field %}
-                    {% endif %}
-                    {% endfor %}
-                    <button type="button" data-formset-delete-button class="btn btn-danger">{% trans "Delete" %}</button>
-                </div>
-            {% endfor %}
-        </div>
+                        {% else %}
+                            {% bootstrap_field field %}
+                        {% endif %}
+                        {% endfor %}
+                        <button type="button" data-formset-delete-button class="btn btn-danger">{% trans "Delete this theme" %}</button>
+                    </div>
+                {% endfor %}
+            </div>
 
-        <!-- The empty form template. By wrapping this in a <script> tag, the
-        __prefix__ placeholder can easily be replaced in both attributes and
-        any scripts -->
-        <script type="form-template" data-formset-empty-form>
-            {% escapescript %}
-                <div data-formset-form class="form-container">
-                    {% for field_hidden in formset.empty_form.hidden_fields %}
-                    {{ field_hidden }}
-                    {% endfor %}
-                    {% for field in formset.empty_form.visible_fields %}
-                    {% if 'DELETE' in field.id_for_label %}
-                        <div class="form-group hide">
-                            <div class="checkbox">
-                                <label>
-                                    {{field.label_tag}} {{field}}
-                                </label>
+            <!-- The empty form template. By wrapping this in a <script> tag, the
+            __prefix__ placeholder can easily be replaced in both attributes and
+            any scripts -->
+            <script type="form-template" data-formset-empty-form>
+                {% escapescript %}
+                    <div data-formset-form class="form-container">
+                        {% for field_hidden in formset.empty_form.hidden_fields %}
+                        {{ field_hidden }}
+                        {% endfor %}
+                        {% for field in formset.empty_form.visible_fields %}
+                        {% if 'DELETE' in field.id_for_label %}
+                            <div class="form-group hide">
+                                <div class="checkbox">
+                                    <label>
+                                        {{field.label_tag}} {{field}}
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                    {% else %}
-                        {% bootstrap_field field %}
-                    {% endif %}
-                    {% endfor %}
-                    <button type="button" data-formset-delete-button class="btn btn-danger">{% trans "Delete" %}</button>
-                </div>
-            {% endescapescript %}
-        </script>
+                        {% else %}
+                            {% bootstrap_field field %}
+                        {% endif %}
+                        {% endfor %}
+                        <button type="button" data-formset-delete-button class="btn btn-danger">{% trans "Delete this theme" %}</button>
+                    </div>
+                {% endescapescript %}
+            </script>
 
-        <!-- This button will add a new form when clicked -->
-        <p>&nbsp;</p>
-        <div class="text-center">
-        <button type="button" data-formset-add class="btn btn-info">{% trans "Add"%}</button>
+            <!-- This button will add a new form when clicked -->
+            <div class="text-center">
+                <button type="button" data-formset-add class="btn btn-info btn-block">{% trans "Add a new theme"%}</button>
+            </div>
+
         </div>
-        <p>&nbsp;</p>
+    </fieldset>
+
+    {% buttons %}
+    <div class="text-center">
+        <button type="submit" class="btn btn-success" value="{% trans "Save" %}" name="action1">
+            {% bootstrap_icon "save" %} {% trans "Save" %}
+        </button>
+        <button type="submit" class="btn btn-success" value="{% trans "Save and return to previous page" %}" name="action2">
+            {% bootstrap_icon "save" %} {% trans "Save and return to previous page" %}
+        </button>
+        <button type="submit" class="btn btn-success" value="{% trans "Save and see channel" %}" name="action3">
+            {% bootstrap_icon "save" %} {% trans "Save and see channel" %}
+        </button>
     </div>
-</fieldset>
+    {% endbuttons %}
 
-{% buttons %}
-<div class="text-center">
-    <button type="submit" class="btn btn-success" value="{% trans "Save" %}" name="action1">
-        {% bootstrap_icon "save" %} {% trans "Save" %}
-    </button>
-    <button type="submit" class="btn btn-success" value="{% trans "Save and return to previous page" %}" name="action2">
-        {% bootstrap_icon "save" %} {% trans "Save and return to previous page" %}
-    </button>
-    <button type="submit" class="btn btn-success" value="{% trans "Save and see channel" %}" name="action3">
-        {% bootstrap_icon "save" %} {% trans "Save and see channel" %}
-    </button>
-</div>
-{% endbuttons %}
+    {% if user.is_staff %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SelectFilter.init("id_users", "{% trans 'Users' %}", 0, "{{ STATIC_URL }}admin/");
+            $('#channel_form .selector').addClass('row');
+            $('#channel_form .selector-available').addClass('col-sm-5');
+            $('#channel_form .selector-chosen').addClass('col-sm-5');
+            $('#channel_form .selector-chooser').addClass('col-sm-2');
+            $('#channel_form .selector-chooser > li > a').addClass('btn btn-sm btn-block btn-default');
+            $('#channel_form .selector-chooseall').addClass('btn btn-default btn-sm');
+            $('#channel_form .selector-clearall').addClass('btn btn-default btn-sm');
+            $('#id_users_add_all_link').append(' <i class="fa fa-arrow-right"></i>');
+            $('#id_users_remove_all_link').prepend('<i class="fa fa-arrow-left"></i> ');
+            $('#id_users_add_link').append(' <i class="fa fa-arrow-right"></i>');
+            $('#id_users_remove_link').prepend('<i class="fa fa-arrow-left"></i> ');
+        } );
+    </script>
+    {% endif %}
 
-    </form>
+</form>
     {% endblock article_content %}
     {% block video_list %} {% endblock video_list %}
 {% endblock article %}
@@ -204,3 +214,4 @@ jQuery(function($) {
 {% endblock box_info %}
 </aside>
 {% endblock %}
+

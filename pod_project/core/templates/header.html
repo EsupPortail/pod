@@ -42,7 +42,7 @@ voir http://www.gnu.org/licenses/
                             <select class="language form-control input-sm" name="language">
                                 {% for language in languages %}
                                     <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
-                                        {{ language.name_local }} ({{ language.code|upper }})
+                                        {{ language.name_local|capfirst }} ({{ language.code|upper }})
                                     </option>
                                 {% endfor %}
                             </select>
@@ -86,7 +86,7 @@ voir http://www.gnu.org/licenses/
                                         </a>
                                     </li>
                                 {% endif %}
-                                {% if request.user.owner_channels.all %}
+                                {% if request.user.owners_channels.all %}
                                     <li>
                                         <a href="{% url 'pods.views.owner_channels_list' %}">
                                             <span class="glyphicon glyphicon-th-large"></span>
