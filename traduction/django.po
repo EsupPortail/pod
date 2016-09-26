@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-21 15:31+0200\n"
-"PO-Revision-Date: 2016-09-23 14:57+0200\n"
+"PO-Revision-Date: 2016-09-26 12:18+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -619,11 +619,6 @@ msgstr "Connexion"
 #: pods/templates/videos/video.html:141
 msgid "Channels"
 msgstr "Chaînes"
-
-#: core/templates/navbar.html:76 core/templates/navbar.html.py:91
-#: pods/templates/videos/videos.html:52
-msgid "Authors"
-msgstr "Auteurs"
 
 #: core/templates/navbar.html:99 core/templates/navbar.html.py:109
 #: pods/models.py:173 pods/templates/types/types.html:24
@@ -1422,9 +1417,7 @@ msgstr "Doctorat"
 msgid "Other"
 msgstr "Autre"
 
-#: pods/admin.py:54 pods/models.py:72 pods/templates/owners/owners.html:24
-#: pods/templates/owners/owners.html:31 pods/templates/owners/owners.html:39
-#: pods/templates/owners/owners.html:41
+#: pods/admin.py:54 pods/models.py:72
 msgid "Owners"
 msgstr "Propriétaires"
 
@@ -1459,7 +1452,14 @@ msgstr "Couleur de fond"
 msgid "Extra style"
 msgstr "Style supplémentaire"
 
+#: pods/templates/owners/owners.html:31
+msgid "Users owning content"
+msgstr "Utilisateurs propriétaires de contenu"
+
+#: core/templates/navbar.html:76 core/templates/navbar.html.py:91
 #: pods/models.py:75 pods/templates/channels/channel_edit.html:178
+#: pods/templates/owners/owners.html:24 pods/templates/owners/owners.html:39
+#: pods/templates/owners/owners.html:41 pods/templates/videos/videos.html:52
 msgid "Users"
 msgstr "Utilisateurs"
 
@@ -2099,10 +2099,10 @@ msgstr "Mes vidéos"
 
 #: pods/templates/owners/owners.html:63
 #, python-format
-msgid "%(counter)s owner"
-msgid_plural "%(counter)s owners"
-msgstr[0] "%(counter)s propriétaire"
-msgstr[1] "%(counter)s propriétaires"
+msgid "%(counter)s user having posted"
+msgid_plural "%(counter)s users having posted"
+msgstr[0] "%(counter)s utilisateur ayant posté"
+msgstr[1] "%(counter)s utilisateurs ayant posté"
 
 #: pods/templates/pagination.html:40
 msgid "Show all"
