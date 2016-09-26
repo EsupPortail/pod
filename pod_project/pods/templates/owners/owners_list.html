@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -25,16 +25,13 @@ voir http://www.gnu.org/licenses/
 {% for owner in owners %}
 	<div class="video-thumb col-xs-6 col-md-4">
 	    <a href="{% url "videos" %}?owner={{owner.username}}" title="{{owner.get_full_name}} ({{owner.video_count}})">
-		<span class="poster">
+    		<span class="poster">
 			{% if owner.userprofile.image %}
-			    <span class="play text-center">
-    				<span class="glyphicon glyphicon-play-circle"></span>
-    			</span>
                 <img src="{% thumbnail owner.userprofile.image 285x160 crop upscale subject_location=owner.userprofile.image.subject_location %}" alt="{{owner.get_full_name}}" class="preview">
             {%else%}
                 <img alt="img" src="{% static DEFAULT_IMG %}" alt="{{owner.get_full_name}}" class="preview">
             {% endif %}
-		</span>
+    		</span>
 		{% if owner.get_full_name %}
 		<h5>{{owner.get_full_name|safe|striptags|truncatechars:32}} ({% video_count owner %})</h5>
 		{% else %}
