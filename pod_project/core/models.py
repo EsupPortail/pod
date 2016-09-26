@@ -53,7 +53,8 @@ logger = logging.getLogger(__name__)
 
 VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
 MAIN_LANG_CHOICES = (
-        ("", settings.PREF_LANG_CHOICES), ("-----------", settings.ALL_LANG_CHOICES))
+    ("", settings.PREF_LANG_CHOICES), ("-----------", settings.ALL_LANG_CHOICES))
+
 
 @python_2_unicode_compatible
 class FileBrowse(models.Model):
@@ -134,6 +135,7 @@ def create_user_profile(sender, instance, created, **kwargs):
             logger.error(msg)
             print msg
 
+
 def get_storage_path(instance, filename):
     """ Get the storage path. Instance needs to implement owner """
     fname, dot, extension = filename.rpartition('.')
@@ -188,7 +190,7 @@ class Video(models.Model):
         _('Overview'), null=True, upload_to=get_storage_path, blank=True, max_length=255, editable=False)
 
     duration = models.IntegerField(
-        _('Duration'), max_length=12, default=0, editable=False, blank=True)
+        _('Duration'), default=0, editable=False, blank=True)
     infoVideo = models.TextField(null=True, blank=True, editable=False)
 
     class Meta:
@@ -245,7 +247,7 @@ class EncodingType(models.Model):
         (1080, '1080'),
     )
     output_height = models.IntegerField(
-        _('output_height'), max_length=4, choices=HEIGHT_CHOICES, default=240)
+        _('output_height'), choices=HEIGHT_CHOICES, default=240)
     TYPE_CHOICES = (
         ("audio", 'Audio'),
         ("video", 'Video'),

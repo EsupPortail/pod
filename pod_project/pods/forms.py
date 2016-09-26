@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -23,6 +23,7 @@ import os
 from django import forms
 from django.forms import ModelForm, DateField, ValidationError, FileField, CharField, Form, PasswordInput
 from django.contrib.admin import widgets
+from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from itertools import chain
 from django.conf import settings
@@ -31,10 +32,26 @@ from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods
 from modeltranslation.forms import TranslationModelForm
 from django.forms.widgets import HiddenInput
 
+ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = getattr(
+    settings, 'ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS', True)
+
+
 class ChannelForm(TranslationModelForm):
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(ChannelForm, self).__init__(*args, **kwargs)
+        try:
+            if not user.is_staff:
+                del self.fields['headband']
+                del self.fields['users']
+            else:
+                self.fields['users'].queryset = User.objects.exclude(id=user.id)
+                self.fields['users'].label_from_instance = lambda obj: "%s %s (%s)" % (
+                    obj.first_name, obj.last_name, obj.username)
+        except:
+            del self.fields['headband']
+            del self.fields['users']
         for myField in self.fields:
             if self.fields[myField].required:
                 self.fields[myField].widget.attrs['class'] = 'required'
@@ -44,7 +61,10 @@ class ChannelForm(TranslationModelForm):
 
     class Meta:
         model = Channel
-        exclude = ('title', 'slug', 'owner', 'users')
+        if ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS:
+            exclude = ('title', 'slug', 'owners')
+        else:
+            exclude = ('title', 'slug', 'owners', 'visible')
 
 
 class ThemeForm(ModelForm):
@@ -149,8 +169,8 @@ class PodForm(ModelForm):
         if not request.user.is_superuser:
             del self.fields['date_added']
             del self.fields['owner']
-            user_channels = request.user.owner_channels.all(
-            ) | request.user.users_channels.all()
+            user_channels = (request.user.owners_channels.all(
+                ) | request.user.users_channels.all()).distinct()
             if user_channels:
                 self.fields["channel"].queryset = user_channels
                 list_theme = Theme.objects.filter(

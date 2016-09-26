@@ -74,7 +74,7 @@ def get_pagination(page, paginator):
 
 @login_required
 def owner_channels_list(request):
-    channels_list = request.user.owner_channels.all()
+    channels_list = request.user.owners_channels.all()
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
@@ -159,20 +159,25 @@ def channel_edit(request, slug_c):
         request.session['filer_last_folder_id'] = folder.id
 
     channel = get_object_or_404(Channel, slug=slug_c)
-    if request.user != channel.owner and not request.user.is_superuser:
+    if request.user not in channel.owners.all() and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this channel.'))
         raise PermissionDenied
 
-    ThemeInlineFormSet = inlineformset_factory(
-        Channel, Theme, form=ThemeForm, extra=0)
+    if request.user.is_staff:
+        ThemeInlineFormSet = inlineformset_factory(
+            Channel, Theme, form=ThemeForm, extra=0)
+    else:
+        ThemeInlineFormSet = inlineformset_factory(
+            Channel, Theme, form=ThemeForm, exclude=('headband',), extra=0)
 
-    channel_form = ChannelForm(instance=channel)
+    channel_form = ChannelForm(instance=channel, user=request.user)
     #formset = ThemeInlineFormSet(instance=channel)
     referer = request.META.get('HTTP_REFERER')
 
     if request.POST:
-        channel_form = ChannelForm(request.POST, instance=channel)
+        channel_form = ChannelForm(
+            request.POST, instance=channel, user=request.user)
         formset = ThemeInlineFormSet(request.POST, instance=channel)
         if channel_form.is_valid() and formset.is_valid():
             channel = channel_form.save()

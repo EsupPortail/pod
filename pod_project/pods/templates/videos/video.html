@@ -108,16 +108,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
 {% block dublincore %}
     {% if not video.is_draft %}{% load pod_filters %}
     <!-- Dublin Core -->
-    <meta name="dc.title" content="{{ video.title }}" />
-    <meta name="dc.creator" content="{{ video.owner.get_full_name }}" />
-    {% if video.discipline.all %}<meta name="dc.subject" content="{% for disc in video.discipline.all %}{{ disc.title }}{% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
-    {% if video.description %}<meta name="dc.description" content="{{ video.description|metaformat|safe|striptags|truncatechars:300 }}" />{% endif %}
-    {% if TITLE_ETB %}<meta name="dc.publisher" content="{{TITLE_ETB}}" />{% endif %}
-    {% if video.contributorpods_set.all %}<meta name="dc.contributor" content="{% for contrib in video.contributorpods_set.all %}{{ contrib.name }} {% if contrib.role %}({% trans contrib.role %}){%endif%}{% if not forloop.last %}, {% endif %}{% endfor %}" />{% endif %}
-    {% if video.date_added %}<meta name="dc.date" content="{{ video.date_added|date:'Y/m/d' }}" />{% endif %}
-    <meta name="dc.type" content="{{ video.get_mediatype|first }}" />
-    <meta name="dc.identifier" content="{{ request.build_absolute_uri }}" />
-    {% if not video.is_restricted and not video.password %}<meta name="dc.rights" content="CC-By-ND-NC" />{% endif %}
+    {% include 'videos/dublincore.html' with xml=False %}     
     <!-- /Dublin Core -->
     {% endif %}
 {% endblock %}

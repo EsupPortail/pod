@@ -48,10 +48,11 @@ INSTALLED_APPS = (
     'django_cas_gateway',
     'taggit',
     'taggit_templatetags',
-    'jquery',
     'djangoformsetjs',
     'captcha',
     'bootstrap3',
+    'rest_framework',
+    'rest_framework.authtoken',
     # Applications locales
     'pods',
     'core'
@@ -101,8 +102,8 @@ USE_L10N = True
 USE_TZ = True
 
 LANGUAGES = (
-    ('fr', _('Français')),
-    ('en', _('English'))
+    ('fr', 'Français'),
+    ('en', 'English')
 )
 DEFAULT_LANGUAGE = 1
 
@@ -145,6 +146,17 @@ CACHES = {
         'LOCATION': 'cache_host',
     }
 }
+
+# WEBservices with rest API
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+    )
+}
+#curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
 
 # Login
 LOGIN_URL = '/accounts/login/'
@@ -200,6 +212,16 @@ WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">'
 
 
 ##
+# Dublin Core :
+#
+#   coverage        nom, ville et pays de l'établissement
+#   rights          licence CC pour les contenus publics
+#
+DC_COVERAGE = TITLE_ETB + " - Ville - Pays"
+DC_RIGHTS = "CC-By-ND-NC"
+
+
+##
 # Taille maxi fichier téléversable :
 #
 #   ce paramètre est une chaîne contenant un chiffre suivi d'une unité (Mo ou Go),
@@ -231,6 +253,17 @@ MAX_DAILY_USER_UPLOADS = 0
 USE_XHR_FORM_UPLOAD = 1
 
 
+##
+# Possibilité pour les propriétaires de chaînes d'agir sur leur visibilité :
+#
+#   - ce paramètre est un entier ;
+#   - activation = 1, désactivation = 0 ;
+#   - si activé, le champ « Visible » est affiché dans le formulaire d'édition des chaînes.
+#
+#
+ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = 1
+
+
 # Paramètres des templates
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
@@ -257,7 +290,7 @@ FMS_LIVE_URL = 'rtmp://fms.univ.fr'
 FMS_ROOT_URL = 'http://root.univ.fr'
 
 BOOTSTRAP3 = {
-    'jquery_url': os.path.join(STATIC_URL, 'js/jquery.js'),
+    'jquery_url': os.path.join(STATIC_URL, 'js/jquery.min.js'),
     'base_url': os.path.join(STATIC_URL, 'bootstrap/'),
     'css_url': None,
     'theme_url': os.path.join(STATIC_URL, 'css/pod.css'),
@@ -272,6 +305,8 @@ TEMPLATE_CUSTOM = 'custom'  # None
 
 # Constantes utilisables depuis les templates
 TEMPLATE_VISIBLE_SETTINGS = (
+    'DC_COVERAGE',
+    'DC_RIGHTS',
     'DEFAULT_IMG',
     'FILTER_USER_MENU',
     'FMS_LIVE_URL',
@@ -311,6 +346,9 @@ THUMBNAIL_PROCESSORS = (
 # Paramètres vidéo
 FFMPEG = '/usr/local/ffmpeg/ffmpeg'
 FFPROBE = '/usr/local/ffmpeg/ffprobe'
+# Enable low priority for performance
+# FFMPEG = 'nice -19  /usr/local/ffmpeg/ffmpeg'
+# FFPROBE = 'nice -19  /usr/local/ffmpeg/ffprobe'
 VIDEO_EXT_ACCEPT = (
     '.3gp',
     '.avi',
@@ -332,6 +370,15 @@ VIDEO_EXT_ACCEPT = (
 )
 ENCODE_WEBM = True
 ENCODE_WAV = True
+
+# Options to override encoding parameters
+#ENCODE_VIDEO_CMD = "%(ffprobe)s -v quiet -show_format -show_streams -print_format json -i %(src)s"
+#ADD_THUMBNAILS_CMD = "%(ffmpeg)s -i \"%(src)s\" -vf fps=\"fps=1/%(thumbnail)s,scale=%(scale)s\" -an -vsync 0 -threads 0 -f image2 -y %(out)s_%(num)s.png"
+#ADD_OVERVIEW_CMD = "%(ffmpeg)s -i \"%(src)s\" -vf \"thumbnail=%(thumbnail)s,scale=%(scale)s,tile=100x1:nb_frames=100:padding=0:margin=0\" -an -vsync 0 -threads 0 -y %(out)s"
+#ENCODE_MP4_CMD = "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ar %(ar)s -ac 2 -b:a %(ba)s -movflags faststart -y %(out)s"
+#ENCODE_WEBM_CMD = "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s"
+#ENCODE_MP3_CMD = "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s"
+#ENCODE_WAV_CMD = "%(ffmpeg)s -i %(src)s -ar %(ar)s -ab %(ab)s -f wav -threads 0 -y %(out)s"
 
 # AUDIOVIDEOCOURS
 SKIP_FIRST_IMAGE = True

@@ -21,14 +21,14 @@ voir http://www.gnu.org/licenses/
 {% endcomment %}
 {% load i18n staticfiles %}
 
-{% block bootstrap3_title %}{% trans 'Owners' %}{% endblock bootstrap3_title %}
+{% block bootstrap3_title %}{% trans 'Users' %}{% endblock bootstrap3_title %}
 
 {% block bootstrap3_extra_head %}{% endblock bootstrap3_extra_head %}
 
 {% block opengraph %}
     <meta name="description" content="">
 	<!-- Open Graph data -->
-	<meta property="og:title" content="{% trans 'Owners' %}" />
+	<meta property="og:title" content="{% trans 'Users owning content' %}" />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
 	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
@@ -36,9 +36,9 @@ voir http://www.gnu.org/licenses/
 	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
-{% block article_title %}{% trans 'Owners' %}{% endblock article_title %}
+{% block article_title %}{% trans 'Users' %}{% endblock article_title %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="active">{% trans 'Owners' %}</li>{% endblock breadcrumbs %}
+{% block breadcrumbs %}{{ block.super }} <li class="active">{% trans 'Users' %}</li>{% endblock breadcrumbs %}
 
 {% block mainToolbar %}
     <div class="well well-sm">
@@ -60,7 +60,7 @@ voir http://www.gnu.org/licenses/
         {% block stats %}
             <div class="col-sm-4 text-right">
                 <div class="resultschannel">
-                    {% blocktrans count counter=owners.paginator.count %}{{ counter }} owner{% plural %}{{ counter }} owners{% endblocktrans %}
+                    {% blocktrans count counter=owners.paginator.count %}{{ counter }} user having posted{% plural %}{{ counter }} users having posted{{% endblocktrans %}
                 </div>
                 <div class="results">
                     {% blocktrans count counter=video_count %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}

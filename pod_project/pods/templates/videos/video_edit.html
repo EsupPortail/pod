@@ -47,13 +47,13 @@ http://www.gnu.org/licenses/
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
     {{form.media}}
 
-    <script src="{% static "JS/validate/jquery.validate.min.js" %}"></script>
-    <script src="{% static "JS/validate/additional-methods.min.js" %}"></script>
-    <script src="{% static "JS/jquery.jqEasyCharCounter.js" %}"></script>
+    <script src="{% static "js/validate/jquery.validate.min.js" %}"></script>
+    <script src="{% static "js/validate/additional-methods.min.js" %}"></script>
+    <script src="{% static "js/jquery.jqEasyCharCounter.js" %}"></script>
 
     {% if form %}
     {% if USE_XHR_FORM_UPLOAD %}
-    <script src="{% static 'JS/video_edit.js' %}"></script>
+    <script src="{% static 'js/video_edit.js' %}"></script>
     {% endif %}
     <script>
 
@@ -373,7 +373,7 @@ var name = "";
             <div class="panel-heading">{% trans "Sending, please wait." %}</div>
             <div class="panel-body">
                 <div id="js-progress_bar" class="progress hidden">
-                    <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                    <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
                         <span style="color: #111">0%</span>
                     </div>
                 </div>

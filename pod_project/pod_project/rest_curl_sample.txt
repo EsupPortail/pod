@@ -1,0 +1,70 @@
+# Pour utiliser l'API Rest, il faut créer un token pour un utilisateur "admin" via l'interface d'administration de pod.
+#########################################################################
+# CREATE USER 
+curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X POST -d '{
+    "username": "test",
+    "first_name": "lol",
+    "last_name": "youpi",
+    "email": "y@t.com",
+    "groups": []
+}' http://127.0.0.1:8000/rest/users/
+#
+# Attention : 
+# il faut définir par la suite le mot de passe via l'interface d'admin
+#########################################################################
+# GET USER BY USERNAME
+curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X POST -d '{
+    "username": "test"
+}' http://127.0.0.1:8000/rest/get_user_by_username/
+"""
+{"id":1,"url":"http://127.0.0.1:8000/rest/users/1/","username":"root","first_name":"","last_name":"","email":"root@univ.fr","groups":["http://127.0.0.1:8000/rest/groups/2/"]
+"""
+#########################################################################
+# CREATE TYPE
+curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X POST -d '{
+    "title": "test"
+}' http://127.0.0.1:8000/rest/types/
+"""
+{"id":2,"title":"test","title_fr":"test","title_en":null,"description":null,"headband":null}
+"""
+#########################################################################
+# GET TYPE BY ID
+curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X GET http://127.0.0.1:8000/rest/types/1/
+"""
+{"id":1,"title":"Autres","title_fr":"Autres","title_en":"Other","description":"","headband":null}
+"""
+#########################################################################
+# CREATE VIDEO
+curl  -H "Content-Type: multipart/form-data" \
+  -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' \
+  -F "owner=1" \
+  -F "type=1" \
+  -F "title=This is an image file" \
+  -F "video=@/home/nico/Téléchargements/big_buck_bunny_480p_stereo.avi" \
+  http://127.0.0.1:8000/rest/pods/
+"""
+{"id":4,"video":"http://127.0.0.1:8000/media/videos/root/big_buck_bunny_480p_stereo_Tc9IyMN.avi","title":"This is an image file","owner":1,"type":1,"cursus":"0","main_lang":"fr","discipline":[],"to_encode":false,"description":""}
+"""
+#########################################################################
+# Encode video
+curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X POST -d '{
+    "id": 2
+}' http://127.0.0.1:8000/rest/launch_pod_encode/
+"""
+{"id":2,"video":"http://127.0.0.1:8000/media/videos/root/big_buck_bunny_480p_stereo_O60t287.avi","title":"bunny2","owner":1,"type":1,"cursus":"L","main_lang":"fr","discipline":[],"to_encode":false,"description":"<p>test description !</p>\r\n"}
+"""
+#########################################################################
+# chapter video
+curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X POST -d '{
+    "title": "test chapter",
+    "time": 5,
+    "video": 1
+}' http://127.0.0.1:8000/rest/chapters/
+"""
+{"id":3,"title":"test chapter","time":5,"video":1}
+"""
+
+#########################################################################
+# dublin core
+curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X GET http://127.0.0.1:8000/rest/dublincore/
+
