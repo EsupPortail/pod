@@ -53,7 +53,8 @@ logger = logging.getLogger(__name__)
 
 VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
 MAIN_LANG_CHOICES = (
-        ("", settings.PREF_LANG_CHOICES), ("-----------", settings.ALL_LANG_CHOICES))
+    ("", settings.PREF_LANG_CHOICES), ("-----------", settings.ALL_LANG_CHOICES))
+
 
 @python_2_unicode_compatible
 class FileBrowse(models.Model):
@@ -133,6 +134,7 @@ def create_user_profile(sender, instance, created, **kwargs):
             msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
             print msg
+
 
 def get_storage_path(instance, filename):
     """ Get the storage path. Instance needs to implement owner """
