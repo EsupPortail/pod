@@ -48,6 +48,7 @@ import json
 
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
+
 # gloabl function to remove accent, use in tags
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', unicode(input_str))
@@ -415,50 +416,50 @@ class Pod(Video):
             contributors.append(" ".join(contrib))
 
         data_to_dump = {
-            'dc.title': u'%s' %self.title,
-            'dc.creator': u'%s' %self.owner.get_full_name(),
-            'dc.description': u'%s' %self.description,
-            'dc.subject': u'%s' %', '.join(self.discipline.all().values_list('title', flat=True)),
+            'dc.title': u'%s' % self.title,
+            'dc.creator': u'%s' % self.owner.get_full_name(),
+            'dc.description': u'%s' % self.description,
+            'dc.subject': u'%s' % ', '.join(self.discipline.all().values_list('title', flat=True)),
             'dc.publisher': settings.TITLE_ETB if settings.TITLE_ETB else "",
             'dc.contributor': ", ".join(contributors),
-            "dc.date": u'%s' %self.date_added.strftime('%Y/%m/%d') if self.date_added else "",
+            "dc.date": u'%s' % self.date_added.strftime('%Y/%m/%d') if self.date_added else "",
             "dc.type": self.get_mediatype()[0] if len(self.get_mediatype()) > 0 else "video",
-            "dc.identifier" : self.get_full_url(),
-            "dc.language" : u'%s' %self.main_lang,
+            "dc.identifier": self.get_full_url(),
+            "dc.language": u'%s' % self.main_lang,
             'dc.coverage': settings.DC_COVERAGE if settings.DC_COVERAGE else "",
             'dc.rights': settings.DC_RIGHTS if settings.DC_RIGHTS and not self.is_restricted and not self.password else "",
-            "dc.format":  "audio/mp3" if len(self.get_mediatype()) > 0 and self.get_mediatype()[0]=="audio" else "video/mp4"
+            "dc.format":  "audio/mp3" if len(self.get_mediatype()) > 0 and self.get_mediatype()[0] == "audio" else "video/mp4"
         }
         return data_to_dump
 
     def get_json_to_index(self):
 
         data_to_dump = {
-                'id': self.id,
-                'title': u'%s' %self.title,
-                'owner': u'%s' %self.owner.username,
-                'owner_full_name': u'%s' %self.owner.get_full_name(),
-                "date_added": u'%s' %self.date_added.strftime('%Y-%m-%dT%H:%M:%S') if self.date_added else None,
-                "date_evt": u'%s' %self.date_evt.strftime('%Y-%m-%dT%H:%M:%S') if self.date_evt else None,
-                "description": u'%s' %self.description,
-                "thumbnail": u'%s' %self.get_thumbnail_url(),
-                "duration": u'%s' %self.duration,
-                "tags" : list(self.tags.all().values('name', 'slug')),
-                "type" : {"title":self.type.title,"slug":self.type.slug},
-                "disciplines" : list(self.discipline.all().values('title', 'slug')),
-                "channels" : list(self.channel.all().values('title', 'slug')),
-                "themes" : list(self.theme.all().values('title', 'slug')),
-                "contributors" : list(self.contributorpods_set.values_list('name', 'role')),
-                "chapters" : list(self.chapterpods_set.values('title', 'slug')),
-                "enrichments" : list(self.enrichpods_set.values('title', 'slug')),
-                "full_url" : self.get_full_url(),
-                "protected" : True if self.password != "" or self.is_restricted is True else False,
-                "duration_in_time": self.duration_in_time(),
-                "mediatype": self.get_mediatype()[0] if len(self.get_mediatype()) > 0 else "video",
-                "is_richmedia" : self.is_richmedia(),
-                "cursus" : u'%s' %self.cursus,
-                "main_lang" : u'%s' %self.main_lang,
-            }
+            'id': self.id,
+            'title': u'%s' % self.title,
+            'owner': u'%s' % self.owner.username,
+            'owner_full_name': u'%s' % self.owner.get_full_name(),
+            "date_added": u'%s' % self.date_added.strftime('%Y-%m-%dT%H:%M:%S') if self.date_added else None,
+            "date_evt": u'%s' % self.date_evt.strftime('%Y-%m-%dT%H:%M:%S') if self.date_evt else None,
+            "description": u'%s' % self.description,
+            "thumbnail": u'%s' % self.get_thumbnail_url(),
+            "duration": u'%s' % self.duration,
+            "tags": list(self.tags.all().values('name', 'slug')),
+            "type": {"title": self.type.title, "slug": self.type.slug},
+            "disciplines": list(self.discipline.all().values('title', 'slug')),
+            "channels": list(self.channel.all().values('title', 'slug')),
+            "themes": list(self.theme.all().values('title', 'slug')),
+            "contributors": list(self.contributorpods_set.values_list('name', 'role')),
+            "chapters": list(self.chapterpods_set.values('title', 'slug')),
+            "enrichments": list(self.enrichpods_set.values('title', 'slug')),
+            "full_url": self.get_full_url(),
+            "protected": True if self.password != "" or self.is_restricted is True else False,
+            "duration_in_time": self.duration_in_time(),
+            "mediatype": self.get_mediatype()[0] if len(self.get_mediatype()) > 0 else "video",
+            "is_richmedia": self.is_richmedia(),
+            "cursus": u'%s' % self.cursus,
+            "main_lang": u'%s' % self.main_lang,
+        }
 
         return json.dumps(data_to_dump)
 
@@ -482,10 +483,10 @@ def start_encode(video):
     t.start()
 
 
-@receiver(post_save) # instead of @receiver(post_save, sender=Rebel)
+@receiver(post_save)  # instead of @receiver(post_save, sender=Rebel)
 def update_video_index(sender, instance=None, created=False, **kwargs):
     list_of_models = ('ChapterPods', 'EnrichPods', 'ContributorPods', 'Pod')
-    if sender.__name__ in list_of_models: # this is the dynamic part you want
+    if sender.__name__ in list_of_models:  # this is the dynamic part you want
         pod = None
         if sender.__name__ == "Pod":
             pod = instance
@@ -493,9 +494,12 @@ def update_video_index(sender, instance=None, created=False, **kwargs):
             pod = instance.video
         es = Elasticsearch(ES_URL)
         if pod.is_draft == False and pod.encodingpods_set.all().count() > 0:
-            res = es.index(index="pod", doc_type='pod', id=pod.id, body=pod.get_json_to_index(), refresh=True)
+            res = es.index(index="pod", doc_type='pod', id=pod.id,
+                           body=pod.get_json_to_index(), refresh=True)
         else:
-            delete = es.delete(index="pod", doc_type='pod', id=pod.id, refresh=True, ignore=[400, 404])
+            delete = es.delete(
+                index="pod", doc_type='pod', id=pod.id, refresh=True, ignore=[400, 404])
+
 
 @python_2_unicode_compatible
 class EncodingPods(models.Model):
@@ -555,7 +559,8 @@ class ContributorPods(models.Model):
         ("technician", _("technician")),
         ("voice-over", _("voice-over"))
     )
-    role = models.CharField(_(u'role'), max_length=200, choices=ROLE_CHOICES, default=_("authors"))
+    role = models.CharField(
+        _(u'role'), max_length=200, choices=ROLE_CHOICES, default=_("authors"))
     weblink = models.URLField(
         _(u'Web link'), max_length=200, null=True, blank=True)
 
@@ -572,10 +577,11 @@ class ContributorPods(models.Model):
 
     def verify_attributs(self):
         msg = []
-        if not self.name  or self.name == "" or len(self.name) < 2 or len(self.name) > 200:
+        if not self.name or self.name == "" or len(self.name) < 2 or len(self.name) > 200:
             msg.append(_('please enter a name from 2 to 200 caracteres.'))
         if self.weblink and len(self.weblink) > 200:
-            msg.append(_('you cannot enter a weblink with more than 200 caracteres.'))
+            msg.append(
+                _('you cannot enter a weblink with more than 200 caracteres.'))
         if not self.role:
             msg.append(_('please enter a role.'))
         if (len(msg) > 0):
@@ -591,7 +597,8 @@ class ContributorPods(models.Model):
         if len(list_contributorpods) > 0:
             for element in list_contributorpods:
                 if self.name == element.name and self.role == element.role:
-                    msg.append(_("there is already a contributor with the same name and role in the list."))
+                    msg.append(
+                        _("there is already a contributor with the same name and role in the list."))
                     return msg
         return []
 
@@ -641,7 +648,7 @@ class TrackPods(models.Model):
             msg.append(_('please enter a correct kind.'))
         if not self.lang or (self.lang in settings.PREF_LANG_CHOICES or self.lang in settings.ALL_LANG_CHOICES):
             msg.append(_('please enter a correct lang.'))
-        if not self.src :
+        if not self.src:
             msg.append(_('please specify a track file.'))
         if (len(msg) > 0):
             return msg
@@ -656,10 +663,10 @@ class TrackPods(models.Model):
         if len(list_trackpods) > 0:
             for element in list_trackpods:
                 if self.kind == element.kind and self.lang == element.lang:
-                    msg.append(_("there is already a subtitle with the same kind and language in the list."))
+                    msg.append(
+                        _("there is already a subtitle with the same kind and language in the list."))
                     return msg
         return []
-
 
     def __unicode__(self):
         return u"%s - File: %s - Video: %s" % (self.kind, self.src, self.video)
@@ -682,6 +689,7 @@ class DocPods(models.Model):
 
     def __str__(self):
         return u"Document: %s - video: %s" % (self.document, self.video)
+
     def clean(self):
         msg = []
         msg = self.verify_document() + self.verify_not_same_document()
@@ -706,7 +714,8 @@ class DocPods(models.Model):
         if len(list_docpods) > 0:
             for element in list_docpods:
                 if self.document == element.document:
-                    msg.append(_("this document is already contained in the list."))
+                    msg.append(
+                        _("this document is already contained in the list."))
             if len(msg) > 0:
                 return msg
         return []
@@ -811,7 +820,6 @@ class EnrichPods(models.Model):
                 msg.append(_('Please enter a correct embed.'))
         else:
             msg.append(_('Please enter a type in index field.'))
-
 
         if (len(msg) > 0):
             return msg

@@ -4,7 +4,6 @@ from pods import rest_views as pods_views
 from django.conf.urls import url
 
 router = routers.DefaultRouter()
-#router.register(r'userprofiles', rest_views.UserProfileViewSet)
 router.register(r'users', core_views.UserViewSet)
 router.register(r'groups', core_views.GroupViewSet)
 router.register(r'types', pods_views.TypeViewSet)
