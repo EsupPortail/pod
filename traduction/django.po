@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-21 15:31+0200\n"
-"PO-Revision-Date: 2016-09-26 12:18+0200\n"
+"PO-Revision-Date: 2016-09-29 11:20+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2453,8 +2453,8 @@ msgid "Social Networks"
 msgstr "Réseaux Sociaux"
 
 #: pods/templates/videos/video.html:418
-msgid "Copy the content of the text box and paste it in the page"
-msgstr "Copiez le contenu de la zone de texte et coller le dans la page"
+msgid "Copy the content of this text box and paste it in the page"
+msgstr "Copiez le contenu de cette zone de texte et collez-le dans la page"
 
 #: pods/templates/videos/video.html:424
 msgid "Video size"
