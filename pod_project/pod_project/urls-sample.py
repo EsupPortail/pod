@@ -23,6 +23,8 @@ urlpatterns = patterns(
     url(r'^accounts/cas/logout/$',
         'django_cas_gateway.views.logout', name='cas_logout'),
     url(r'^user/', 'core.views.user_profile', name='user_profile'),
+    # STATUS
+    url(r'^status/', 'core.views.status', name='status'),
 
     url(r'^owner_channels_list/', 'pods.views.owner_channels_list',
         name='owner_channels_list'),
