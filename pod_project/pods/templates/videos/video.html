@@ -108,7 +108,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
 {% block dublincore %}
     {% if not video.is_draft %}{% load pod_filters %}
     <!-- Dublin Core -->
-    {% include 'videos/dublincore.html' with xml=False %}     
+    {% include 'videos/dublincore.html' with xml=False %}
     <!-- /Dublin Core -->
     {% endif %}
 {% endblock %}
@@ -415,7 +415,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
                                 <form class="row">
                                     <div class="form-group col-sm-8">
                                         <label for="txtintegration">
-                                            {% trans 'Copy the content of the text box and paste it in the page' %}
+                                            {% trans 'Copy the content of this text box and paste it in the page' %}
                                             <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
                                         </label>
                                     </div>
