@@ -105,7 +105,6 @@ LANGUAGES = (
     ('fr', 'Français'),
     ('en', 'English')
 )
-DEFAULT_LANGUAGE = 1
 
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
