@@ -398,67 +398,112 @@ var name = "";
 
     {% block box_info %}
         {% if form %}
-        <div class="widget">
-            <h4>
-                <span class="glyphicon glyphicon-info-sign"></span>
-                {% trans "Information"%}
-            </h4>
+        <h4>
+            <span class="glyphicon glyphicon-info-sign"></span>
+            {% trans "Information"%}
+        </h4>
+
+        <div class="panel-group" id="fieldHelpAccordion" role="tablist" aria-multiselectable="true">
+
             <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{% trans "Uploading" %}</h3>
+                <div class="panel-heading" role="tab" id="fieldHelpHeading-1">
+                    <h3 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-1" aria-expanded="true" aria-controls="collapseOne">
+                            {% trans "Uploading" %}
+                        </a>
+                    </h3>
                 </div>
-                <div class="panel-body">
-                    <p>{% blocktrans %}The file size must be lower than {{ MAX_UPLOAD_FILE_SIZE }}.{% endblocktrans %}</p>
-                {% if not request.user.is_superuser and MAX_DAILY_USER_UPLOADS %}
-                    <p>{% blocktrans %}You can upload up to {{ MAX_DAILY_USER_UPLOADS }} files per day.{% endblocktrans %}</p>
-                {% endif %}
-                    <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
-                    <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
+                <div id="fieldHelpText-1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="fieldHelpHeading-1">
+                    <div class="panel-body">
+                        <p>{% blocktrans %}The file size must be lower than {{ MAX_UPLOAD_FILE_SIZE }}.{% endblocktrans %}</p>
+                    {% if not request.user.is_superuser and MAX_DAILY_USER_UPLOADS %}
+                        <p>{% blocktrans %}You can upload up to {{ MAX_DAILY_USER_UPLOADS }} files per day.{% endblocktrans %}</p>
+                    {% endif %}
+                        <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
+                        <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
+                    </div>
                 </div>
             </div>
+
             <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{% trans "File format" %}</h3>
+                <div class="panel-heading" role="tab" id="fieldHelpHeading-2">
+                    <h3 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-2" aria-expanded="true" aria-controls="collapseOne">
+                            {% trans "File format" %}
+                        </a>
+                    </h3>
                 </div>
-                <div class="panel-body">
-                    <p>{% trans "You can send an audio or video file." %}</p>
-                    <p>{% trans "The following formats are supported:" %} {{video_ext_accept_text}}.</p>
+                <div id="fieldHelpText-2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-2">
+                    <div class="panel-body">
+                        <p>{% trans "You can send an audio or video file." %}</p>
+                        <p>{% trans "The following formats are supported:" %} {{video_ext_accept_text}}.</p>
+                    </div>
                 </div>
             </div>
+
             <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{% trans "Draft" %}</h3>
+                <div class="panel-heading" role="tab" id="fieldHelpHeading-3">
+                    <h3 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-3" aria-expanded="true" aria-controls="collapseOne">
+                            {% trans "Draft" %}
+                        </a>
+                    </h3>
                 </div>
-                <div class="panel-body">
-                    <p>{% trans "In “Draft mode”, the content shows nowhere and nobody else but you can see it." %}</p>
+                <div id="fieldHelpText-3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-3">
+                    <div class="panel-body">
+                        <p>{% trans "In “Draft mode”, the content shows nowhere and nobody else but you can see it." %}</p>
+                    </div>
                 </div>
             </div>
+
             <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{% trans "Restricted access" %}</h3>
+                <div class="panel-heading" role="tab" id="fieldHelpHeading-4">
+                    <h3 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-4" aria-expanded="true" aria-controls="collapseOne">
+                            {% trans "Restricted access" %}
+                        </a>
+                    </h3>
                 </div>
-                <div class="panel-body">
-                    <p>{% trans "If you don't select “Draft mode”,"%}
-                    {% trans "you can restrict the content access to only people belonging to" %}
-                    {{TITLE_ETB}}.</p>
+                <div id="fieldHelpText-4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-4">
+                    <div class="panel-body">
+                        <p>{% trans "If you don't select “Draft mode”,"%}
+                        {% trans "you can restrict the content access to only people belonging to" %}
+                        {{TITLE_ETB}}.</p>
+                    </div>
                 </div>
             </div>
+
             <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{% trans "Password" %}</h3>
+                <div class="panel-heading" role="tab" id="fieldHelpHeading-5">
+                    <h3 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-5" aria-expanded="true" aria-controls="collapseOne">
+                            {% trans "Password" %}
+                        </a>
+                    </h3>
                 </div>
-                <div class="panel-body">
-                    <p>{% trans "If you don't select “Draft mode”,"%} {% trans "you can add a password which will be asked to anybody willing to watch your content." %}</p>
+                <div id="fieldHelpText-5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-5">
+                    <div class="panel-body">
+                        <p>{% trans "If you don't select “Draft mode”,"%}
+                        {% trans "you can add a password which will be asked to anybody willing to watch your content." %}</p>
+                    </div>
                 </div>
             </div>
+
             <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{% trans "Keywords" %}</h3>
+                <div class="panel-heading" role="tab" id="fieldHelpHeading-6">
+                    <h3 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-6" aria-expanded="true" aria-controls="collapseOne">
+                            {% trans "Keywords" %}
+                        </a>
+                    </h3>
                 </div>
-                <div class="panel-body">
+                <div id="fieldHelpText-6" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-6">
+                    <div class="panel-body">
                     <p>{% trans "Please try to add only relevant keywords that can be useful to other users." %}</p>
+                    </div>
                 </div>
             </div>
+
         </div>
         {% endif %}
     {% endblock box_info %}
