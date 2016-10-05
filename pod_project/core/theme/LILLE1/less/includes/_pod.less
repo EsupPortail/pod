@@ -747,14 +747,50 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
     }
 }
 
-.panel-body {
-    line-height: 1.3em;
+.panel {
 
-    & > i.text-muted {
+    .panel-heading[role="tab"] {
+        padding: 0;
 
-        display: inline-block;
-        font-size: .9em;
-        line-height: 1.1;
+        &:hover { background-color: #fff;  }
+
+        & > h3 {
+
+            & > a[role="button"] {
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+                padding: .3em .3em .3em .5em;
+
+                &:link,
+                &:visited,
+                &:hover,
+                &:active { text-decoration: none; }
+
+                &:focus { outline: none; }
+
+                &:after {
+                    font-family: 'Glyphicons Halflings';
+                    content: "\e252";
+                    position: static;
+                    color: #3f9ec2;
+                    float: right;
+                }
+
+                &.collapsed:after { content: "\e251"; }
+            }
+        }
+    }
+
+    .panel-body {
+        line-height: 1.3em;
+
+        & > i.text-muted {
+
+            display: inline-block;
+            font-size: .9em;
+            line-height: 1.1;
+        }
     }
 }
 
