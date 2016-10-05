@@ -542,7 +542,7 @@ var name = "";
                     <div class="panel-body">
                         <p>{% trans "Select the type of your content." %}</p>
                     {% if request.user.is_staff %}
-                        <p>{% trans "If the type you wish does not appear in the list, please temporary select “Other” and" %} <a href="{{baseurl}}/contact_us/" title="{% trans 'Click to open in a new window / tab.' %}" target="_blank">{% trans "contact us to expose your needs." %}</a></p>
+                        <p>{% trans "If the type you wish does not appear in the list, please temporary select “Other” and" %} <a href="{{baseurl}}/contact_us/" title="{% trans 'Click to open in a new window / tab.' %}" target="_blank">{% trans "explain us your needs." %}</a></p>
                     {% endif %}
                     </div>
                 </div>
@@ -558,7 +558,7 @@ var name = "";
                     <div class="panel-body">
                         <p>{% trans "Select the discipline to which your content belongs." %}</p>
                     {% if request.user.is_staff %}
-                        <p>{% trans "If the discipline you wish does not appear in the list, please select nothing and" %} <a href="{{baseurl}}/contact_us/" title="{% trans 'Click to open in a new window / tab.' %}" target="_blank">{% trans "contact us to expose your needs." %}</a></p>
+                        <p>{% trans "If the discipline you wish does not appear in the list, please select nothing and" %} <a href="{{baseurl}}/contact_us/" title="{% trans 'Click to open in a new window / tab.' %}" target="_blank">{% trans "explain us your needs." %}</a></p>
                     {% endif %}
                         <i class="text-muted">{% trans 'Hold down "Control", or "Command" on a Mac, to select more than one.' %}</i>
                     </div>
@@ -577,7 +577,7 @@ var name = "";
                         <p>{% trans "Select the channel in which you want your content to appear." %}</p>
                         <p>{% trans "Themes related to this channel will appear in the “Themes” list below." %}</p>
                     {% if request.user.is_staff %}
-                        <p>{% trans "If the channel you wish does not appear in the list, please select nothing and" %} <a href="{{baseurl}}/contact_us/" title="{% trans 'Click to open in a new window / tab.' %}" target="_blank">{% trans "contact us to expose your needs." %}</a></p>
+                        <p>{% trans "If the channel you wish does not appear in the list, please select nothing and" %} <a href="{{baseurl}}/contact_us/" title="{% trans 'Click to open in a new window / tab.' %}" target="_blank">{% trans "explain us your needs." %}</a></p>
                     {% endif %}
                         <i class="text-muted">{% trans 'Hold down "Control", or "Command" on a Mac, to select more than one.' %}</i>
                     </div>
@@ -594,7 +594,7 @@ var name = "";
                     <div class="panel-body">
                         <p>{% trans "Select the theme in which you want your content to appear." %}</p>
                         <p>{% trans "If the theme you wish does not appear in the list and if you are an owner of the related channel, you can edit this channel to create it." %}</a> {% trans "Use your user menu on top right of the page." %}</p>
-                        <p>{% trans "If not, please select nothing and" %} <a href="{{baseurl}}/contact_us/" title="{% trans 'Click to open in a new window / tab.' %}" target="_blank">{% trans "contact us to expose your needs." %}</a></p>
+                        <p>{% trans "If not, please select nothing and" %} <a href="{{baseurl}}/contact_us/" title="{% trans 'Click to open in a new window / tab.' %}" target="_blank">{% trans "explain us your needs." %}</a></p>
                         <i class="text-muted">{% trans 'Hold down "Control", or "Command" on a Mac, to select more than one.' %}</i>
                     </div>
                 </div>

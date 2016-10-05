@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-10-05 15:10+0200\n"
-"PO-Revision-Date: 2016-10-05 15:51+0200\n"
+"PO-Revision-Date: 2016-10-05 19:02+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2936,7 +2936,7 @@ msgid ""
 msgstr ""
 "Vous pourrez ajouter des contributeurs plus tard en utilisant le second "
 "bouton de la barre d'outil d'édition de contenu : ils apparaîtront dans "
-"l'onglet « Info » au pied du lecteur audio / vidéo."
+"l'onglet « Info » sous le lecteur audio / vidéo."
 
 #: pods/templates/videos/video_edit.html:477
 msgid "Enter the date of the event, if applicable, in the AAAA-MM-JJ format."
@@ -2989,8 +2989,8 @@ msgstr "Cliquez pour ouvrir dans une nouvelle fenêtre / un nouvel onglet."
 #: pods/templates/videos/video_edit.html:562
 #: pods/templates/videos/video_edit.html:581
 #: pods/templates/videos/video_edit.html:598
-msgid "contact us to expose your needs."
-msgstr "contactez-nous pour exposer vos attentes."
+msgid "explain us your needs."
+msgstr "expliquez-nous vos attentes."
 
 #: pods/templates/videos/video_edit.html:560
 msgid "Select the discipline to which your content belongs."
