@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-10-05 15:10+0200\n"
-"PO-Revision-Date: 2016-10-05 19:02+0200\n"
+"PO-Revision-Date: 2016-10-05 19:26+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -3041,19 +3041,16 @@ msgstr ""
 #: pods/templates/videos/video_edit.html:597
 msgid ""
 "If the theme you wish does not appear in the list and if you are an owner of "
-"the related channel, you can edit this channel to create it."
+"the related channel, you can edit this channel to create it (use your user "
+"menu on top right of the page)."
 msgstr ""
 "Si le thème souhaité n'apparaît pas dans la liste et que vous êtes "
 "propriétaire de la chaîne concernée, vous pouvez éditer cette chaîne pour le "
-"créer."
-
-#: pods/templates/videos/video_edit.html:597
-msgid "Use your user menu on top right of the page."
-msgstr "Utilisez votre menu utilisateur en haut à droite de la page."
+"créer (utilisez votre menu utilisateur en haut à droite de la page)."
 
 #: pods/templates/videos/video_edit.html:598
-msgid "If not, please select nothing and"
-msgstr "Sinon, ne sélectionnez rien et"
+msgid "If you do not own the channel, please select nothing and"
+msgstr "Si vous n'êtes pas propriétaire de la chaîne, ne sélectionnez rien et"
 
 #: pods/templates/videos/video_edit.html:613
 msgid ""

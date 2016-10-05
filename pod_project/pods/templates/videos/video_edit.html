@@ -594,8 +594,8 @@ var name = "";
                     <div class="panel-body">
                         <p>{% trans "Select the theme in which you want your content to appear." %}</p>
                     {% if request.user.is_staff %}
-                        <p>{% trans "If the theme you wish does not appear in the list and if you are an owner of the related channel, you can edit this channel to create it." %}</a> {% trans "Use your user menu on top right of the page." %}</p>
-                        <p>{% trans "If not, please select nothing and" %} <a href="{{baseurl}}/contact_us/" title="{% trans 'Click to open in a new window / tab.' %}" target="_blank">{% trans "explain us your needs." %}</a></p>
+                        <p>{% trans "If the theme you wish does not appear in the list and if you are an owner of the related channel, you can edit this channel to create it (use your user menu on top right of the page)." %}</p>
+                        <p>{% trans "If you do not own the channel, please select nothing and" %} <a href="{{baseurl}}/contact_us/" title="{% trans 'Click to open in a new window / tab.' %}" target="_blank">{% trans "explain us your needs." %}</a></p>
                     {% endif %}
                         <i class="text-muted">{% trans 'Hold down "Control", or "Command" on a Mac, to select more than one.' %}</i>
                     </div>
