@@ -626,6 +626,14 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
   color: #fff;
   background-color: #f8af19;
 }
+.panel-body {
+  line-height: 1.3em;
+}
+.panel-body > i.text-muted {
+  display: inline-block;
+  font-size: .9em;
+  line-height: 1.1;
+}
 .pagination > .active > a,
 .pagination > .active > span,
 .pagination > .active > a:hover,
