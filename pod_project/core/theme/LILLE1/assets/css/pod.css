@@ -626,6 +626,45 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
   color: #fff;
   background-color: #f8af19;
 }
+.panel .panel-heading[role="tab"] {
+  padding: 0;
+}
+.panel .panel-heading[role="tab"]:hover {
+  background-color: #fff;
+}
+.panel .panel-heading[role="tab"] > h3 > a[role="button"] {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  padding: .3em .3em .3em .5em;
+}
+.panel .panel-heading[role="tab"] > h3 > a[role="button"]:link,
+.panel .panel-heading[role="tab"] > h3 > a[role="button"]:visited,
+.panel .panel-heading[role="tab"] > h3 > a[role="button"]:hover,
+.panel .panel-heading[role="tab"] > h3 > a[role="button"]:active {
+  text-decoration: none;
+}
+.panel .panel-heading[role="tab"] > h3 > a[role="button"]:focus {
+  outline: none;
+}
+.panel .panel-heading[role="tab"] > h3 > a[role="button"]:after {
+  font-family: 'Glyphicons Halflings';
+  content: "\e252";
+  position: static;
+  color: #3f9ec2;
+  float: right;
+}
+.panel .panel-heading[role="tab"] > h3 > a[role="button"].collapsed:after {
+  content: "\e251";
+}
+.panel .panel-body {
+  line-height: 1.3em;
+}
+.panel .panel-body > i.text-muted {
+  display: inline-block;
+  font-size: .9em;
+  line-height: 1.1;
+}
 .pagination > .active > a,
 .pagination > .active > span,
 .pagination > .active > a:hover,
