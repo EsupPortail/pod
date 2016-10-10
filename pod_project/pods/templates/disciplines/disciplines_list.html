@@ -24,7 +24,7 @@ voir http://www.gnu.org/licenses/
 <div id="video-list" class="row">
 {% for discipline in disciplines %}
 	<div class="video-thumb col-xs-6 col-md-4">
-	    <a href="{% url "videos" %}?discipline={{discipline.slug}}" title="{{discipline.title}} ({{discipline.video_count}})">
+	    <a class="video-holder" href="{% url "videos" %}?discipline={{discipline.slug}}" title="{{discipline.title}} ({{discipline.video_count}})">
     		<span class="poster">
     		{% if discipline.headband %}
                 <img src="{% thumbnail discipline.headband 285x160 crop upscale subject_location=discipline.headband.subject_location %}" alt="{{discipline.title}}" class="preview">
