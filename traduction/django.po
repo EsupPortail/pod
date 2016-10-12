@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-10-05 15:10+0200\n"
-"PO-Revision-Date: 2016-10-05 19:26+0200\n"
+"PO-Revision-Date: 2016-10-12 16:03+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -2293,8 +2293,8 @@ msgstr "Supprimer l'enrichissement"
 
 #: pods/templates/videos/extraheadplayer.html:84
 #, python-format
-msgid "Click to reach this content on %(TITLE_SITE)s."
-msgstr "Cliquez pour accéder à ce contenu sur %(TITLE_SITE)s."
+msgid "Access this content on “%(TITLE_SITE)s” in a new window / tab."
+msgstr "Accéder à ce contenu sur « %(TITLE_SITE)s » dans une nouvelle fenêtre / un nouvel onglet."
 
 #: pods/templates/videos/my_videos.html:65
 msgid ""
