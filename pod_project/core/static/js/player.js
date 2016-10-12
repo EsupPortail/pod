@@ -287,21 +287,31 @@ function loadVideo() {
         /*************************************************************************/
         if ( player_logo_img ) {
 
-            var logoLink = document.createElement( 'a' ),
-                logoImg = document.createElement( 'img' );
+            var logoImg = document.createElement( 'img' );
 
-            logoLink.setAttribute( 'href', player_logo_url );
-            logoLink.setAttribute( 'target', "_blank" );
-            logoLink.setAttribute( 'title', player_logo_title );
-            logoLink.setAttribute( 'role', "link" );
-            logoLink.setAttribute( 'style', "font-size: 1.5em; font-weight: bold; line-height: 1.9em;" );
             logoImg.setAttribute( 'src', player_logo_img );
-            logoImg.setAttribute('alt', player_logo_alt);
+            logoImg.setAttribute( 'alt', player_logo_alt );
             logoImg.setAttribute( 'height', '90%' );
+            logoImg.setAttribute( 'style', "font-size: 1.6em; line-height: 1.9em; font-weight: bold;" );
 
-            logoLink.appendChild( logoImg );
+            if ( player_logo_url ) {
 
-            myPlayer.controlBar.el( ).appendChild( logoLink );
+                var logoLink = document.createElement( 'a' );
+
+                logoLink.setAttribute( 'href', player_logo_url );
+                logoLink.setAttribute( 'target', "_blank" );
+                logoLink.setAttribute( 'title', player_logo_title );
+                logoLink.setAttribute( 'role', "link" );
+
+                logoLink.appendChild( logoImg );
+
+                myPlayer.controlBar.el( ).appendChild( logoLink );
+
+            } else {
+
+                myPlayer.controlBar.el( ).appendChild( logoImg );
+
+            }
         }
         /*************************************************************************/
         start = decodeURIComponent($.urlParam('start'));
