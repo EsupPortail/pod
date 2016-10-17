@@ -665,6 +665,10 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
   font-size: .9em;
   line-height: 1.1;
 }
+.pager li > a,
+.pager li > span {
+  border-radius: 0;
+}
 .pagination > .active > a,
 .pagination > .active > span,
 .pagination > .active > a:hover,
