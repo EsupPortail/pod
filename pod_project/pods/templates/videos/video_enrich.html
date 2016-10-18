@@ -31,80 +31,86 @@ voir http://www.gnu.org/licenses/
 
 {% block bootstrap3_extra_head %}
 <style>
-.form-help-inline, .special_class {color:red;}
+    .form-help-inline,
+    .special_class { color: red; }
 
-/*** table scroll ***/
-table.scroll {
-     width: 100%; /* Optional */
-    border-collapse: collapse;
-    border-spacing: 0;
-    /*border: 2px solid black;*/
-}
+    /*** table scroll ***/
+    table.scroll {
+        width: 100%; /* Optional */
+        border-collapse: collapse;
+        border-spacing: 0;
+        /*border: 2px solid black;*/
+    }
 
-table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
-    border-radius: 3px;
-    font-size: 12px;
-    line-height: 0.5;
-    padding: 5px 10px;
-}
+    table.scroll .btn-sm,
+    table.scroll .btn-group-sm > .btn {
+        border-radius: 3px;
+        font-size: 12px;
+        line-height: 0.5;
+        padding: 5px 10px;
+    }
 
-#list_enrich .panel-heading {
-    border-bottom: 1px solid transparent;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    padding: 4px 15px;
-}
+    #list_enrich .panel-heading {
+        border-bottom: 1px solid transparent;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        padding: 4px 15px;
+    }
 
-table.scroll tbody,
-table.scroll thead { display: block; }
+    table.scroll tbody,
+    table.scroll thead { display: block; }
 
-table.scroll thead /*tr th*/ {
-    height: 27px;
-    line-height: 27px;
-    text-align: left;
-}
-table.scroll tbody {
-    max-height: 100px;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-table.scroll tbody td, table.scroll thead th {
-     width: 10%;  /* Optional */
-    /*border-right: 1px solid black;*/
-    /*white-space: nowrap;*/
-    height: 20px;
-    line-height: 20px;
-}
+    table.scroll thead /*tr th*/ {
+        height: 27px;
+        line-height: 27px;
+        text-align: left;
+    }
 
-table.scroll tbody td.enrich_title {
-    width: 40%;
-}
-table.scroll tbody td.enrich_type {
-    width: 20%;
-}
-table.scroll tbody td.enrich_start, table.scroll tbody td.enrich_end{
-    width: 20%;
-}
+    table.scroll tbody {
+        max-height: 100px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
+    table.scroll tbody td,
+    table.scroll thead th {
+        width: 10%;  /* Optional */
+        /*border-right: 1px solid black;*/
+        /*white-space: nowrap;*/
+        height: 20px;
+        line-height: 20px;
+    }
+
+    table.scroll tbody td.enrich_title {
+        width: 40%;
+    }
+
+    table.scroll tbody td.enrich_type {
+        width: 20%;
+    }
+
+    table.scroll tbody td.enrich_start,
+    table.scroll tbody td.enrich_end{
+        width: 20%;
+    }
 
 </style>
 
 <script src="{% static "video-js/video.js" %}" ></script>
 {% include "videos/extraheadplayer.html" with video=video %}
 
-    <!-- media -->
-    <script>window.__admin_media_prefix__ = '/static/admin/';</script>
-    <script src="/admin/jsi18n/"></script>
-    <script src="{% static 'admin/js/core.js' %}"></script>
-    <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
-    <script src="{% static 'admin/js/jquery.js' %}"></script>
-    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
-    <script src="{% static 'admin/js/actions.js' %}"></script>
+<!-- media -->
+<script>window.__admin_media_prefix__ = '/static/admin/';</script>
+<script src="/admin/jsi18n/"></script>
+<script src="{% static 'admin/js/core.js' %}"></script>
+<script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+<script src="{% static 'admin/js/jquery.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
+<script src="{% static 'admin/js/actions.js' %}"></script>
 
-    <!-- form.media -->
-    <script src="{% static 'filer/js/popup_handling.js' %}"></script>
-    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
-
+<!-- form.media -->
+<script src="{% static 'filer/js/popup_handling.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 
 <script>
 /*** table scroll ***/
@@ -276,15 +282,15 @@ function refresh_list_and_player(data){
 };
 /*** Display element of form enrich ***/
 function get_form(data) {
-        //$("#form_enrich").html("");
-        //fadeIn().delay(3000).fadeOut()
-        $("#form_enrich").hide().html(data).fadeIn();
-        $("input#id_start")
-            .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode'></span></span>");
-        $("input#id_end")
-            .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode'></span></span>");
-        enrich_type();
-        manageResize();
+    //$("#form_enrich").html("");
+    //fadeIn().delay(3000).fadeOut()
+    $("#form_enrich").hide().html(data).fadeIn();
+    $("input#id_start")
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode'></span></span>");
+    $("input#id_end")
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode'></span></span>");
+    enrich_type();
+    manageResize();
 };
 
 function enrich_type(){
@@ -438,57 +444,68 @@ function overlaptest(){
 
 {% block bootstrap3_content %}
 <article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+
     <ol class="breadcrumb">
         {% block breadcrumbs %}
         {{ block.super }}
         <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
-        <li class="active"> {% trans "Enrich video" %} "{{video.title}}"</li>
+        <li class="active"> {% trans "Enrich video" %} "{{ video.title }}"</li>
         {% endblock breadcrumbs %}
     </ol>
 
-        <span id="enrich_player">
-        {% include 'videos/video_player.html' with video=video %}
-        </span>
-        <br/>
-        <div class="row" id="info_video">
-            <div class="col-sm-9">
-                <span id= "list_enrich">
-                {%include 'videos/enrich/list_enrich.html'%}
-                <!-- This button will add a new form when clicked -->
-                </span>
-                <span id="form_enrich">
-                    <!-- place for form, it will be replace by a form : empty or to modify -->
-                    {% if form_enrich %}
-                    {%include 'videos/enrich/form_enrich.html' with form_enrich=form_enrich%}
-                    {%endif%}
-                </span>
-                <form  id = "form_new" action="{% url 'video_enrich' slug=video.slug  %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="new">
-                    <input type="submit" id="add_new_enrichment"  value="{% trans "Add a new enrichment" %}" class="btn btn-info"/>
-                </form>
+    <span id="enrich_player">
+    {% include 'videos/video_player.html' with video=video %}
+    </span><br>
+
+    <div class="row" id="info_video">
+
+        <div class="col-sm-9">
+
+            <span id="list_enrich">
+            {% include 'videos/enrich/list_enrich.html' %}
+            <!-- This button will add a new form when clicked -->
+            </span>
+
+            <span id="form_enrich">
+                <!-- place for form, it will be replace by a form : empty or to modify -->
+                {% if form_enrich %}
+                {% include 'videos/enrich/form_enrich.html' with form_enrich=form_enrich %}
+                {% endif %}
+            </span>
+
+            <form id="form_new" action="{% url 'video_enrich' slug=video.slug  %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="new">
+                <input type="submit" id="add_new_enrichment"  value="{% trans 'Add a new enrichment' %}" class="btn btn-info"/>
+            </form>
+
+        </div>
+
+        <aside class="col-sm-3 panel panel-info">
+
+            <div class="widget user-tools">
+                <h4>
+                    <span class="glyphicon glyphicon-wrench"></span>
+                    {% trans 'Edit the video' %}
+                </h4>
+                {% include 'videos/ownertools.html' with video=video %}
             </div>
 
-            <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
-                <aside class="col-sm-3  panel panel-info">
-                    <div class="widget user-tools">
-                        <h4>
-                            <span class="glyphicon glyphicon-wrench"></span> {% trans 'Edit the video' %}
-                        </h4>
-                        {% include 'videos/ownertools.html' with video=video %}
-                    </div>
-                    <div class="widget">
-                        <h4>
-                            <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Information' %}
-                        </h4>
-                        <p>{% trans 'The title fields is required and must contains from 2 to 100 characters.'%}
-                        <p>{% trans 'The fields "Start" and "End" must contain an indication value in seconds. Start playback of the video, pause the video and click on "Get time from the player" to fill in the field intitled "Start". Then do the same to fill in the field entitiled "End".' %}</p>
-                        <p>{% trans 'You cannot overlap enrichments.' %}</p>
-                        <p>{% trans 'You must save your enrichments to view the result.' %}</p>
-                    </div>
+            <div class="widget">
+                <h4>
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                    {% trans 'Information' %}
+                </h4>
+                <p>{% trans 'The title fields is required and must contains from 2 to 100 characters.'%}
+                <p>{% trans 'The fields "Start" and "End" must contain an indication value in seconds. Start playback of the video, pause the video and click on "Get time from the player" to fill in the field intitled "Start". Then do the same to fill in the field entitiled "End".' %}</p>
+                <p>{% trans 'You cannot overlap enrichments.' %}</p>
+                <p>{% trans 'You must save your enrichments to view the result.' %}</p>
+            </div>
 
-                </aside>
-        </div>
-    </article>
+        </aside>
+
+    </div>
+
+</article>
 {% endblock bootstrap3_content %}
 {% block box %}{% endblock box %}
