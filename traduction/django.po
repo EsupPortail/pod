@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-10-05 15:10+0200\n"
-"PO-Revision-Date: 2016-10-12 16:03+0200\n"
+"PO-Revision-Date: 2016-10-18 14:46+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -1852,13 +1852,13 @@ msgstr "Le commencement et la fin ne peuvent être équivalents."
 msgid "There is an overlap with the enrichment "
 msgstr "Il y a un chevauchement avec l'enrichissement "
 
-#: pods/models.py:892 pods/templates/videos/chapter/list_chapter.html:32
+#: pods/models.py:892 pods/templates/videos/chapter/list_chapter.html:35
 msgid "Start time"
-msgstr "Début de la vidéo"
+msgstr "Début"
 
 #: pods/models.py:893
 msgid "Start time of the chapter, in seconds."
-msgstr "Début d'affichage du chapitre, en secondes."
+msgstr "Début du chapitre, en secondes."
 
 #: pods/models.py:896
 msgid "Chapter"
@@ -2294,7 +2294,9 @@ msgstr "Supprimer l'enrichissement"
 #: pods/templates/videos/extraheadplayer.html:84
 #, python-format
 msgid "Access this content on “%(TITLE_SITE)s” in a new window / tab."
-msgstr "Accéder à ce contenu sur « %(TITLE_SITE)s » dans une nouvelle fenêtre / un nouvel onglet."
+msgstr ""
+"Accéder à ce contenu sur « %(TITLE_SITE)s » dans une nouvelle fenêtre / un "
+"nouvel onglet."
 
 #: pods/templates/videos/my_videos.html:65
 msgid ""
