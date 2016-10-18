@@ -31,79 +31,84 @@ voir http://www.gnu.org/licenses/
 
 {% block bootstrap3_extra_head %}
 <style>
-.form-help-inline, .special_class {color:red;}
+    .form-help-inline,
+    .special_class { color: red; }
 
-/*** table scroll ***/
-table.scroll {
-     width: 100%; /* Optional */
-    border-collapse: collapse;
-    border-spacing: 0;
-    /*border: 2px solid black;*/
-}
-#accordeon li, #accordeon div{list-style: none;}
+    /*** table scroll ***/
+    table.scroll {
+        width: 100%; /* Optional */
+        border-collapse: collapse;
+        border-spacing: 0;
+        /*border: 2px solid black;*/
+    }
+    #accordeon li,
+    #accordeon div { list-style: none; }
 
-table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
-    border-radius: 3px;
-    font-size: 12px;
-    line-height: 0.5;
-    padding: 5px 10px;
-}
+    table.scroll .btn-sm,
+    table.scroll .btn-group-sm > .btn {
+        border-radius: 3px;
+        font-size: 12px;
+        line-height: 0.5;
+        padding: 5px 10px;
+    }
 
-#list_contributor .panel-heading {
-    border-bottom: 1px solid transparent;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    padding: 4px 15px;
-}
-#list_subtitle .panel-heading {
-    border-bottom: 1px solid transparent;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    padding: 4px 15px;
-}
-#list_download .panel-heading {
-    border-bottom: 1px solid transparent;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    padding: 4px 15px;
-}
-table.scroll tbody,
-table.scroll thead { display: block }
+    #list_contributor .panel-heading {
+        border-bottom: 1px solid transparent;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        padding: 4px 15px;
+    }
+    #list_subtitle .panel-heading {
+        border-bottom: 1px solid transparent;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        padding: 4px 15px;
+    }
+    #list_download .panel-heading {
+        border-bottom: 1px solid transparent;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        padding: 4px 15px;
+    }
+    table.scroll tbody,
+    table.scroll thead { display: block; }
 
-table.scroll thead tr th {
-    height: 27px;
-    line-height: 27px;
-    text-align: left;
-}
-table.scroll tbody {
-    max-height: 100px;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-table.scroll tbody td, table.scroll thead th {
-     width: 10%;  /* Optional */
-    /*border-right: 1px solid black;*/
-    /*white-space: nowrap;*/
-    height: 20px;
-    line-height: 20px;
-}
-table#table_list_contributors tbody td.contributor_name, table#table_list_contributors thead th.contributor_name {
-    width: 20%;
-}
+    table.scroll thead tr th {
+        height: 27px;
+        line-height: 27px;
+        text-align: left;
+    }
+    table.scroll tbody {
+        max-height: 100px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    table.scroll tbody td,
+    table.scroll thead th {
+        width: 10%;  /* Optional */
+        /*border-right: 1px solid black;*/
+        /*white-space: nowrap;*/
+        height: 20px;
+        line-height: 20px;
+    }
+    table#table_list_contributors tbody td.contributor_name,
+    table#table_list_contributors thead th.contributor_name {
+        width: 20%;
+    }
 
 </style>
 
-    <!-- media -->
-    <script>window.__admin_media_prefix__ = '/static/admin/';</script>
-    <script src="/admin/jsi18n/"></script>
-    <script src="{% static 'admin/js/core.js' %}"></script>
-    <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
-    <script src="{% static 'admin/js/jquery.js' %}"></script>
-    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
-    <script src="{% static 'admin/js/actions.js' %}"></script>
+<!-- media -->
+<script>window.__admin_media_prefix__ = '/static/admin/';</script>
+<script src="/admin/jsi18n/"></script>
+<script src="{% static 'admin/js/core.js' %}"></script>
+<script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+<script src="{% static 'admin/js/jquery.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
+<script src="{% static 'admin/js/actions.js' %}"></script>
 
-    <!-- form.media -->
-    <script src="{% static 'filer/js/popup_handling.js' %}"></script>
+<!-- form.media -->
+<script src="{% static 'filer/js/popup_handling.js' %}"></script>
 
 <script>
 
@@ -433,105 +438,117 @@ function verify_fields(form){
 
 {% block bootstrap3_content %}
 <article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+
     <ol class="breadcrumb">
-        {% block breadcrumbs %}
+    {% block breadcrumbs %}
         {{ block.super }}
         <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
-        <li class="active"> {% trans "Completion video" %} "{{video.title}}"</li>
-        {% endblock breadcrumbs %}
+        <li class="active"> {% trans "Completion video" %} "{{ video.title }}"</li>
+    {% endblock breadcrumbs %}
     </ol>
-        <br/>
-        <div class="row" id="info_video">
-            <div id="accordeon" class="col-sm-9">
-                <!-- Le lien qui sert de bouton pour ouvrir le dropdown -->
-                <li><a id = "section_contributor" href="#"  title="{% trans "Display &quot;Contributor(s)&quot; section" %}" class = "title" >{% trans "Contributor(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down" /> </a></li>
-                <li class="contenuTitre">
-                    &nbsp;
-                    <span id="list_contributor">
-                        <!-- place for form, it will be replace by a form : empty or to modify -->
-                        {%include 'videos/completion/contributor/list_contributor.html'%}
-                    </span>
-                    <span id= "form_contributor">
-                    {% if form_contributor %}
-                        {%include 'videos/completion/contributor/form_contributor.html' with form_contributor=form_contributor%}
-                    {%endif%}
-                    <!-- This button will add a new form when clicked -->
-                    </span>
-                    <form  class = "form_new" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="new">
-                        <input type="submit" value="{% trans "Add a new contributor" %}" class="new_contributor btn btn-info"/>
 
-                    </form>
-                </li>
+    <div class="row" id="info_video">
+
+        <div id="accordeon" class="col-sm-9">
+            <!-- Le lien qui sert de bouton pour ouvrir le dropdown -->
+            <li>
+                <a id="section_contributor" href="#" title="{% trans 'Display &quot;Contributor(s)&quot; section' %}" class = "title">
+                    {% trans "Contributor(s)" %}&nbsp;<span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </li>
+            <li class="contenuTitre">
                 &nbsp;
-                {% if request.user.is_staff %}
-                <li><a id = "section_subtitle" href="#" title="{% trans "Display &quot;Subtitle(s) and Captions(s) &quot; section" %}" class="title" >{% trans "Subtitle(s) and caption(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down"/></a></li>
-                <li class="contenuTitre">
-                    <span id= "form_subtitle">
-                    {% if form_subtitle %}
-                        {%include 'videos/completion/subtitle/form_subtitle.html' with form_subtitle=form_subtitle %}
-                    {%endif%}
-                    <!-- This button will add a new form when clicked -->
-                    </span>
-                    &nbsp;
-                    <span id="list_subtitle">
-                        <!-- place for form, it will be replace by a form : empty or to modify -->
-                        {%include 'videos/completion/subtitle/list_subtitle.html'%}
-                    </span>
-                    <form  class = "form_new" id="form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="new">
-                        <input type="submit" value="{% trans "Add a new subtitle or caption file" %}" class="new_subtitle btn btn-info"/>
-                    </form>
-                </li>
+                <span id="list_contributor">
+                    <!-- place for form, it will be replace by a form : empty or to modify -->
+                    {% include 'videos/completion/contributor/list_contributor.html' %}
+                </span>
+                <span id= "form_contributor">
+                {% if form_contributor %}
+                    {% include 'videos/completion/contributor/form_contributor.html' with form_contributor=form_contributor %}
+                {% endif %}
+                <!-- This button will add a new form when clicked -->
+                </span>
+                <form class="form_new" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug  %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="new">
+                    <input type="submit" value="{% trans 'Add a new contributor' %}" class="new_contributor btn btn-info"/>
+                </form>
+            </li>
+            &nbsp;
+            {% if request.user.is_staff %}
+            <li><a id="section_subtitle" href="#" title="{% trans 'Display &quot;Subtitle(s) and Captions(s) &quot; section' %}" class="title" >{% trans "Subtitle(s) and caption(s)" %}&nbsp;<span class="glyphicon glyphicon-chevron-down"></span></a></li>
+            <li class="contenuTitre">
+                <span id="form_subtitle">
+                {% if form_subtitle %}
+                    {% include 'videos/completion/subtitle/form_subtitle.html' with form_subtitle=form_subtitle %}
+                {% endif %}
+                <!-- This button will add a new form when clicked -->
+                </span>
                 &nbsp;
-                <li><a id = "section_download" href="#" title="{% trans "Display &quot; Additional resource(s)&quot; section" %}" class="title" >{% trans "Additional resource(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down" /></a></li>
-                <li class="contenuTitre">
-                    <span id= "form_download">
-                    {% if form_download %}
-                        {%include 'videos/completion/download/form_download.html' with form_download=form_download %}
-                    {%endif%}
-                    </span>
-                    &nbsp;
-                    <span id="list_download">
-                        <!-- place for form, it will be replace by a form : empty or to modify -->
-                        {%include 'videos/completion/download/list_download.html'%}
-                    </span>
-                    <form  class = "form_new"  id="form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="new">
-                        <input type="submit" value="{% trans "Add a new additional resource" %}" class="new_download btn btn-info"/>
-                    </form>
-                </li>
-                {%endif%}
-            </div>
-            <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
-                <aside class="col-sm-3  panel panel-info">
-                    <div class="widget user-tools">
-                        <h4>
-                            <span class="glyphicon glyphicon-wrench"></span> {% trans 'Edit the video' %}
-                        </h4>
-                        {% include 'videos/ownertools.html' with video=video %}
-                    </div>
-                    <div class="widget">
-                        <h4>
-                            <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Information' %}
-                        </h4>
-                        {% if request.user.is_staff %}
-                            <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara).' %}</p>
-                            <p>{% trans 'You can add several subtitle or caption files to a single video (for example, in order to subtitle or caption this video in several languages).' %} </p>
-                            <p>{% trans 'For this purpose, you will need the URL of your video. This URL is a direct access to this video. Please do not communicate it outside of this site in order to avoid any misuse.' %}</p>
-                            <input maxlength="250" value="//{{ request.get_host }}{{ video.get_MP4_240_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
-                        {% else %}
-                            <p>
-                            {% trans 'Your current permissions do not allow you to add subtitle files or documents to download videos. Please contact us to add these rights.' %} :
-                            <a href="mailto:{{ HELP_MAIL }}">{{ HELP_MAIL }}</a>
-                            </p>
-                        {% endif %}
-                    </div>
-                </aside>
+                <span id="list_subtitle">
+                    <!-- place for form, it will be replace by a form : empty or to modify -->
+                    {% include 'videos/completion/subtitle/list_subtitle.html' %}
+                </span>
+                <form class="form_new" id="form_new_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="new">
+                    <input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_subtitle btn btn-info"/>
+                </form>
+            </li>
+            &nbsp;
+            <li><a id="section_download" href="#" title="{% trans 'Display &quot; Additional resource(s)&quot; section' %}" class="title" >{% trans "Additional resource(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down"></span></a></li>
+            <li class="contenuTitre">
+                <span id="form_download">
+                {% if form_download %}
+                    {%include 'videos/completion/download/form_download.html' with form_download=form_download %}
+                {% endif %}
+                </span>
+                &nbsp;
+                <span id="list_download">
+                    <!-- place for form, it will be replace by a form : empty or to modify -->
+                    {% include 'videos/completion/download/list_download.html' %}
+                </span>
+                <form class="form_new" id="form_new_download" action="{% url 'video_completion_download' slug=video.slug  %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="new">
+                    <input type="submit" value="{% trans 'Add a new additional resource' %}" class="new_download btn btn-info"/>
+                </form>
+            </li>
+            {% endif %}
         </div>
-    </article>
+
+        <aside class="col-sm-3 panel panel-info">
+
+            <div class="widget user-tools">
+                <h4>
+                    <span class="glyphicon glyphicon-wrench"></span>
+                    {% trans 'Edit the video' %}
+                </h4>
+                {% include 'videos/ownertools.html' with video=video %}
+            </div>
+
+            <div class="widget">
+                <h4>
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                    {% trans 'Information' %}
+                </h4>
+            {% if request.user.is_staff %}
+                <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara).' %}</p>
+                <p>{% trans 'You can add several subtitle or caption files to a single video (for example, in order to subtitle or caption this video in several languages).' %}</p>
+                <p>{% trans 'For this purpose, you will need the URL of your video. This URL is a direct access to this video. Please do not communicate it outside of this site in order to avoid any misuse.' %}</p>
+                <input maxlength="250" value="//{{ request.get_host }}{{ video.get_MP4_240_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
+            {% else %}
+                <p>
+                    {% trans 'Your current permissions do not allow you to add subtitle files or documents to download videos. Please contact us to add these rights.' %} :
+                    <a href="mailto:{{ HELP_MAIL }}">{{ HELP_MAIL }}</a>
+                </p>
+            {% endif %}
+            </div>
+
+        </aside>
+
+    </div>
+
+</article>
 {% endblock bootstrap3_content %}
 {% block box %}{% endblock box %}

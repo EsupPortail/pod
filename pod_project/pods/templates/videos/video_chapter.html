@@ -31,74 +31,78 @@ voir http://www.gnu.org/licenses/
 
 {% block bootstrap3_extra_head %}
 <style>
-.form-help-inline, .special_class {color:red;}
+    .form-help-inline,
+    .special_class { color: red; }
 
-/*** table scroll ***/
-table.scroll {
-     width: 100%; /* Optional */
-    border-collapse: collapse;
-    border-spacing: 0;
-    /*border: 2px solid black;*/
-}
+    /*** table scroll ***/
+    table.scroll {
+        width: 100%; /* Optional */
+        border-collapse: collapse;
+        border-spacing: 0;
+        /*border: 2px solid black;*/
+    }
 
-table.scroll .btn-sm, table.scroll .btn-group-sm > .btn {
-    border-radius: 3px;
-    font-size: 12px;
-    line-height: 0.5;
-    padding: 5px 10px;
-}
+    table.scroll .btn-sm,
+    table.scroll .btn-group-sm > .btn {
+        border-radius: 3px;
+        font-size: 12px;
+        line-height: 0.5;
+        padding: 5px 10px;
+    }
 
-#list_chapter .panel-heading {
-    border-bottom: 1px solid transparent;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    padding: 4px 15px;
-}
+    #list_chapter .panel-heading {
+        border-bottom: 1px solid transparent;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        padding: 4px 15px;
+    }
 
-table.scroll tbody,
-table.scroll thead { display: block; }
+    table.scroll tbody,
+    table.scroll thead { display: block; }
 
-table.scroll thead /*tr th*/ {
-    height: 27px;
-    line-height: 27px;
-    text-align: left;
-}
-table.scroll tbody {
-    max-height: 100px;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-table.scroll tbody td, table.scroll thead th {
-     width: 10%;  /* Optional */
-    /*border-right: 1px solid black;*/
-    /*white-space: nowrap;*/
-    height: 20px;
-    line-height: 20px;
-}
+    table.scroll thead /*tr th*/ {
+        height: 27px;
+        line-height: 27px;
+        text-align: left;
+    }
 
-table.scroll thead th.chapter_title, table.scroll thead th.chapter_time {
-    white-space: nowrap;
-}
+    table.scroll tbody {
+        max-height: 100px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
+    table.scroll tbody td,
+    table.scroll thead th {
+        width: 10%;  /* Optional */
+        /*border-right: 1px solid black;*/
+        /*white-space: nowrap;*/
+        height: 20px;
+        line-height: 20px;
+    }
+
+    table.scroll thead th.chapter_title,
+    table.scroll thead th.chapter_time {
+        white-space: nowrap;
+    }
 
 </style>
 
 <script src="{% static "video-js/video.js" %}" ></script>
 {% include "videos/extraheadplayer.html" with video=video %}
 
-    <!-- media -->
-    <script>window.__admin_media_prefix__ = '/static/admin/';</script>
-    <script src="/admin/jsi18n/"></script>
-    <script src="{% static 'admin/js/core.js' %}"></script>
-    <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
-    <script src="{% static 'admin/js/jquery.js' %}"></script>
-    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
-    <script src="{% static 'admin/js/actions.js' %}"></script>
+<!-- media -->
+<script>window.__admin_media_prefix__ = '/static/admin/';</script>
+<script src="/admin/jsi18n/"></script>
+<script src="{% static 'admin/js/core.js' %}"></script>
+<script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+<script src="{% static 'admin/js/jquery.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
+<script src="{% static 'admin/js/actions.js' %}"></script>
 
-    <!-- form.media -->
-    <script src="{% static 'filer/js/popup_handling.js' %}"></script>
-    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
-
+<!-- form.media -->
+<script src="{% static 'filer/js/popup_handling.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 
 <script>
 
@@ -304,10 +308,10 @@ function overlaptest(){
 };
 /*** Display element of form enrich ***/
 function get_form(data) {
-        //fadeIn().delay(3000).fadeOut()
-        $("#form_chapter").hide().html(data).fadeIn();
-        $("input#id_time")
-            .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-xs'>{% trans 'Get time from the player'%}</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
+    //fadeIn().delay(3000).fadeOut()
+    $("#form_chapter").hide().html(data).fadeIn();
+    $("input#id_time")
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-xs'>{% trans 'Get time from the player'%}</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
 };
 
 $(document).on('change','input#id_time',function() {
@@ -334,61 +338,68 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
 
 {% block bootstrap3_content %}
 <article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+
     <ol class="breadcrumb">
         {% block breadcrumbs %}
         {{ block.super }}
         <li><a href="{% url 'owner_videos_list' %}">{% trans "My videos" %}</a></li>
-        <li class="active"> {% trans "Chaptering the video" %} "{{video.title}}"</li>
+        <li class="active">{% trans "Chaptering the video" %} "{{ video.title }}"</li>
         {% endblock breadcrumbs %}
     </ol>
 
-        <span id="chapter_player">
-        {% include 'videos/video_player.html' with video=video %}
-        </span>
+    <span id="chapter_player">
+    {% include 'videos/video_player.html' with video=video %}
+    </span><br>
 
-        <br/>
-        <div class="row" id="info_video">
-            <div class="col-sm-9">
-                <span id="form_chapter">
-                    <!-- place for form, it will be replace by a form : empty or to modify -->
-                    {% if form_chapter %}
-                    {%include 'videos/chapter/form_chapter.html' with form_chapter=form_chapter%}
-                    {%endif%}
-                </span>
-                <span id= "list_chapter">
-                    {%include 'videos/chapter/list_chapter.html'%}
-                    <!-- This button will add a new form when clicked -->
-                </span>
+    <div class="row" id="info_video">
 
-                <form  id = "form_new" action="{% url 'video_chapter' slug=video.slug  %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="new">
-                    <input type="submit" id="add_new_chapter"  value="{% trans "Add a new chapter" %}" class="btn btn-info"/>
-                </form>
-            </div>
+        <div class="col-sm-9">
 
-            <id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
-                <aside class="col-sm-3  panel panel-info">
-                    <div class="widget user-tools">
-                        <h4>
-                            <span class="glyphicon glyphicon-wrench"></span> {% trans 'Edit the video' %}
-                        </h4>
-                        {% include 'videos/ownertools.html' with video=video %}
-                    </div>
-                    <div class="widget">
-                        <h4>
-                            <span class="glyphicon glyphicon-info-sign"></span> {% trans 'Information' %}
-                        </h4>
-                        <p>{% trans '"Add a new chapter" allows you to add a new chapter, "modify" allows you to modify it and "delete" allows you to remove the chapter.' %}</p>
-                        <p>{% trans 'Start playback of the video, pause the video and click on "Get time from the player" to fill in the field intitled "Start time".' %}</p>
-                        <p>{% trans 'The chapters cannot start at the same time.' %}</p>
-                        <p>{% trans 'You must save your chapters to view the result.' %}</p>
-                    </div>
+            <span id="form_chapter">
+                <!-- place for form, it will be replace by a form : empty or to modify -->
+                {% if form_chapter %}
+                {% include 'videos/chapter/form_chapter.html' with form_chapter=form_chapter %}
+                {% endif %}
+            </span>
 
-                </aside>
+            <span id="list_chapter">
+                {% include 'videos/chapter/list_chapter.html' %}
+                <!-- This button will add a new form when clicked -->
+            </span>
 
+            <form id="form_new" action="{% url 'video_chapter' slug=video.slug  %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="new">
+                <input type="submit" id="add_new_chapter"  value="{% trans 'Add a new chapter' %}" class="btn btn-info"/>
+            </form>
 
         </div>
-    </article>
+
+        <aside class="col-sm-3 panel panel-info">
+
+            <div class="widget user-tools">
+                <h4>
+                    <span class="glyphicon glyphicon-wrench"></span>
+                    {% trans 'Edit the video' %}
+                </h4>
+                {% include 'videos/ownertools.html' with video=video %}
+            </div>
+
+            <div class="widget">
+                <h4>
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                    {% trans 'Information' %}
+                </h4>
+                <p>{% trans '"Add a new chapter" allows you to add a new chapter, "modify" allows you to modify it and "delete" allows you to remove the chapter.' %}</p>
+                <p>{% trans 'Start playback of the video, pause the video and click on "Get time from the player" to fill in the field intitled "Start time".' %}</p>
+                <p>{% trans 'The chapters cannot start at the same time.' %}</p>
+                <p>{% trans 'You must save your chapters to view the result.' %}</p>
+            </div>
+
+        </aside>
+
+    </div>
+
+</article>
 {% endblock bootstrap3_content %}
 {% block box %}{% endblock box %}
