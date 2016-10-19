@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils import translation
 from pods.models import Pod
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import TransportError
 from django.conf import settings
 import json
 
@@ -10,8 +11,8 @@ ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 class Command(BaseCommand):
 	args = '__ALL__ or <pod_id pod_id ...>'
 	help = 'Index in elasticsearch the specified video'
-	
-	def handle(self, *args, **options):	
+
+	def handle(self, *args, **options):
 		# Activate a fixed locale fr
 		translation.activate('fr')
 
@@ -20,7 +21,7 @@ class Command(BaseCommand):
 			if args[0]=='__ALL__':
 				delete = es.indices.delete(index='pod', ignore=[400, 404])
 				#delete = es.delete_by_query(index="pod", doc_type='pod', body={"query":{"match_all":{}}})
-				json_data = open('pods/search_template.json')   
+				json_data = open('pods/search_template.json')
 				es_template = json.load(json_data)
 				try:
 				    create = es.indices.create(index='pod', body=es_template) #ignore=[400, 404]
