@@ -11,7 +11,7 @@ ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 class Command(BaseCommand):
     args = '__ALL__ or <pod_id pod_id ...>'
-    help = 'Index in elasticsearch the specified video'
+    help = 'Indexes the specified content in Elasticsearch.'
 
     def handle(self, *args, **options):
         # Activate a fixed locale fr
@@ -29,9 +29,9 @@ class Command(BaseCommand):
                 except TransportError as e:
                     # (400, u'IndexAlreadyExistsException[[pod] already exists]')
                     if e.status_code == 400:
-                        print "l'index Pod est existant : %s" % e.error
+                        print "Pod index already exists: %s" % e.error
                     else:
-                        print "Une erreur est survenue lors de la creation de l'index : %s-%s" % (e.status_code, e.error)
+                        print "An error occured during index creation: %s-%s" % (e.status_code, e.error)
                 from pods.views import VIDEOS
                 for pod in VIDEOS:
                     res = es.index(index="pod", doc_type='pod', id=pod.id, body=pod.get_json_to_index(), refresh=True)
@@ -40,10 +40,10 @@ class Command(BaseCommand):
                     try:
                         pod = Pod.objects.get(pk=int(pod_id))
                     except Pod.DoesNotExist:
-                        raise CommandError('Pod "%s" does not exist' % pod_id)
+                        raise CommandError('Pod "%s" does not exist.' % pod_id)
                     res = es.index(index="pod", doc_type='pod', id=pod.id, body=pod.get_json_to_index(), refresh=True)
         else:
-            print "******* Warning : you must give some arguments : %s *******" % self.args
+            print "******* Warning: you must give some arguments: %s *******" % self.args
 
 
 """

@@ -10,7 +10,7 @@ ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 class Command(BaseCommand):
     args = ''
-    help = 'Create the Pod index in leasticsearch engine'
+    help = 'Creates the Elasticsearch Pod index.'
 
     def handle(self, *args, **options):
         es = Elasticsearch(ES_URL)
@@ -21,6 +21,6 @@ class Command(BaseCommand):
         except TransportError as e:
             # (400, u'IndexAlreadyExistsException[[pod] already exists]')
             if e.status_code == 400:
-                print "l'index Pod est existant : %s" % e.error
+                print "Pod index already exists: %s" % e.error
             else:
-                print "Une erreur est survenue lors de la creation de l'index : %s-%s" % (e.status_code, e.error)
+                print "An error occured during index creation: %s-%s" % (e.status_code, e.error)
