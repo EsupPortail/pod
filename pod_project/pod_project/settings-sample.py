@@ -390,3 +390,7 @@ RECORDER_SALT = "abcdefgh"
 # Signalement des vidéos
 SHOW_REPORT = True
 REPORT_VIDEO_MAIL_TO = ['alert@univ.fr']
+
+# Protection des médias
+MEDIA_GUARD = False
+MEDIA_GUARD_SALT = "S3CR3T"
