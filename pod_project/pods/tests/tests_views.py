@@ -928,19 +928,19 @@ class VideoTestView(TestCase):
         t = Theme.objects.create(
             title="Theme1", channel=c)
         type1 = Type.objects.create(title="type1")
-        media_guard_hash1 = get_media_guard("remi", 1)
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=type1, title=u'Bunny',
-                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash1, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash1, '1', 'overview.jpg'),
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
                                  allow_downloading=False, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
 
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join('videos', 'remi', media_guard_hash1, '1', 'video_1_240.mp4'), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join('videos', 'remi', media_guard_hash, '1', 'video_1_240.mp4'), encodingFormat="video/mp4")
 
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash1, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
