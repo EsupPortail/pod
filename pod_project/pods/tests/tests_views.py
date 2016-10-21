@@ -68,7 +68,7 @@ class ChannelsTestView(TestCase):
         t = Theme.objects.create(
             title="Theme1", channel=Channel.objects.get(id=1))
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=False,
                                  date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
@@ -204,7 +204,7 @@ class ChannelTestView(TestCase):
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
                                  date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
@@ -377,7 +377,7 @@ class TypesTestView(TestCase):
     def setUp(self):
         remi = User.objects.create_user(username="remi")
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
                                  date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
@@ -426,7 +426,7 @@ class OwnersTestView(TestCase):
     def setUp(self):
         remi = User.objects.create_user(username="Remi", last_name="Lefevbre")
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
                                  date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
@@ -494,7 +494,7 @@ class DisciplinesTestView(TestCase):
         Discipline.objects.create(title="Discipline1")
         other_type = Type.objects.get(id=1)
         d1 = Discipline.objects.create(title="Discipline2")
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
                                  date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
@@ -545,7 +545,7 @@ class Owner_Videos_listTestView(TestCase):
         self.user.set_password('hello')
         self.user.save()
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         i = 1
         while i < 3:
             pod = Pod.objects.create(type=other_type, title="Video" + str(i), encoding_status="b", encoding_in_progress=True,
@@ -602,7 +602,7 @@ class Tags_TestView(TestCase):
     def setUp(self):
         remi = User.objects.create_user(username="remi")
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
                                  date_added=datetime.today().date(), owner=remi, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
@@ -646,7 +646,7 @@ class Video_add_favoriteTestView(TestCase):
         user2.set_password('hello')
         user2.save()
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
                                  date_added=datetime.today().date(), owner=user2, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
@@ -720,7 +720,7 @@ class Video_add_reportTestView(TestCase):
         user2.set_password('hello')
         user2.save()
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
                                  date_added=datetime.today().date(), owner=user2, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
@@ -780,7 +780,7 @@ class Favorites_videos_listTestView(TestCase):
         user2.set_password('hello')
         user2.save()
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         i = 1
         while i < 5:
             pod = Pod.objects.create(type=other_type, title="Video" + str(i), encoding_status="b", encoding_in_progress=True,
@@ -847,7 +847,7 @@ class VideosTestView(TestCase):
         user.set_password('hello')
         user.save()
         type1 = Type.objects.create(title="type1")
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         i = 1
         while i < 5:
             pod = Pod.objects.create(type=type1, title="Video" + str(i), encoding_status="b", encoding_in_progress=True,
@@ -928,7 +928,7 @@ class VideoTestView(TestCase):
         t = Theme.objects.create(
             title="Theme1", channel=c)
         type1 = Type.objects.create(title="type1")
-        media_guard_hash1 = get_media_guard("remi")
+        media_guard_hash1 = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=type1, title=u'Bunny',
                                  date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash1, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash1, '1', 'overview.jpg'),
                                  allow_downloading=False, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
@@ -1046,7 +1046,7 @@ class Video_edit_testCase(TestCase):
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
                                  date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"),
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
@@ -1148,7 +1148,7 @@ class Video_notesTestView(TestCase):
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
                                  date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
@@ -1224,7 +1224,7 @@ class Video_completion_TestView(TestCase):
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
                                  date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
@@ -1553,7 +1553,7 @@ class Video_chapterTestView(TestCase):
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
                                  date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
@@ -1724,7 +1724,7 @@ class Video_search_videos(TestCase):
         user.save()
 
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
                                  date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="bugs", is_draft=False,
@@ -1823,7 +1823,7 @@ class Video_enrichTestView(TestCase):
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
-        media_guard_hash = get_media_guard("remi")
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
                                  date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
