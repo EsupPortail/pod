@@ -137,11 +137,11 @@ def create_user_profile(sender, instance, created, **kwargs):
             print msg
 
 
-def get_media_guard(login, pod_id):
+def get_media_guard(login, pod_id=0):
     """ Get the media guard hash """
     MEDIA_GUARD = getattr(settings, 'MEDIA_GUARD', False)
     MEDIA_GUARD_SALT = getattr(settings, 'MEDIA_GUARD_SALT', None)
-    if MEDIA_GUARD and MEDIA_GUARD_SALT and login and pod_id:
+    if MEDIA_GUARD and MEDIA_GUARD_SALT and login:
         return hashlib.sha256(MEDIA_GUARD_SALT + login + str(pod_id)).hexdigest()
     else:
         return ""
@@ -151,7 +151,8 @@ def get_storage_path(instance, filename):
     """ Get the storage path. Instance needs to implement owner """
     fname, dot, extension = filename.rpartition('.')
     username = instance.owner.username
-    media_guard_hash = get_media_guard(username, instance.id)
+    pod_id = instance.id if instance.id else 0
+    media_guard_hash = get_media_guard(username, pod_id)
     try:
         fname.index("/")
         return os.path.join(VIDEOS_DIR, username, media_guard_hash, '%s/%s.%s' % (os.path.dirname(fname), slugify(os.path.basename(fname)), extension))
