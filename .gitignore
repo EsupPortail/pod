@@ -42,8 +42,8 @@ Thumbs.db
 #################
 pod_project/pod_project/settings.py
 pod_project/pod_project/urls.py
+pod_project/pod_project/wsgi.py
 *urls-lille1.py
-*wsgi.py
 import_data/
 media/
 *pods/fixtures/
