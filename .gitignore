@@ -28,10 +28,12 @@
 
 # OS generated files #
 ######################
-.DS_Store?
+.DS_Store
+._*
+Desktop.ini
+Thumbs.db
 ehthumbs.db
 Icon?
-Thumbs.db
 *.swp
 .*.swp
 *~
