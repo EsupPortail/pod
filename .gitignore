@@ -40,13 +40,13 @@ Thumbs.db
 
 # Custom files  #
 #################
-*settings.py
+pod_project/pod_project/settings.py
+pod_project/pod_project/urls.py
 *urls-lille1.py
 *wsgi.py
 import_data/
 media/
 *pods/fixtures/
-pod_project/pod_project/urls.py
 ## Lang files
 locale/
 *.mo
