@@ -29,7 +29,7 @@ voir http://www.gnu.org/licenses/
     		{% if discipline.headband %}
                 <img src="{% thumbnail discipline.headband 285x160 crop upscale subject_location=discipline.headband.subject_location %}" alt="{{discipline.title}}" class="preview">
             {%else%}
-                <img alt="img" src="{% static DEFAULT_IMG %}" alt="{{discipline.title}}">
+                <img alt="img" src="{% static DEFAULT_IMG %}" alt="{{discipline.title}}" class="preview">
             {% endif %}
     		</span>
     		<h5>{{discipline.title|safe|striptags|truncatechars:32}} ({{discipline.video_count}})</h5>
