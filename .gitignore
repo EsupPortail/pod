@@ -46,7 +46,7 @@ Thumbs.db
 import_data/
 media/
 *pods/fixtures/
-pod_project/urls.py
+pod_project/pod_project/urls.py
 ## Lang files
 locale/
 *.mo
