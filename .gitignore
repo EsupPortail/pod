@@ -47,14 +47,14 @@ pod_project/pod_project/urls.py
 pod_project/pod_project/wsgi.py
 *urls-lille1.py
 import_data/
-media/
+pod_project/media/
 *pods/fixtures/
 ## Lang files
 locale/
 *.mo
 ## Others
 jwplayer/
-*pod_project/static/
+pod_project/static/
 pod_project/pods/viewsv1.py
 *.bak
 .coverage
