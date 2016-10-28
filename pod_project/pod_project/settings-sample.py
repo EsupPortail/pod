@@ -196,7 +196,7 @@ TITLE_SITE = 'Pod'
 TITLE_ETB = 'Université'
 DEFAULT_IMG = 'images/default.png'
 FILTER_USER_MENU = ('[a-d]', '[e-h]', '[i-l]', '[m-p]', '[q-t]', '[u-z]')
-TEMPLATE_THEME = 'LILLE1'
+TEMPLATE_THEME = 'DEFAULT'
 
 LOGO_SITE = 'images/logo_compact.png'
 LOGO_COMPACT_SITE = 'images/logo_black_compact.png'
