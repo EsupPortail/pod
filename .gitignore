@@ -25,7 +25,6 @@
 *.sql
 *.sqlite*
 
-
 # OS generated files #
 ######################
 .DS_Store
@@ -59,6 +58,10 @@ pod_project/pods/viewsv1.py
 *.bak
 .coverage
 
+# Theme files #
+###############
+/pod_project/core/theme
+! /pod_project/core/theme/DEFAULT
 
 # IDE Files #
 #############
