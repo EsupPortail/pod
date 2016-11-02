@@ -25,13 +25,14 @@
 *.sql
 *.sqlite*
 
-
 # OS generated files #
 ######################
-.DS_Store?
+.DS_Store
+._*
+Desktop.ini
+Thumbs.db
 ehthumbs.db
 Icon?
-Thumbs.db
 *.swp
 .*.swp
 *~
@@ -40,23 +41,27 @@ Thumbs.db
 
 # Custom files  #
 #################
-*settings.py
+pod_project/pod_project/settings.py
+pod_project/pod_project/urls.py
+pod_project/pod_project/wsgi.py
 *urls-lille1.py
-*wsgi.py
 import_data/
-media/
+pod_project/media/
 *pods/fixtures/
-pod_project/urls.py
 ## Lang files
 locale/
 *.mo
 ## Others
 jwplayer/
-*pod_project/static/
+pod_project/static/
 pod_project/pods/viewsv1.py
 *.bak
 .coverage
 
+# Theme files #
+###############
+/pod_project/core/theme
+! /pod_project/core/theme/DEFAULT
 
 # IDE Files #
 #############

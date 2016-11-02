@@ -68,16 +68,17 @@ class Video_deleteTestView(TestCase):
         t = Theme.objects.create(
             title="Theme1", channel=c)
         other_type = Type.objects.get(id=1)
+        media_guard_hash = get_media_guard("remi", 1)
         pod = Pod.objects.create(type=other_type, title=u'Bunny',
-                                 date_added=datetime.today(), owner=user, date_evt=datetime.today(), video="videos/remi/test.mp4", overview=u'videos/remi/1/overview.jpg',
+                                 date_added=datetime.today(), owner=user, date_evt=datetime.today(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile="videos/remi/1/video_1_240.mp4", encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile="videos/remi/1/video_1_240.webm", encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()

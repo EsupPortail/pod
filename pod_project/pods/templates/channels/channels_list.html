@@ -29,7 +29,7 @@ voir http://www.gnu.org/licenses/
 			{% if channel.headband %}
                 <img alt="img" src="{% thumbnail channel.headband 285x160 crop upscale subject_location=channel.headband.subject_location %}" alt="{{channel.title}}" class="preview">
             {%else%}
-                <img alt="img" src="{% static DEFAULT_IMG %}" alt="{{channel.title}}">
+                <img alt="img" src="{% static DEFAULT_IMG %}" alt="{{channel.title}}" class="preview">
             {% endif %}
     		</span>
     		<h5>{{channel.title|safe|striptags|truncatechars:32}} ({{channel.video_count}})</h5>
