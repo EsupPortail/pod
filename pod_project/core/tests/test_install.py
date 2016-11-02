@@ -37,7 +37,7 @@ from core.utils import encode_video
 import os
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -62,7 +62,7 @@ class CasTestView(TestCase):
             print "not cas server used USE_CAS is set to False"
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -121,7 +121,7 @@ class LdapTestView(TestCase):
             print "not cas server used or not ldap server used USE_LDAP_TO_POPULATE_USER is set to False or settings.AUTH_LDAP_UID_TEST is none"
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -143,7 +143,7 @@ class EsTestView(TestCase):
         print "\n   --->  test_es of EsTestView : OK ! \n info : \n %s \n" % r.data
 
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
+    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -157,7 +157,8 @@ class EncodingFileTestView(TestCase):
     def setUp(self):
         remi = User.objects.create(username="remi")
         other_type = Type.objects.get(id=1)
-        file_path = os.path.join(settings.MEDIA_ROOT, 'videos', remi.username, 'test.mp4')
+        media_guard_hash = get_media_guard("remi", 1)
+        file_path = os.path.join(settings.MEDIA_ROOT, 'videos', remi.username, media_guard_hash, 'test.mp4')
         if not os.path.exists(file_path):
             url = "http://pod.univ-lille1.fr/media/pod.mp4"
             print "Download video file from %s" %url
@@ -178,7 +179,7 @@ class EncodingFileTestView(TestCase):
             print "File already exist"
             pod = Pod.objects.create(
                 type=other_type, title="Video", owner=remi, video="-", to_encode=False)
-            pod.video.name = os.path.join('videos', remi.username, 'test.mp4')
+            pod.video.name = os.path.join('videos', remi.username, media_guard_hash, 'test.mp4')
             pod.save()
         print "\n --->  SetUp of EncodingFileTestView : OK !"
 

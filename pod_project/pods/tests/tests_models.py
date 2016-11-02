@@ -345,10 +345,11 @@ class VideoTestCase(TestCase):
     def setUp(self):
         remi = User.objects.create_user("Remi")
         other_type = Type.objects.get(id=1)
+        self.media_guard_hash = get_media_guard("remi", 1)
         Pod.objects.create(
             type=other_type, title="Video1", owner=remi, video="", to_encode=False)
         Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
-                           date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video="/media/videos/remi/test.mp4", allow_downloading=True, view_count=2, description="fl",
+                           date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video=os.path.join("media", "videos", "remi", self.media_guard_hash, "test.mp4"), allow_downloading=True, view_count=2, description="fl",
                            overview="blabla.jpg", is_draft=False, duration=3, infoVideo="videotest", to_encode=False)
         print (" --->  SetUp of VideoTestCase : OK !")
 
@@ -390,7 +391,7 @@ class VideoTestCase(TestCase):
 
     def test_Video_many_attributs(self):
         pod = Pod.objects.get(id=2)
-        self.assertEqual(pod.video.name, u'/media/videos/remi/test.mp4')
+        self.assertEqual(pod.video.name, os.path.join('media', 'videos', 'remi', self.media_guard_hash, 'test.mp4'))
         self.assertEqual(pod.allow_downloading, True)
         self.assertEqual(pod.description, 'fl')
         self.assertEqual(pod.overview.name, "blabla.jpg")
