@@ -1605,7 +1605,7 @@ class Video_chapterTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_chapter'] != "")
         self.assertTrue(
-            '<input type="hidden" id = "id_chapter" name="chapter_id" value="1">' in response.content)
+            '<input type="hidden" id="id_chapter" name="chapter_id" value="1">' in response.content)
         response = self.client.post("/video_chapter/%s/" % pod.slug, {u'title': [u'chap2'], u'chapter_id': [u'1'],
                                                                       u'video': [u'1'], u'time': [u'1'], u'action': [u'save']})
         self.assertEqual(response.status_code, 200)
@@ -1880,7 +1880,7 @@ class Video_enrichTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_enrich'] != "")
         self.assertTrue(
-            '<input type="hidden" id = "id_enrich" name="enrich_id" value="1">' in response.content)
+            '<input type="hidden" id="id_enrich" name="enrich_id" value="1">' in response.content)
         response = self.client.post("/video_enrich/%s/" % pod.slug, {u'end': [u'1'], u'title': [u'test2'], u'image': [u''],
                                                                      u'weblink': [u''], u'richtext': [u'sdfg'], u'enrich_id': [u'1'],
                                                                      u'start': [u'0'], u'video': [u'1'], u'action': [u'save'],
