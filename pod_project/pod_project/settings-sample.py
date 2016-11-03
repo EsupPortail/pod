@@ -313,9 +313,13 @@ BOOTSTRAP3 = {
     'horizontal_field_class': 'col-md-4'
 }
 
-# Nom du dossier contenant les templates personnalisés (header.html et footer.html)
-# Mettre à None si vous n'avez pas l'intention d'utiliser ces fichiers
-TEMPLATE_CUSTOM = 'custom'  # None
+# Le dossier « templates » du theme utilisé, permettant de surcharger
+# les templates, contient aussi les deux templates « pre-header.html »
+# et « footer.html ».
+# True : intégrer le fichier (modifié si nécessaire) au gabarit principal.
+# False : ne pas utiliser le fichier (ex : pas de footer).
+TEMPLATE_USE_PRE_HEADER = True
+TEMPLATE_USE_FOOTER = True
 
 # Constantes utilisables depuis les templates
 TEMPLATE_VISIBLE_SETTINGS = (
@@ -332,8 +336,9 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'MAX_UPLOAD_FILE_SIZE',
     'MAX_DAILY_USER_UPLOADS',
     'SERV_LOGO',
-    'TEMPLATE_CUSTOM',
     'TEMPLATE_THEME',
+    'TEMPLATE_USE_FOOTER',
+    'TEMPLATE_USE_PRE_HEADER',
     'TITLE_ETB',
     'TITLE_SITE',
     'USE_XHR_FORM_UPLOAD',
