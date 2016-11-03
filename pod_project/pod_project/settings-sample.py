@@ -12,8 +12,16 @@ ADMINS = (
     # ('Nom', 'adminmail@exemple.fr'),
 )
 
+##
+# The secret key for your particular Django installation.
+# This is used to provide cryptographic signing,
+# and should be set to a unique, unpredictable value.
+#
+# Django will not start if this is not set.
+# See https://docs.djangoproject.com/en/1.8/ref/settings/#secret-key
+#
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'dp7u819^$3u5rdjv62o2(k0nlg5%lg5h+^s6qf2-i2e%gr4a2)'
+SECRET_KEY = ''
 
 # Condition d'utilisation du mode DEBUG - Attention à mettre à false lors
 # d'une mise en production
