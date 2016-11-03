@@ -19,8 +19,6 @@ SECRET_KEY = 'dp7u819^$3u5rdjv62o2(k0nlg5%lg5h+^s6qf2-i2e%gr4a2)'
 # d'une mise en production
 DEBUG = True
 
-TEMPLATE_DEBUG = DEBUG
-
 # Mettre url de production
 ALLOWED_HOSTS = ['pod.univ.fr']
 
@@ -264,25 +262,34 @@ ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = 1
 
 
 # Paramètres des templates
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
-    os.path.join(BASE_DIR, 'core', 'templates'),
-    os.path.join(BASE_DIR, 'core', 'templates', 'flatpages'),
-)
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.request',
-    # Contexte locaux
-    'core.context_processors.pages_menu',
-    'core.context_processors.context_settings',
-    'pods.context_processors.items_menu_header',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': (
+            os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
+            os.path.join(BASE_DIR, 'core', 'templates'),
+            os.path.join(BASE_DIR, 'core', 'templates', 'flatpages'),
+        ),
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': (
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+                # Local contexts
+                'core.context_processors.pages_menu',
+                'core.context_processors.context_settings',
+                'pods.context_processors.items_menu_header',
+            ),
+            'debug': DEBUG,
+        },
+    },
+]
 
 # Mettre à '' si non utilise
 FMS_LIVE_URL = 'rtmp://fms.univ.fr'
