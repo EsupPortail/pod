@@ -2,7 +2,7 @@
 
 ![Pod, plateforme de gestion de vidéo](http://pod.univ-lille1.fr/static/images/share.png "Pod, plateforme de gestion de vidéo")![Esup Portail](https://www.esup-portail.org/sites/esup-portail.org/files/logo-esup%2Baccroche_2.png "Esup Portail")
 
-> La plateforme Pod, développée et déployée par l'université de Lille, sciences et technologies, est maintenu et promu par le consortium Esup Portail.
+> La plateforme Pod, développée et déployée par l'université de Lille, sciences et technologies, est maintenue et promue par le consortium Esup Portail.
 
 > Elle a pour objectif de faciliter la mise à disposition de vidéos et de ce fait, d'encourager l'utilisation de celles-ci dans le cadre de l'enseignement et la recherche.
 
