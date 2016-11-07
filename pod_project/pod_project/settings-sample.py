@@ -6,26 +6,16 @@ from pod_project.cursusCodes import CURSUS_CODES
 from pod_project.ckeditor import *
 
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-ADMINS = (
-    # ('Nom', 'adminmail@exemple.fr'),
-)
+##
+# Local settings import
+#
+from settings_local import *
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'dp7u819^$3u5rdjv62o2(k0nlg5%lg5h+^s6qf2-i2e%gr4a2)'
 
-# Condition d'utilisation du mode DEBUG - Attention à mettre à false lors
-# d'une mise en production
-DEBUG = True
-
-TEMPLATE_DEBUG = DEBUG
-
-# Mettre url de production
-ALLOWED_HOSTS = ['pod.univ.fr']
-
-# Liste des applications
-# https://docs.djangoproject.com/en/1.7/topics/migrations/#upgrading-from-south
+##
+# Installed applications list
+#
 INSTALLED_APPS = (
     # put it in first !!
     # http://django-modeltranslation.readthedocs.org/en/latest/installation.html#configuration
@@ -55,9 +45,13 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     # Applications locales
     'pods',
-    'core'
+    'core',
 )
 
+
+##
+# Activated middleware components
+#
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -69,76 +63,22 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
+
+##
+# Full Python import path to root URL file
+#
 ROOT_URLCONF = 'pod_project.urls'
 
+
+##
+# Full Python path of WSGI app object Django’s built-in servers (e.g. runserver) will use
+#
 WSGI_APPLICATION = 'pod_project.wsgi.application'
 
-# Base de données
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite',
-    }
-}
-"""
-#Configuration MySql
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'pod',
-        'USER': 'test',
-        'PASSWORD': 'test',
-        'HOST': '',
-        'PORT': '',
-        'OPTIONS': {'init_command': 'SET storage_engine=INNODB;'}
-    }
-"""
 
-# Internationalisation
-
-LANGUAGE_CODE = 'fr'
-TIME_ZONE = 'Europe/Paris'
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
-
-LANGUAGES = (
-    ('fr', 'Français'),
-    ('en', 'English')
-)
-
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale'),
-)
-
-MODELTRANSLATION_DEFAULT_LANGUAGE = 'fr'
-MODELTRANSLATION_FALLBACK_LANGUAGES = ('fr', 'en')
-
-# Fichiers statiques (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-FILE_UPLOAD_TEMP_DIR = '/var/tmp'
-
-# Fichiers dynamiques (contenu du site)
-# Attention, il faut creer le repertoire media
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'uploads')
-
-# Paramètres spécifiques au projet
-EMAIL_HOST = 'smtp.univ.fr'
-EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = 'default.mail@univ.fr'
-
-SITE_ID = 1
-
-FILER_ENABLE_PERMISSIONS = True
-
-#URL FOR ELASTICSEARCH ['host1', 'host2', ...]
-ES_URL = ['http://127.0.0.1:9200/']
-
-CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
-CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',) #('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)
-
+##
+# Settings for all caches to be used with Django
+#
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -146,7 +86,11 @@ CACHES = {
     }
 }
 
+
+##
 # WEBservices with rest API
+#
+# curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -155,139 +99,92 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAdminUser',
     )
 }
-#curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
 
-# Login
+
+##
+# Internationalisation
+#
+USE_I18N = True
+USE_L10N = True
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
+
+##
+# Datetimes are timezone-aware by default (True) or not (False)
+#
+USE_TZ = True
+
+
+##
+# URL where requests are redirected for login
+#
 LOGIN_URL = '/accounts/login/'
-USE_CAS = False
+
+
+##
+# Middleware addition if CAS is used
+#
 if USE_CAS:
     MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
     MIDDLEWARE_CLASSES.append('django_cas_gateway.middleware.CASMiddleware')
     MIDDLEWARE_CLASSES = tuple(MIDDLEWARE_CLASSES)
-CAS_SERVER_URL = 'https://cas.univ.fr/'
-CAS_LOGOUT_COMPLETELY = True
-CAS_RETRY_LOGIN = True
-CAS_VERSION = '3'
 
-# LDAP
-USE_LDAP_TO_POPULATE_USER = True
-AUTH_LDAP_SERVER_URI = 'ldap://ldap.univ.fr'
-AUTH_LDAP_BIND_DN = ''
-AUTH_LDAP_BIND_PASSWORD = ''
-AUTH_LDAP_SCOPE = 'ONELEVEL'
-# ('ldap', 'parameters')
-AUTH_LDAP_USER_SEARCH = ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)")
-AUTH_LDAP_UID_TEST = ""
 
-AUTH_USER_ATTR_MAP = {
-    'first_name': 'givenName',
-    'last_name': 'sn',
-    'email': 'mailLocalAddress',
-    'affiliation': 'eduPersonPrimaryAffiliation'
-}
-AFFILIATION_STAFF = ('employee', 'faculty')
+##
+# Authentication backend classes to use when attempting to authenticate a user
+#
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'core.populatedCASbackend.PopulatedCASBackend'
 )
 
-# Constantes utilisées dans les templates
-TITLE_SITE = 'Pod'
-TITLE_ETB = 'Université'
-DEFAULT_IMG = 'images/default.png'
-FILTER_USER_MENU = ('[a-d]', '[e-h]', '[i-l]', '[m-p]', '[q-t]', '[u-z]')
-TEMPLATE_THEME = 'DEFAULT'
 
-LOGO_SITE = 'images/logo_compact.png'
-LOGO_COMPACT_SITE = 'images/logo_black_compact.png'
-LOGO_ETB = 'images/lille1_top-01.png'
-LOGO_PLAYER = 'images/logo_white_compact.png'
-SERV_LOGO = 'images/semm.png'
-
-HELP_MAIL = 'assistance@univ.fr'
-WEBTV = '<a href="http://webtv.univ.fr" id="webtv" class="btn btn-info btn-sm">' \
-    'WEBTV<span class="glyphicon glyphicon-link"></span>' \
-    '</a>'
+##
+# Settings for all template engines to be used
+#
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': (
+            os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
+            os.path.join(BASE_DIR, 'core', 'templates'),
+            os.path.join(BASE_DIR, 'core', 'templates', 'flatpages'),
+        ),
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': (
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+                # Local contexts
+                'core.context_processors.pages_menu',
+                'core.context_processors.context_settings',
+                'pods.context_processors.items_menu_header',
+            ),
+            'debug': DEBUG,
+        },
+    },
+]
 
 
 ##
-# Dublin Core :
+# Additional static files locations (theme)
 #
-#   coverage        nom, ville et pays de l'établissement
-#   rights          licence CC pour les contenus publics
-#
-DC_COVERAGE = TITLE_ETB + " - Ville - Pays"
-DC_RIGHTS = "CC-By-ND-NC"
-
-
-##
-# Taille maxi fichier téléversable :
-#
-#   ce paramètre est une chaîne contenant un chiffre suivi d'une unité (Mo ou Go),
-#   séparés par une espace.
-#
-#   ATTENTION : cette valeur doit être inférieure ou égale à celle définie
-#               dans votre configuration Apache ou NGINX.
-#
-MAX_UPLOAD_FILE_SIZE = "1 Go"
-
-##
-# Nombre maxi de fichiers téléversables par utilisateur / jour :
-#
-#   - ce paramètre est un entier, la valeur 0 supprime toute limite ;
-#   - ne s'applique pas aux super-utilisateurs.
-#
-#
-MAX_DAILY_USER_UPLOADS = 0
-
-
-##
-# Activation du téléversement asynchrone des fichiers à encoder :
-#
-#   - ce paramètre est un entier ;
-#   - activation = 1, désactivation = 0 ;
-#   - permet d'obtenir la barre de progression de téléversement.
-#
-#
-USE_XHR_FORM_UPLOAD = 1
-
-
-##
-# Possibilité pour les propriétaires de chaînes d'agir sur leur visibilité :
-#
-#   - ce paramètre est un entier ;
-#   - activation = 1, désactivation = 0 ;
-#   - si activé, le champ « Visible » est affiché dans le formulaire d'édition des chaînes.
-#
-#
-ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = 1
-
-
-# Paramètres des templates
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
-    os.path.join(BASE_DIR, 'core', 'templates'),
-    os.path.join(BASE_DIR, 'core', 'templates', 'flatpages'),
-)
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.request',
-    # Contexte locaux
-    'core.context_processors.pages_menu',
-    'core.context_processors.context_settings',
-    'pods.context_processors.items_menu_header',
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'assets'),
 )
 
-# Mettre à '' si non utilise
-FMS_LIVE_URL = 'rtmp://fms.univ.fr'
-FMS_ROOT_URL = 'http://root.univ.fr'
 
+##
+# Overwriting django-bootstrap3 default configuration settings
+#
 BOOTSTRAP3 = {
     'jquery_url': os.path.join(STATIC_URL, 'js/jquery.min.js'),
     'base_url': os.path.join(STATIC_URL, 'bootstrap/'),
@@ -298,43 +195,16 @@ BOOTSTRAP3 = {
     'horizontal_field_class': 'col-md-4'
 }
 
-# Nom du dossier contenant les templates personnalisés (header.html et footer.html)
-# Mettre à None si vous n'avez pas l'intention d'utiliser ces fichiers
-TEMPLATE_CUSTOM = 'custom'  # None
 
-# Constantes utilisables depuis les templates
-TEMPLATE_VISIBLE_SETTINGS = (
-    'DC_COVERAGE',
-    'DC_RIGHTS',
-    'DEFAULT_IMG',
-    'FILTER_USER_MENU',
-    'FMS_LIVE_URL',
-    'HELP_MAIL',
-    'LOGO_COMPACT_SITE',
-    'LOGO_ETB',
-    'LOGO_PLAYER',
-    'LOGO_SITE',
-    'MAX_UPLOAD_FILE_SIZE',
-    'MAX_DAILY_USER_UPLOADS',
-    'SERV_LOGO',
-    'TEMPLATE_CUSTOM',
-    'TEMPLATE_THEME',
-    'TITLE_ETB',
-    'TITLE_SITE',
-    'USE_XHR_FORM_UPLOAD',
-    'WEBTV'
-)
+##
+# Django-filer config
+#
+FILER_ENABLE_PERMISSIONS = True
 
-# Fichiers statiques du theme
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'assets'),
-)
 
-# Paramètres session
-SESSION_COOKIE_AGE = 14400
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
-# Paramètres des vignettes
+##
+# Easy-thumbnails config (Django-filer)
+#
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
     'easy_thumbnails.processors.autocrop',
@@ -342,12 +212,18 @@ THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.filters'
 )
 
-# Paramètres vidéo
-FFMPEG = '/usr/local/ffmpeg/ffmpeg'
-FFPROBE = '/usr/local/ffmpeg/ffprobe'
-# Enable low priority for performance
-# FFMPEG = 'nice -19  /usr/local/ffmpeg/ffmpeg'
-# FFPROBE = 'nice -19  /usr/local/ffmpeg/ffprobe'
+
+##
+# Captcha config
+#
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+# ('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)
+CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
+
+
+##
+# Accepted video formats
+#
 VIDEO_EXT_ACCEPT = (
     '.3gp',
     '.avi',
@@ -367,30 +243,31 @@ VIDEO_EXT_ACCEPT = (
     '.wav',
     '.wma'
 )
-ENCODE_WEBM = True
-ENCODE_WAV = True
 
-# Options to override encoding parameters
-#ENCODE_VIDEO_CMD = "%(ffprobe)s -v quiet -show_format -show_streams -print_format json -i %(src)s"
-#ADD_THUMBNAILS_CMD = "%(ffmpeg)s -i \"%(src)s\" -vf fps=\"fps=1/%(thumbnail)s,scale=%(scale)s\" -an -vsync 0 -threads 0 -f image2 -y %(out)s_%(num)s.png"
-#ADD_OVERVIEW_CMD = "%(ffmpeg)s -i \"%(src)s\" -vf \"thumbnail=%(thumbnail)s,scale=%(scale)s,tile=100x1:nb_frames=100:padding=0:margin=0\" -an -vsync 0 -threads 0 -y %(out)s"
-#ENCODE_MP4_CMD = "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ar %(ar)s -ac 2 -b:a %(ba)s -movflags faststart -y %(out)s"
-#ENCODE_WEBM_CMD = "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s"
-#ENCODE_MP3_CMD = "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s"
-#ENCODE_WAV_CMD = "%(ffmpeg)s -i %(src)s -ar %(ar)s -ab %(ab)s -f wav -threads 0 -y %(out)s"
 
-# AUDIOVIDEOCOURS
-SKIP_FIRST_IMAGE = True
-# mot de passe pour les enregistreurs multicam system
-RECORDER_SALT = "abcdefgh"
-# optional settings for test:
-# if set it's used to test download and encode video in test
-#HTTP_PROXY = 'http://localhost:3128/'
-
-# Signalement des vidéos
-SHOW_REPORT = True
-REPORT_VIDEO_MAIL_TO = ['alert@univ.fr']
-
-# Protection des médias
-MEDIA_GUARD = False
-MEDIA_GUARD_SALT = "S3CR3T"
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = (
+    'ALLOWED_HOSTS',
+    'DC_COVERAGE',
+    'DC_RIGHTS',
+    'DEFAULT_IMG',
+    'FILTER_USER_MENU',
+    'FMS_LIVE_URL',
+    'HELP_MAIL',
+    'LOGO_COMPACT_SITE',
+    'LOGO_ETB',
+    'LOGO_PLAYER',
+    'LOGO_SITE',
+    'MAX_UPLOAD_FILE_SIZE',
+    'MAX_DAILY_USER_UPLOADS',
+    'SERV_LOGO',
+    'TEMPLATE_THEME',
+    'TEMPLATE_USE_FOOTER',
+    'TEMPLATE_USE_PRE_HEADER',
+    'TITLE_ETB',
+    'TITLE_SITE',
+    'USE_XHR_FORM_UPLOAD',
+    'WEBTV'
+)

@@ -74,7 +74,7 @@ voir http://www.gnu.org/licenses/
     <body>
         {% if not request.GET.is_iframe %}
             <!-- select other website -->
-            {% if TEMPLATE_CUSTOM != None %}
+            {% if TEMPLATE_USE_PRE_HEADER %}
                 {% include 'pre-header.html' %}
             {% endif %}
             <!-- end select other website -->
@@ -228,7 +228,7 @@ voir http://www.gnu.org/licenses/
 
         {% if not request.GET.is_iframe %}
             <!-- footer -->
-            {% if TEMPLATE_CUSTOM != None %}
+            {% if TEMPLATE_USE_FOOTER %}
                 {% include 'footer.html' %}
             {% endif %}
             <!-- footer -->
