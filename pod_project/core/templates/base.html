@@ -31,7 +31,9 @@ voir http://www.gnu.org/licenses/
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{{ TITLE_SITE }} - {% block bootstrap3_title %}{% endblock %}</title>
         {% block dublincore %}{% endblock %}
-        <link rel="icon" href="/favicon.ico" />
+        <!--[if IE]><link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"><![endif]-->
+        <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+        <link rel="icon" href="{% static 'images/favicon.png' %}">
         {% bootstrap_css %}
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
