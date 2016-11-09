@@ -109,4 +109,15 @@ urlpatterns = [
     url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video', name='video'),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+
+##
+# Add-on to serve MEDIA files when using django-admin runserver:
+#   - django.contrib.staticfiles.views.serve() works only in debug mode, so
+#   the two lines below may be removed into production;
+#   - note: as we use django.contrib.staticfiles, static files are
+#   automatically served by runserver when DEBUG=True.
+#
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
