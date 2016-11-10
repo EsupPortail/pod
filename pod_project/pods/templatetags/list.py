@@ -171,12 +171,14 @@ def get_label_lang(lang):
             return tab[1]
     return lang
 
+
 @register.simple_tag()
 def get_label_cursus(cursus):
     for tab in settings.CURSUS_CODES:
         if tab[0] == cursus:
             return tab[1]
     return cursus
+
 
 @register.inclusion_tag("videos/videos_list.html")
 def get_last_videos():
@@ -203,6 +205,7 @@ def is_new_date(date_added):
     if diff.total_seconds() < 604800:
         return '<span class="label label-danger">%s !</span>' % _('New')
     return ""
+
 
 @register.filter(name='get')
 def get(d, k):

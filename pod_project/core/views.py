@@ -47,6 +47,7 @@ import sys
 import logging
 logger = logging.getLogger(__name__)
 
+
 @login_required
 def file_browse(request):
     # Add this to improve folder selection and view list
@@ -183,13 +184,13 @@ def contact_us(request):
                          '<p>Referrer page : <a href=\"%(url)s\">%(url)s</a></p>\n\n'
                          ) % {
                 'sender_name': contact.name, 'site_title': settings.TITLE_SITE,
-                'sender_email': contact.email, 'message': contact.message.replace("\n","<br/>"), 
+                'sender_email': contact.email, 'message': contact.message.replace("\n", "<br/>"),
                 'url': form.cleaned_data['url_referrer']
-                }
-            msg_txt = strip_tags(u'%s' %msg_html)
+            }
+            msg_txt = strip_tags(u'%s' % msg_html)
 
             email_msg = EmailMultiAlternatives(
-                "[" + settings.TITLE_SITE + "]  %s" %contact.subject, msg_txt, contact.email, settings.REPORT_VIDEO_MAIL_TO)
+                "[" + settings.TITLE_SITE + "]  %s" % contact.subject, msg_txt, contact.email, settings.REPORT_VIDEO_MAIL_TO)
             email_msg.attach_alternative(msg_html, "text/html")
             email_msg.send(fail_silently=False)
 
@@ -199,13 +200,12 @@ def contact_us(request):
                          '<p>Regards</p>\n\n'
                          ) % {
                 'site_title': settings.TITLE_SITE,
-                'message': contact.message.replace("\n","<br/>")
-                }
-            msg_txt = strip_tags(u'%s' %msg_html)
-
+                'message': contact.message.replace("\n", "<br/>")
+            }
+            msg_txt = strip_tags(u'%s' % msg_html)
 
             email_msg = EmailMultiAlternatives(
-                "[" + settings.TITLE_SITE + "] %s %s" %(_('your message intitled'), contact.subject), msg_txt, settings.HELP_MAIL, [contact.email])
+                "[" + settings.TITLE_SITE + "] %s %s" % (_('your message intitled'), contact.subject), msg_txt, settings.HELP_MAIL, [contact.email])
             email_msg.attach_alternative(msg_html, "text/html")
             email_msg.send(fail_silently=False)
 
@@ -214,16 +214,20 @@ def contact_us(request):
             return HttpResponseRedirect(form.cleaned_data['url_referrer'])
     else:
         if request.user.is_authenticated():
-            form = ContactUsModelForm(request, initial={"name":request.user.get_full_name(), "email":request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
+            form = ContactUsModelForm(request, initial={"name": request.user.get_full_name(
+            ), "email": request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
         else:
-            form = ContactUsModelForm(request, initial={"url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
+            form = ContactUsModelForm(request, initial={"url_referrer": request.META.get(
+                'HTTP_REFERER', request.build_absolute_uri("/"))})
 
-    form_html = render_to_string('contactus/contactus.html', {'form': form}, context_instance=RequestContext(request))
+    form_html = render_to_string(
+        'contactus/contactus.html', {'form': form}, context_instance=RequestContext(request))
 
-    flatpage = {'title':_("Contact us"), "content":form_html}
+    flatpage = {'title': _("Contact us"), "content": form_html}
     return render_to_response('flatpages/default.html',
                               {'flatpage': flatpage, },
                               context_instance=RequestContext(request))
+
 
 def status(request):
     """ simple status page who returns a code 200 """

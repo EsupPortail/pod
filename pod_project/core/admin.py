@@ -99,6 +99,7 @@ class EncodingTypeAdmin(admin.ModelAdmin):
         'name', 'bitrate_audio', 'bitrate_video', 'output_height', 'mediatype')
 admin.site.register(EncodingType, EncodingTypeAdmin)
 
+
 class ContactUsAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'email', 'subject', 'message')
 admin.site.register(ContactUs, ContactUsAdmin)

@@ -30,16 +30,17 @@ import os
 
 # Create your tests here.
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class FileBrowseTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -89,18 +90,18 @@ class TestStoragePath(TestCase):
     @override_settings(MEDIA_GUARD=False)
     def test_get_storage_path_video(self):
         storage_path_1 = get_storage_path(self.video1, self.path1)
-        self.assertEquals(storage_path_1, "videos/remi/"+self.path1)
+        self.assertEquals(storage_path_1, "videos/remi/" + self.path1)
         storage_path_2 = get_storage_path(self.video2, self.path2)
-        self.assertEquals(storage_path_2, "videos/remi/"+self.path2)
+        self.assertEquals(storage_path_2, "videos/remi/" + self.path2)
 
     @override_settings(MEDIA_GUARD=False)
     def test_get_storage_path_encodingpods(self):
         storage_path_1 = get_storage_path(self.encodingpods1,
                                           self.path1)
-        self.assertEquals(storage_path_1, "videos/remi/"+self.path1)
+        self.assertEquals(storage_path_1, "videos/remi/" + self.path1)
         storage_path_2 = get_storage_path(self.encodingpods2,
                                           self.path2)
-        self.assertEquals(storage_path_2, "videos/remi/"+self.path2)
+        self.assertEquals(storage_path_2, "videos/remi/" + self.path2)
 
     @override_settings(MEDIA_GUARD=False, MEDIA_GUARD_SALT="S3CR3T")
     def test_get_media_guard_disabled(self):
@@ -115,20 +116,25 @@ class TestStoragePath(TestCase):
     @override_settings(MEDIA_GUARD=True, MEDIA_GUARD_SALT="S3CR3T")
     def test_get_media_guard(self):
         media_guard_hash = get_media_guard("remi", self.video1.id)
-        self.assertEqual(media_guard_hash, "df880ec636fe3a9dd39a33609dc44635a7c19d7b7b46deba33c281cf2edf0ca5")
+        self.assertEqual(
+            media_guard_hash, "df880ec636fe3a9dd39a33609dc44635a7c19d7b7b46deba33c281cf2edf0ca5")
 
     @override_settings(MEDIA_GUARD=True, MEDIA_GUARD_SALT="S3CR3T")
     def test_get_storage_path_video_with_media_guard(self):
         storage_path_1 = get_storage_path(self.video1, self.path1)
-        self.assertEquals(storage_path_1, "videos/remi/df880ec636fe3a9dd39a33609dc44635a7c19d7b7b46deba33c281cf2edf0ca5/"+self.path1)
+        self.assertEquals(
+            storage_path_1, "videos/remi/df880ec636fe3a9dd39a33609dc44635a7c19d7b7b46deba33c281cf2edf0ca5/" + self.path1)
         storage_path_2 = get_storage_path(self.video2, self.path2)
-        self.assertEquals(storage_path_2, "videos/remi/a1b11067d34f07639d40f411bbf70c2a601a464799699fb1af370f7bf24cb79c/"+self.path2)
+        self.assertEquals(
+            storage_path_2, "videos/remi/a1b11067d34f07639d40f411bbf70c2a601a464799699fb1af370f7bf24cb79c/" + self.path2)
 
     @override_settings(MEDIA_GUARD=True, MEDIA_GUARD_SALT="S3CR3T")
     def test_get_storage_path_encodingpods_with_media_guard(self):
         storage_path_1 = get_storage_path(self.encodingpods1,
                                           self.path1)
-        self.assertEquals(storage_path_1, "videos/remi/df880ec636fe3a9dd39a33609dc44635a7c19d7b7b46deba33c281cf2edf0ca5/"+self.path1)
+        self.assertEquals(
+            storage_path_1, "videos/remi/df880ec636fe3a9dd39a33609dc44635a7c19d7b7b46deba33c281cf2edf0ca5/" + self.path1)
         storage_path_2 = get_storage_path(self.encodingpods2,
                                           self.path2)
-        self.assertEquals(storage_path_2, "videos/remi/a1b11067d34f07639d40f411bbf70c2a601a464799699fb1af370f7bf24cb79c/"+self.path2)
+        self.assertEquals(
+            storage_path_2, "videos/remi/a1b11067d34f07639d40f411bbf70c2a601a464799699fb1af370f7bf24cb79c/" + self.path2)

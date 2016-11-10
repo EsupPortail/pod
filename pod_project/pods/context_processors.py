@@ -24,10 +24,12 @@ from django.contrib.sites.models import Site
 from django.conf import settings as django_settings
 from django.contrib.auth.models import User
 
+
 def items_menu_header(request):
     return {
-            'CHANNELS': Channel.objects.filter(visible=True),
-            'TYPES' : Type.objects.all(),
-            'DISCIPLINES' : Discipline.objects.all(),
-            'OWNERS' : User.objects.filter(pod__in=Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()).order_by('last_name').distinct() #User.objects.all()
+        'CHANNELS': Channel.objects.filter(visible=True),
+        'TYPES': Type.objects.all(),
+        'DISCIPLINES': Discipline.objects.all(),
+        # User.objects.all()
+        'OWNERS': User.objects.filter(pod__in=Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()).order_by('last_name').distinct()
     }
