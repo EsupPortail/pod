@@ -36,15 +36,16 @@ from django.core.files.temp import NamedTemporaryFile
 from core.utils import encode_video
 import os
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     }
-    )
+)
 class CasTestView(TestCase):
 
     def setUp(self):
@@ -61,15 +62,16 @@ class CasTestView(TestCase):
         else:
             print "not cas server used USE_CAS is set to False"
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     }
-    )
+)
 class LdapTestView(TestCase):
 
     def setUp(self):
@@ -120,15 +122,16 @@ class LdapTestView(TestCase):
         else:
             print "not cas server used or not ldap server used USE_LDAP_TO_POPULATE_USER is set to False or settings.AUTH_LDAP_UID_TEST is none"
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     }
-    )
+)
 class EsTestView(TestCase):
 
     def setUp(self):
@@ -142,15 +145,16 @@ class EsTestView(TestCase):
         self.assertEqual(r.status, 200)
         print "\n   --->  test_es of EsTestView : OK ! \n info : \n %s \n" % r.data
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     }
-    )
+)
 class EncodingFileTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -158,12 +162,13 @@ class EncodingFileTestView(TestCase):
         remi = User.objects.create(username="remi")
         other_type = Type.objects.get(id=1)
         media_guard_hash = get_media_guard("remi", 1)
-        file_path = os.path.join(settings.MEDIA_ROOT, 'videos', remi.username, media_guard_hash, 'test.mp4')
+        file_path = os.path.join(
+            settings.MEDIA_ROOT, 'videos', remi.username, media_guard_hash, 'test.mp4')
         if not os.path.exists(file_path):
             url = "http://pod.univ-lille1.fr/media/pod.mp4"
-            print "Download video file from %s" %url
+            print "Download video file from %s" % url
             tempfile = NamedTemporaryFile(delete=True)
-            HTTP_PROXY=getattr(settings, 'HTTP_PROXY', None)
+            HTTP_PROXY = getattr(settings, 'HTTP_PROXY', None)
             if HTTP_PROXY:
                 proxy = urllib3.ProxyManager(settings.HTTP_PROXY)
                 with proxy.request('GET', url, preload_content=False) as r, open(tempfile.name, 'wb') as out_file:
@@ -175,11 +180,12 @@ class EncodingFileTestView(TestCase):
             pod = Pod.objects.create(
                 type=other_type, title="Video", owner=remi, video="-", to_encode=False)
             pod.video.save("test.mp4", File(tempfile))
-        else :
+        else:
             print "File already exist"
             pod = Pod.objects.create(
                 type=other_type, title="Video", owner=remi, video="-", to_encode=False)
-            pod.video.name = os.path.join('videos', remi.username, media_guard_hash, 'test.mp4')
+            pod.video.name = os.path.join(
+                'videos', remi.username, media_guard_hash, 'test.mp4')
             pod.save()
         print "\n --->  SetUp of EncodingFileTestView : OK !"
 
@@ -192,7 +198,7 @@ class EncodingFileTestView(TestCase):
         self.assertTrue(
             u'video_1_240.mp4' in pod.get_encoding_240()[0].encodingFile.url)
 
-        ENCODE_WEBM=getattr(settings, 'ENCODE_WEBM', True)
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             self.assertTrue(
                 u'video_1_240.webm' in pod.get_encoding_240()[1].encodingFile.url)

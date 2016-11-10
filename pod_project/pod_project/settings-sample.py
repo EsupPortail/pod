@@ -90,7 +90,8 @@ CACHES = {
 ##
 # WEBservices with rest API
 #
-# curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
+# curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token
+# 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -148,7 +149,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': (
-            os.path.join(BASE_DIR, 'core', 'theme', TEMPLATE_THEME, 'templates'),
+            os.path.join(BASE_DIR, 'core', 'theme',
+                         TEMPLATE_THEME, 'templates'),
             os.path.join(BASE_DIR, 'core', 'templates'),
             os.path.join(BASE_DIR, 'core', 'templates', 'flatpages'),
         ),
