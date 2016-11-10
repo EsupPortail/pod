@@ -9,6 +9,10 @@
 body {
     .backgroundImage( @bgFull );
 
+    & > #acces a > img {
+        max-height: @preHeaderLogoHeight;
+    }
+
     & > .page-header {
         border-bottom: none;
         margin: 10px 0 0 0;
@@ -744,6 +748,61 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
     & > a:focus {
         color: @paginationPillColor;
         background-color: @paginationPillBgColor;
+    }
+}
+
+.panel {
+
+    .panel-heading[role="tab"] {
+        padding: 0;
+
+        &:hover { background-color: #fff;  }
+
+        & > h3 {
+
+            & > a[role="button"] {
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+                padding: .3em .3em .3em .5em;
+
+                &:link,
+                &:visited,
+                &:hover,
+                &:active { text-decoration: none; }
+
+                &:focus { outline: none; }
+
+                &:after {
+                    font-family: 'Glyphicons Halflings';
+                    content: "\e252";
+                    position: static;
+                    color: #3f9ec2;
+                    float: right;
+                }
+
+                &.collapsed:after { content: "\e251"; }
+            }
+        }
+    }
+
+    .panel-body {
+        line-height: 1.3em;
+
+        & > i.text-muted {
+
+            display: inline-block;
+            font-size: .9em;
+            line-height: 1.1;
+        }
+    }
+}
+
+.pager li {
+
+    & > a,
+    & > span {
+        border-radius: 0;
     }
 }
 

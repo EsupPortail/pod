@@ -24,7 +24,7 @@ voir http://www.gnu.org/licenses/
 <div id="video-list" class="row">
 {% for owner in owners %}
 	<div class="video-thumb col-xs-6 col-md-4">
-	    <a href="{% url "videos" %}?owner={{owner.username}}" title="{{owner.get_full_name}} ({{owner.video_count}})">
+	    <a class="video-holder" href="{% url "videos" %}?owner={{owner.username}}" title="{{owner.get_full_name}} ({{owner.video_count}})">
     		<span class="poster">
 			{% if owner.userprofile.image %}
                 <img src="{% thumbnail owner.userprofile.image 285x160 crop upscale subject_location=owner.userprofile.image.subject_location %}" alt="{{owner.get_full_name}}" class="preview">
@@ -33,13 +33,15 @@ voir http://www.gnu.org/licenses/
             {% endif %}
     		</span>
 		{% if owner.get_full_name %}
-		<h5>{{owner.get_full_name|safe|striptags|truncatechars:32}} ({% video_count owner %})</h5>
+            <h5>{{owner.get_full_name|safe|striptags|truncatechars:32}} ({% video_count owner %})</h5>
 		{% else %}
-		<h5>{{owner.username|safe|striptags|truncatechars:32}} ({% video_count owner %})</h5>
+            <h5>{{owner.username|safe|striptags|truncatechars:32}} ({% video_count owner %})</h5>
 		{% endif %}
 		</a>
 	</div>
 {%endfor%}
 </div>
-{% block pagination %} {% pagination owners %}{% endblock %}
+<div class="pager">
+    {% block pagination %} {% pagination owners %}{% endblock %}
+</div>
 

@@ -59,3 +59,24 @@ class User_ProfileTestView(TestCase):
         response = self.client.post("/user/", {u'url': [u'https://docs.djangoproject.com/fr/1.6/topics/testing/tools/'],
                                                u'csrfmiddlewaretoken': [u'9fTMPin73XA1qRUtYMpT0lx3rB0i3uPq'], u'description': [u'ghd']})
         self.assertEqual(response.status_code, 200)
+
+
+class Contact_usTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        user = User.objects.create(
+            username='remi', password='12345', is_active=True)
+        user.set_password('hello')
+        user.save()
+
+    def test_Contactus(self):
+        user = User.objects.get(id=1)
+        user = authenticate(username='remi', passeword='hello')
+        login = self.client.login(username='remi', password='hello')
+        self.assertEqual(login, True)
+        response = self.client.get("/contact_us/")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post("/contact_us/", {u'subject': [u'zqef'], u'message': [u'zqfji'], 
+            u'csrfmiddlewaretoken': [u'j8Ekh2sgFWz0BB2OLlXxSz9wl4XjzSb4']})
+        self.assertEqual(response.status_code, 200)

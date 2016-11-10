@@ -101,8 +101,8 @@ function loadVideo() {
         if ($('ul#slides li[data-type!="None"]').length > 0) {
             myPlayer.displaySelector({
                 default_disp: '100/0',
-			    list_disp: list_disp
-			});
+                list_disp: list_disp
+            });
         }
         $('ul#slides').hide();
 
@@ -112,9 +112,9 @@ function loadVideo() {
                 list_chap[$(this).attr('data-start')] = $(this).attr('data-title');
             });
             myPlayer.chapterSelector({
-    			list_chap : list_chap
-			});
-			$('ul#chapters').hide();
+                list_chap : list_chap
+            });
+            $('ul#chapters').hide();
         }
 
         $('div.vjs-slide').hide();
@@ -287,20 +287,31 @@ function loadVideo() {
         /*************************************************************************/
         if ( player_logo_img ) {
 
-            var logoLink = document.createElement( 'a' ),
-                logoImg = document.createElement( 'img' );
+            var logoImg = document.createElement( 'img' );
 
-            logoLink.setAttribute( 'href', player_logo_url );
-            logoLink.setAttribute( 'title', player_logo_title );
-            logoLink.setAttribute( 'role', "link" );
-            logoLink.setAttribute( 'style', "font-size: 1.5em; font-weight: bold; line-height: 1.9em;" );
             logoImg.setAttribute( 'src', player_logo_img );
-            logoImg.setAttribute('alt', player_logo_alt);
+            logoImg.setAttribute( 'alt', player_logo_alt );
             logoImg.setAttribute( 'height', '90%' );
+            logoImg.setAttribute( 'style', "font-size: 1.6em; line-height: 1.9em; font-weight: bold;" );
 
-            logoLink.appendChild( logoImg );
+            if ( player_logo_url ) {
 
-            myPlayer.controlBar.el( ).appendChild( logoLink );
+                var logoLink = document.createElement( 'a' );
+
+                logoLink.setAttribute( 'href', player_logo_url );
+                logoLink.setAttribute( 'target', "_blank" );
+                logoLink.setAttribute( 'title', player_logo_title );
+                logoLink.setAttribute( 'role', "link" );
+
+                logoLink.appendChild( logoImg );
+
+                myPlayer.controlBar.el( ).appendChild( logoLink );
+
+            } else {
+
+                myPlayer.controlBar.el( ).appendChild( logoImg );
+
+            }
         }
         /*************************************************************************/
         start = decodeURIComponent($.urlParam('start'));

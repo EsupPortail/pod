@@ -80,10 +80,19 @@ voir http://www.gnu.org/licenses/
         var overview = '';
     {% endif %}
     {% if LOGO_PLAYER != '' %}
+        {% if request.GET.is_iframe %}
         var player_logo_img = '{% static LOGO_PLAYER %}',
-            player_logo_title = '{% blocktrans %}Click to reach this content on {{ TITLE_SITE }}.{% endblocktrans %}',
-            player_logo_alt = '{{ TITLE_SITE }}';
-            player_logo_url = '{{ request.build_absolute_uri }}';
+            player_logo_title = '{% blocktrans %}Access this content on “{{ TITLE_SITE }}” in a new window / tab.{% endblocktrans %}',
+            player_logo_alt = '{{ TITLE_SITE }}',
+            player_logo_url = '{{ request.build_absolute_uri }}',
+            pod_video_url = player_logo_url.split( '/' );
+        pod_video_url.pop( );
+        player_logo_url = pod_video_url.join( '/' );
+        {% else %}
+        var player_logo_img = '{% static LOGO_PLAYER %}',
+            player_logo_alt = '{{ TITLE_SITE }}',
+            player_logo_url = '',
+        {% endif %}
     {% else %}
         var player_logo_img = '';
     {% endif %}

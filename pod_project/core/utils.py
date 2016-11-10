@@ -31,7 +31,7 @@ import logging
 import traceback
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
-from core.models import EncodingType
+from core.models import EncodingType, get_media_guard
 from pods.models import EncodingPods
 from pods.models import Pod
 
@@ -221,11 +221,12 @@ def encode_video(video_to_encode):
         # VIDEO/AUDIO FOLDER
         if DEBUG:
             print "VIDEO/AUDIO FOLDER"
+        media_guard_hash = get_media_guard(video_to_encode.owner.username, video_to_encode.id)
         if not(
             os.access(
-                os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video_to_encode.owner.username, "%s" % video_to_encode.id), os.F_OK)):
+                os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video_to_encode.owner.username, media_guard_hash, "%s" % video_to_encode.id), os.F_OK)):
             os.makedirs(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
-                                     video_to_encode.owner.username, "%s" % video_to_encode.id))
+                                     video_to_encode.owner.username, media_guard_hash, "%s" % video_to_encode.id))
         if DEBUG:
             print "END VIDEO/AUDIO FOLDER"
         # FILER FOLDER
@@ -258,9 +259,10 @@ def encode_video(video_to_encode):
                     pass
                 if in_height >= encod_video.output_height or encod_video == list_encod_video.first():
                     video = Pod.objects.get(id=VIDEO_ID)
-                    videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, "%s" % video.id,
+                    media_guard_hash = get_media_guard(video.owner.username, video.id)
+                    videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                                                  "video_%s_%s.mp4" % (video.id, encod_video.output_height))
-                    videourl = os.path.join(VIDEOS_DIR, video.owner.username, "%s" % video.id,
+                    videourl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                                             "video_%s_%s.mp4" % (video.id, encod_video.output_height))
                     encode_mp4(VIDEO_ID, in_width, in_height, bufsize,
                                in_audio_rate, encod_video, videofilename, videourl)
@@ -270,9 +272,10 @@ def encode_video(video_to_encode):
             list_encod_audio = EncodingType.objects.filter(mediatype='audio')
             for encod_audio in list_encod_audio:
                 video = Pod.objects.get(id=VIDEO_ID)
-                audiofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, "%s" % video.id,
+                media_guard_hash = get_media_guard(video.owner.username, video.id)
+                audiofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                                              "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
-                audiourl = os.path.join(VIDEOS_DIR, video.owner.username, "%s" % video.id,
+                audiourl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                                         "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
                 encode_mp3(
                     VIDEO_ID, audiofilename, audiourl, encod_audio, in_audio_rate)
@@ -345,6 +348,7 @@ def add_thumbnails(video_id, in_w, in_h, folder):
     video.encoding_status = "ADD THUMBNAILS"
     video.save()
     tempfile = NamedTemporaryFile()
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
     scale = get_scale(in_w, in_h, DEFAULT_THUMBNAIL_OUT_SIZE_HEIGHT)
     thumbnails = int(video.duration / 3)
     com = ADD_THUMBNAILS_CMD % {
@@ -366,7 +370,7 @@ def add_thumbnails(video_id, in_w, in_h, folder):
     output += 80 * "~"
 
     f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
-                          video.owner.username, "%s" % video.id, "encode.log"), 'w')
+                          video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'w')
     f.write(output)
     output = ""
     f.close()
@@ -409,11 +413,11 @@ def add_overview(video_id, in_w, in_h, frames):
     video = Pod.objects.get(id=video_id)
     thumbnails = int(frames / 100)
     scale = get_scale(in_w, in_h, DEFAULT_OVERVIEW_OUT_SIZE_HEIGHT)
-
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
     overviewfilename = os.path.join(
-        settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, "%s" % video.id, "overview.jpg")
+        settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id, "overview.jpg")
     overviewurl = os.path.join(
-        VIDEOS_DIR, video.owner.username, "%s" % video.id, "overview.jpg")
+        VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id, "overview.jpg")
 
     com = ADD_OVERVIEW_CMD % {
         'ffmpeg': FFMPEG,
@@ -454,7 +458,7 @@ def add_overview(video_id, in_w, in_h, frames):
             video.save()
 
     f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
-                          video.owner.username, "%s" % video.id, "encode.log"), 'a+b')
+                          video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'a+b')
     f.write(output)
     output = ""
     f.close()
@@ -489,6 +493,7 @@ def encode_mp4(video_id, in_w, in_h, bufsize, in_ar, encod_video, videofilename,
     ffmpegresult = commands.getoutput(com)
     video = None
     video = Pod.objects.get(id=video_id)
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
     addInfoVideo(video, "\n END ENCOD_VIDEO MP4 %s %s" %
                  (encod_video.output_height, time.ctime()))
 
@@ -522,7 +527,7 @@ def encode_mp4(video_id, in_w, in_h, bufsize, in_ar, encod_video, videofilename,
             video.save()
 
     f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
-                          video.owner.username, "%s" % video.id, "encode.log"), 'a+b')
+                          video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'a+b')
     f.write(output)
     output = ""
     f.close()
@@ -536,9 +541,10 @@ def encode_webm(video_id, videofilename, encod_video, bufsize):
     addInfoVideo(video, "\nSTART ENCOD_VIDEO WEBM %s %s" %
                  (encod_video.output_height, time.ctime()))
     video.save()
-    webmfilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, "%s" % video.id,
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
+    webmfilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                                 "video_%s_%s.webm" % (video.id, encod_video.output_height))
-    webmurl = os.path.join(VIDEOS_DIR, video.owner.username, "%s" % video.id,
+    webmurl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                            "video_%s_%s.webm" % (video.id, encod_video.output_height))
 
     com = ENCODE_WEBM_CMD % {
@@ -587,7 +593,7 @@ def encode_webm(video_id, videofilename, encod_video, bufsize):
             video.save()
 
     f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
-                          video.owner.username, "%s" % video.id, "encode.log"), 'a+b')
+                          video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'a+b')
     f.write(output)
     output = ""
     f.close()
@@ -621,6 +627,7 @@ def encode_mp3(video_id, audiofilename, audiourl, encod_audio, in_ar):
     video = None
     video = Pod.objects.get(id=video_id)
     addInfoVideo(video, "\nEND ENCOD_VIDEO MP3 %s" % (time.ctime()))
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
 
     if os.access(audiofilename, os.F_OK):  # outfile exists
         # There was a error cause the outfile size is zero
@@ -642,7 +649,7 @@ def encode_mp3(video_id, audiofilename, audiourl, encod_audio, in_ar):
             ep.save()
 
     f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
-                          video.owner.username, "%s" % video.id, "encode.log"), 'w')
+                          video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'w')
     f.write(output)
     output = ""
     f.close()
@@ -656,9 +663,10 @@ def encode_wav(video_id, audiofilename, in_ar, encod_audio):
     video.encoding_status = "ENCODING WAV"
     addInfoVideo(video, "\nStart ENCOD_VIDEO WAV %s" % (time.ctime()))
     video.save()
-    wavfilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, "%s" % video.id,
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
+    wavfilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                                "audio_%s_%s.wav" % (video.id, encod_audio.output_height))
-    wavurl = os.path.join(VIDEOS_DIR, video.owner.username, "%s" % video.id,
+    wavurl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                           "audio_%s_%s.wav" % (video.id, encod_audio.output_height))
     com = ENCODE_WAV_CMD % {
         'ffmpeg': FFMPEG,
@@ -701,7 +709,7 @@ def encode_wav(video_id, audiofilename, in_ar, encod_audio):
             ep.save()
 
     f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
-                          video.owner.username, "%s" % video.id, "encode.log"), 'a+b')
+                          video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'a+b')
     f.write(output)
     output = ""
     f.close()

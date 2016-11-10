@@ -24,13 +24,13 @@ voir http://www.gnu.org/licenses/
 <div id="video-list" class="row">
 {% for channel in channels %}
 	<div class="video-thumb col-xs-6 col-md-4">
-	    <a href="{% url "channel" slug_c=channel.slug %}" title="{{channel.title}} ({{channel.video_count}})">
+	    <a class="video-holder" href="{% url "channel" slug_c=channel.slug %}" title="{{channel.title}} ({{channel.video_count}})">
     		<span class="poster">
-    			{% if channel.headband %}
-                    <img alt="img" src="{% thumbnail channel.headband 285x160 crop upscale subject_location=channel.headband.subject_location %}" alt="{{channel.title}}" class="preview">
-                {%else%}
-                    <img alt="img" src="{% static DEFAULT_IMG %}" alt="{{channel.title}}">
-                {% endif %}
+			{% if channel.headband %}
+                <img alt="img" src="{% thumbnail channel.headband 285x160 crop upscale subject_location=channel.headband.subject_location %}" alt="{{channel.title}}" class="preview">
+            {%else%}
+                <img alt="img" src="{% static DEFAULT_IMG %}" alt="{{channel.title}}" class="preview">
+            {% endif %}
     		</span>
     		<h5>{{channel.title|safe|striptags|truncatechars:32}} ({{channel.video_count}})</h5>
 		</a>
@@ -42,4 +42,6 @@ voir http://www.gnu.org/licenses/
 	</div>
 {%endfor%}
 </div>
-{% block pagination %} {% pagination channels %}{% endblock %}
+<div class="pager">
+    {% block pagination %} {% pagination channels %}{% endblock %}
+</div>

@@ -5,7 +5,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -24,21 +24,20 @@ voir http://www.gnu.org/licenses/
 <div id="video-list" class="row">
 {% for type in types %}
 	<div class="video-thumb col-xs-6 col-md-4">
-	    <a href="{% url "videos" %}?type={{type.slug}}" title="{{type.title}} ({{type.video_count}})">
-		<span class="poster">
-			{% if type.headband %}
-			    <span class="play text-center">
-    				<span class="glyphicon glyphicon-play-circle"></span>
-    			</span>
+	    <a class="video-holder" href="{% url "videos" %}?type={{type.slug}}" title="{{type.title}} ({{type.video_count}})">
+    		<span class="poster">
+    		{% if type.headband %}
                 <img src="{% thumbnail type.headband 285x160 crop upscale subject_location=type.headband.subject_location %}" alt="{{type.title}}" class="preview">
             {%else%}
                 <img alt="img" src="{% static DEFAULT_IMG %}" alt="{{owner.get_full_name}}" class="preview">
             {% endif %}
-		</span>
-		<h5>{{type.title|truncatechars:50}} ({{type.video_count}})</h5>
+    		</span>
+    		<h5>{{type.title|truncatechars:50}} ({{type.video_count}})</h5>
 		</a>
 	</div>
 {%endfor%}
 </div>
-{% block pagination %} {% pagination types %}{% endblock %}
+<div class="pager">
+    {% block pagination %} {% pagination types %}{% endblock %}
+</div>
 
