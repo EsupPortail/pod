@@ -115,18 +115,18 @@ $(document).on('click', '#button_video_favorite', function (event) {
 
 {% block opengraph %}{% load pod_filters %}
     <meta name="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }}" />
-	<!-- Open Graph data -->
-	<meta property="og:title" content="{{ video.title }}" />
-	<meta property="og:type" content="video" />
-	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <!-- Open Graph data -->
+    <meta property="og:title" content="{{ video.title }}" />
+    <meta property="og:type" content="video" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
     {% if video.thumbnail %}
         <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{ video.thumbnail.url }}" />
     {%else%}
         <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
     {% endif %}
 
-	<meta property="og:description" content="{{ video.description|metaformat|safe|striptags|truncatechars:250 }}" />
-	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+    <meta property="og:description" content="{{ video.description|metaformat|safe|striptags|truncatechars:250 }}" />
+    <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
 {% block mainToolbar %}{% endblock mainToolbar %}
@@ -146,16 +146,21 @@ $(document).on('click', '#button_video_favorite', function (event) {
                     <li class="active">{{ video.title }}</li>
                 {% endblock breadcrumbs %}
             </ol>
-            {% if channel.headband %}
-                <div align="center">
+            {% if channel %}
+                {% if channel.headband %}
+                <div align="center" class="channelheader">
                     <img src="{{ channel.headband.url }}" alt="{% trans bandeau %} {{ channel.title }}" class="img-responsive" />
                 </div>
+                <h2>{{ channel.title }}</h2>
+                {% endif %}
             {% endif %}
             {% if theme %}
                 {% if theme.headband %}
+                <div align="center" class="channelheader">
                     <img src="{{ theme.headband.url }}" alt="{% trans bandeau %} {{ theme.title }}" class="img-responsive" />
-                {% endif %}
+                </div>
                 <h3>{{ theme.title }}</h3>
+                {% endif %}
             {% endif %}
         {% endif %}
         {% if form %}
