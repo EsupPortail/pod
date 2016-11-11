@@ -40,11 +40,9 @@ urlpatterns = [
 
     # Add-on for non-staff users
     url(r'^dynamic-media/jsi18n/$', 'django.views.i18n.javascript_catalog'),
-    url(
-        r'^my-admin/jsi18n/',
+    url(r'^my-admin/jsi18n/',
         'django.views.i18n.javascript_catalog',
-        {'packages': ('django.conf', 'django.contrib.admin')}
-    ),
+        {'packages': ('django.conf', 'django.contrib.admin')}),
 
     url(r'^search/$', 'pods.views.search_videos', name='search_videos'),
     url(r'^contact_us/$', 'core.views.contact_us', name='contact_us'),
@@ -80,22 +78,23 @@ urlpatterns = [
     url(r'^video_completion/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_completion', name='video_completion'),
     url(r'^video_completion_contributor/(?P<slug>[\-\d\w]+)/$',
-        'pods.views.video_completion_contributor', name='video_completion_contributor'),
+        'pods.views.video_completion_contributor',
+        name='video_completion_contributor'),
     url(r'^video_completion_subtitle/(?P<slug>[\-\d\w]+)/$',
-        'pods.views.video_completion_subtitle', name='video_completion_subtitle'),
+        'pods.views.video_completion_subtitle',
+        name='video_completion_subtitle'),
     url(r'^video_completion_download/(?P<slug>[\-\d\w]+)/$',
-        'pods.views.video_completion_download', name='video_completion_download'),
+        'pods.views.video_completion_download',
+        name='video_completion_download'),
     url(r'^video_chapter/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_chapter', name='video_chapter'),
     url(r'^video_enrich/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_enrich', name='video_enrich'),
     url(r'^video_notes/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_notes', name='video_notes'),
-    url(
-        r'^get_video_encoding/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
+    url(r'^get_video_encoding/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
         'pods.views.get_video_encoding',
-        name='get_video_encoding'
-    ),
+        name='get_video_encoding'),
 
     # Channel
     url(r'^channels/$', 'pods.views.channels', name='channels'),
