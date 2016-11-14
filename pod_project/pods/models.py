@@ -1103,3 +1103,21 @@ class ReportVideo(models.Model):
         verbose_name = _("Report")
         verbose_name_plural = _("Reports")
         unique_together = ('video', 'user',)
+
+@python_2_unicode_compatible
+class AnnotationPod(models.Model):
+    video = models.ForeignKey(Pod, verbose_name=_('Video'))
+    owner = models.ForeignKey(User, verbose_name=_('Owner'))
+    text = models.TextField(null=False, blank=False, verbose_name=_('Note'))
+    timecode = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Timecode'))
+    isPublish = models.BooleanField(default=0)
+
+    def __unicode__(self):
+        return "%s - %s" % (self.video, self.owner)
+
+    def __str__(self):
+        return "%s - %s" % (self.video, self.owner)
+
+    class Meta:
+        verbose_name = _("Annotation")
+        verbose_name_plural = _("Annotations")
