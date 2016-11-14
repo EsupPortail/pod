@@ -360,7 +360,7 @@ def add_thumbnails(video_id, in_w, in_h, folder):
     video = Pod.objects.get(id=video_id)
     video.encoding_status = "ADD THUMBNAILS"
     video.save()
-    tempfile = NamedTemporaryFile()
+    tempfile = NamedTemporaryFile(dir=settings.FILE_UPLOAD_TEMP_DIR)
     media_guard_hash = get_media_guard(video.owner.username, video.id)
     scale = get_scale(in_w, in_h, DEFAULT_THUMBNAIL_OUT_SIZE_HEIGHT)
     thumbnails = int(video.duration / 3)
