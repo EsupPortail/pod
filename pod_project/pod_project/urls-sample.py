@@ -95,6 +95,8 @@ urlpatterns = [
     url(r'^get_video_encoding/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
         'pods.views.get_video_encoding',
         name='get_video_encoding'),
+    url(r'^video_annotation/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video_annotation', name='video_annotation'),
 
     # Channel
     url(r'^channels/$', 'pods.views.channels', name='channels'),

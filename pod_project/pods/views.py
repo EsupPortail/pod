@@ -26,6 +26,7 @@ from pods.forms import NotesForm
 from pods.forms import MediacoursesForm
 from pods.forms import EnrichPodsForm
 from pods.forms import SearchForm
+from pods.forms import AnnotationPodForm
 from pods.models import *
 from django.contrib import messages
 # Replaced to allow JSON serialization of localized messages.
@@ -1476,6 +1477,19 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
     #END TODO
     """
     return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
+
+def video_annotation(request, slug):
+    video = get_object_or_404(Pod, slug=slug)
+    if not request.session.get('filer_last_folder_id'):
+        from filer.models import Folder
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
+        request.session['filer_last_folder_id'] = folder.id
+
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot add annotations on this video.'))
+        raise PermissionDenied
 
 
 def autocomplete(request):

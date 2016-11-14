@@ -28,7 +28,7 @@ from django.utils.safestring import mark_safe
 from itertools import chain
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods, ChapterPods, Favorites, Type, Discipline, Mediacourses, EnrichPods, Notes
+from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods, ChapterPods, Favorites, Type, Discipline, Mediacourses, EnrichPods, Notes, AnnotationPod
 from modeltranslation.forms import TranslationModelForm
 from django.forms.widgets import HiddenInput
 
@@ -370,3 +370,9 @@ class MediacoursesForm(ModelForm):
     class Meta:
         model = Mediacourses
         exclude = ('started', 'error')
+
+class AnnotationPodForm(ModelForm):
+
+    class Meta:
+        model = AnnotationPod
+        fields = ('Video', 'Owner', 'Note')
