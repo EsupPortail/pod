@@ -61,7 +61,7 @@ class PodViewSet(viewsets.ModelViewSet):
     """
     queryset = Pod.objects.all().order_by('-date_added')
     serializer_class = PodSerializer
-    filter_fields = ('owner', )
+    filter_fields = ('owner', 'type', 'date_added')
 
 
 class ContributorPodsViewSet(viewsets.ModelViewSet):
