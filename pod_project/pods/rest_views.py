@@ -41,6 +41,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import renderers
+from rest_framework import filters
 from django.template.loader import render_to_string
 
 
@@ -60,6 +61,7 @@ class PodViewSet(viewsets.ModelViewSet):
     """
     queryset = Pod.objects.all().order_by('-date_added')
     serializer_class = PodSerializer
+    filter_fields = ('owner', 'type', 'date_added')
 
 
 class ContributorPodsViewSet(viewsets.ModelViewSet):
