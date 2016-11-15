@@ -93,6 +93,9 @@ CACHES = {
 # curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token
 # 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework.filters.DjangoFilterBackend',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
