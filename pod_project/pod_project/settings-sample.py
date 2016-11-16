@@ -116,7 +116,7 @@ LOCALE_PATHS = (
 
 
 ##
-# Datetimes are timezone-aware by default (True) or not (False)
+# Time zone support is enabled (True) or not (False)
 #
 USE_TZ = True
 
