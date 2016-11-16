@@ -32,11 +32,7 @@ http://www.gnu.org/licenses/
 
     <!-- media -->
     <script>window.__admin_media_prefix__ = "/static/admin/";</script>
-    {% if user.is_staff %}
-        <script src="/admin/jsi18n/"></script>
-    {% else %}
-        <script src="/dynamic-media/jsi18n/"></script>
-    {% endif %}
+    <script type="text/javascript" src="/my-admin/jsi18n/"></script>
     <script src="{{ STATIC_URL }}admin/js/core.js"></script>
     <script src="{{ STATIC_URL }}admin/js/jquery.js"></script>
     <script src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
