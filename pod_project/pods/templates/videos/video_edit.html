@@ -31,7 +31,9 @@ http://www.gnu.org/licenses/
 {% block bootstrap3_extra_head %}
 
     <!-- media -->
-    <script>window.__admin_media_prefix__ = "/static/admin/";</script>
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{% static 'admin/' %}";
+    </script>
     <script type="text/javascript" src="/my-admin/jsi18n/"></script>
     <script src="{{ STATIC_URL }}admin/js/core.js"></script>
     <script src="{{ STATIC_URL }}admin/js/jquery.js"></script>
