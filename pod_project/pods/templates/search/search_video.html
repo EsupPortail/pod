@@ -111,6 +111,9 @@ voir http://www.gnu.org/licenses/
                                     {% if video.is_richmedia %}
                                         <span title="{% trans 'This content has enrichments (files, web links, etc.).' %}" class="glyphicon glyphicon-briefcase"></span>
                                     {% endif %}
+                                    {% if video.chapters %}
+                                        <span title="{% trans 'This content is chaptered.' %}" class="glyphicon glyphicon-list"></span>
+                                    {% endif %}
                                     {% if video.mediatype == 'video' %}
                                         <span title="{% trans 'Video content.' %}" class="glyphicon glyphicon-film"></span>
                                     {% elif video.mediatype == 'audio' %}
