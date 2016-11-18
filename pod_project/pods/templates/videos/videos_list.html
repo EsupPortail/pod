@@ -88,27 +88,7 @@ voir http://www.gnu.org/licenses/
                 <h5>{{ video.title|truncatechars:36 }} {% is_new video %}</h5>
             </a>
             {% if user.is_authenticated and video.owner == request.user %}
-                <span class="user-tools hidden-xs"><!-- ONLY VISIBLE TO THE VIDEO OWNER ! -->
-                    <a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans 'Edit video information.' %}">
-                        <span class="glyphicon glyphicon-pencil"></span><span class="sr-only">{% trans 'Edit' %}</span>
-                    </a>
-                    <a href="{% url 'video_completion' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans 'Add subtitle files, contributors, documents to download.' %}">
-                        <span class="glyphicon glyphicon-paperclip"></span><span class="sr-only">{% trans 'Completion' %}</span>
-                    </a>
-                    <a href="{% url 'video_chapter' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans 'Divide the video into chapters.' %}">
-                        <span class="glyphicon glyphicon-list"></span><span class="sr-only">{% trans 'Chaptering' %}</span>
-                    </a>
-                    {% if user.is_staff %}
-                        <a href="{% url 'video_enrich' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans 'Add enrichments to the video.' %}">
-                            <span class="glyphicon glyphicon-file"></span><span class="sr-only">{% trans 'Enrich' %}</span>
-                        </a>
-                    {% endif %}
-                    {% if not video.encoding_in_progress %}
-                        <a href="{% url 'video_delete' slug=video.slug %}" class="btn btn-danger btn-xs" title="{% trans 'Delete' %}">
-                            <span class="glyphicon glyphicon-remove"></span><span class="sr-only">{% trans 'Delete' %}</span>
-                        </a>
-                    {% endif %}
-                </span>
+                {% include 'videos/ownertools.html' with withWatchIcon='0' %}
             {% endif %}
         </div>
     {% endfor %}
