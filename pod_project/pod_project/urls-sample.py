@@ -39,7 +39,6 @@ urlpatterns = [
     url(r'^browse/', 'core.views.file_browse', name='ckeditor_browse'),
 
     # Add-on for non-staff users
-    url(r'^dynamic-media/jsi18n/$', 'django.views.i18n.javascript_catalog'),
     url(r'^my-admin/jsi18n/',
         'django.views.i18n.javascript_catalog',
         {'packages': ('django.conf', 'django.contrib.admin')}),
