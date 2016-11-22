@@ -31,18 +31,13 @@ http://www.gnu.org/licenses/
 {% block bootstrap3_extra_head %}
 
     <!-- media -->
-    <script>window.__admin_media_prefix__ = "/static/admin/";</script>
-    {% if user.is_staff %}
-        <script src="/admin/jsi18n/"></script>
-    {% else %}
-        <script src="/dynamic-media/jsi18n/"></script>
-    {% endif %}
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{% static 'admin/' %}";
+    </script>
+    <script type="text/javascript" src="/my-admin/jsi18n/"></script>
     <script src="{{ STATIC_URL }}admin/js/core.js"></script>
     <script src="{{ STATIC_URL }}admin/js/jquery.js"></script>
     <script src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
-    <!--
-    <script src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
-    <script src="{{ STATIC_URL }}admin/js/actions.js"></script>
     <!-- form.media -->
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
     {{form.media}}
