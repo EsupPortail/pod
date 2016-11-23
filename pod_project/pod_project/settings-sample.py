@@ -203,6 +203,12 @@ FILER_ENABLE_PERMISSIONS = True
 
 
 ##
+# Taggit config
+#
+TAGGIT_CASE_INSENSITIVE = True
+
+
+##
 # Easy-thumbnails config (Django-filer)
 #
 THUMBNAIL_PROCESSORS = (
