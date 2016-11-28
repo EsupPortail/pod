@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure.
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+{% load i18n list staticfiles %}
+{% load thumbnail %}
+
+{% block bootstrap3_title %}{% trans "Videos" %}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+        <style type="text/css">
+            body { background: #fff none no-repeat fixed center; }
+            body > .container[role="main"] { background-color: transparent; }
+        </style>
+        <script src="{{ STATIC_URL }}js/iframe-resizer/iframeResizer.contentWindow.min.js"></script>
+        <script>
+$( document ).ready( function( ) {
+    $( '#videoList > .video-thumb a' ).attr( 'target', "_blank" );
+    $( '#videoList > .video-thumb > a.video-holder' ).attr(
+        'title', "{% trans 'Click to open in a new window / tab.' %}" );
+} );
+        </script>
+{% endblock bootstrap3_extra_head %}
+
+{% block bootstrap3_content %}
+        <article class="container" role="main">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="objects_list">
+                    {% include "videos/videos_list.html" %}
+                    </div>
+                </div>
+            </div>
+        </article>
+{% endblock %}
+
