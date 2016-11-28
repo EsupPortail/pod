@@ -63,3 +63,13 @@
     box-shadow: none !important;
 }
 
+
+.videoThumbBorder( ) when not ( @videoThumbBorder ) {
+    border: 0 none;
+}
+
+
+.videoThumbBorder( ) when ( @videoThumbBorder ) {
+    border: 1px solid @videoThumbBorderColor;
+}
+
