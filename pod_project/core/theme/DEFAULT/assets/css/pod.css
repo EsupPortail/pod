@@ -230,6 +230,7 @@ aside .form-group.show-all .more {
 .video-thumb .video-holder .poster {
   display: block;
   position: relative;
+  border: 0 none;
 }
 .video-thumb .video-holder .poster .time-icons {
   display: block;
