@@ -546,6 +546,9 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffe800',endColorstr='#a69700',GradientType=0);
   opacity: .8;
 }
+.vjs-error-display {
+  z-index: 1010;
+}
 .video-js {
   font-size: 10px !important;
 }
