@@ -1198,7 +1198,7 @@ def video_chapter(request, slug):
     list_chapter = video.chapterpods_set.all()
     if request.POST:  # some data sent
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_chapter = ChapterPodsForm({"video": video})
+            form_chapter = ChapterPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/chapter/form_chapter.html",
                                           {'form_chapter': form_chapter,
