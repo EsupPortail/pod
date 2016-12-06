@@ -1066,7 +1066,7 @@ def video_completion_download(request, slug):
     if request.POST:  # Download CRUD Action
         # new
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_download = DocPodsForm({"video": video})
+            form_download = DocPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/download/form_download.html",
                                           {
