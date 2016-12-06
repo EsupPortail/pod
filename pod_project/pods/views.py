@@ -1316,7 +1316,7 @@ def video_enrich(request, slug):
     if request.POST:  # some data sent
         if request.POST.get("action") and request.POST['action'] == 'new':
             form_enrich = EnrichPodsForm(
-                {"video": video, "start": 0, "end": 1})
+                initial={"video": video, "start": 0, "end": 1})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/enrich/form_enrich.html",
                                           {'form_enrich': form_enrich,
