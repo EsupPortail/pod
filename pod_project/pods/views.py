@@ -801,7 +801,7 @@ def video_completion_contributor(request, slug):
     if request.POST:  # Contributor CRUD Action
         # new
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_contributor = ContributorPodsForm({"video": video})
+            form_contributor = ContributorPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/contributor/form_contributor.html",
                                           {'form_contributor': form_contributor,
