@@ -385,7 +385,7 @@ function verify_fields(form){
         }
         if(document.getElementById("id_lang").value == "" ){
             $("input#id_lang")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a lang.' %} </span>")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please select a language.' %} </span>")
             .parents('div.form-group').addClass('has-error');
         }
         if(document.getElementById("id_src").value == "" ){
