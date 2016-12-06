@@ -935,7 +935,7 @@ def video_completion_subtitle(request, slug):
     if request.POST:  # Subtitle CRUD Action
         # new
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_subtitle = TrackPodsForm({"video": video})
+            form_subtitle = TrackPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/subtitle/form_subtitle.html",
                                           {'form_subtitle': form_subtitle,
