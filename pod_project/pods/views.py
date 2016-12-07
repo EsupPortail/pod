@@ -801,7 +801,7 @@ def video_completion_contributor(request, slug):
     if request.POST:  # Contributor CRUD Action
         # new
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_contributor = ContributorPodsForm({"video": video})
+            form_contributor = ContributorPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/contributor/form_contributor.html",
                                           {'form_contributor': form_contributor,
@@ -935,7 +935,7 @@ def video_completion_subtitle(request, slug):
     if request.POST:  # Subtitle CRUD Action
         # new
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_subtitle = TrackPodsForm({"video": video})
+            form_subtitle = TrackPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/subtitle/form_subtitle.html",
                                           {'form_subtitle': form_subtitle,
@@ -1066,7 +1066,7 @@ def video_completion_download(request, slug):
     if request.POST:  # Download CRUD Action
         # new
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_download = DocPodsForm({"video": video})
+            form_download = DocPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/download/form_download.html",
                                           {
@@ -1198,7 +1198,7 @@ def video_chapter(request, slug):
     list_chapter = video.chapterpods_set.all()
     if request.POST:  # some data sent
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_chapter = ChapterPodsForm({"video": video})
+            form_chapter = ChapterPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/chapter/form_chapter.html",
                                           {'form_chapter': form_chapter,
@@ -1316,7 +1316,7 @@ def video_enrich(request, slug):
     if request.POST:  # some data sent
         if request.POST.get("action") and request.POST['action'] == 'new':
             form_enrich = EnrichPodsForm(
-                {"video": video, "start": 0, "end": 1})
+                initial={"video": video, "start": 0, "end": 1})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/enrich/form_enrich.html",
                                           {'form_enrich': form_enrich,
