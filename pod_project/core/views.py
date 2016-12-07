@@ -189,7 +189,7 @@ def contact_us(request):
             msg_txt = strip_tags(u'%s' %msg_html)
 
             email_msg = EmailMultiAlternatives(
-                "[" + settings.TITLE_SITE + "]  %s" %contact.subject, msg_txt, contact.email, settings.HELP_MAIL)
+                "[" + settings.TITLE_SITE + "]  %s" %contact.subject, msg_txt, contact.email, [settings.HELP_MAIL])
             email_msg.attach_alternative(msg_html, "text/html")
             email_msg.send(fail_silently=False)
 
