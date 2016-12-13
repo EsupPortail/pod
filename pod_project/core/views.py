@@ -183,13 +183,13 @@ def contact_us(request):
                          '<p>Referrer page : <a href=\"%(url)s\">%(url)s</a></p>\n\n'
                          ) % {
                 'sender_name': contact.name, 'site_title': settings.TITLE_SITE,
-                'sender_email': contact.email, 'message': contact.message.replace("\n","<br/>"), 
+                'sender_email': contact.email, 'message': contact.message.replace("\n","<br/>"),
                 'url': form.cleaned_data['url_referrer']
                 }
             msg_txt = strip_tags(u'%s' %msg_html)
 
             email_msg = EmailMultiAlternatives(
-                "[" + settings.TITLE_SITE + "]  %s" %contact.subject, msg_txt, contact.email, settings.REPORT_VIDEO_MAIL_TO)
+                "[" + settings.TITLE_SITE + "]  %s" %contact.subject, msg_txt, contact.email, [settings.HELP_MAIL])
             email_msg.attach_alternative(msg_html, "text/html")
             email_msg.send(fail_silently=False)
 
@@ -202,7 +202,6 @@ def contact_us(request):
                 'message': contact.message.replace("\n","<br/>")
                 }
             msg_txt = strip_tags(u'%s' %msg_html)
-
 
             email_msg = EmailMultiAlternatives(
                 "[" + settings.TITLE_SITE + "] %s %s" %(_('your message intitled'), contact.subject), msg_txt, settings.HELP_MAIL, [contact.email])
