@@ -24,22 +24,13 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{{ block.super }}{% trans "My profile" %}{% endblock %}
 
 {% block bootstrap3_extra_head %}
-        <!-- media -->
-        <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
-        <script type="text/javascript" src="/admin/jsi18n/"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/actions.js"></script>
-        <!-- form.media -->
-        {{form.media}}
-        <!-- fin form.media -->
-<script>
-var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}";
-    var num=0;
-    var name = "";
-</script>
+        <script>
+            var messageBeforeUnload = "{% trans 'Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost.' %}",
+                num = 0,
+                name = "";
+        </script>
 {% endblock bootstrap3_extra_head %}
 
 
@@ -99,8 +90,11 @@ var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you h
     {% block box_info %}
 {% if not request.user.is_staff %}
 <div class="widget" style="text-align: justify">
-<h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Information"%}</h4>
-<p>{%trans "Your current permissions do not allow you to add a photo to your profile. Please contact us to add these rights."%} : <a href="mailto:{{HELP_MAIL}}">{{HELP_MAIL}}</a></p>
+    <h4><span class="glyphicon glyphicon-info-sign"></span> {% trans "Information"%}</h4>
+    <p>
+        {%trans "Your current permissions do not allow you to add a photo to your profile. Please contact us to add these rights."%}
+        <a href="mailto:{{HELP_MAIL}}">{{HELP_MAIL}}</a>
+    </p>
 </div>
 {%endif%}
     {% endblock box_info %}

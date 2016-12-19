@@ -66,18 +66,25 @@ body > .navbar[role="navigation"].navbar-default > .container > .navbar-header .
 body > .navbar[role="navigation"].navbar-default > .container > .navbar-header .navbar-brand.visible-xs img {
   width: 175px;
 }
+body > .navbar[role="navigation"].navbar-default > .container .navbar-nav {
+  margin-left: -15px;
+}
 body > .navbar[role="navigation"].navbar-default > .container .navbar-nav > li:not(.open) > a {
   color: #333;
 }
 body > .container[role="main"] {
   background: #fff;
-  padding-top: 20px;
   padding-bottom: 20px;
 }
 /*******************************************************************************
 
         Global
 */
+.panel h1:first-child,
+.panel h2:first-child,
+.panel h3:first-child {
+  margin-top: 0;
+}
 fieldset .form-container {
   padding: 5px;
   border-radius: 4px;
@@ -121,6 +128,11 @@ aside .form-group.show-all .more {
 }
 .breadcrumb {
   background: transparent;
+  padding: .8rem 0;
+  margin-bottom: 0;
+}
+.breadcrumb ~ h2 {
+  margin-top: 0;
 }
 .alert {
   position: fixed;
@@ -230,6 +242,7 @@ aside .form-group.show-all .more {
 .video-thumb .video-holder .poster {
   display: block;
   position: relative;
+  border: 0 none;
 }
 .video-thumb .video-holder .poster .time-icons {
   display: block;
@@ -532,6 +545,9 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
   background: linear-gradient(to bottom, #ffe800 0%, #a69700 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffe800',endColorstr='#a69700',GradientType=0);
   opacity: .8;
+}
+.vjs-error-display {
+  z-index: 1010;
 }
 .video-js {
   font-size: 10px !important;

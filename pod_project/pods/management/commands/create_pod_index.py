@@ -17,7 +17,8 @@ class Command(BaseCommand):
         json_data = open('pods/search_template.json')
         es_template = json.load(json_data)
         try:
-            create = es.indices.create(index='pod', body=es_template)  # ignore=[400, 404]
+            create = es.indices.create(
+                index='pod', body=es_template)  # ignore=[400, 404]
         except TransportError as e:
             # (400, u'IndexAlreadyExistsException[[pod] already exists]')
             if e.status_code == 400:

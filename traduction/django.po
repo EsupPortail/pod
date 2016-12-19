@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-10-05 15:10+0200\n"
-"PO-Revision-Date: 2016-10-18 14:46+0200\n"
+"PO-Revision-Date: 2016-12-06 16:53+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #: core/admin.py:77 core/models.py:272
 msgid "Email"
@@ -2667,8 +2667,8 @@ msgid "Please enter a correct kind."
 msgstr "Veuillez renseigner le type de piste (sous-titre ou légende)."
 
 #: pods/templates/videos/video_completion.html:388
-msgid "Please enter a lang."
-msgstr "Veuillez renseigner une langue."
+msgid "Please select a language."
+msgstr "Veuillez sélectionner une langue."
 
 #: pods/templates/videos/video_completion.html:393
 msgid "Please specify a track file."

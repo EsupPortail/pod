@@ -13,9 +13,11 @@ router.register(r'encodings', pods_views.EncodingPodsViewSet)
 router.register(r'chapters', pods_views.ChapterPodsViewSet)
 
 urlpatterns = [
-        url(r'get_user_by_username/$', core_views.GetUserView.as_view(), name='get_user_by_username'),
-        url(r'launch_pod_encode/$', pods_views.EncodePodView.as_view(), name='encode video_by_id'),
-        url(r'dublincore/$', pods_views.DublinCoreView.as_view(), name='dublincore'),
+    url(r'get_user_by_username/$', core_views.GetUserView.as_view(),
+        name='get_user_by_username'),
+    url(r'launch_pod_encode/$', pods_views.EncodePodView.as_view(),
+        name='encode video_by_id'),
+    url(r'dublincore/$', pods_views.DublinCoreView.as_view(), name='dublincore'),
 ]
-        
+
 urlpatterns += router.urls

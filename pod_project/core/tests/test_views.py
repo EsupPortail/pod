@@ -30,16 +30,17 @@ import os
 
 # Create your tests here.
 
+
 @override_settings(
-    MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'), 
-    DATABASES = {
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE = 'en'
-    )
+    LANGUAGE_CODE='en'
+)
 class User_ProfileTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -77,6 +78,6 @@ class Contact_usTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get("/contact_us/")
         self.assertEqual(response.status_code, 200)
-        response = self.client.post("/contact_us/", {u'subject': [u'zqef'], u'message': [u'zqfji'], 
-            u'csrfmiddlewaretoken': [u'j8Ekh2sgFWz0BB2OLlXxSz9wl4XjzSb4']})
+        response = self.client.post("/contact_us/", {u'subject': [u'zqef'], u'message': [u'zqfji'],
+                                                     u'csrfmiddlewaretoken': [u'j8Ekh2sgFWz0BB2OLlXxSz9wl4XjzSb4']})
         self.assertEqual(response.status_code, 200)

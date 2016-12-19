@@ -10,6 +10,7 @@ from django_cas_gateway.models import User
 
 __all__ = ['CASBackend']
 
+
 def _verify_cas1(ticket, service):
     """Verifies CAS 1.0 authentication ticket.
 
@@ -55,6 +56,7 @@ def _verify_cas2(ticket, service):
     finally:
         page.close()
 
+
 def _verify_cas3(ticket, service):
     """Verifies CAS 3.0+ XML-based authentication ticket and returns extended attributes.
 
@@ -77,21 +79,24 @@ def _verify_cas3(ticket, service):
         tree = ElementTree.fromstring(response)
         if tree[0].tag.endswith('authenticationSuccess'):
             for element in tree[0]:
-               if element.tag.endswith('user'):
+                if element.tag.endswith('user'):
                     user = element.text
-               elif element.tag.endswith('attributes'):
+                elif element.tag.endswith('attributes'):
                     for attribute in element:
-                        attributes[attribute.tag.split("}").pop()] = attribute.text
+                        attributes[attribute.tag.split(
+                            "}").pop()] = attribute.text
         return user, attributes
     finally:
         page.close()
 
+
 def get_saml_assertion(ticket):
-   return """<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol"  MajorVersion="1" MinorVersion="1" RequestID="_192.168.16.51.1024506224022" IssueInstant="2002-06-19T17:03:44.022Z"><samlp:AssertionArtifact>""" + ticket + """</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>"""
+    return """<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol"  MajorVersion="1" MinorVersion="1" RequestID="_192.168.16.51.1024506224022" IssueInstant="2002-06-19T17:03:44.022Z"><samlp:AssertionArtifact>""" + ticket + """</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>"""
 
 SAML_1_0_NS = 'urn:oasis:names:tc:SAML:1.0:'
 SAML_1_0_PROTOCOL_NS = '{' + SAML_1_0_NS + 'protocol' + '}'
 SAML_1_0_ASSERTION_NS = '{' + SAML_1_0_NS + 'assertion' + '}'
+
 
 def _verify_cas2_saml(ticket, service):
     """Verifies CAS 3.0+ XML-based authentication ticket and returns extended attributes.
@@ -109,13 +114,14 @@ def _verify_cas2_saml(ticket, service):
 
     # We do the SAML validation
     headers = {'soapaction': 'http://www.oasis-open.org/committees/security',
-        'cache-control': 'no-cache',
-        'pragma': 'no-cache',
-        'accept': 'text/xml',
-        'connection': 'keep-alive',
-        'content-type': 'text/xml'}
+               'cache-control': 'no-cache',
+               'pragma': 'no-cache',
+               'accept': 'text/xml',
+               'connection': 'keep-alive',
+               'content-type': 'text/xml'}
     params = {'TARGET': service}
-    url = urllib2.Request(urljoin(settings.CAS_SERVER_URL, 'samlValidate') + '?' + urlencode(params), '', headers)
+    url = urllib2.Request(urljoin(settings.CAS_SERVER_URL,
+                                  'samlValidate') + '?' + urlencode(params), '', headers)
     data = get_saml_assertion(ticket)
     url.add_data(get_saml_assertion(ticket))
 
@@ -134,7 +140,8 @@ def _verify_cas2_saml(ticket, service):
             attrs = tree.findall('.//' + SAML_1_0_ASSERTION_NS + 'Attribute')
             for at in attrs:
                 if 'uid' in at.attrib.values():
-                    user = at.find(SAML_1_0_ASSERTION_NS + 'AttributeValue').text
+                    user = at.find(SAML_1_0_ASSERTION_NS +
+                                   'AttributeValue').text
                     attributes['uid'] = user
                 values = at.findall(SAML_1_0_ASSERTION_NS + 'AttributeValue')
                 if len(values) > 1:
@@ -143,13 +150,14 @@ def _verify_cas2_saml(ticket, service):
                         values_array.append(v.text)
                     attributes[at.attrib['AttributeName']] = values_array
                 else:
-                   attributes[at.attrib['AttributeName']] = values[0].text
+                    attributes[at.attrib['AttributeName']] = values[0].text
         return user, attributes
     finally:
         page.close()
 
 
-_PROTOCOLS = {'1': _verify_cas1, '2': _verify_cas2, '3': _verify_cas3, 'CAS_2_SAML_1_0': _verify_cas2_saml}
+_PROTOCOLS = {'1': _verify_cas1, '2': _verify_cas2,
+              '3': _verify_cas3, 'CAS_2_SAML_1_0': _verify_cas2_saml}
 
 
 if settings.CAS_VERSION not in _PROTOCOLS:
