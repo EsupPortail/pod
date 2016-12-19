@@ -149,7 +149,7 @@ class Owner_channels_listTestView(TestCase):
         i = 1
         while i <= 5:
             c = Channel.objects.create(title="ChannelTest" + str(i), visible=True,
-                                   color="Black", style="italic", description="blabla")
+                                       color="Black", style="italic", description="blabla")
             c.owners.add(remi)
             i += 1
         print(" --->  SetUp of Owner_channels_listTestView : OK !")
@@ -275,7 +275,7 @@ class Channel_edit_TestView(TestCase):
         user2.set_password('hello')
         user2.save()
         c = Channel.objects.create(title="ChannelTest1", visible=True,
-                               color="Black", style="italic", description="blabla")
+                                   color="Black", style="italic", description="blabla")
         c.owners.add(self.user)
         print(" --->  SetUp of Channel_edit_TestView : OK !")
 
@@ -1111,7 +1111,7 @@ class Video_edit_testCase(TestCase):
         login = self.client.login(username='remi', password='hello')
         self.assertEqual(login, True)
         response = self.client.post('/video_edit/%s/' % pod.slug, {u'password': [u'b'], u'description': [u'<p>bbla</p>\r\n'], u'title': [u'Bunny'], u'tags': [u''], u'action3': [u'Save and watch the video'], u'date_evt': [
-                                    u''], u'cursus':0, u'main_lang':'en', u'video': [u''], u'date_added': [u'20/04/2015'], u'allow_downloading': [u'on'], u'type': [u'1']})
+                                    u''], u'cursus': 0, u'main_lang': 'en', u'video': [u''], u'date_added': [u'20/04/2015'], u'allow_downloading': [u'on'], u'type': [u'1']})
         self.assertEqual(response.status_code, 302)
         video = Pod.objects.get(id=1)
         self.assertEqual(video.password, "b")
@@ -1739,16 +1739,15 @@ class Video_search_videos(TestCase):
         pod.save()
 
         pod2 = Pod.objects.create(type=other_type, title=u'NoIndex',
-                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
-                                 allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="no index", is_draft=True,
-                                 to_encode=False)
+                                  date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
+                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="no index", is_draft=True,
+                                  to_encode=False)
         EncodingPods.objects.create(video=pod2, encodingType=EncodingType.objects.get(
             id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod2, encodingType=EncodingType.objects.get(
                 id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
         pod2.save()
-
 
         print(" --->  SetUp of Video_enrichTestView : OK !")
 
@@ -1757,40 +1756,48 @@ class Video_search_videos(TestCase):
         response = self.client.get("/search/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['result']["hits"]["total"], 1)
-        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+        self.assertEqual(response.context['result']["hits"][
+                         "hits"][0]["_source"]["title"], "Bunny")
 
-        response = self.client.get("/search/?q=bunn") #title
+        response = self.client.get("/search/?q=bunn")  # title
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['result']["hits"]["total"], 1)
-        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+        self.assertEqual(response.context['result']["hits"][
+                         "hits"][0]["_source"]["title"], "Bunny")
 
-        response = self.client.get("/search/?q=remi") #owner
+        response = self.client.get("/search/?q=remi")  # owner
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['result']["hits"]["total"], 1)
-        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+        self.assertEqual(response.context['result']["hits"][
+                         "hits"][0]["_source"]["title"], "Bunny")
 
-        response = self.client.get("/search/?q=bugs") #description
+        response = self.client.get("/search/?q=bugs")  # description
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['result']["hits"]["total"], 1)
-        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+        self.assertEqual(response.context['result']["hits"][
+                         "hits"][0]["_source"]["title"], "Bunny")
 
-        response = self.client.get("/search/?q=NoIndex") #test draft video is no index
+        # test draft video is no index
+        response = self.client.get("/search/?q=NoIndex")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['result']["hits"]["total"], 0)
 
-        response = self.client.get("/search/?q=toto") #test random query
+        response = self.client.get("/search/?q=toto")  # test random query
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['result']["hits"]["total"], 0)
 
-        response = self.client.get("/search/?q=Other") #test type filtre
+        response = self.client.get("/search/?q=Other")  # test type filtre
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['result']["hits"]["total"], 1)
-        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+        self.assertEqual(response.context['result']["hits"][
+                         "hits"][0]["_source"]["title"], "Bunny")
 
-        response = self.client.get("/search/?q=&start_date=17%2F07%2F2015") #test date filtre
+        response = self.client.get(
+            "/search/?q=&start_date=17%2F07%2F2015")  # test date filtre
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['result']["hits"]["total"], 1)
-        self.assertEqual(response.context['result']["hits"]["hits"][0]["_source"]["title"], "Bunny")
+        self.assertEqual(response.context['result']["hits"][
+                         "hits"][0]["_source"]["title"], "Bunny")
 
         print(
             "   --->  test_search_video of Video_search_videos : OK !")

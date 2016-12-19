@@ -5,7 +5,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -25,16 +25,18 @@ voir http://www.gnu.org/licenses/
 		<link rel="stylesheet" href="{{ STATIC_URL }}admin/css/base.css" type="text/css" />
 		<link rel="stylesheet" href="{{ STATIC_URL }}admin/css/form.css" type="text/css" />
         <!-- media -->
-        <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+        <script type="text/javascript">
+            window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
+        </script>
         <script type="text/javascript" src="/admin/jsi18n/"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}admin/js/actions.js"></script>
         <!-- form.media -->
         {{form.media}}
-        <!-- fin media -->	
+        <!-- fin media -->
         <script>
         var num=0;
         var name = "";
@@ -51,48 +53,48 @@ voir http://www.gnu.org/licenses/
 
             if (document.getElementById) {
                 document.getElementById("iframe").innerHTML = toThis;
-            } 
-            
+            }
+
             return false;
         }
-        
+
         function frameReady(){
             var el = document.getElementById('resultFrame');
             getIframeWindow(el).opener = window;
             //document.myform.style.visibility='hidden';
             document.myform.style.display = 'none';
         }
-        
+
         function getIframeWindow(iframe_object) {
           var doc;
-        
+
           if (iframe_object.contentWindow) {
             return iframe_object.contentWindow;
           }
-        
+
           if (iframe_object.window) {
             return iframe_object.window;
-          } 
-        
+          }
+
           if (!doc && iframe_object.contentDocument) {
             doc = iframe_object.contentDocument;
-          } 
-        
+          }
+
           if (!doc && iframe_object.document) {
             doc = iframe_object.document;
           }
-        
+
           if (doc && doc.defaultView) {
            return doc.defaultView;
           }
-        
+
           if (doc && doc.parentWindow) {
             return doc.parentWindow;
           }
-        
+
           return undefined;
         }
-        
+
         dismissRelatedImageLookupPopup = function(win, chosenId, chosenThumbnailUrl, chosenDescriptionTxt) {
     		//var name = windowname_to_id(win.name);
     		var img_name = name + '_thumbnail_img';
@@ -105,7 +107,7 @@ voir http://www.gnu.org/licenses/
     		document.getElementById(clear_name).style.display = 'inline';
     		document.myform.submit();
     	};
-        
+
         </script>
 	</head>
 	<body>
@@ -122,18 +124,18 @@ voir http://www.gnu.org/licenses/
         {{form.as_p}}
         <p><input type="submit" value="Valider" id="button_valider"/></p>
        </form>
-       
+
        <script type="text/javascript">
         (function($) {
             $(document).ready(function($) {
                 showRelatedObjectLookupPopup(document.getElementById("lookup_id_document"));
             });
         })(django.jQuery);
-        
+
         </script>
     </blockquote>
     <div id="iframe">
-        
+
     </div>
     {% endif%}
 	</body>

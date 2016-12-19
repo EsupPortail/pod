@@ -27,7 +27,8 @@ from time import time
 import datetime
 register = Library()
 
+
 @register.simple_tag()
 def timeleft(sessiontimeleftsecond):
     diff = float(sessiontimeleftsecond) - time()
-    return int(diff) #str(datetime.timedelta(seconds=int(diff)))
+    return int(diff)  # str(datetime.timedelta(seconds=int(diff)))

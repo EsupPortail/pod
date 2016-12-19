@@ -24,7 +24,7 @@ voir http://www.gnu.org/licenses/
     <a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Edit video information." %}">
         <span class="glyphicon glyphicon-pencil"></span><span class="sr-only">{% trans "Edit" %}</span>
     </a>
-    {%if user.is_staff%}
+    {% if user.is_staff %}
     <a href="{% url 'video_completion' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add subtitle files, contributors, documents to download."%}">
         <span class="glyphicon glyphicon-paperclip"></span><span class="sr-only">{% trans "Completion" %}</span>
     </a>
@@ -32,22 +32,24 @@ voir http://www.gnu.org/licenses/
     <a href="{% url 'video_completion' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add contributors."%}">
         <span class="glyphicon glyphicon-user"></span><span class="sr-only">{% trans "Completion" %}</span>
     </a>
-    {%endif%}
+    {% endif %}
     <a href="{% url 'video_chapter' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Divide the video into chapters." %}">
         <span class="glyphicon glyphicon-list"></span><span class="sr-only">{% trans "Chaptering" %}</span>
     </a>
-    {%if user.is_staff%}
+    {% if user.is_staff %}
     <a href="{% url 'video_enrich' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add enrichments to the video." %}">
         <span class="glyphicon glyphicon-file"></span><span class="sr-only">{% trans "Enrich" %}</span>
     </a>
-    {%endif%}
+    {% endif %}
+    {% if withWatchIcon|default:'1' == '1' %}
     <a href="{% url 'video' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Watch the video." %}">
         <span class="glyphicon glyphicon-film"></span><span class="sr-only">{% trans "Watch" %}</span>
     </a>
+    {% endif %}
     {% if not video.encoding_in_progress %}
     <a href="{% url 'video_delete' slug=video.slug %}" class="btn btn-danger btn-xs" title="{% trans "Delete the video." %}">
         <span class="glyphicon glyphicon-remove"></span><span class="sr-only">{% trans "Delete" %}</span>
     </a>
-    {%endif%}
+    {% endif %}
 </span>
 {%endif%}

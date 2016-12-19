@@ -31,11 +31,13 @@ class UserInputSerializer(serializers.Serializer):
     #id = serializers.IntegerField(min_value=1)
     username = serializers.CharField()
 
+
 class UserOutputSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id','url', 'username', 'first_name', 'last_name', 'email', 'groups')
+        fields = ('id', 'url', 'username', 'first_name',
+                  'last_name', 'email', 'groups')
 
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):

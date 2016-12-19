@@ -34,13 +34,12 @@ voir http://www.gnu.org/licenses/
     </style>
 
     <script type="text/javascript">
-        window.__admin_media_prefix__ = '{% filter escapejs %}{% static 'admin/' %}{% endfilter %}';
+        window.__admin_media_prefix__ = "{% static 'admin/' %}";
     </script>
     <script type="text/javascript" src="/my-admin/jsi18n/"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/actions.js"></script>
     {{ form.media }}
     <script>
         $(document).ready(function() {
@@ -51,13 +50,13 @@ voir http://www.gnu.org/licenses/
 
 {% block opengraph %}
     <meta name="description" content="{{ query }}">
-	<!-- Open Graph data -->
-	<meta property="og:title" content="{% trans 'Search' %}" />
-	<meta property="og:type" content="article" />
-	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
-	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
-	<meta property="og:description" content="{{ query }}" />
-	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+    <!-- Open Graph data -->
+    <meta property="og:title" content="{% trans 'Search' %}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
+    <meta property="og:description" content="{{ query }}" />
+    <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock opengraph %}
 
 {% block breadcrumbs %}
@@ -102,11 +101,17 @@ voir http://www.gnu.org/licenses/
                             <span class="time-icons">
                                 <span class="time">{{ video.duration_in_time }}</span>
                                 <span class="icons">
-                                    {% if video.protected %}
-                                        <span title="{% trans 'This content is protected by authentication and/or password.' %}" class="glyphicon glyphicon-lock"></span>
+                                    {% if video.is_restricted %}
+                                        <span title="{% trans 'This content is only accessible to authenticated users.' %}" class="glyphicon glyphicon-log-in"></span>
+                                    {% endif %}
+                                    {% if video.password %}
+                                        <span title="{% trans 'This content is password protected.' %}" class="glyphicon glyphicon-lock"></span>
                                     {% endif %}
                                     {% if video.is_richmedia %}
                                         <span title="{% trans 'This content has enrichments (files, web links, etc.).' %}" class="glyphicon glyphicon-briefcase"></span>
+                                    {% endif %}
+                                    {% if video.chapters %}
+                                        <span title="{% trans 'This content is chaptered.' %}" class="glyphicon glyphicon-list"></span>
                                     {% endif %}
                                     {% if video.mediatype == 'video' %}
                                         <span title="{% trans 'Video content.' %}" class="glyphicon glyphicon-film"></span>

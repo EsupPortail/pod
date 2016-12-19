@@ -142,6 +142,11 @@ def channel(request, slug_c, slug_t=None):
                                   {"videos": videos},
                                   context_instance=RequestContext(request))
 
+    if request.GET.get('is_iframe', None):
+        return render_to_response("videos/videos_iframe.html",
+                                  {"videos": videos},
+                                  context_instance=RequestContext(request))
+
     return render_to_response("channels/channel.html",
                               {"channel": channel, "theme": theme,
                                   "videos": videos},
@@ -334,8 +339,11 @@ def favorites_videos_list(request):
 
 def videos(request):
     videos_list = VIDEOS
+    is_iframe = request.GET.get('is_iframe', None)
+
     # type
-    type = request.GET.getlist('type') if request.GET.getlist('type') else None
+    type = request.GET.getlist(
+        'type') if request.GET.getlist('type') else None
     if type:
         videos_list = videos_list.filter(type__slug__in=type)
 
@@ -344,19 +352,22 @@ def videos(request):
         'discipline') if request.GET.getlist('discipline') else None
     if discipline:
         videos_list = videos_list.filter(discipline__slug__in=discipline)
+
     # owner
     owner = request.GET.getlist(
         'owner') if request.GET.getlist('owner') else None
     list_owner = None
     if owner:
         videos_list = videos_list.filter(owner__username__in=owner)
-        list_owner = User.objects.filter(username__in=owner)
+        if not is_iframe:
+            list_owner = User.objects.filter(username__in=owner)
 
     # tags
-    tag = request.GET.getlist('tag') if request.GET.getlist('tag') else None
+    tag = request.GET.getlist(
+        'tag') if request.GET.getlist('tag') else None
     if tag:
         videos_list = videos_list.filter(tags__slug__in=tag).distinct()
-    #Food.objects.filter(tags__name__in=["delicious", "red"]).distinct()
+    # Food.objects.filter(tags__name__in=["delicious", "red"]).distinct()
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
         'orderby') else "order_by_-date_added"
@@ -364,7 +375,8 @@ def videos(request):
         "%s" % replace(order_by, "order_by_", ""))
 
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
-        'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
+        'perpage') and request.COOKIES.get(
+        'perpage').isdigit() else DEFAULT_PER_PAGE
 
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
@@ -374,6 +386,11 @@ def videos(request):
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
                                   {"videos": videos, "owners": list_owner},
+                                  context_instance=RequestContext(request))
+
+    if is_iframe:
+        return render_to_response("videos/videos_iframe.html",
+                                  {"videos": videos},
                                   context_instance=RequestContext(request))
 
     return render_to_response("videos/videos.html",
@@ -525,6 +542,7 @@ def video_add_favorite(request, slug):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
+
 
 @login_required
 @csrf_protect
@@ -705,14 +723,16 @@ def video_edit(request, slug=None):
             if request.is_ajax():
                 response_data = {}
                 response_data['success'] = False
-                response_data['message'] = _(u'One or more errors have been found in the form.')
+                response_data['message'] = _(
+                    u'One or more errors have been found in the form.')
                 return HttpResponse(json.dumps(response_data), content_type='application/json')
             else:
                 messages.add_message(
                     request, messages.ERROR, _(u'One or more errors have been found in the form.'))
 
     video_ext_accept = replace('|'.join(settings.VIDEO_EXT_ACCEPT), ".", "")
-    video_ext_accept_text = replace(', '.join(settings.VIDEO_EXT_ACCEPT), ".", "").upper()
+    video_ext_accept_text = replace(
+        ', '.join(settings.VIDEO_EXT_ACCEPT), ".", "").upper()
 
     return render_to_response("videos/video_edit.html",
                               {'form': video_form, "referer": referer,
@@ -781,7 +801,7 @@ def video_completion_contributor(request, slug):
     if request.POST:  # Contributor CRUD Action
         # new
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_contributor = ContributorPodsForm({"video": video})
+            form_contributor = ContributorPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/contributor/form_contributor.html",
                                           {'form_contributor': form_contributor,
@@ -915,7 +935,7 @@ def video_completion_subtitle(request, slug):
     if request.POST:  # Subtitle CRUD Action
         # new
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_subtitle = TrackPodsForm({"video": video})
+            form_subtitle = TrackPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/subtitle/form_subtitle.html",
                                           {'form_subtitle': form_subtitle,
@@ -1046,7 +1066,7 @@ def video_completion_download(request, slug):
     if request.POST:  # Download CRUD Action
         # new
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_download = DocPodsForm({"video": video})
+            form_download = DocPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/completion/download/form_download.html",
                                           {
@@ -1067,7 +1087,7 @@ def video_completion_download(request, slug):
         # save
         if request.POST.get("action") and request.POST['action'] == 'save':
             form_download = None
-            if request.POST.get("download_id")  and request.POST.get("download_id") != "None":
+            if request.POST.get("download_id") and request.POST.get("download_id") != "None":
                 download = get_object_or_404(
                     DocPods, id=request.POST.get("download_id"))
                 form_download = DocPodsForm(request.POST, instance=download)
@@ -1178,7 +1198,7 @@ def video_chapter(request, slug):
     list_chapter = video.chapterpods_set.all()
     if request.POST:  # some data sent
         if request.POST.get("action") and request.POST['action'] == 'new':
-            form_chapter = ChapterPodsForm({"video": video})
+            form_chapter = ChapterPodsForm(initial={"video": video})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/chapter/form_chapter.html",
                                           {'form_chapter': form_chapter,
@@ -1296,7 +1316,7 @@ def video_enrich(request, slug):
     if request.POST:  # some data sent
         if request.POST.get("action") and request.POST['action'] == 'new':
             form_enrich = EnrichPodsForm(
-                {"video": video, "start": 0, "end": 1})
+                initial={"video": video, "start": 0, "end": 1})
             if request.is_ajax():  # if ajax
                 return render_to_response("videos/enrich/form_enrich.html",
                                           {'form_enrich': form_enrich,
@@ -1479,15 +1499,16 @@ def autocomplete(request):
     suggestions = [entry.object.title for entry in res]
     # Make sure you return a JSON object, not a bare list.
     # Otherwise, you could be vulnerable to an XSS attack.
-    the_data = json.dumps({ })
+    the_data = json.dumps({})
     return HttpResponse(the_data, content_type='application/json')
 
 
 def search_videos(request):
     es = Elasticsearch(ES_URL)
-    aggsAttrs = ['owner_full_name', 'type.title', 'disciplines.title', 'tags.name', 'channels.title']
+    aggsAttrs = ['owner_full_name', 'type.title',
+                 'disciplines.title', 'tags.name', 'channels.title']
 
-    #SEARCH FORM
+    # SEARCH FORM
     search_word = ""
     start_date = None
     end_date = None
@@ -1497,8 +1518,9 @@ def search_videos(request):
         start_date = searchForm.cleaned_data['start_date']
         end_date = searchForm.cleaned_data['end_date']
 
-    #request parameters
-    selected_facets = request.GET.getlist('selected_facets') if request.GET.getlist('selected_facets') else []
+    # request parameters
+    selected_facets = request.GET.getlist(
+        'selected_facets') if request.GET.getlist('selected_facets') else []
     page = request.GET.get('page') if request.GET.get('page') else 0
     size = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
@@ -1512,109 +1534,117 @@ def search_videos(request):
     except:
         size = DEFAULT_PER_PAGE
 
-    search_from = page*size
+    search_from = page * size
 
-    ##Filter query
+    # Filter query
     filter_search = {}
     filter_query = ""
     for facet in selected_facets:
-        filter_query += " %s AND" %facet
+        filter_query += " %s AND" % facet
     else:
         filter_query = filter_query[:-3]
 
     if filter_query != "":
         filter_search["query"] = {
-                                    "query_string" : {
-                                        "query" : "%s" %filter_query
-                                    }
-                                }
-    ##filter date range
-    if start_date or end_date :
+            "query_string": {
+                "query": "%s" % filter_query
+            }
+        }
+    # filter date range
+    if start_date or end_date:
         filter_search["range"] = {"date_added": {}}
-        if start_date :
-            filter_search["range"]["date_added"]["gte"] = "%04d-%02d-%02d" %(start_date.year, start_date.month, start_date.day)
-        if end_date :
-            filter_search["range"]["date_added"]["lte"] = "%04d-%02d-%02d" %(end_date.year, end_date.month, end_date.day)
+        if start_date:
+            filter_search["range"]["date_added"][
+                "gte"] = "%04d-%02d-%02d" % (start_date.year, start_date.month, start_date.day)
+        if end_date:
+            filter_search["range"]["date_added"][
+                "lte"] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
 
-    #Query
-    query = {"match_all" : {}}
+    # Query
+    query = {"match_all": {}}
     if search_word != "":
         query = {
-          "multi_match" : {
-            "query":    "%s" %search_word,
-            "fields": [ "_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1",
-                        "contributors^0.6", "chapters.title^0.5", "enrichments.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6"
-                    ]
-          }
+            "multi_match": {
+                "query":    "%s" % search_word,
+                "fields": ["_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1",
+                           "contributors^0.6", "chapters.title^0.5", "enrichments.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6"
+                           ]
+            }
         }
 
-    #bodysearch
+    # bodysearch
     bodysearch = {
-    "from" : search_from,
-    "size" : size,
-    "query":{},
-    "aggs": {},
-    "highlight": {
-        "pre_tags" : ["<strong>"],
-        "post_tags" : ["</strong>"],
-        "fields":{ "title": {} }
+        "from": search_from,
+        "size": size,
+        "query": {},
+        "aggs": {},
+        "highlight": {
+            "pre_tags": ["<strong>"],
+            "post_tags": ["</strong>"],
+            "fields": {"title": {}}
         }
     }
 
-    bodysearch["query"]= {
+    bodysearch["query"] = {
         "function_score": {
             "query": {},
             "functions": [
-              {
-                "gauss": {
-                    "date_added": {
-                          "scale": "10d",
-                          "offset": "5d",
-                          "decay" : 0.5
+                {
+                    "gauss": {
+                        "date_added": {
+                            "scale": "10d",
+                            "offset": "5d",
+                            "decay": 0.5
+                        }
                     }
                 }
-              }
             ]
         }
     }
 
     if filter_search != {}:
-        bodysearch["query"]["function_score"]["query"] = {"filtered":{}}
-        bodysearch["query"]["function_score"]["query"]["filtered"]["query"] = query
-        bodysearch["query"]["function_score"]["query"]["filtered"]["filter"] = filter_search
-    else :
+        bodysearch["query"]["function_score"]["query"] = {"filtered": {}}
+        bodysearch["query"]["function_score"][
+            "query"]["filtered"]["query"] = query
+        bodysearch["query"]["function_score"]["query"][
+            "filtered"]["filter"] = filter_search
+    else:
         bodysearch["query"]["function_score"]["query"] = query
 
     #bodysearch["query"] = query
 
     for attr in aggsAttrs:
-        bodysearch["aggs"][attr.replace(".","_")] = {"terms": {"field": attr+".raw", "size": 5, "order" : { "_count" : "asc" }}}
+        bodysearch["aggs"][attr.replace(".", "_")] = {
+            "terms": {"field": attr + ".raw", "size": 5, "order": {"_count": "asc"}}}
 
-    #add cursus and main_lang 'cursus', 'main_lang',
-    bodysearch["aggs"]['cursus'] = {"terms": {"field": "cursus", "size": 5, "order" : { "_count" : "asc" }}}
-    bodysearch["aggs"]['main_lang'] = {"terms": {"field": "main_lang", "size": 5, "order" : { "_count" : "asc" }}}
-
+    # add cursus and main_lang 'cursus', 'main_lang',
+    bodysearch["aggs"]['cursus'] = {
+        "terms": {"field": "cursus", "size": 5, "order": {"_count": "asc"}}}
+    bodysearch["aggs"]['main_lang'] = {
+        "terms": {"field": "main_lang", "size": 5, "order": {"_count": "asc"}}}
 
     print json.dumps(bodysearch, indent=4)
 
     result = es.search(index="pod", body=bodysearch)
 
-
-    #Pagination mayby better idea ?
+    # Pagination mayby better idea ?
     objects = []
-    for i in range(0,result["hits"]["total"]):
+    for i in range(0, result["hits"]["total"]):
         objects.append(i)
     paginator = Paginator(objects, size)
-    try :
+    try:
         search_pagination = paginator.page(page + 1)
     except:
         search_pagination = paginator.page(paginator.num_pages)
 
     return render_to_response("search/search_video.html",
-                              {"result": result, "page":page, "search_pagination":search_pagination, "form":searchForm},
+                              {"result": result, "page": page,
+                                  "search_pagination": search_pagination, "form": searchForm},
                               context_instance=RequestContext(request))
 
 ####### RECORDER #######
+
+
 @csrf_protect
 @login_required
 @staff_member_required

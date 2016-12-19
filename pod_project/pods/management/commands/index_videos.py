@@ -25,7 +25,8 @@ class Command(BaseCommand):
                 json_data = open('pods/search_template.json')
                 es_template = json.load(json_data)
                 try:
-                    create = es.indices.create(index='pod', body=es_template)  # ignore=[400, 404]
+                    create = es.indices.create(
+                        index='pod', body=es_template)  # ignore=[400, 404]
                 except TransportError as e:
                     # (400, u'IndexAlreadyExistsException[[pod] already exists]')
                     if e.status_code == 400:
@@ -34,14 +35,16 @@ class Command(BaseCommand):
                         print "An error occured during index creation: %s-%s" % (e.status_code, e.error)
                 from pods.views import VIDEOS
                 for pod in VIDEOS:
-                    res = es.index(index="pod", doc_type='pod', id=pod.id, body=pod.get_json_to_index(), refresh=True)
+                    res = es.index(index="pod", doc_type='pod', id=pod.id,
+                                   body=pod.get_json_to_index(), refresh=True)
             else:
                 for pod_id in args:
                     try:
                         pod = Pod.objects.get(pk=int(pod_id))
                     except Pod.DoesNotExist:
                         raise CommandError('Pod "%s" does not exist.' % pod_id)
-                    res = es.index(index="pod", doc_type='pod', id=pod.id, body=pod.get_json_to_index(), refresh=True)
+                    res = es.index(index="pod", doc_type='pod', id=pod.id,
+                                   body=pod.get_json_to_index(), refresh=True)
         else:
             print "******* Warning: you must give some arguments: %s *******" % self.args
 

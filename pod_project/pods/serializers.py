@@ -69,4 +69,3 @@ class ChapterPodsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChapterPods
         exclude = ('slug',)
-
