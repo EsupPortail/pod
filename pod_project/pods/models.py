@@ -561,7 +561,7 @@ class ContributorPods(models.Model):
         ("voice-over", _("voice-over"))
     )
     role = models.CharField(
-        _(u'role'), max_length=200, choices=ROLE_CHOICES, default=_("author"))
+        _(u'role'), max_length=200, choices=ROLE_CHOICES, default="author")
     weblink = models.URLField(
         _(u'Web link'), max_length=200, null=True, blank=True)
 
