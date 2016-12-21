@@ -35,6 +35,8 @@ from django.forms.widgets import HiddenInput
 ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = getattr(
     settings, 'ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS', True)
 
+SHOW_IS_360_IN_FORM_UPLOAD = getattr(
+    settings, 'SHOW_IS_360_IN_FORM_UPLOAD', False)
 
 class ChannelForm(TranslationModelForm):
 
@@ -192,7 +194,11 @@ class PodForm(ModelForm):
 
     class Meta:
         model = Pod
-        fields = '__all__'
+        if SHOW_IS_360_IN_FORM_UPLOAD:
+            fields = '__all__'
+        else:
+            exclude = ('is_360', )
+            
 
 
 class ContributorPodsForm(ModelForm):
