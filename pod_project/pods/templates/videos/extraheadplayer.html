@@ -81,6 +81,9 @@ voir http://www.gnu.org/licenses/
 <script src="{% static 'js/video-chapter-selector.js' %}"></script>
 <script src="{% static 'js/player.js' %}"></script>
 <script>
+    {% if video.is_360 %}
+        is_360 = true;
+    {% endif %}
     {% if video.overview and video.overview.width != None %}
         var overview = '{{ video.overview.url }}';
         var overview_width = {{ video.overview.width }};
