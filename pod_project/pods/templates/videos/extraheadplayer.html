@@ -19,8 +19,17 @@ avec ce programme. Si ce n'est pas le cas,
 voir http://www.gnu.org/licenses/
 {% endcomment %}
 {% load i18n staticfiles %}
-
+<script src="{% static 'video-js/video.js' %}"></script>
 <link href="{% static 'video-js/video-js.min.css' %}" rel="stylesheet" type="text/css" />
+
+{% if video.is_360 %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.js"></script>
+    <script src="{% static 'videojs-panorama/videojs-panorama.v4.min.js' %}"></script>
+    <link href="{% static 'videojs-panorama/videojs-panorama.min.css' %}" rel="stylesheet" type="text/css" />
+{% else %}
+    
+{% endif %}
+
 <style>
     {% if request.GET.is_iframe %}
         .vjs-control.vjs-info-button:before {
@@ -72,6 +81,9 @@ voir http://www.gnu.org/licenses/
 <script src="{% static 'js/video-chapter-selector.js' %}"></script>
 <script src="{% static 'js/player.js' %}"></script>
 <script>
+    {% if video.is_360 %}
+        is_360 = true;
+    {% endif %}
     {% if video.overview and video.overview.width != None %}
         var overview = '{{ video.overview.url }}';
         var overview_width = {{ video.overview.width }};

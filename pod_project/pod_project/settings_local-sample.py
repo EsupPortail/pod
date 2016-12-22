@@ -321,6 +321,14 @@ USE_XHR_FORM_UPLOAD = 1
 #
 ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = 1
 
+##
+# Enable is_360 field in video upload form:
+#
+#   - an integer (activation 1, deactivation 0),
+#   - when activated, the « is_360 » checkbox appears in
+#     video edition form.
+#
+SHOW_IS_360_IN_FORM_UPLOAD = 1
 
 ##
 # Content reporting:

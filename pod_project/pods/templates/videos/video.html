@@ -25,7 +25,7 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{{ video.title }}{% endblock bootstrap3_title %}
 
 {% block bootstrap3_extra_head %}
-    <script src="{% static 'video-js/video.js' %}"></script>
+    
     {% include 'videos/extraheadplayer.html' %}
 <script>
     $(document).on('submit', 'form#video_report_form', function (event) {
