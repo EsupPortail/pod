@@ -2200,8 +2200,8 @@ msgstr "Supprimer le chapitre"
 #: pods/templates/videos/completion/contributor/form_contributor.html:27
 #: pods/templates/videos/completion/download/form_download.html:28
 #: pods/templates/videos/completion/subtitle/form_subtitle.html:28
-msgid "Your form contains errors"
-msgstr "Le formulaire contiens des erreurs."
+msgid "Your form contains errors:"
+msgstr "Le formulaire contient des erreurs :"
 
 #: pods/templates/videos/completion/contributor/form_contributor.html:43
 #: pods/templates/videos/completion/download/form_download.html:44
