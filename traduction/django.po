@@ -2744,6 +2744,10 @@ msgstr ""
 "Vous pouvez ajouter plusieurs fichiers de sous-titre ou de légende pour une "
 "même vidéo (par exemple, vous pouvez sous-titrer en plusieurs langues)."
 
+#: pods/templates/videos/video_completion.html:538
+msgid "Those files must be in “.vtt” format."
+msgstr "Ces fichiers doivent être au format « .vtt »."
+
 #: pods/templates/videos/video_completion.html:524
 msgid ""
 "For this purpose, you will need the URL of your video. This URL is a direct "
