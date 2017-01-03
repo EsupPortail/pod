@@ -1695,15 +1695,15 @@ msgstr "Pistes"
 
 #: pods/models.py:648
 msgid "please enter a correct kind."
-msgstr "Veuillez renseigner le type de piste."
+msgstr "veuillez renseigner le type de piste."
 
 #: pods/models.py:650
 msgid "please enter a correct lang."
-msgstr "Veuillez renseigner une langue."
+msgstr "veuillez renseigner une langue."
 
 #: pods/models.py:652
 msgid "please specify a track file."
-msgstr "Veuillez spécifier un fichier de sous-titre ou de légende."
+msgstr "veuillez spécifier un fichier de sous-titre ou de légende."
 
 #: pods/models.py:654
 msgid "only “.vtt” format is allowed."
@@ -1712,7 +1712,7 @@ msgstr "seul le format « .vtt » est autorisé."
 #: pods/models.py:667
 msgid ""
 "there is already a subtitle with the same kind and language in the list."
-msgstr "Un sous-titrage de même nature et de même langue existe déjà."
+msgstr "un sous-titrage de même nature et de même langue existe déjà."
 
 #: pods/models.py:684
 msgid "Document Pod"
@@ -2677,6 +2677,10 @@ msgstr "Veuillez sélectionner une langue."
 #: pods/templates/videos/video_completion.html:393
 msgid "Please specify a track file."
 msgstr "Veuillez indiquer un fichier de sous-titre ou de légende."
+
+#: pods/templates/videos/video_completion.html:398
+msgid "Only “.vtt” format is allowed."
+msgstr "Seul le format « .vtt » est autorisé."
 
 #: pods/templates/videos/video_completion.html:402
 msgid ""

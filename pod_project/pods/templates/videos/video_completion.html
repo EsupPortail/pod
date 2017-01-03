@@ -393,6 +393,11 @@ function verify_fields(form){
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please specify a track file.' %} </span>")
             .parents('div.form-group').addClass('has-error');
         }
+        if(document.getElementById("id_src_description_txt").innerText.split('.').pop() != "vtt" ){
+            $("input#id_src")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Only “.vtt” format is allowed.' %} </span>")
+            .parents('div.form-group').addClass('has-error');
+        }
         var kind = document.getElementById("id_kind").value;
         var lang = document.getElementById("id_lang").value;
         var id = parseInt(document.getElementById("id_subtitle").value);
