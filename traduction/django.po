@@ -1705,6 +1705,10 @@ msgstr "Veuillez renseigner une langue."
 msgid "please specify a track file."
 msgstr "Veuillez spécifier un fichier de sous-titre ou de légende."
 
+#: pods/models.py:654
+msgid "only “.vtt” format is allowed."
+msgstr "seul le format « .vtt » est autorisé."
+
 #: pods/models.py:667
 msgid ""
 "there is already a subtitle with the same kind and language in the list."
