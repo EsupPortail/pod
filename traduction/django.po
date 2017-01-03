@@ -2756,7 +2756,7 @@ msgid ""
 msgstr ""
 "Sur ce site, vous aurez besoin de l'URL de votre vidéo. Vous la trouverez ci-"
 "dessous. Veuillez noter que cette URL est un accès direct à votre vidéo. "
-"Eviter de la communiquer en dehors de ce site pour éviter tout "
+"Evitez de la communiquer en dehors de ce site pour éviter tout "
 "téléchargement et utilisation abusive."
 
 #: pods/templates/videos/video_completion.html:528
