@@ -651,6 +651,8 @@ class TrackPods(models.Model):
             msg.append(_('please enter a correct lang.'))
         if not self.src:
             msg.append(_('please specify a track file.'))
+        if not str(self.src).lower().endswith('.vtt'):
+            msg.append(_('only “.vtt” format is allowed.'))
         if (len(msg) > 0):
             return msg
         else:
