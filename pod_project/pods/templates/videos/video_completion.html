@@ -382,23 +382,23 @@ function verify_fields(form){
             value = element.options[element.selectedIndex].value;
         if(value != "subtitles" && value != "captions"){
             $("select#id_kind")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct kind.' %} </span>")
+            .after("<span class='form-help-inline'>{% trans 'Please enter a correct kind.' %}</span>")
             .parents('div.form-group').addClass('has-error');
         }
         var element = document.getElementById("id_lang");
         if(element.options[element.selectedIndex].value == "" ){
             $("select#id_lang")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please select a language.' %} </span>")
+            .after("<span class='form-help-inline'>{% trans 'Please select a language.' %}</span>")
             .parents('div.form-group').addClass('has-error');
         }
         if(document.getElementById("id_src").value == "" ){
             $("input#id_src")
-            .before("<br><span class='form-help-inline'>{% trans 'Please specify a track file.' %}</span>")
+            .after("<br><span class='form-help-inline'>{% trans 'Please specify a track file.' %}</span>")
             .parents('div.form-group').addClass('has-error');
         }
         if(document.getElementById("id_src_description_txt").innerText.split('.').pop() != "vtt" ){
             $("input#id_src")
-            .before("<br><span class='form-help-inline'>{% trans 'Only “.vtt” format is allowed.' %}</span>")
+            .after("<br><span class='form-help-inline'>{% trans 'Only “.vtt” format is allowed.' %}</span>")
             .parents('div.form-group').addClass('has-error');
         }
         var kind = document.getElementById("id_kind").value;
