@@ -380,7 +380,7 @@ function verify_fields(form){
     }else if(form == "form_subtitle"){
         var element = document.getElementById("id_kind"),
             value = element.options[element.selectedIndex].value;
-        if( value == "" || (value != "subtitles" && value != "captions")){
+        if(value != "subtitles" && value != "captions"){
             $("select#id_kind")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct kind.' %} </span>")
             .parents('div.form-group').addClass('has-error');
