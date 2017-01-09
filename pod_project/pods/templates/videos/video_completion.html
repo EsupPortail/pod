@@ -378,8 +378,10 @@ function verify_fields(form){
             }
         });
     }else if(form == "form_subtitle"){
-        if(document.getElementById("id_kind").value == "" || (document.getElementById("id_kind").value !="subtitles" && document.getElementById("id_kind").value !="captions")){
-            $("input#id_kind")
+        var element = document.getElementById("id_kind"),
+            value = element.options[element.selectedIndex].value;
+        if( value == "" || (value != "subtitles" && value != "captions")){
+            $("select#id_kind")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct kind.' %} </span>")
             .parents('div.form-group').addClass('has-error');
         }
