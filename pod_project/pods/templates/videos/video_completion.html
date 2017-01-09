@@ -383,8 +383,9 @@ function verify_fields(form){
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct kind.' %} </span>")
             .parents('div.form-group').addClass('has-error');
         }
-        if(document.getElementById("id_lang").value == "" ){
-            $("input#id_lang")
+        var element = document.getElementById("id_lang");
+        if(element.options[element.selectedIndex].value == "" ){
+            $("select#id_lang")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please select a language.' %} </span>")
             .parents('div.form-group').addClass('has-error');
         }
