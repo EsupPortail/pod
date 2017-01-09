@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-09 18:45+0100\n"
-"PO-Revision-Date: 2017-01-09 18:52+0100\n"
+"PO-Revision-Date: 2017-01-09 18:58+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -927,7 +927,7 @@ msgstr ""
 
 #: pod_project/ISOLanguageCodes.py:32 pod_project/ISOLanguageCodes.py:160
 msgid "Chinese"
-msgstr ""
+msgstr "Chinois"
 
 #: pod_project/ISOLanguageCodes.py:33
 msgid "Corsican"
