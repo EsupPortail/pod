@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-03 17:05+0100\n"
-"PO-Revision-Date: 2017-01-03 17:10+0100\n"
+"POT-Creation-Date: 2017-01-09 18:45+0100\n"
+"PO-Revision-Date: 2017-01-09 18:58+0100\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -505,7 +505,7 @@ msgstr "Enregistrer"
 #: pods/templates/channels/my_channels.html:76
 #: pods/templates/videos/my_videos.html:64
 #: pods/templates/videos/video_chapter.html:378
-#: pods/templates/videos/video_completion.html:533
+#: pods/templates/videos/video_completion.html:540
 #: pods/templates/videos/video_enrich.html:491
 msgid "Information"
 msgstr "Information"
@@ -927,7 +927,7 @@ msgstr ""
 
 #: pod_project/ISOLanguageCodes.py:32 pod_project/ISOLanguageCodes.py:160
 msgid "Chinese"
-msgstr ""
+msgstr "Chinois"
 
 #: pod_project/ISOLanguageCodes.py:33
 msgid "Corsican"
@@ -1825,7 +1825,7 @@ msgstr "Veuillez renseigner un texte."
 msgid "Please enter a correct weblink."
 msgstr "Veuillez renseigner un lien internet."
 
-#: pods/models.py:819 pods/templates/videos/video_completion.html:415
+#: pods/models.py:819 pods/templates/videos/video_completion.html:422
 #: pods/templates/videos/video_enrich.html:372
 msgid "Please select a document."
 msgstr "Veuillez sélectionner un document."
@@ -2097,7 +2097,7 @@ msgstr "Ajouter un nouvel enregistrement"
 #: pods/templates/videos/my_videos.html:32
 #: pods/templates/videos/my_videos.html:43
 #: pods/templates/videos/video_chapter.html:332
-#: pods/templates/videos/video_completion.html:445
+#: pods/templates/videos/video_completion.html:452
 #: pods/templates/videos/video_delete.html:35
 #: pods/templates/videos/video_edit.html:273
 #: pods/templates/videos/video_enrich.html:445
@@ -2499,7 +2499,7 @@ msgstr "Vous devez être connecté pour prendre des notes."
 
 #: pods/templates/videos/video.html:495
 #: pods/templates/videos/video_chapter.html:370
-#: pods/templates/videos/video_completion.html:525
+#: pods/templates/videos/video_completion.html:532
 #: pods/templates/videos/video_enrich.html:483
 msgid "Edit the video"
 msgstr "Modifier la vidéo"
@@ -2606,8 +2606,8 @@ msgid "You must save your chapters to view the result."
 msgstr "Vous devez sauvegarder pour visualiser le résultat."
 
 #: pods/templates/videos/video_completion.html:29
-#: pods/templates/videos/video_completion.html:434
-#: pods/templates/videos/video_completion.html:446
+#: pods/templates/videos/video_completion.html:441
+#: pods/templates/videos/video_completion.html:453
 msgid "Completion video"
 msgstr "Complétion de la vidéo "
 
@@ -2668,69 +2668,69 @@ msgid ""
 "There is already a contributor with this same name and role in the list."
 msgstr "il y a déjà un contributeur avec le même nom et le même rôle."
 
-#: pods/templates/videos/video_completion.html:383
+#: pods/templates/videos/video_completion.html:386
 msgid "Please enter a correct kind."
 msgstr "Veuillez renseigner le type de piste (sous-titre ou légende)."
 
-#: pods/templates/videos/video_completion.html:388
+#: pods/templates/videos/video_completion.html:393
 msgid "Please select a language."
 msgstr "Veuillez sélectionner une langue."
 
-#: pods/templates/videos/video_completion.html:393
+#: pods/templates/videos/video_completion.html:398
 msgid "Please specify a track file."
 msgstr "Veuillez indiquer un fichier de sous-titre ou de légende."
 
-#: pods/templates/videos/video_completion.html:398
+#: pods/templates/videos/video_completion.html:403
 msgid "Only “.vtt” format is allowed."
 msgstr "Seul le format « .vtt » est autorisé."
 
-#: pods/templates/videos/video_completion.html:407
+#: pods/templates/videos/video_completion.html:415
 msgid ""
-"There is already a subtitle with this same kind and language in the list."
-msgstr "il y a déjà un fichier de même type et de même langue"
+"There is already a subtitle with the same kind and language in the list."
+msgstr "Un sous-titrage de même nature et de même langue existe déjà."
 
-#: pods/templates/videos/video_completion.html:422
+#: pods/templates/videos/video_completion.html:429
 msgid ""
 "There is already a download with this same name of document in the list."
 msgstr "Il y a déjà un document à télécharger portant le même nom."
 
-#: pods/templates/videos/video_completion.html:455
+#: pods/templates/videos/video_completion.html:462
 msgid "Display &quot;Contributor(s)&quot; section"
 msgstr "Afficher la section des contributeurs"
 
-#: pods/templates/videos/video_completion.html:456
+#: pods/templates/videos/video_completion.html:463
 msgid "Contributor(s)"
 msgstr "Contributeurs"
 
-#: pods/templates/videos/video_completion.html:474
+#: pods/templates/videos/video_completion.html:481
 msgid "Add a new contributor"
 msgstr "Ajouter un nouveau contributeur"
 
-#: pods/templates/videos/video_completion.html:479
+#: pods/templates/videos/video_completion.html:486
 msgid "Display &quot;Subtitle(s) and Captions(s) &quot; section"
 msgstr "Afficher la section de sous-titre ou de légende"
 
-#: pods/templates/videos/video_completion.html:479
+#: pods/templates/videos/video_completion.html:486
 msgid "Subtitle(s) and caption(s)"
 msgstr "Sous-titre(s) et légende(s)"
 
-#: pods/templates/videos/video_completion.html:495
+#: pods/templates/videos/video_completion.html:502
 msgid "Add a new subtitle or caption file"
 msgstr "Ajouter un nouveau fichier de sous-titre ou de légende"
 
-#: pods/templates/videos/video_completion.html:499
+#: pods/templates/videos/video_completion.html:506
 msgid "Display &quot; Additional resource(s)&quot; section"
 msgstr "Afficher la section documents complémentaires"
 
-#: pods/templates/videos/video_completion.html:499
+#: pods/templates/videos/video_completion.html:506
 msgid "Additional resource(s)"
 msgstr "Document(s) complémentaire(s)"
 
-#: pods/templates/videos/video_completion.html:514
+#: pods/templates/videos/video_completion.html:521
 msgid "Add a new additional resource"
 msgstr "Ajouter un nouveau document à télécharger"
 
-#: pods/templates/videos/video_completion.html:536
+#: pods/templates/videos/video_completion.html:543
 msgid ""
 "Several web sites allows you to subtitle or caption videos (for example: "
 "Amara)."
@@ -2738,7 +2738,7 @@ msgstr ""
 "Plusieurs sites Web offrent des outils pour sous-titrer ou légender des "
 "vidéos (Par exemple : Amara)."
 
-#: pods/templates/videos/video_completion.html:537
+#: pods/templates/videos/video_completion.html:544
 msgid ""
 "You can add several subtitle or caption files to a single video (for "
 "example, in order to subtitle or caption this video in several languages)."
@@ -2746,11 +2746,11 @@ msgstr ""
 "Vous pouvez ajouter plusieurs fichiers de sous-titre ou de légende pour une "
 "même vidéo (par exemple, vous pouvez sous-titrer en plusieurs langues)."
 
-#: pods/templates/videos/video_completion.html:538
+#: pods/templates/videos/video_completion.html:545
 msgid "Those files must be in “.vtt” format."
 msgstr "Ces fichiers doivent être au format « .vtt »."
 
-#: pods/templates/videos/video_completion.html:539
+#: pods/templates/videos/video_completion.html:546
 msgid ""
 "For this purpose, you will need the URL of your video. This URL is a direct "
 "access to this video. Please do not communicate it outside of this site in "
@@ -2761,7 +2761,7 @@ msgstr ""
 "Evitez de la communiquer en dehors de ce site pour éviter tout "
 "téléchargement et utilisation abusive."
 
-#: pods/templates/videos/video_completion.html:543
+#: pods/templates/videos/video_completion.html:550
 msgid ""
 "Your current permissions do not allow you to add subtitle files or documents "
 "to download videos. Please contact us to add these rights."

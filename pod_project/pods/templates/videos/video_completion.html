@@ -378,37 +378,44 @@ function verify_fields(form){
             }
         });
     }else if(form == "form_subtitle"){
-        if(document.getElementById("id_kind").value == "" || (document.getElementById("id_kind").value !="subtitles" && document.getElementById("id_kind").value !="captions")){
-            $("input#id_kind")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct kind.' %} </span>")
+        var element = document.getElementById("id_kind"),
+            value = element.options[element.selectedIndex].value,
+            kind = element.options[element.selectedIndex].text;
+        if(value != "subtitles" && value != "captions"){
+            $("select#id_kind")
+            .after("<span class='form-help-inline'>{% trans 'Please enter a correct kind.' %}</span>")
             .parents('div.form-group').addClass('has-error');
         }
-        if(document.getElementById("id_lang").value == "" ){
-            $("input#id_lang")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please select a language.' %} </span>")
+        var element = document.getElementById("id_lang"),
+            lang = element.options[element.selectedIndex].text;
+        if(element.options[element.selectedIndex].value == ""){
+            $("select#id_lang")
+            .after("<span class='form-help-inline'>{% trans 'Please select a language.' %}</span>")
             .parents('div.form-group').addClass('has-error');
         }
-        if(document.getElementById("id_src").value == "" ){
+        if(document.getElementById("id_src").value == ""){
             $("input#id_src")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please specify a track file.' %} </span>")
+            .after("<br><span class='form-help-inline'>{% trans 'Please specify a track file.' %}</span>")
             .parents('div.form-group').addClass('has-error');
         }
-        if(document.getElementById("id_src_description_txt").innerText.split('.').pop() != "vtt" ){
+        if(document.getElementById("id_src_description_txt").innerText.split('.').pop() != "vtt"){
             $("input#id_src")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Only “.vtt” format is allowed.' %} </span>")
+            .after("<br><span class='form-help-inline'>{% trans 'Only “.vtt” format is allowed.' %}</span>")
             .parents('div.form-group').addClass('has-error');
         }
-        var kind = document.getElementById("id_kind").value;
-        var lang = document.getElementById("id_lang").value;
-        var id = parseInt(document.getElementById("id_subtitle").value);
-        var msg = "";
-        $('#table_list_subtitles tbody > tr').each(function() {
-            if (id != $(this).find('input[name=id]')[0].value && kind == $(this).find('td[class=subtitle_kind]')[0].innerHTML && lang == $(this).find('td[class=subtitle_lang]')[0].innerHTML) {
-                var text = "{% trans 'There is already a subtitle with this same kind and language in the list.' %}.";
-                msg+="<br/>"+ text ;
-                return msg;
+        var isDuplicate = false;
+        $('#table_list_subtitles > tbody > tr').each(function() {
+            if (kind == $(this).find('td.subtitle_kind').text() && lang == $(this).find('td.subtitle_lang').text()) {
+                isDuplicate = true;
+                return false;
             }
         });
+        if ( isDuplicate ) {
+            $("input#id_src")
+            .after("<br><span class='form-help-inline'>{% trans 'There is already a subtitle with the same kind and language in the list.' %}</span>")
+            .parents('div.form-group').addClass('has-error');
+        }
+
     }else if(form == "form_download"){
         if($("img#id_document_thumbnail_img").attr('src') == "/static/filer/icons/nofile_48x48.png" ){
             $("img#id_document_thumbnail_img")
