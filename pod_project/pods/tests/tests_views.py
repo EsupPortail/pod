@@ -1244,7 +1244,7 @@ class Video_completion_TestView(TestCase):
         folder, created = Folder.objects.get_or_create(
             name="remi", owner=pod.owner, level=0)
         upc_document, created = Image.objects.get_or_create(
-            folder=folder, name="test")
+            folder=folder, name="test.vtt")
         upc_document, created = Image.objects.get_or_create(
             folder=folder, name="test2")
 
