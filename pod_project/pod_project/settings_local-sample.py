@@ -396,3 +396,9 @@ RECORDER_SALT = 'a.string.used.as.salt'
 # Optional settings for test:
 #   if set it's used for download and encoding test
 # HTTP_PROXY = 'http://localhost:3128/'
+
+# Encode with Celery
+CELERY_TO_ENCODE = False
+CELERY_NAME = "pod_project"
+CELERY_BACKEND = "amqp"
+CELERY_BROKER = "amqp://guest@localhost//"
