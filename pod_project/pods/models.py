@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 Copyright (C) 2014 Nicolas Can
@@ -33,7 +34,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, post_delete
 from django.contrib.sites.shortcuts import get_current_site
 from elasticsearch import Elasticsearch
 # django-taggit
@@ -47,6 +48,7 @@ import unicodedata
 import json
 
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
+REMOVE_VIDEO_FILE_SOURCE_ON_DELETE = getattr(settings, 'REMOVE_VIDEO_FILE_SOURCE_ON_DELETE', True)
 
 
 # gloabl function to remove accent, use in tags
@@ -401,6 +403,10 @@ class Pod(Video):
         for encoding in self.encodingpods_set.all():
             if encoding.encodingFile:
                 encoding.encodingFile.delete()
+        
+        # on supprime le fichier source
+        if REMOVE_VIDEO_FILE_SOURCE_ON_DELETE:
+            self.video.delete()
         super(Pod, self).delete()
 
     def is_richmedia(self):
@@ -500,6 +506,22 @@ def update_video_index(sender, instance=None, created=False, **kwargs):
         else:
             delete = es.delete(
                 index="pod", doc_type='pod', id=pod.id, refresh=True, ignore=[400, 404])
+
+@receiver(post_delete)  # instead of @receiver(post_save, sender=Rebel)
+def update_es_index(sender, instance=None, created=False, **kwargs):
+    print "POST DELETE"
+    list_of_models = ('ChapterPods', 'EnrichPods', 'ContributorPods', 'Pod')
+    if sender.__name__ in list_of_models:  # this is the dynamic part you want
+        pod = None
+        es = Elasticsearch(ES_URL)
+        if sender.__name__ == "Pod":
+            pod = instance
+            delete = es.delete(
+                index="pod", doc_type='pod', id=pod.id, refresh=True, ignore=[400, 404])
+        else:
+            pod = instance.video
+            res = es.index(index="pod", doc_type='pod', id=pod.id,
+                           body=pod.get_json_to_index(), refresh=True)
 
 
 @python_2_unicode_compatible

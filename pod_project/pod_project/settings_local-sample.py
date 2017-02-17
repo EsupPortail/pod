@@ -331,6 +331,14 @@ ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = 1
 SHOW_IS_360_IN_FORM_UPLOAD = 1
 
 ##
+# REMOVE VIDEO SOURCE FILE ON DELETE:
+#
+#   - True or false, default is True
+#   - when true, the video file uploaded is removed when video was deleted
+#
+REMOVE_VIDEO_FILE_SOURCE_ON_DELETE = True
+
+##
 # Content reporting:
 #
 #   shows a button with a « flag » picto near the video title
