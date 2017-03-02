@@ -1412,6 +1412,42 @@ def video_enrich(request, slug):
                                   'list_enrichment': list_enrichment},
                               context_instance=RequestContext(request))
 
+@csrf_protect
+@login_required
+@staff_member_required
+def video_interactive(request, slug):
+  video = get_object_or_404(Pod, slug=slug)
+  # Add this to improve folder selection and view list
+  if not request.session.get('filer_last_folder_id'):
+    from filer.models import Folder
+    folder = Folder.objects.get(
+      owner=request.user, name=request.user.username)
+    request.session['filer_last_folder_id'] = folder.id
+
+  if request.user != video.owner and not request.user.is_superuser:
+    messages.add_message(
+      request, messages.ERROR, _(u'You cannot add interactivity to this video.'))
+    raise PermissionDenied
+  
+  if 'h5pp' in settings.INSTALLED_APPS:
+    from h5pp.models import h5p_contents
+    interactive = h5p_contents.objects.filter(slug=slug).values()
+    if len(interactive) > 0:
+      return render_to_response('videos/video_interactive.html',
+				{'video': video,
+				'contentId': interactive[0]['content_id'],
+				'slug': slug},
+				context_instance=RequestContext(request))
+    
+    return render_to_response('videos/video_interactive.html',
+			      {'video': video,
+			      'slug': slug},
+			      context_instance=RequestContext(request))
+
+  else:
+    messages.add_message(
+      request, messages.ERROR, _(u'Interactive video is not available in this server.'))
+    raise PermissionDenied
 
 @csrf_protect
 @login_required

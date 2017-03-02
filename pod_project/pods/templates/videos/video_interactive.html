@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2015 Remi Kroll et Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure.
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+
+{% load i18n %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+
+{% block bootstrap3_title%}
+{{video.title}}
+{% endblock bootstrap3_title%}
+
+{% block bootstrap3_extra_head %}
+<script src="{% static 'admin/js/jquery.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
+{% endblock bootstrap3_extra_head %}
+
+{% block article_title %}Interactive Video {{video.title}}{% endblock %}
+
+{% block mainToolbar %}
+{% endblock mainToolbar %}
+
+{% block bootstrap3_content %}
+<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+    <div class="row" id="info_video">
+        <div class="col-sm-9">
+	    {% if contentId %}
+	      <iframe src="{% url "h5pcontent" %}?contentId={{contentId}}&slug={{slug}}" style="background: white;" height="600" width="850" frameBorder="0"></iframe>
+            {% else %}
+            <iframe src="{% url "h5pcreate" %}?slug={{slug}}" style="background: white;" height="600" width="850" frameBorder="0"></iframe>
+	    {% endif %}
+        </div>
+        <aside class="col-sm-3 panel panel-info">
+                <div class="widget user-tools">
+                    <h4>
+                        <span class="glyphicon glyphicon-wrench"></span>
+                        {% trans 'Edit the video' %}
+                    </h4>
+                    {% include 'videos/ownertools.html' with video=video %}
+                </div>
+                <div class="widget">
+                    <h4>
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        {% trans 'Information' %}
+                    </h4>
+		      <p>Link for the current video :</p>
+		      <input maxlength="250" value="http://{{ request.get_host }}{{ video.get_MP4_240_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
+                </div>
+        </aside>
+    </div>
+</article>
+{% endblock bootstrap3_content %}
+{% block box %}{% endblock box %}
