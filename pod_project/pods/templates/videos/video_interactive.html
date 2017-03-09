@@ -83,7 +83,7 @@ voir http://www.gnu.org/licenses/
         <div class="col-sm-9">
 	    {% if contentId %}
 	        <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{contentId}}" style="background: white;" height="700" width="850" frameBorder="0"></iframe>
-            <iframe id="iedit" src="{% url "h5pedit" contentId=contentId %}" style="background: white;display: none" height="700" width="850" frameBorder="0"></iframe>
+            <iframe id="iedit" src="{% url "h5pedit" contentId=contentId %}?title={{video.title}}" style="background: white;display: none" height="700" width="850" frameBorder="0"></iframe>
             <input type="button" value="Edit" onclick="edit()" id="editbutton">
             <input type="button" value="Show" onclick="video()" id="showbutton" style="display: none;">
         {% else %}
