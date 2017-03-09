@@ -34,12 +34,6 @@ voir http://www.gnu.org/licenses/
 <script src="{% static 'admin/js/jquery.init.js' %}"></script>
 <script>
     {% if contentId %}
-    $(function() {
-        var f = $('#icontent');
-        f.load(function() {
-            f.contents().find('form input').hide();
-        });
-    });
     function edit() {
         $('#icontent').hide();
         $('#iedit').show();
@@ -82,7 +76,7 @@ voir http://www.gnu.org/licenses/
     <div class="row" id="info_video">
         <div class="col-sm-9">
 	    {% if contentId %}
-	        <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{contentId}}" style="background: white;" height="700" width="850" frameBorder="0"></iframe>
+	        <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{contentId}}" style="background: white;" height="700" width="850" frameBorder="0" allowfullscreen="allowfullscreen"></iframe>
             <iframe id="iedit" src="{% url "h5pedit" contentId=contentId %}?title={{video.title}}" style="background: white;display: none" height="700" width="850" frameBorder="0"></iframe>
             <input type="button" value="Edit" onclick="edit()" id="editbutton">
             <input type="button" value="Show" onclick="video()" id="showbutton" style="display: none;">
@@ -103,8 +97,10 @@ voir http://www.gnu.org/licenses/
                         <span class="glyphicon glyphicon-info-sign"></span>
                         {% trans 'Information' %}
                     </h4>
-		      <p>Link for the current video :</p>
-		      <input maxlength="250" value="http://{{ request.get_host }}{{ video.get_MP4_240_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
+		            <p>Link for the current video :</p>
+		            <input maxlength="250" value="http://{{ request.get_host }}{{ video.get_MP4_240_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
+                    <p>Embed code for the current video:</p>
+                    <input maxlength="250" value='<iframe src="http://{{request.get_host}}{% url "h5pcontent" %}?contentId={{contentId}}" width="668" height="440" frameborder="0" allowfullscreen="allowfullscreen"></iframe>' type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
                 </div>
         </aside>
     </div>
