@@ -50,8 +50,8 @@ import_data/
 pod_project/media/
 *pods/fixtures/
 ## Lang files
-locale/
-*.mo
+#locale/
+#*.mo
 ## Others
 jwplayer/
 pod_project/static/
