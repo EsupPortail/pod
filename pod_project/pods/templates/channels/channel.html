@@ -85,7 +85,8 @@ voir http://www.gnu.org/licenses/
             {% if videos %}
                 <div class="results">
                     {% blocktrans count counter=videos.paginator.count %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}
-                </div>
+		    <a href="http://pod-test.univ.run:8080/rss/{{ param }}/" title="Click to suscribe to RSS feed">RSS</a>
+		</div>
             {% endif %}
             {% if user.is_authenticated and request.user in channel.owners.all%}
                 <div class="resultschannel">

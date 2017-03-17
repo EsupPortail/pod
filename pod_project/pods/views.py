@@ -27,7 +27,9 @@ from pods.forms import MediacoursesForm
 from pods.forms import EnrichPodsForm
 from pods.forms import SearchForm
 from pods.models import *
+from pods.utils_rssfeed import MySelectFeed
 from django.contrib import messages
+
 # Replaced to allow JSON serialization of localized messages.
 from django.utils.translation import ugettext as _
 # from django.utils.translation import ugettext_lazy as _
@@ -120,9 +122,12 @@ def channel(request, slug_c, slug_t=None):
 
     videos_list = VIDEOS.filter(channel=channel)
 
+    param = "channel=%s" % (slug_c,)
+
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
         videos_list = videos_list.filter(theme=theme)
+	param = "channel=%s&theme=%s" % (slug_c, slug_t.encode('utf8'))
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
         'orderby') else "order_by_-date_added"
@@ -138,18 +143,20 @@ def channel(request, slug_c, slug_t=None):
     videos = get_pagination(page, paginator)
 
     if request.is_ajax():
+	print("AJAX")
         return render_to_response("videos/videos_list.html",
-                                  {"videos": videos},
+                                  {"videos": videos, "param": param},
                                   context_instance=RequestContext(request))
 
     if request.GET.get('is_iframe', None):
+        print ("IFRAME")
         return render_to_response("videos/videos_iframe.html",
-                                  {"videos": videos},
+                                  {"videos": videos, "param": param},
                                   context_instance=RequestContext(request))
 
     return render_to_response("channels/channel.html",
                               {"channel": channel, "theme": theme,
-                                  "videos": videos},
+				  "param": param, "videos": videos},
                               context_instance=RequestContext(request))
 
 
@@ -321,6 +328,13 @@ def favorites_videos_list(request):
         'orderby') else "order_by_-date_added"
     videos_list = videos_list.order_by(
         "%s" % replace(order_by, "order_by_", ""))
+    
+    #RSS feed
+    param = "favorites=true"
+    #if rss:
+        # traitement pour générer un flux rss
+    #    rss=True
+	#MySelectFeed()
 
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
@@ -333,7 +347,7 @@ def favorites_videos_list(request):
                                   context_instance=RequestContext(request))
 
     return render_to_response("favorites/my_favorites.html",
-                              {"videos": videos},
+                              {"videos": videos, "param": param},
                               context_instance=RequestContext(request))
 
 
@@ -341,32 +355,61 @@ def videos(request):
     videos_list = VIDEOS
     is_iframe = request.GET.get('is_iframe', None)
 
+    param = None
+
     # type
     type = request.GET.getlist(
         'type') if request.GET.getlist('type') else None
+    utype = []
     if type:
+        for t in type:
+	    print t
+	    utype.append(t.encode('utf8'))
         videos_list = videos_list.filter(type__slug__in=type)
+	param = "type=%s" % (utype,)
 
     # discipline
+    udiscipline = []
     discipline = request.GET.getlist(
         'discipline') if request.GET.getlist('discipline') else None
     if discipline:
         videos_list = videos_list.filter(discipline__slug__in=discipline)
+	for d in discipline:
+	    udiscipline.append(d.encode('utf8'))
+	if param:
+	    param = param + " discipline=%s" % (udiscipline,)
+	    #param = param + " discipline=%s" % (discipline.encode('utf8'),)
+	else:
+	    param = "discipline=%s" % (udiscipline,)
+    print(param)
 
     # owner
     owner = request.GET.getlist(
         'owner') if request.GET.getlist('owner') else None
     list_owner = None
     if owner:
+        uowner = []
+        for o in owner:
+	    uowner.append(o.encode('utf8'))
         videos_list = videos_list.filter(owner__username__in=owner)
         if not is_iframe:
             list_owner = User.objects.filter(username__in=owner)
-
+	if param:
+	    param = param + " owner=%s" % (uowner,)
+	else:
+	    param = "owner%s" % (uowner,)
     # tags
     tag = request.GET.getlist(
         'tag') if request.GET.getlist('tag') else None
     if tag:
+        utag = []
+	for g in tag:
+	    utag.append(g.encode('utf8'))
         videos_list = videos_list.filter(tags__slug__in=tag).distinct()
+	if param:
+	    param = param + " tag=%s" % (utag,)
+	else:
+	    param = "tag=%s" % (utag,)
     # Food.objects.filter(tags__name__in=["delicious", "red"]).distinct()
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
@@ -395,7 +438,7 @@ def videos(request):
 
     return render_to_response("videos/videos.html",
                               {"videos": videos, "types": type, "owners": list_owner,
-                                  "disciplines": discipline, "tags_slug": tag},
+                                  "disciplines": discipline, "tags_slug": tag, "param": param},
                               context_instance=RequestContext(request))
 
 
@@ -407,13 +450,15 @@ def video(request, slug, slug_c=None, slug_t=None):
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Pod, id=id)
     show_report = getattr(settings, 'SHOW_REPORT', False)
+    param = None
     channel = None
     if slug_c:
         channel = get_object_or_404(Channel, slug=slug_c)
+	param = "slug_c=%s" % (str(slug_c),)
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
-
+	param = param + "slug_t=%s" % (str(slug_t),)
     if video.is_draft:
         if not request.user.is_authenticated():
             return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
@@ -492,7 +537,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         else:
             return render_to_response(
                 'videos/video.html',
-                {'video': video, 'channel': channel, 'theme': theme,
+                {'video': video, 'channel': channel, 'param': param, 'theme': theme,
                     'notes_form': notes_form, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
@@ -501,7 +546,7 @@ def video(request, slug, slug_c=None, slug_t=None):
     else:
         return render_to_response(
             'videos/video.html',
-            {'video': video, 'channel': channel,
+            {'video': video, 'channel': channel, 'param': param,
                 'theme': theme, 'show_report': show_report},
             context_instance=RequestContext(request)
         )
