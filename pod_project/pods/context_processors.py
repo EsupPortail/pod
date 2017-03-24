@@ -6,7 +6,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -31,5 +31,5 @@ def items_menu_header(request):
         'TYPES': Type.objects.all(),
         'DISCIPLINES': Discipline.objects.all(),
         # User.objects.all()
-        'OWNERS': User.objects.filter(pod__in=Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()).order_by('last_name').distinct()
+        'OWNERS': User.objects.filter(pod__in=Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()).order_by('last_name').distinct().prefetch_related("userprofile")
     }

@@ -153,9 +153,10 @@ def pagination(context, cl, index=1):
 @register.simple_tag()
 def user_menu(filter, queryset_user):
     html = ""
-    for user in queryset_user.filter(last_name__iregex=r'^%s+' % filter):
+    for user in queryset_user.filter(last_name__iregex=r'^%s+' % filter).prefetch_related('pod_set'):
+        pod_set_count = len({ p for p in user.pod_set.all() if p.is_draft == False })
         html += "<li class=\"subItem\"><a href=\"%s%s\">%s %s (%s)</a></li>" % (reverse(
-            'videos'), "?owner=%s" % user.username, user.last_name, user.first_name, user.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count())
+            'videos'), "?owner=%s" % user.username, user.last_name, user.first_name, pod_set_count)
     return html
 
 
