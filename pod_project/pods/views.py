@@ -235,11 +235,11 @@ def types(request):
 
 
 def owners(request):
-    owners_list = User.objects.filter(pod__in=VIDEOS).order_by(
+    owners_list = User.objects.filter(pod__is_draft=False, pod__encodingpods__gt=0).order_by(
         'last_name').distinct().annotate(video_count=Count(Case(
             When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
             output_field=IntegerField(),
-        )))
+        ))).prefetch_related("userprofile")
     owners_filter = request.GET.get(
         'owners_filter') if request.GET.get('owners_filter') else None
     if owners_filter:

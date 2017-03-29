@@ -47,6 +47,9 @@ def items_menu_header(request):
             output_field=IntegerField(),
         ))),
         'OWNERS': User.objects.filter(
-            pod__in=Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
-        ).order_by('last_name').distinct().prefetch_related("userprofile")
+            pod__is_draft=False, pod__encodingpods__gt=0
+        ).order_by('last_name').annotate(
+            video_count=Count(Case(
+                When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
+                output_field=IntegerField()))).prefetch_related("userprofile")
     }
