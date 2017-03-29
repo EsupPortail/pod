@@ -46,7 +46,7 @@ from django.utils import formats
 from django.utils.http import urlquote
 from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.shortcuts import get_current_site
-
+from django.db.models import Count, Case, When, IntegerField
 import simplejson as json
 
 from django.core.servers.basehttp import FileWrapper
@@ -94,7 +94,10 @@ def owner_channels_list(request):
 
 
 def channels(request):
-    channels_list = Channel.objects.filter(visible=True)
+    channels_list = Channel.objects.filter(visible=True).annotate(video_count=Count(Case(
+        When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
+        output_field=IntegerField(),
+    )))
     #per_page = request.GET.get('per_page') if request.GET.get('per_page') and request.GET.get('per_page').isdigit() else DEFAULT_PER_PAGE
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
@@ -208,7 +211,10 @@ def channel_edit(request, slug_c):
 
 
 def types(request):
-    types_list = Type.objects.all()
+    types_list = Type.objects.all().annotate(video_count=Count(Case(
+        When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
+        output_field=IntegerField(),
+    )))
     #per_page = request.GET.get('per_page') if request.GET.get('per_page') and request.GET.get('per_page').isdigit() else DEFAULT_PER_PAGE
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
@@ -230,7 +236,10 @@ def types(request):
 
 def owners(request):
     owners_list = User.objects.filter(pod__in=VIDEOS).order_by(
-        'last_name').distinct()  # User.objects.all()
+        'last_name').distinct().annotate(video_count=Count(Case(
+            When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
+            output_field=IntegerField(),
+        )))
     owners_filter = request.GET.get(
         'owners_filter') if request.GET.get('owners_filter') else None
     if owners_filter:
@@ -256,7 +265,10 @@ def owners(request):
 
 
 def disciplines(request):
-    disciplines_list = Discipline.objects.all()
+    disciplines_list = Discipline.objects.all().annotate(video_count=Count(Case(
+        When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
+        output_field=IntegerField(),
+    )))
     #per_page = request.GET.get('per_page') if request.GET.get('per_page') and request.GET.get('per_page').isdigit() else DEFAULT_PER_PAGE
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE

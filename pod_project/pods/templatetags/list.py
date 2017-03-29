@@ -32,7 +32,7 @@ from django.conf import settings
 import random
 import datetime
 from django.utils.translation import ugettext_lazy as _
-
+from django.db.models import Count, Case, When, IntegerField, Prefetch
 from pods.models import Pod
 
 register = Library()
@@ -153,16 +153,17 @@ def pagination(context, cl, index=1):
 @register.simple_tag()
 def user_menu(filter, queryset_user):
     html = ""
-    for user in queryset_user.filter(last_name__iregex=r'^%s+' % filter).prefetch_related('pod_set'):
-        pod_set_count = len({ p for p in user.pod_set.all() if p.is_draft == False })
+    for user in queryset_user.filter(last_name__iregex=r'^%s+' % filter).prefetch_related('pod_set').annotate(
+        video_count=Count(Case(When(pod__is_draft=False, pod__encodingpods__gt=0, then=1), output_field=IntegerField()))):
+
         html += "<li class=\"subItem\"><a href=\"%s%s\">%s %s (%s)</a></li>" % (reverse(
-            'videos'), "?owner=%s" % user.username, user.last_name, user.first_name, pod_set_count)
+            'videos'), "?owner=%s" % user.username, user.last_name, user.first_name, user.video_count)
     return html
 
 
 @register.simple_tag()
-def video_count(owner):
-    return owner.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count()
+def video_count(obj):
+    return obj.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count()
 
 
 @register.simple_tag()
