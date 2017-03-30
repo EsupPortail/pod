@@ -102,12 +102,6 @@ class Channel(models.Model):
     def get_absolute_url(self):
         return reverse('channel', kwargs={'slug_c': self.slug})
 
-    def video_count(self):
-        return self.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count()
-        # return Video.objects.filter(categories__in=self.categories.all()).filter(is_draft=False).count()
-        # return self.video_set.all().count()
-    video_count.short_description = _('count')
-
 
 @python_2_unicode_compatible
 class Theme(models.Model):
@@ -143,12 +137,6 @@ class Theme(models.Model):
     def get_absolute_url(self):
         return reverse('theme', kwargs={'slug_c': self.channel.slug, 'slug_t': self.slug})
 
-    def video_count(self):
-        return self.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count()
-        # return Video.objects.filter(categories__in=self.categories.all()).filter(is_draft=False).count()
-        # return self.video_set.all().count()
-    video_count.short_description = _('count')
-
 
 @python_2_unicode_compatible
 class Type(models.Model):
@@ -179,12 +167,6 @@ class Type(models.Model):
     def __unicode__(self):
         return "%s" % (self.title)
 
-    def video_count(self):
-        return self.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count()
-        # return Video.objects.filter(categories__in=self.categories.all()).filter(is_draft=False).count()
-        # return self.video_set.all().count()
-    video_count.short_description = _('count')
-
 
 @python_2_unicode_compatible
 class Discipline(models.Model):
@@ -214,12 +196,6 @@ class Discipline(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.title)
-
-    def video_count(self):
-        return self.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count()
-        # return Video.objects.filter(categories__in=self.categories.all()).filter(is_draft=False).count()
-        # return self.video_set.all().count()
-    video_count.short_description = _('count')
 
 
 def get_nextautoincrement(mymodel):
@@ -404,7 +380,7 @@ class Pod(Video):
         for encoding in self.encodingpods_set.all():
             if encoding.encodingFile:
                 encoding.encodingFile.delete()
-        
+
         # on supprime le fichier source
         if REMOVE_VIDEO_FILE_SOURCE_ON_DELETE:
             self.video.delete()
