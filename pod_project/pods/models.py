@@ -46,6 +46,7 @@ import logging
 logger = logging.getLogger(__name__)
 import unicodedata
 import json
+from pod_project.tasks import task_start_encode
 
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 REMOVE_VIDEO_FILE_SOURCE_ON_DELETE = getattr(settings, 'REMOVE_VIDEO_FILE_SOURCE_ON_DELETE', True)
@@ -477,7 +478,10 @@ def launch_encode(sender, instance, created, **kwargs):
         instance.to_encode = False
         instance.encoding_in_progress = True
         instance.save()
-        start_encode(instance)
+        if settings.CELERY_TO_ENCODE:
+            task_start_encode.delay(instance)
+        else:
+            start_encode(instance)
 
 
 def start_encode(video):
