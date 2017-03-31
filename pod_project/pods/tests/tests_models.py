@@ -33,7 +33,7 @@ from django.test.client import RequestFactory
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import date, timedelta
 import os
-from django.db.models import Count, Case, When, IntegerField
+from django.db.models import Count
 # Create your tests here.
 """
     test the channel
@@ -63,10 +63,7 @@ class ChannelTestCase(TestCase):
 	"""
 
     def test_Channel_null_attribut(self):
-        channel = Channel.objects.annotate(video_count=Count(Case(
-            When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
-            output_field=IntegerField(),
-        ))).get(title="ChannelTest1")
+        channel = Channel.objects.annotate(video_count=Count("pod", distinct=True)).get(title="ChannelTest1")
         self.assertEqual(channel.visible, False)
         self.assertFalse(channel.slug == slugify("blabla"))
         self.assertEqual(channel.color, None)
@@ -85,10 +82,7 @@ class ChannelTestCase(TestCase):
 	"""
 
     def test_Channel_with_attributs(self):
-        channel = Channel.objects.annotate(video_count=Count(Case(
-            When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
-            output_field=IntegerField(),
-        ))).get(title="ChannelTest2")
+        channel = Channel.objects.annotate(video_count=Count("pod", distinct=True)).get(title="ChannelTest2")
         self.assertEqual(channel.visible, True)
         channel.color = "Blue"
         self.assertEqual(channel.color, "Blue")
@@ -144,10 +138,7 @@ class ThemeTestCase(TestCase):
 	"""
 
     def test_Theme_null_attribut(self):
-        theme = Theme.objects.annotate(video_count=Count(Case(
-            When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
-            output_field=IntegerField(),
-        ))).get(title="Theme1")
+        theme = Theme.objects.annotate(video_count=Count("pod", distinct=True)).get(title="Theme1")
         self.assertFalse(theme.slug == slugify("blabla"))
         self.assertEqual(theme.headband, None)
         self.assertEqual(theme.__unicode__(), "ChannelTest1: Theme1")
@@ -208,10 +199,7 @@ class TypeTestCase(TestCase):
 	"""
 
     def test_Type_null_attribut(self):
-        type1 = Type.objects.annotate(video_count=Count(Case(
-            When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
-            output_field=IntegerField(),
-        ))).get(title="Type1")
+        type1 = Type.objects.annotate(video_count=Count("pod", distinct=True)).get(title="Type1")
         self.assertFalse(type1.slug == slugify("blabla"))
         self.assertEqual(type1.headband, None)
         self.assertEqual(type1.__unicode__(), "Type1")
@@ -272,10 +260,7 @@ class DisciplineTestCase(TestCase):
 	"""
 
     def test_Discipline_null_attribut(self):
-        discipline = Discipline.objects.annotate(video_count=Count(Case(
-            When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
-            output_field=IntegerField(),
-        ))).get(title="Discipline1")
+        discipline = Discipline.objects.annotate(video_count=Count("pod", distinct=True)).get(title="Discipline1")
         self.assertFalse(discipline.slug == slugify("blabla"))
         self.assertEqual(discipline.headband, None)
         self.assertEqual(discipline.__unicode__(), "Discipline1")
