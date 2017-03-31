@@ -74,7 +74,7 @@ def get_pagination(page, paginator):
 
 @login_required
 def owner_channels_list(request):
-    channels_list = request.user.owners_channels.all()
+    channels_list = request.user.owners_channels.all().annotate(video_count=Count("pod", distinct=True))
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
