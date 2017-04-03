@@ -446,6 +446,8 @@ $(document).on('click', '#button_video_favorite', function (event) {
                                 <div class="form-group">
                                     <label for="txtpartage">{% trans 'Use this link to share the video' %}</label>
                                     <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+                                    <label for="txtpartageprive">{% trans 'Use this link to share the video in private mode' %}</label>
+                                    <input class="form-control" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video_priv/{{ video.hash_id }}" />                                	
                                 </div>
                                 <div class="checkbox">
                                     <label for="displaytime"></label>
