@@ -531,17 +531,6 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
 
-    if video.is_draft:
-        if not request.user.is_authenticated():
-            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
-        else:
-            if request.user == video.owner or request.user.is_superuser:
-                pass
-            else:
-                messages.add_message(
-                    request, messages.ERROR, _(u'You cannot watch this video.'))
-                raise PermissionDenied
-
     if video.is_restricted:
         if not request.user.is_authenticated():
             return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
@@ -1610,6 +1599,14 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
     """
     return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
 
+def get_video_encoding_private(request, slug, csrftoken, size, type, ext):
+    video = get_object_or_404(Pod, slug=slug)
+    if video.is_restricted:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+    encodingpods = get_object_or_404(EncodingPods,
+                                     encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
+    return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
 
 def autocomplete(request):
     suggestions = [entry.object.title for entry in res]
