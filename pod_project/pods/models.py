@@ -304,6 +304,11 @@ class Pod(Video):
         help_text=_(
             u'Viewing this video will not be possible without this password.'),
         max_length=50, blank=True, null=True)
+    hash_id = models.CharField(
+        _('hash_id'),
+        help_text=_(
+            u'Hashcode to retrieve de video'),
+        max_length=100, blank=True, null=True)
 
     class Meta:
         verbose_name = _("Video")

@@ -297,6 +297,8 @@ class Migration(migrations.Migration):
                     verbose_name='Owner', to=settings.AUTH_USER_MODEL)),
                 ('tags', pods.models.MyTaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True,
                                                        help_text='Separate tags with spaces, enclose the tags consist of several words in quotation marks.', verbose_name='Tags')),
+                ('hash_id', models.CharField(
+                    max_length=250, verbose_name='HashId')),
             ],
             options={
                 'verbose_name': 'Video',
