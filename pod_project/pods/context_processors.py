@@ -23,33 +23,29 @@ from pods.models import Pod, Channel, Type, Discipline, Theme
 from django.contrib.sites.models import Site
 from django.conf import settings as django_settings
 from django.contrib.auth.models import User
-from django.db.models import Count, Case, When, IntegerField, Prefetch
+from django.db.models import Count, Prefetch
 
 
 def items_menu_header(request):
     return {
-        'CHANNELS': Channel.objects.filter(visible=True).annotate(
-            video_count=Count(Case(
-                When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
-                output_field=IntegerField()))
+        'CHANNELS': Channel.objects.filter(
+            visible=True, pod__is_draft=False, pod__encodingpods__gt=0
+        ).distinct().annotate(
+            video_count=Count("pod", distinct=True)
         ).prefetch_related(
-            Prefetch("themes", queryset=Theme.objects.annotate(
-                video_count=Count(Case(
-                    When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
-                    output_field=IntegerField()))
+            Prefetch("themes", queryset=Theme.objects.filter(
+                pod__is_draft=False, pod__encodingpods__gt=0
+            ).distinct().annotate(
+                video_count=Count("pod", distinct=True)
             ))),
-        'TYPES': Type.objects.all().annotate(video_count=Count(Case(
-            When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
-            output_field=IntegerField(),
-        ))),
-        'DISCIPLINES': Discipline.objects.all().annotate(video_count=Count(Case(
-            When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
-            output_field=IntegerField(),
-        ))),
+        'TYPES': Type.objects.filter(
+            pod__is_draft=False, pod__encodingpods__gt=0
+        ).distinct().annotate(video_count=Count("pod", distinct=True)),
+        'DISCIPLINES': Discipline.objects.filter(
+            pod__is_draft=False, pod__encodingpods__gt=0
+        ).distinct().annotate(video_count=Count("pod", distinct=True)),
         'OWNERS': User.objects.filter(
             pod__is_draft=False, pod__encodingpods__gt=0
-        ).order_by('last_name').annotate(
-            video_count=Count(Case(
-                When(pod__is_draft=False, pod__encodingpods__gt=0, then=1),
-                output_field=IntegerField()))).prefetch_related("userprofile")
+        ).order_by('last_name').distinct().annotate(
+            video_count=Count("pod", distinct=True)).prefetch_related("userprofile")
     }
