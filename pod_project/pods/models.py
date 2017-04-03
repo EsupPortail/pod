@@ -351,9 +351,13 @@ class Pod(Video):
         else:
             newid = self.id
         newid = '%04d' % newid
-        encodedId = base64.b64encode(str(newid))
-        logging.warning('encodedId = %s' % encodedId)
-        self.hash_id = encodedId
+        if not self.hash_id:
+            encodedId = base64.b64encode(str(newid))
+            logging.warning('encodedId = %s' % encodedId)
+            self.hash_id = slugify(encodedId)
+        else:
+            tmp_slug = slugify(self.hash_id)
+            self.hash_id = tmp_slug
         self.slug = "%s-%s" % (newid, slugify(self.title))
         super(Pod, self).save(*args, **kwargs)
 
