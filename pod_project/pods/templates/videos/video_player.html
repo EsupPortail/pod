@@ -76,11 +76,13 @@ voir http://www.gnu.org/licenses/
                                 data-res="{{ encoding.encodingType.output_height }}"
                             >
                             {% else %}
-                            <source
-                                src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
-                                type="{{ encoding.encodingFormat }}"
-                                data-res="{{ encoding.encodingType.output_height }}"
-                            >
+                            	{% if USE_PRIVATE_VIDEO %}
+		                            <source
+		                                src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
+		                                type="{{ encoding.encodingFormat }}"
+		                                data-res="{{ encoding.encodingType.output_height }}"
+		                            >
+                            	{% endif %}
                             {% endif %}
                         {% endfor %}
                     </video>

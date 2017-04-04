@@ -280,7 +280,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
                         </a>
                     </li>
                 {% endif %}
-                {% if video.is_draft %}
+                {% if video.is_draft and USE_PRIVATE_VIDEO %}
                     <li>
                         <a href="#share_private" data-toggle="tab">
                             <span class="glyphicon glyphicon-send"></span>
@@ -468,7 +468,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
                     </div>
                     {% endif %}
                     <!-- /TAB share -->
-                    {% if video.is_draft %}
+                    {% if video.is_draft and USE_PRIVATE_VIDEO %}
                     <div id="share_private" class="tab-pane fade container-fluid">
                     	<div class="embed-content">
                             <form class="row">

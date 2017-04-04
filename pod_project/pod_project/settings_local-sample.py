@@ -410,3 +410,5 @@ CELERY_TO_ENCODE = False
 CELERY_NAME = "pod_project"
 CELERY_BACKEND = "amqp"
 CELERY_BROKER = "amqp://guest@localhost//"
+
+USE_PRIVATE_VIDEO = False
