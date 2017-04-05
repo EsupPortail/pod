@@ -212,6 +212,18 @@ $(document).on('click', '#button_video_favorite', function (event) {
                             <input type="submit" value="{% trans 'Send' %}" />
                         </noscript>
                     </form>
+                    {% if H5P_ENABLED %}
+                    <form method="post" action="{% url 'video_interactive' slug=video.slug %}" style="display:inline-block;">
+                        {% csrf_token %}
+                            <button type="submit" class="btn btn-default" id="button_video_interactive" title="{% trans 'View interactive version of this video.' %}" >
+                                <span id="mark-as-interactive" class="glyphicon glyphicon-blackboard"></span>
+                                <span class="sr-only">{% trans 'View interactive version of this video.' %}</span>
+                            </button>
+                        <noscript>
+                            <input type="submit" value="{% trans 'Send' %}" />
+                        </noscript>
+                    </form>
+                    {% endif %}
                     {% if show_report %}
                         {% if video.id in request.user.reportvideo_set.all|only_video %}
                     <button type="submit" class="btn btn-default" id="button_video_report" title="{% trans 'You have already reported this video.' %}" disabled>

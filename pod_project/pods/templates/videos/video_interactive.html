@@ -20,42 +20,47 @@ avec ce programme. Si ce n'est pas le cas,
 voir http://www.gnu.org/licenses/
 {%endcomment%}
 
-{% load i18n %}
-{% load staticfiles %}
+{% load i18n list staticfiles %}
 {% load bootstrap3 %}
 
 
-{% block bootstrap3_title%}
-{{video.title}}
-{% endblock bootstrap3_title%}
+{% block bootstrap3_title %}{{video.title}}{% endblock bootstrap3_title %}
 
 {% block bootstrap3_extra_head %}
 <script src="{% static 'admin/js/jquery.js' %}"></script>
 <script src="{% static 'admin/js/jquery.init.js' %}"></script>
 <script>
     {% if contentId %}
-    function edit() {
-        $('#icontent').hide();
-        $('#iedit').show();
-        $('#editbutton').hide();
-        $('#showbutton').show();
-    }
-    function video() {
-        $('#icontent').show();
-        $('#iedit').hide();
-        $('#editbutton').show();
-        $('#showbutton').hide();
-    }
-    $(function() {
+    $(document).ready(function() {
         var f = $('#iedit');
         f.load(function() {
             f.contents().find('#id_title').hide();
             f.contents().find('label[for=id_title').hide();
             f.contents().find('#id_h5p_type').hide();
+            f.contents().find('.h5p-editor-iframe').contents().find('.h5peditor-form').hide();
+            f.contents().find('#back').hide();
+            f.contents().find('.h5p-admin-header').hide();
+            f.contents().find('.content').css('background-color', 'white');
         });
-    });
+        var g = $('#icontent');
+        g.load(function() {
+            g.contents().find('.h5p-admin-header').hide();
+            g.contents().find('.content').css('background-color', 'white');
+        });
+        setTimeout(function() {
+            $('#icontent').show();
+        }, 1500);
+    })
+    function edit() {
+        $('#icontent').hide();
+        $('#iedit').show();
+    }
+    function video() {
+        $('#icontent').show();
+        $('#iedit').hide();
+    }
     {% endif %}
-    $(function() {
+    $(document).ready(function() {
         var f = $('#icreate');
         f.load(function() {
             f.contents().find('#id_title').hide();
@@ -68,311 +73,63 @@ voir http://www.gnu.org/licenses/
 
 {% block article_title %}Interactive Video {{video.title}}{% endblock %}
 
-{% block mainToolbar %}
-{% endblock mainToolbar %}
+{% block mainToolbar %}{% endblock mainToolbar %}
 
 {% block bootstrap3_content %}
 <article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
-    <div class="row" id="info_video">
-        <div class="col-sm-9">
-	    {% if contentId %}
-	        <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{contentId}}" style="background: white;" height="700" width="850" frameBorder="0" allowfullscreen="allowfullscreen"></iframe>
-            <iframe id="iedit" src="{% url "h5pedit" contentId=contentId %}?title={{video.title}}" style="background: white;display: none" height="700" width="850" frameBorder="0"></iframe>
-            <input type="button" value="Edit" onclick="edit()" id="editbutton">
-            <input type="button" value="Show" onclick="video()" id="showbutton" style="display: none;">
-        {% else %}
-            <iframe id="icreate" src="{% url "h5pcreate" %}?h5p_library=H5P.InteractiveVideo 1.14&title={{video.title}}" style="background: white;" height="700" width="850" frameBorder="0"></iframe>
-	    {% endif %}
+    {% if not request.GET.is_iframe %}
+        <ol class="breadcrumb">
+        {% block breadcrumbs %}
+            {{ block.super }}
+            {% if channel %}
+            <li><a href="{% url 'channels' %}">{% trans 'Channels' %}</a></li>
+            <li><a href="{% url 'channel' slug_c=channel.slug %}">{{ channel.title }}</a></li>
+            {% else %}
+            <li><a href="{% url 'videos' %}">{% trans 'Videos' %}</a></li>
+            {% endif %}
+            <li class="active">{{ video.title }}</li>
+        {% endblock breadcrumbs %}
+        </ol>
+        {% if channel %}
+            {% if channel.headband %}
+        <div align="center" class="channelheader">
+            <img src="{{ channel.headband.url }}" alt="{% trans bandeau %} {{ channel.title }}" class="img-responsive" />
         </div>
-        <aside class="col-sm-3 panel panel-info">
-                <div class="widget user-tools">
-                    <h4>
-                        <span class="glyphicon glyphicon-wrench"></span>
-                        {% trans 'Edit the video' %}
-                    </h4>
-                    {% include 'videos/ownertools.html' with video=video %}
-                </div>
-                <div class="widget">
-                    <h4>
-                        <span class="glyphicon glyphicon-info-sign"></span>
-                        {% trans 'Important' %}
-                    </h4>
-                    <div class="panel panel-warning">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">
-                                {% trans 'Interactions' %}
-                            </h3>
-                        </div>
-                        <div class="panel-body">
-                            <p>{% blocktrans %}They are no limit of number of interactions in video. But don't forget, more interactions you have in a video, more your video need times to load.{% endblocktrans %}</p>
-                            <p>{% blocktrans %}Every videos on pod can be interactive. However, each videos has only one interactive version.{% endblocktrans %}</p>
-                        </div>
-                    </div>
-
-                    <div class="panel panel-warning">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">
-                                {% trans 'Mandatory fields' %}
-                            </h3>
-                        </div>
-                        <div class="panel-body">
-                            <p>{% trans 'Summary task are mandatory.' %}</p>
-                        </div>
-                    </div>
-
-                    <h4>
-                        <span class="glyphicon glyphicon-info-sign"></span>
-                        {% trans 'Interaction type' %}
-                    </h4>
-
-                    <div class="panel-group" id="fieldHelpAccordion" role="tablist">
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-1">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-1" aria-expanded="true" aria-controls="fieldHelpText-1">{% trans 'Label' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="fieldHelpHeading-1">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a text over the video. The text is displayed on a black background' %}</p>
-                                    <p>{% trans 'Display time are mandatory.' %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-2">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-2" aria-expanded="false" aria-controls="fieldHelpText-2" class="collapsed">{% trans 'Text' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-2">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a text over the video.' %}</p>
-                                    <p>{% trans 'The text can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button).' %}</p>
-                                    <p>{% trans 'Display time and the text field is mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-3">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-3" aria-expanded="false" aria-controls="fieldHelpText-2" class="collapsed">{% trans 'Table' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-3" class="panel-collapse collapse" role="tabpanel" aria-labbelldby="fieldHelpHeading-3">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a table over the video. Only 1 table can be attached to this interaction.' %}</p>
-                                    <p>{% trans 'The table can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button).' %}</p>
-                                    <p>{% trans 'A minimum of 1x1 table are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-4">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-4" aria-expanded="false" aria-controls="fieldHelpText-4" class="collapsed">{% trans "Link" %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-4" class="panel-collapse collapse" role="tabpanel" aria-labbelldby="fieldHelpHeading-4">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a url link over the video. A link can use http and https protocol, can be root relative or other.' %}</p>
-                                    <p>{% trans 'The url is displayed in a background in a color of your choice.' %}</p>
-                                    <p>{% trans 'Display time, title field and a url link is mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-5">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-5" aria-expanded="false" aria-controls="fieldHelpText-5" class="collapsed">{% trans 'Image' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-5" class="panel-collapse collapse" role="tabpanel" aria-labbelldby="fieldHelpHeading-5">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a picture over the video. The following formats are supported:' %} PNG, JPEG and GIF. Only 1 picture can be attached to this interaction.</p>
-                                    <p>{% trans 'The picture can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button). In a poster mode the picture are automaticaly resized.' %}</p>
-                                    <p>{% trans 'Display time, a picture and an alternative text if the user cannot view the picture is mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-6">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-6" aria-expanded="false" aria-controls="fieldHelpText-6" class="collapsed">{% trans 'Statement' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-6" class="panel-collapse collapse" role="tabpanel" aria-labbelldby="fieldHelpHeading-6">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a list of statements over the video. They are no limit of statements in a list but we recommanded a maximum of 6 statements.' %}</p>
-                                    <p>{% trans 'The list of statements can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button).' %}</p>
-                                    <p>{% trans 'Display time, introduction text and a minimum of 2 statements are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-7">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-7" aria-expanded="false" aria-controls="fieldHelpText-7" class="collapsed">{% trans 'Single Choice set' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-7">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a list of single choice question set over the video. They are no limit of question set in a list but we recommanded a maximum of 4 questions set.' %}</p>
-                                    <p>{% trans 'The list of single choice question set can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button).' %}</p>
-                                    <p>{% trans 'Display time and a minimum of 2 questions with 2 statements are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-8">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-8" aria-expanded="false" aria-controls="fieldHelpText-8" class="collapsed">{% trans 'Multiple Choice set' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelPText-8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-8">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a list of multiple choice question set over the video. They are no limit of question set in a list but we recommanded a maximum of 4 questions set.' %}</p>
-                                    <p>{% trans 'The list of multiple choice question set can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button). If a picture or a video is attached to the set it will be automatically resized.' %}</p>
-                                    <p>{% trans 'Display time and a minimum of 1 question with 2 available options are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-9">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-9" aria-expanded="false" aria-controls="fieldHelpText-9" class="collapsed">{% trans 'True or False' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-9" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-9">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a True/False question over the video. You can add another media (picture or video) in the true/false question. Only 1 question can be attached to this interaction.' %}</p>
-                                    <p>{% trans 'The True/False question can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button). If a picture or a video is attached to the question it will be automatically resized.' %}</p>
-                                    <p>{% trans 'Display time, question field and the correct answer are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-10">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-10" aria-expanded="false" aria-controls="fieldHelpText-10" class="collapsed">{% trans 'Fill in the blanks' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-10" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-10">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a Fill in the blanks game over the video. You can add another media (picture or video) in the game. They are no limit of text blocks in the game but we recommanded a maximum of 4 text blocks.' %}</p>
-                                    <p>{% trans 'This game can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button). If a picture or a video is attached to the question it will be automatically resized.' %}</p>
-                                    <p>{% trans 'Display time, task description field and a minimum of 1 text block are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-11">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-11" aria-expanded="false" aria-controls="fieldHelpText-11" class="collapsed">{% trans 'Drag and Drop' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-11" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-11">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a Drag and Drop game over the video. You can add another media (picture) in the game. They are no limit of tasks in the game but we recommanded a maximum of 6 drag zones.' %}</p>
-                                    <p>{% trans 'This game can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button). If a picture or a video is attached to the question it will be automatically resized.' %}</p>
-                                    <p>{% trans 'Display time, title field, task size field, style of dropzone highlighting and a minimum of 1 drag zone are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-12">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-12" aria-expanded="false" aria-controls="fieldHelpText-12" class="collapsed">{% trans 'Mark the Words' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-12" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-12">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a Mark the Words game over the video. Only 1 textfield can be attached to this interaction.' %}</p>
-                                    <p>{% trans 'This game can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button).' %}</p>
-                                    <p>{% trans 'Display time, task description field and the textfield are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-13">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-13" aria-expanded="false" aria-controls="fieldHelpText-13" class="collapsed">{% trans 'Drag text' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-13" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-13">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a Drag text game over the video. Only 1 text can be attached to this interaction.' %}</p>
-                                    <p>{% trans 'This game can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button).' %}</p>
-                                    <p>{% trans 'Display time, task description field and the text are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-14">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-14" aria-expanded="false" aria-controls="fieldHelpText-14" class="collapsed">{% trans 'Crossroads' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-14" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-14">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a Crossroads, a set of choices which allows to go at a precise moment of the video. They are no limit of choices but we recommanded a maximum of 6 choices.' %}</p>
-                                    <p>{% trans 'The crossroads can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button).' %}</p>
-                                    <p>{% trans 'Display time, question text field and a minimum of 2 choices are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-15">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-15" aria-expanded="false" aria-controls="fieldHelpText-15" class="collapsed">{% trans 'Navigation Hotspot' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-15" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-15">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a Hotspot, a clickable zone which allows to go at a precise moment of the video.' %}</p>
-                                    <p>{% trans 'The Hotspot can be displayed with a circular or a rectangular shape with a color of your choice.' %}</p>
-                                    <p>{% trans 'Display time, type, shape and background color are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-info">
-                            <div class="panel-heading" role="tab" id="fieldHelpHeading-16">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#fieldHelpAccordion" href="#fieldHelpText-16" aria-expanded="false" aria-controls="fieldHelpText-16" class="collapsed">{% trans 'Questionnaire' %}</a>
-                                </h3>
-                            </div>
-                            <div id="fieldHelpText-16" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fieldHelpHeading-16">
-                                <div class="panel-body">
-                                    <p>{% trans 'Place a Questionnaire, a set of open-ended and simple multi-choice questions. You can add another media (picture) in this interaction. They are no limit of questions but we recommanded a maximum of 12 questions.' %}</p>
-                                    <p>{% trans 'The Questionnaire can be displayed in a box with a background in a color of your choice (Poster) or can be displayed in a popup box when you click on a button (Button).' %}</p>
-                                    <p>{% trans 'Display time, UI elements fields and a minimum of 1 question are mandatory. If success screen are enabled, a picture and a text to display are mandatory.' %}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    <p>Link for the current video :</p>
-		            <input maxlength="250" value="http://{{ request.get_host }}{{ video.get_MP4_240_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
-                    <p>Embed code for the current video:</p>
-                    <input maxlength="250" value='<iframe src="http://{{request.get_host}}{% url "h5pcontent" %}?contentId={{contentId}}" width="668" height="440" frameborder="0" allowfullscreen="allowfullscreen"></iframe>' type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
-                </div>
-        </aside>
-    </div>
+        <h2>{{ channel.title }}</h2>
+            {% endif %}
+        {% endif %}
+        {% if theme %}
+            {% if theme.headband %}
+        <div align="center" class="channelheader">
+            <img src="{{ theme.headband.url }}" alt="{% trans bandeau %} {{ theme.title }}" class="img-responsive" />
+        </div>
+        <h3>{{ theme.title }}</h3>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    {% if contentId %}
+        <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{contentId}}" style="background:white;display:none" height="620" width="100%" frameBorder="0"allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+        <iframe id="iedit" src="{% url "h5pedit" contentId=contentId %}?title={{video.title}}" style="background:white;display:none" height="660" width="100%" frameBorder="0"></iframe>
+    {% else %}
+        <iframe id="icreate" src="{% url "h5pcreate" %}?h5p_library=H5P.InteractiveVideo 1.14&title={{video.title}}" style="background: white;" height="700" width="850" frameBorder="0"></iframe>
+    {% endif %}
+    {% if not request.GET.is_iframe %}
+        <h3 itemprop="name" >
+            {{video.title}}
+            <small>
+            {% if request.user.is_authenticated %}
+                <button type="submit" onClick="edit()" class="btn btn-default" id="button_edit_interactive" title="{% trans 'Edit interactive video' %}">
+                    <span id="edit" class="glyphicon glyphicon-wrench"></span>
+                    <span class="sr-only">{% trans 'Edit interactive video' %}</span>
+                </button>
+                <button type="submit" onClick="video()" class="btn btn-default" id="button_view_interactive" title="{% trans 'View interactive video' %}">
+                    <span id="view" class="glyphicon glyphicon-blackboard"></span>
+                    <span class="sr-only">{% trans 'View interactive video' %}</span>
+                </button>
+            {% endif %}
+            </small>
+        </h3>
+    {% endif %}
 </article>
 {% endblock bootstrap3_content %}
 {% block box %}{% endblock box %}
