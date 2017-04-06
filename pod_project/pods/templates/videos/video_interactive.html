@@ -41,6 +41,7 @@ voir http://www.gnu.org/licenses/
             f.contents().find('#back').hide();
             f.contents().find('.h5p-admin-header').hide();
             f.contents().find('.content').css('background-color', 'white');
+            f.contents().find('label[for="h5p-editor-iframe"]').hide();
         });
         var g = $('#icontent');
         g.load(function() {
@@ -54,20 +55,55 @@ voir http://www.gnu.org/licenses/
     function edit() {
         $('#icontent').hide();
         $('#iedit').show();
+        editor();
     }
     function video() {
         $('#icontent').show();
         $('#iedit').hide();
     }
-    {% endif %}
+    function editor() {
+        $('#iedit').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
+        $('#iedit').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
+        $('#iedit').get(0).contentWindow.ns.$('.h5peditor-tab-li:first').hide();
+        $('#iedit').get(0).contentWindow.ns.$('.h5peditor-tab-a.h5peditor-tab-assets').click();
+    }
+    {% else %}
     $(document).ready(function() {
         var f = $('#icreate');
         f.load(function() {
             f.contents().find('#id_title').hide();
             f.contents().find('label[for=id_title').hide();
             f.contents().find('#id_h5p_type').hide();
+            f.contents().find('#back').hide();
+            f.contents().find('.h5p-admin-header').hide();
+            f.contents().find('.content').css('background-color', 'white');
+            f.contents().find('label[for="h5p-editor-iframe"]').hide();
         });
     });
+    function editor() {
+        $('#icreate').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
+        $('#icreate').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
+        {% for encoding in video.get_all_encoding_height %}
+            {% if encoding == 240 %}
+        $('#icreate').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_240_URL }}');
+        $('#icreate').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+            {% elif encoding == 480 %}
+        $('#icreate').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_480_URL }}');
+        $('#icreate').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+            {% elif encoding == 720 %}
+        $('#icreate').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_720_URL }}');
+        $('#icreate').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+            {% elif encoding == 1080 %}
+        $('#icreate').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_1080_URL }}');
+        $('#icreate').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+            {% endif %}
+        {% endfor %}
+        $('#icreate').get(0).contentWindow.ns.$('.h5peditor-tab-li:first').hide();
+        $('#icreate').get(0).contentWindow.ns.$('.h5peditor-tab-a.h5peditor-tab-assets').click();
+        $('#icreate').show();
+        $('.alert').hide();
+    }
+    {% endif %}
 </script>
 {% endblock bootstrap3_extra_head %}
 
@@ -108,16 +144,35 @@ voir http://www.gnu.org/licenses/
         {% endif %}
     {% endif %}
     {% if contentId %}
-        <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{contentId}}" style="background:white;display:none" height="620" width="100%" frameBorder="0"allowfullscreen="allowfullscreen" scrolling="no"></iframe>
-        <iframe id="iedit" src="{% url "h5pedit" contentId=contentId %}?title={{video.title}}" style="background:white;display:none" height="660" width="100%" frameBorder="0"></iframe>
+        <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{contentId}}" style="background:white;display:none" height="620px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+        <iframe id="iedit" src="{% url "h5pedit" contentId=contentId %}?title={{video.title}}" style="background:white;display:none" height="970" width="100%" frameBorder="0"></iframe>
     {% else %}
-        <iframe id="icreate" src="{% url "h5pcreate" %}?h5p_library=H5P.InteractiveVideo 1.14&title={{video.title}}" style="background: white;" height="700" width="850" frameBorder="0"></iframe>
+        {% if request.user.is_authenticated %}
+        <iframe id="icreate" src="{% url "h5pcreate" %}?h5p_library=H5P.InteractiveVideo 1.14&title={{video.title}}" style="background:white;display:none" height="970" width="100%" frameBorder="0"></iframe>
+        {% endif %}
+        <div class="row" id="info_video">    
+            <div class="alert alert-info">
+                {% if request.user.is_authenticated and video.owner == request.user or request.user.is_superuser %}
+                <strong>{% trans 'La vidéo actuelle ne dispose pas de version interactive. Voulez-vous créer une version interactive de cette vidéo ?' %}</strong>
+                <button type="submit" onClick="editor()" class="btn btn-default" id="button_create_interactive" title="{% trans 'Create interactive video' %}">
+                    <span id="create">Oui</span>
+                    <span class="sr-only">{% trans 'Create interactive video' %}</span>
+                </button>
+                <button type="submit" onClick="window.history.back()" class="btn btn-default" id="button_back" title="{% trans 'Back to video' %}">
+                    <span id="back">Non</span>
+                    <span class="sr-only">{% trans 'Back to video' %}</span>
+                </button>
+                {% else %}
+                <strong>{% trans "La vidéo actuelle ne dispose pas de version interactive. Le propriétaire de la vidéo est l'unique utilisateur autorisé à créer de l'interactivités sur une vidéo." %}</strong>
+                {% endif %}
+            </div>
+        </div>
     {% endif %}
-    {% if not request.GET.is_iframe %}
+    {% if not request.GET.is_iframe%}
         <h3 itemprop="name" >
             {{video.title}}
             <small>
-            {% if request.user.is_authenticated %}
+            {% if request.user.is_authenticated and contentId and video.owner == request.user or request.user.is_superuser  %}
                 <button type="submit" onClick="edit()" class="btn btn-default" id="button_edit_interactive" title="{% trans 'Edit interactive video' %}">
                     <span id="edit" class="glyphicon glyphicon-wrench"></span>
                     <span class="sr-only">{% trans 'Edit interactive video' %}</span>
@@ -127,8 +182,182 @@ voir http://www.gnu.org/licenses/
                     <span class="sr-only">{% trans 'View interactive video' %}</span>
                 </button>
             {% endif %}
+            <form method="post" action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-default" id="button_video_back" title="{% trans 'Back to video' %}">
+                    <span id="back" class="glyphicon glyphicon-film"></span>
+                    <span class="sr-only">{% trans 'Back to video' %}</span>
+                </button>
+            </form>
             </small>
         </h3>
+    {% if contentId %}
+    <div class="row" id="info_video">
+        <div class="col-sm-9">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#meta" data-toggle="tab">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        {% trans 'Infos' %}
+                    </a>
+                </li>
+            {% if video.allow_downloading or video.docpods_set.all %}
+                <li>
+                    <a href="#downloads" data-toggle="tab">
+                        <span class="glyphicon glyphicon-download-alt"></span>
+                        {% trans 'Downloads' %}
+                    </a>
+                </li>
+            {% endif %}
+            {% if not video.is_draft and not request.GET.is_frame %}
+                <li>
+                    <a href="#share" data-toggle="tab">
+                        <span class="glyphicon glyphicon-send"></span>
+                        {% trans 'Embed/Share' %}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        <div class="tab-content">
+            <div id="meta" class="tab-pane fade in active container-fluid">
+                        <ul class="list-group">
+                            <li class="list-group-item" itemprop="owner" itemscope itemtype="http://schema.org/Person">
+                                <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+                                {% if video.owner.userprofile.image.icons %}
+                                    <img itemprop="photo" src="{{ video.owner.userprofile.image.icons.48 }}" alt="{{ video.owner.get_full_name }}" class="img-rounded" />
+                                {% else %}
+                                    <img src="{% static 'filer/icons/image_48x48.png' %}" alt="{% trans 'File missing' %}" class="img-rounded" />
+                                {% endif %}
+                                    {{ video.owner.get_full_name }}
+                                    <span class="badge">{% video_count video.owner%}</span>
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                {% trans 'Duration' %} : <strong>{{ video.duration_in_time }}</strong>
+                            </li>
+                            <li class="list-group-item">
+                                {% trans 'Number of view(s)' %} : <strong>{{ video.view_count }}</strong>
+                            </li>
+                            <li class="list-group-item">
+                                {% trans 'Type' %} :
+                                <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+                                    {{ video.type.title }}
+                                    <span class="badge">{{ video.type.video_count }}</span>
+                                </a>
+                            </li>
+                        {% if video.discipline.all %}
+                            <li class="list-group-item">{% trans 'Discipline' %} :
+                                {% for disc in video.discipline.all %}
+                                    <a href="{% url 'videos' %}?discipline={{ disc.slug }}" title="{{ disc.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+                                        {{ disc.title }}
+                                        <span class="badge">{{ disc.video_count }}</span>
+                                    </a>
+                                {% endfor %}
+                            </li>
+                        {% endif %}
+                            <li class="list-group-item">
+                                {% trans 'Updated on' %}
+                                <strong>{{ video.date_added }}</strong>
+                            </li>
+                        {% if video.contributorpods_set.all %}
+                            <li class="list-group-item">
+                            <em>{% trans 'Contributor(s): writers, directors, editors, designers…' %} :</em>
+                            <br />
+                            {% for contrib in video.contributorpods_set.all %}
+                                {% if contrib.email_address %}
+                             - {{ contrib.name }} ({% trans contrib.role %})
+                            <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% trans "send an email" %}">
+                                <i class="fa fa-envelope fa-fw"></i>
+                            </a>
+                            <noscript>{{ contrib.get_noscript_mail }}</noscript>
+                                {% else %}
+                            {{ contrib.name }} ({% trans contrib.role %})
+                                {% endif %}
+                                {% if contrib.weblink %}
+                            <a href="{{ contrib.weblink }}" target="_blank" title="{% trans "go to his web link" %} : {{ contrib.weblink }}">
+                                <i class="fa fa-link fa-fw"></i>
+                            </a>
+                                {% endif %}
+                            <br />
+                            {% endfor %}
+                        {% endif %}
+                        </ul>
+                    </div>
+                    <!-- /TAB meta -->
+                    <!-- TAB dl -->
+                    <div id="downloads" class="tab-pane fade container-fluid">
+                        <div class="list-group">
+                        {% if video.allow_downloading %}
+                            {% trans 'Download the video'%} :
+
+                            {% with mediatype=video.get_mediatype|first %}
+                                {% if mediatype == 'video' %}
+                                    {% for encoding in video.encodingpods_set.all %}
+                                        {% if encoding.encodingFormat == "video/mp4" %}
+                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}" title="{{ video.slug }}" class="list-group-item" >
+                                {{ video.slug }}_{{ encoding.encodingType.output_height }}.mp4
+                                <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
+                            </a>
+                                        {%endif%}
+                                    {% endfor %}
+                                {%else%}
+                                    {% for encoding in video.encodingpods_set.all %}
+                                        {% if encoding.encodingFormat == "audio/mp3" %}
+                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}" title="{{ video.slug }}" class="list-group-item" >
+                                {{ video.slug }}.mp3
+                                <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
+                            </a>
+                                        {%endif%}
+                                    {%endfor%}
+                                {%endif%}
+                            {%endwith%}
+
+                        {% endif %}
+                        {% for docpods in video.docpods_set.all %}
+                            <a href="{{ docpods.document.url }}" title="{{ docpods.document }}" target="_blank" class="list-group-item">
+                                {{ docpods.document }}
+                               <span class="label label-primary">{{ docpods.document.size|filesizeformat }}</span>
+                            </a>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    <!-- /TAB dl -->
+                    <!-- TAB share -->
+                    {% if not video.is_draft %}
+                    <div id="share" class="tab-pane fade container-fluid">
+                    {% if not video.is_restricted and not video.password %}
+                        <label>{% trans 'Social Networks' %}</label>
+                        <p>
+                            <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-facebook btn-sm" title="Partager sur Facebook"><i class="fa fa-facebook fa-fw"></i></a>
+                            <a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-twitter btn-sm" title="Partager sur Twitter"><i class="fa fa-twitter fa-fw"></i></a>
+                            <a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-google-plus btn-sm" title="Partager sur Google+"><i class="fa fa-google-plus fa-fw"></i></a>
+                        </p>
+                        <hr />
+                    {% endif %}
+                        <div class="embed-content">
+                            <form class="row">
+                                <div class="form-group col-sm-8">
+                                    <label for="txtintegration">
+                                        {% trans 'Copy the content of this text box and paste it in the page' %}
+                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video_interactive' slug=video.slug %}?is_iframe=true&amp;size=240" width="640" height="380" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                    </label>
+                                </div>
+                            </form>
+                            <hr />
+                            <form>
+                                <div class="form-group">
+                                    <label for="txtpartage">{% trans 'Use this link to share the video' %}</label>
+                                    <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video_interactive' slug=video.slug %}" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- /TAB share -->
+                </div>
+            </div>
+        </div>
+        {% endif %}
     {% endif %}
 </article>
 {% endblock bootstrap3_content %}

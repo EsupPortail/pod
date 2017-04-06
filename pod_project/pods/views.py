@@ -1414,33 +1414,26 @@ def video_enrich(request, slug):
 
 
 @csrf_protect
-@login_required
-@staff_member_required
-def video_interactive(request, slug):
+def video_interactive(request, slug, slug_c=None, slug_t=None):
     video = get_object_or_404(Pod, slug=slug)
-    # Add this to improve folder selection and view list
-    if not request.session.get('filer_last_folder_id'):
-        from filer.models import Folder
-        folder = Folder.objects.get(
-            owner=request.user, name=request.user.username)
-        request.session['filer_last_folder_id'] = folder.id
-
-    if request.user != video.owner and not request.user.is_superuser:
-        messages.add_message(
-            request, messages.ERROR, _(u'You cannot add interactivity to this video.'))
-        raise PermissionDenied
+    channel = None
+    if slug_c:
+        channel = get_object_or_404(Channel, slug=slug_c)
+    theme = None
+    if slug_t:
+        theme = get_object_or_404(Theme, slug=slug_t)
 
     if 'h5pp' in settings.INSTALLED_APPS:
         from h5pp.models import h5p_contents
         interactive = h5p_contents.objects.filter(title=video.title).values()
         if len(interactive) > 0:
             return render_to_response('videos/video_interactive.html',
-                                      {'video': video,
+                                      {'video': video, 'channel': channel, 'theme': theme,
                                        'contentId': interactive[0]['content_id']},
                                       context_instance=RequestContext(request))
-
+            
         return render_to_response('videos/video_interactive.html',
-                                  {'video': video},
+                                  {'video': video, 'channel': channel, 'theme': theme},
                                   context_instance=RequestContext(request))
 
     else:
