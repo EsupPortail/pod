@@ -33,9 +33,9 @@ voir http://www.gnu.org/licenses/
             {% endif %}
     		</span>
 		{% if owner.get_full_name %}
-            <h5>{{owner.get_full_name|safe|striptags|truncatechars:32}} ({% video_count owner %})</h5>
+            <h5>{{owner.get_full_name|safe|striptags|truncatechars:32}} ({{ owner.video_count }})</h5>
 		{% else %}
-            <h5>{{owner.username|safe|striptags|truncatechars:32}} ({% video_count owner %})</h5>
+            <h5>{{owner.username|safe|striptags|truncatechars:32}} ({{ owner.video_count }})</h5>
 		{% endif %}
 		</a>
 	</div>
@@ -44,4 +44,3 @@ voir http://www.gnu.org/licenses/
 <div class="pager">
     {% block pagination %} {% pagination owners %}{% endblock %}
 </div>
-
