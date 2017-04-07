@@ -172,7 +172,8 @@ voir http://www.gnu.org/licenses/
         <h3 itemprop="name" >
             {{video.title}}
             <small>
-            {% if request.user.is_authenticated and contentId and video.owner == request.user or request.user.is_superuser  %}
+            {% if request.user.is_authenticated and contentId %}
+            {% if video.owner == request.user or request.user.is_superuser %}
                 <button type="submit" onClick="edit()" class="btn btn-default" id="button_edit_interactive" title="{% trans 'Edit interactive video' %}">
                     <span id="edit" class="glyphicon glyphicon-wrench"></span>
                     <span class="sr-only">{% trans 'Edit interactive video' %}</span>
@@ -181,6 +182,7 @@ voir http://www.gnu.org/licenses/
                     <span id="view" class="glyphicon glyphicon-blackboard"></span>
                     <span class="sr-only">{% trans 'View interactive video' %}</span>
                 </button>
+            {% endif %}
             {% endif %}
             <form method="post" action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
                 {% csrf_token %}
