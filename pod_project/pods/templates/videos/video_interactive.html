@@ -42,11 +42,19 @@ voir http://www.gnu.org/licenses/
             f.contents().find('.h5p-admin-header').hide();
             f.contents().find('.content').css('background-color', 'white');
             f.contents().find('label[for="h5p-editor-iframe"]').hide();
+            f.contents().find('#h5p-content-form').submit(function() {
+                window.location.reload()
+            })
         });
         var g = $('#icontent');
         g.load(function() {
             g.contents().find('.h5p-admin-header').hide();
             g.contents().find('.content').css('background-color', 'white');
+            {% if request.user.is_authenticated %}
+            var a = g.contents().find('.score').html();
+            g.contents().find('.score').hide();
+            $('#score').html(a);
+            {% endif %}
         });
         setTimeout(function() {
             $('#icontent').show();
@@ -60,6 +68,15 @@ voir http://www.gnu.org/licenses/
     function video() {
         $('#icontent').show();
         $('#iedit').hide();
+    }
+    function deleteVideo() {
+        $.ajax({
+            url: '{% url 'h5plistContents' %}?contentId='+{{contentId}},
+            type: 'POST',
+            success: function() {
+                $('#button_video_back').click();
+            }
+        });
     }
     function editor() {
         $('#iedit').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
@@ -78,6 +95,9 @@ voir http://www.gnu.org/licenses/
             f.contents().find('.h5p-admin-header').hide();
             f.contents().find('.content').css('background-color', 'white');
             f.contents().find('label[for="h5p-editor-iframe"]').hide();
+            f.contents().find('#h5p-content-form').submit(function() {
+                window.location.reload()
+            })
         });
     });
     function editor() {
@@ -104,6 +124,7 @@ voir http://www.gnu.org/licenses/
         $('.alert').hide();
     }
     {% endif %}
+
 </script>
 {% endblock bootstrap3_extra_head %}
 
@@ -145,7 +166,9 @@ voir http://www.gnu.org/licenses/
     {% endif %}
     {% if contentId %}
         <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{contentId}}" style="background:white;display:none" height="620px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
-        <iframe id="iedit" src="{% url "h5pedit" contentId=contentId %}?title={{video.title}}" style="background:white;display:none" height="970" width="100%" frameBorder="0"></iframe>
+        {% if request.user.is_authenticated %}
+        <iframe id="iedit" style="background:white;display:none" height="970" width="100%" frameBorder="0"></iframe>
+        {% endif %}
     {% else %}
         {% if request.user.is_authenticated %}
         <iframe id="icreate" src="{% url "h5pcreate" %}?h5p_library=H5P.InteractiveVideo 1.14&title={{video.title}}" style="background:white;display:none" height="970" width="100%" frameBorder="0"></iframe>
@@ -191,6 +214,15 @@ voir http://www.gnu.org/licenses/
                     <span class="sr-only">{% trans 'Back to video' %}</span>
                 </button>
             </form>
+            {% if request.user.is_superuser and contentId %}
+            <form method="post" id="delete_video" style="display:inline-block;">
+                {% csrf_token %}
+                <button type="submit" onClick="deleteVideo()" class="btn btn-default" id="button_delete_video" title="{% trans 'Delete this video' %}">
+                    <span id="delete" class="glyphicon glyphicon-remove-sign"></span>
+                    <span class="sr-only">{% trans 'Delete this video' %}</span>
+                </button>
+            </form>
+            {% endif %}
             </small>
         </h3>
     {% if contentId %}
@@ -218,6 +250,14 @@ voir http://www.gnu.org/licenses/
                         {% trans 'Embed/Share' %}
                     </a>
                 </li>
+                {% if request.user.is_authenticated %}
+                <li>
+                    <a href="#score" data-toggle="tab">
+                        <span class="glyphicon glyphicon-star-empty"></span>
+                        {% trans 'Score' %}
+                    </a>
+                </li>
+                {% endif %}
             {% endif %}
         </ul>
         <div class="tab-content">
@@ -341,7 +381,7 @@ voir http://www.gnu.org/licenses/
                                 <div class="form-group col-sm-8">
                                     <label for="txtintegration">
                                         {% trans 'Copy the content of this text box and paste it in the page' %}
-                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video_interactive' slug=video.slug %}?is_iframe=true&amp;size=240" width="640" height="380" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video_interactive' slug=video.slug %}?is_iframe=true" width="640" height="380" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
                                     </label>
                                 </div>
                             </form>
@@ -354,6 +394,11 @@ voir http://www.gnu.org/licenses/
                             </form>
                         </div>
                     </div>
+                    {% if request.user.is_authenticated %}
+                    <div id="score" class="tab-pane fade container-fluid">
+                        <label>{% trans 'Score' %}</label>
+                    </div>
+                    {% endif %}
                     {% endif %}
                     <!-- /TAB share -->
                 </div>

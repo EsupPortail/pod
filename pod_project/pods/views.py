@@ -1432,8 +1432,9 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
         theme = get_object_or_404(Theme, slug=slug_t)
 
     if 'h5pp' in settings.INSTALLED_APPS:
-        from h5pp.models import h5p_contents
+        from h5pp.models import h5p_contents, h5p_points
         interactive = h5p_contents.objects.filter(title=video.title).values()
+
         if len(interactive) > 0:
             return render_to_response('videos/video_interactive.html',
                                       {'video': video, 'channel': channel, 'theme': theme,
@@ -1447,7 +1448,7 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
     else:
         messages.add_message(
             request, messages.ERROR, _(u'Interactive video is not available in this server.'))
-        raise PermissionDenied
+        return HttpResponseRedirect('/')
 
 
 @csrf_protect

@@ -410,3 +410,14 @@ CELERY_TO_ENCODE = False
 CELERY_NAME = "pod_project"
 CELERY_BACKEND = "amqp"
 CELERY_BROKER = "amqp://guest@localhost//"
+
+# H5P relative parameters
+H5P_ENABLED = False                                     # Active the module or not
+H5P_VERSION = '7.x'                                     # Current version of H5P module
+H5P_DEV_MODE = 0                                        # Active the development mode or not
+H5P_PATH = os.path.join(BASE_DIR, 'h5pp/static/h5p')    # Path to static ressources of H5PP module
+H5P_URL = '/h5p/'                                       # All H5PP pages begin with this url
+H5P_SAVE = 30                                           # How often current content state should be saved
+H5P_EXPORT = '/exports/'                                # Location of exports (packages .h5p)
+H5P_LANGUAGE = 'en'                                     # Language of the module H5P.
+BASE_URL = 'http://localhost:8000'                      # Hostname of your django app

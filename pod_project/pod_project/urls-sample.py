@@ -89,6 +89,8 @@ urlpatterns = [
         'pods.views.video_chapter', name='video_chapter'),
     url(r'^video_enrich/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_enrich', name='video_enrich'),
+    url(r'^video_interactive/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video_interactive', name='video_interactive'),
     url(r'^video_notes/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_notes', name='video_notes'),
     url(r'^get_video_encoding/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
