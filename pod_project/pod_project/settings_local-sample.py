@@ -419,5 +419,5 @@ H5P_PATH = os.path.join(BASE_DIR, 'h5pp/static/h5p')    # Path to static ressour
 H5P_URL = '/h5p/'                                       # All H5PP pages begin with this url
 H5P_SAVE = 30                                           # How often current content state should be saved
 H5P_EXPORT = '/exports/'                                # Location of exports (packages .h5p)
-H5P_LANGUAGE = 'en'                                     # Language of the module H5P.
+H5P_LANGUAGE = 'fr'                                     # Language of the module H5P.
 BASE_URL = 'http://localhost:8000'                      # Hostname of your django app

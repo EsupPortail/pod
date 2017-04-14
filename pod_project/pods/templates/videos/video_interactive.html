@@ -32,74 +32,99 @@ voir http://www.gnu.org/licenses/
 <script>
     {% if contentId %}
     $(document).ready(function() {
-        var f = $('#iedit');
-        f.load(function() {
-            f.contents().find('#id_title').hide();
-            f.contents().find('label[for=id_title').hide();
-            f.contents().find('#id_h5p_type').hide();
-            f.contents().find('.h5p-editor-iframe').contents().find('.h5peditor-form').hide();
-            f.contents().find('#back').hide();
-            f.contents().find('.h5p-admin-header').hide();
-            f.contents().find('.content').css('background-color', 'white');
-            f.contents().find('label[for="h5p-editor-iframe"]').hide();
-            f.contents().find('#h5p-content-form').submit(function() {
-                window.location.reload()
-            })
+        var score = '';
+        $('#icontent').load(function() {
+            //Content view
+            $('#icontent').contents().find('.score').hide();
+            $('#icontent').contents().find('hr').hide();
+            score = $('#icontent').contents().find('.score').html();
+            $('#score').html(score).show();
+
+            //Editor view
+            $('#icontent').contents().find('input[type="submit"').hide();
+            $('#icontent').contents().find('label[for="id_title"]').hide();
+            $('#icontent').contents().find('#id_title').hide();
+            $('#icontent').contents().find('#id_h5p_type').hide();
+            $('#icontent').contents().find('label[for="h5p-editor-iframe"').hide();
+
+            //Both
+            $('#icontent').contents().find('.h5p-admin-header').hide();
+            $('#icontent').contents().find('.content').css('background-color', 'white');
+            $('#icontent').contents().find('.configuration').hide();
+
+            setTimeout(function() {
+                $('#icontent').fadeIn('fast');
+            }, 1800)
         });
-        var g = $('#icontent');
-        g.load(function() {
-            g.contents().find('.h5p-admin-header').hide();
-            g.contents().find('.content').css('background-color', 'white');
-            {% if request.user.is_authenticated %}
-            var a = g.contents().find('.score').html();
-            g.contents().find('.score').hide();
-            $('#score').html(a);
-            {% endif %}
-        });
-        setTimeout(function() {
-            $('#icontent').show();
-        }, 1500);
-    })
-    function edit() {
-        $('#icontent').hide();
-        $('#iedit').show();
-        editor();
-    }
-    function video() {
-        $('#icontent').show();
-        $('#iedit').hide();
-    }
-    function deleteVideo() {
-        $.ajax({
-            url: '{% url 'h5plistContents' %}?contentId='+{{contentId}},
-            type: 'POST',
-            success: function() {
-                $('#button_video_back').click();
-            }
-        });
+    });
+    function action(type) {
+        switch(type) {
+            case 'edit':
+                $('#icontent').fadeOut('fast');
+                $('#icontent').contents().find('#edit').click();
+                $('#icontent').height(970);
+                setTimeout(function() {
+                    editor();
+                }, 1800);
+                $('#button_save_interactive').show();
+                $('#button_view_interactive').show();
+                $('#button_edit_interactive').hide();
+                break;
+            case 'view':
+                $('#icontent').fadeOut('fast');
+                $('#icontent').contents().find('#view').click();
+                $('#icontent').height(620);
+                $('#button_save_interactive').hide();
+                $('#button_view_interactive').hide();
+                $('#button_edit_interactive').show();
+                break;
+            case 'save':
+                $('#icontent').contents().find('input[value="Create"').click();
+                $('#icontent').height(620);
+                $('#button_save_interactive').hide();
+                $('#button_view_interactive').hide();
+                $('#button_edit_interactive').show();
+                break;
+            case 'delete':
+                $.ajax({
+                    url: '{% url 'h5plistContents' %}?contentId={{contentId}}',
+                    type: 'POST',
+                    success: function() {
+                        $('#button_video_back').click();
+                    }
+                });
+                break;
+            default:
+        }
     }
     function editor() {
-        $('#iedit').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
-        $('#iedit').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
-        $('#iedit').get(0).contentWindow.ns.$('.h5peditor-tab-li:first').hide();
-        $('#iedit').get(0).contentWindow.ns.$('.h5peditor-tab-a.h5peditor-tab-assets').click();
+        $('#icontent').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
+        $('#icontent').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
+        $('#icontent').get(0).contentWindow.ns.$('.h5peditor-tab-li:first').hide();
+        $('#icontent').get(0).contentWindow.ns.$('.h5peditor-tab-a.h5peditor-tab-assets').click();
     }
     {% else %}
     $(document).ready(function() {
-        var f = $('#icreate');
-        f.load(function() {
-            f.contents().find('#id_title').hide();
-            f.contents().find('label[for=id_title').hide();
-            f.contents().find('#id_h5p_type').hide();
-            f.contents().find('#back').hide();
-            f.contents().find('.h5p-admin-header').hide();
-            f.contents().find('.content').css('background-color', 'white');
-            f.contents().find('label[for="h5p-editor-iframe"]').hide();
-            f.contents().find('#h5p-content-form').submit(function() {
-                window.location.reload()
-            })
+        $('#icreate').load(function() {
+            $('#icreate').contents().find('#id_title').hide();
+            $('#icreate').contents().find('label[for=id_title').hide();
+            $('#icreate').contents().find('#id_h5p_type').hide();
+            $('#icreate').contents().find('#back').hide();
+            $('#icreate').contents().find('.h5p-admin-header').hide();
+            $('#icreate').contents().find('.content').css('background-color', 'white');
+            $('#icreate').contents().find('label[for="h5p-editor-iframe"]').hide();
+            $('#icreate').contents().find('input[type="submit"').hide();
         });
     });
+    function action(type) {
+        if(type == 'save') {
+            $('#icreate').hide();
+            $('#icreate').contents().find('input[value="Create"').click();
+            setTimeout(function() {
+                window.location.reload();
+            }, 1800);
+        }
+    }
     function editor() {
         $('#icreate').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
         $('#icreate').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
@@ -120,11 +145,11 @@ voir http://www.gnu.org/licenses/
         {% endfor %}
         $('#icreate').get(0).contentWindow.ns.$('.h5peditor-tab-li:first').hide();
         $('#icreate').get(0).contentWindow.ns.$('.h5peditor-tab-a.h5peditor-tab-assets').click();
-        $('#icreate').show();
+        $('#icreate').fadeIn('fast');
+        $('#button_save_interactive').show();
         $('.alert').hide();
     }
     {% endif %}
-
 </script>
 {% endblock bootstrap3_extra_head %}
 
@@ -165,10 +190,7 @@ voir http://www.gnu.org/licenses/
         {% endif %}
     {% endif %}
     {% if contentId %}
-        <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{contentId}}" style="background:white;display:none" height="620px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
-        {% if request.user.is_authenticated %}
-        <iframe id="iedit" style="background:white;display:none" height="970" width="100%" frameBorder="0"></iframe>
-        {% endif %}
+        <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{contentId}}" style="background:white;display:none;" height="620px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
     {% else %}
         {% if request.user.is_authenticated %}
         <iframe id="icreate" src="{% url "h5pcreate" %}?h5p_library=H5P.InteractiveVideo 1.14&title={{video.title}}" style="background:white;display:none" height="970" width="100%" frameBorder="0"></iframe>
@@ -185,8 +207,6 @@ voir http://www.gnu.org/licenses/
                     <span id="back">Non</span>
                     <span class="sr-only">{% trans 'Back to video' %}</span>
                 </button>
-                {% else %}
-                <strong>{% trans "La vidéo actuelle ne dispose pas de version interactive. Le propriétaire de la vidéo est l'unique utilisateur autorisé à créer de l'interactivités sur une vidéo." %}</strong>
                 {% endif %}
             </div>
         </div>
@@ -195,17 +215,27 @@ voir http://www.gnu.org/licenses/
         <h3 itemprop="name" >
             {{video.title}}
             <small>
-            {% if request.user.is_authenticated and contentId %}
-            {% if video.owner == request.user or request.user.is_superuser %}
-                <button type="submit" onClick="edit()" class="btn btn-default" id="button_edit_interactive" title="{% trans 'Edit interactive video' %}">
+            {% if request.user.is_authenticated and video.owner == request.user %}
+                {% if contentId %}        
+                <button type="submit" onClick="action('edit')" class="btn btn-default" id="button_edit_interactive" title="{% trans 'Edit interactive video' %}">
                     <span id="edit" class="glyphicon glyphicon-wrench"></span>
                     <span class="sr-only">{% trans 'Edit interactive video' %}</span>
                 </button>
-                <button type="submit" onClick="video()" class="btn btn-default" id="button_view_interactive" title="{% trans 'View interactive video' %}">
+                <button type="submit" onClick="action('view')" class="btn btn-default" id="button_view_interactive" title="{% trans 'View interactive video' %}" style="display:none;">
                     <span id="view" class="glyphicon glyphicon-blackboard"></span>
                     <span class="sr-only">{% trans 'View interactive video' %}</span>
                 </button>
+                {% endif %}
+                <button type="submit" onClick="action('save')" class="btn btn-default" id="button_save_interactive" title="{% trans 'Save interactive video' %}" style="display:none;">
+                    <span id="save" class="glyphicon glyphicon-ok-sign"></span>
+                    <span class="sr-only">{trans 'Save interactive video' %}</span>
+                </button>
             {% endif %}
+            {% if request.user.is_superuser and contentId %}
+                <button type="submit" onClick="action('delete')" class="btn btn-default" id="button_delete_video" title="{% trans 'Delete this video' %}">
+                    <span id="delete" class="glyphicon glyphicon-remove-sign"></span>
+                    <span class="sr-only">{% trans 'Delete this video' %}</span>
+                </button>
             {% endif %}
             <form method="post" action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
                 {% csrf_token %}
@@ -214,15 +244,6 @@ voir http://www.gnu.org/licenses/
                     <span class="sr-only">{% trans 'Back to video' %}</span>
                 </button>
             </form>
-            {% if request.user.is_superuser and contentId %}
-            <form method="post" id="delete_video" style="display:inline-block;">
-                {% csrf_token %}
-                <button type="submit" onClick="deleteVideo()" class="btn btn-default" id="button_delete_video" title="{% trans 'Delete this video' %}">
-                    <span id="delete" class="glyphicon glyphicon-remove-sign"></span>
-                    <span class="sr-only">{% trans 'Delete this video' %}</span>
-                </button>
-            </form>
-            {% endif %}
             </small>
         </h3>
     {% if contentId %}
@@ -396,7 +417,6 @@ voir http://www.gnu.org/licenses/
                     </div>
                     {% if request.user.is_authenticated %}
                     <div id="score" class="tab-pane fade container-fluid">
-                        <label>{% trans 'Score' %}</label>
                     </div>
                     {% endif %}
                     {% endif %}
