@@ -23,9 +23,6 @@ voir http://www.gnu.org/licenses/
 
 var Pod = ( function ( Pod ) {
 
-    // Prevents page unload alert box.
-    Pod.preventUnloadPrompt = false;
-
     // Used to prevent XHR video form upload when file field is empty.
     Pod.allowAjaxUpload = true;
 
@@ -104,22 +101,8 @@ $(document).ready(function() {
 
     /** FORM VIDEO **/
     $('form:not(#video_form)').on('submit', function() {
-    //$('form').on('submit', function() {
-        Pod.preventUnloadPrompt = true;
-        //$('#process').find('div.anim').html(ajax_image);
-        //$('#process').show();
         $('form').hide();
         return true;
-    });
-
-    $(window).bind("beforeunload", function(e) {
-        if (typeof messageBeforeUnload != 'undefined' && messageBeforeUnload != "") {
-            if (Pod.preventUnloadPrompt) {
-                return;
-            } else {
-                return messageBeforeUnload;
-            }
-        }
     });
 
     var initial = new Array();
@@ -332,8 +315,6 @@ function show_messages( msgText, msgClass, loadUrl ) {
     $msgContainer.html( $msgBox );
 
     if ( loadUrl !== false ) {
-
-        Pod.preventUnloadPrompt = true;
 
         $msgBox.delay( 4000 ).fadeOut( function( ) {
 
