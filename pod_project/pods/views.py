@@ -1441,9 +1441,12 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
                                        'contentId': interactive[0]['content_id']},
                                       context_instance=RequestContext(request))
             
-        return render_to_response('videos/video_interactive.html',
-                                  {'video': video, 'channel': channel, 'theme': theme},
-                                  context_instance=RequestContext(request))
+        if request.user.is_authenticated and (request.user == video.owner or request.user.is_superuser):    
+            return render_to_response('videos/video_interactive.html',
+                                      {'video': video, 'channel': channel, 'theme': theme},
+                                      context_instance=RequestContext(request))
+        else:
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
 
     else:
         messages.add_message(
