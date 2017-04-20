@@ -122,10 +122,10 @@ voir http://www.gnu.org/licenses/
         <span id="save" class="glyphicon glyphicon-ok-sign"></span> {% trans 'Save' %}
         <span class="sr-only">{trans 'Save interactive video' %}</span>
     </button>
-    {% if interactive %}
+    {% if interactive.h5p %}
         <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.content_id %}?title={{video.title}}" style="background:white;display:none;" height="1000" width="100%" frameBorder="0"></iframe>
     {% else %}
-        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library=H5P.InteractiveVideo 1.14&title={{video.title}}" style="background:white;display:none;" height="1000" width="100%" frameBorder="0"></iframe>
+        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}" style="background:white;display:none;" height="1000" width="100%" frameBorder="0"></iframe>
     {% endif %}
     {% if not request.GET.is_iframe%}
         <h3 itemprop="name" >

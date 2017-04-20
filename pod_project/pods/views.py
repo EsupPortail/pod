@@ -1439,9 +1439,12 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
         theme = get_object_or_404(Theme, slug=slug_t)
     interactive = None
 
-    from h5pp.models import h5p_contents
+    from h5pp.models import h5p_contents, h5p_libraries
+    h5p = None
+    version = h5p_libraries.objects.get(machine_name='H5P.InteractiveVideo')
     if h5p_contents.objects.filter(title=video.title).count() > 0:
-        interactive = h5p_contents.objects.get(title=video.title)
+        h5p = h5p_contents.objects.get(title=video.title)
+    interactive = {'h5p': h5p, 'version': version}
         
     if request.user.is_authenticated and (request.user == video.owner or request.user.is_superuser):    
         return render_to_response('videos/video_interactive.html',
