@@ -27,12 +27,49 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{{video.title}}{% endblock bootstrap3_title %}
 
 {% block bootstrap3_extra_head %}
+<!--
 <script src="{% static 'admin/js/jquery.js' %}"></script>
 <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+-->
+
 <script>
+    var editorReady = false;
+    var saveClick = false;
+
+    function chargementEditeur(){
+        //lancement interface editeur quand ce dernier est fini de charger
+        if( $('#ieditor').contents().find('.h5p-editor-iframe').length > 0 && 
+            $('#ieditor').contents().find('.h5p-editor-iframe').contents().find('.h5p-add-file').length > 0 && editorReady == false)
+        {
+            editor();
+            $('#chargement').hide();
+            $("#ieditor").fadeIn('slow');
+            $('button_save_interactive').show();
+        } else {
+            setTimeout(chargementEditeur,2000); /* rappel après 2 secondes = 2000 millisecondes */
+        }
+    }
+
     $(document).ready(function() {
-	$('#ieditor').fadeOut('slow');
+        $('#button_save_interactive').hide();
+        $('#button_save_interactive').on('click', function(){
+            saveClick = true;
+            $('#chargement').show();
+            $("#ieditor").hide();
+            $('#ieditor').contents().find('input[value="Create"').click();
+        });
+        $("#button_delete_video").on('click', function(){
+            console.log('delete');
+        });
+
+
+        chargementEditeur();
         $('#ieditor').load(function() {
+            if(saveClick == true) {
+                //redirection.
+                window.location.href = "";
+            }
+
             $('#ieditor').contents().find('#id_title').hide();
             $('#ieditor').contents().find('label[for=id_title').hide();
             $('#ieditor').contents().find('#id_h5p_type').hide();
@@ -42,11 +79,8 @@ voir http://www.gnu.org/licenses/
             $('#ieditor').contents().find('label[for="h5p-editor-iframe"]').hide();
             $('#ieditor').contents().find('input[type="submit"').hide();
         });
-        setTimeout(function() {
-            editor();
-            $('#ieditor').fadeIn('slow');
-        }, 1800);
     });
+    /*
     function action(type) {
         if(type == 'save') {
             $('#ieditor').contents().find('input[value="Create"').click();
@@ -55,7 +89,10 @@ voir http://www.gnu.org/licenses/
             }, 1800);
         }
     }
+    */
     function editor() {
+        editorReady = true;
+
         $('#ieditor').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
         $('#ieditor').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
         {% for encoding in video.get_all_encoding_height %}
@@ -79,6 +116,7 @@ voir http://www.gnu.org/licenses/
         $('#button_save_interactive').show();
         $('.alert').hide();
     }
+    
 </script>
 {% endblock bootstrap3_extra_head %}
 
@@ -118,22 +156,23 @@ voir http://www.gnu.org/licenses/
             {% endif %}
         {% endif %}
     {% endif %}
-    <button type="submit" onClick="action('save')" class="btn btn-default" id="button_save_interactive" title="{% trans 'Save interactive video' %}">
+    <button type="submit" class="btn btn-default" id="button_save_interactive" title="{% trans 'Save interactive video' %}">
         <span id="save" class="glyphicon glyphicon-ok-sign"></span> {% trans 'Save' %}
         <span class="sr-only">{trans 'Save interactive video' %}</span>
     </button>
+    <div id="chargement">Chargement en cours, veuillez patienter...</div>
     {% if interactive.h5p %}
-        <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.content_id %}?title={{video.title}}" style="background:white;display:none;" height="1000" width="100%" frameBorder="0"></iframe>
+        <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}" style="background:white; display:none" height="1000" width="100%" frameBorder="0"></iframe>
     {% else %}
-        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}" style="background:white;display:none;" height="1000" width="100%" frameBorder="0"></iframe>
+        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}" style="background:white; display:none" height="1000" width="100%" frameBorder="0"></iframe>
     {% endif %}
     {% if not request.GET.is_iframe%}
         <h3 itemprop="name" >
             {{video.title}}
             <small>
             {% if interactive %}        
-                {% if request.user.is_superuser %}
-                    <button type="submit" onClick="action('delete')" class="btn btn-default" id="button_delete_video" title="{% trans 'Delete this video' %}">
+                {% if request.user == video.owner %}
+                    <button type="submit" class="btn btn-default" id="button_delete_video" title="{% trans 'Delete this video' %}">
                         <span id="delete" class="glyphicon glyphicon-remove-sign"></span>
                         <span class="sr-only">{% trans 'Delete this video' %}</span>
                     </button>
