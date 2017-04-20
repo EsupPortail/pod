@@ -421,6 +421,12 @@ def video(request, slug, slug_c=None, slug_t=None):
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
+    interactive = None
+
+    if settings.H5P_ENABLED:
+        from h5pp.models import h5p_contents
+        if h5p_contents.objects.filter(title=video.title).count() > 0:
+            interactive = h5p_contents.objects.get(title=video.title)
 
     if video.is_draft:
         if not request.user.is_authenticated():
@@ -454,7 +460,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'form': form, 'channel': channel,
-                    'theme': theme, 'show_report': show_report},
+                    'theme': theme, 'interactive': interactive, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
         else:
@@ -469,7 +475,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                         return render_to_response(
                             'videos/video.html',
                             {'video': video, 'channel': channel,
-                                'theme': theme, 'show_report': show_report},
+                                'theme': theme, 'interactive': interactive, 'show_report': show_report},
                             context_instance=RequestContext(request)
                         )
                 else:
@@ -478,7 +484,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                     return render_to_response(
                         'videos/video.html',
                         {'video': video, 'form': form, 'channel': channel,
-                            'theme': theme, 'show_report': show_report},
+                            'theme': theme, 'interactive': interactive, 'show_report': show_report},
                         context_instance=RequestContext(request)
                     )
             else:
@@ -487,7 +493,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                 return render_to_response(
                     'videos/video.html',
                     {'video': video, 'form': form, 'channel': channel,
-                        'theme': theme, 'show_report': show_report},
+                        'theme': theme, 'interactive': interactive, 'show_report': show_report},
                     context_instance=RequestContext(request)
                 )
 
@@ -500,7 +506,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         else:
             return render_to_response(
                 'videos/video.html',
-                {'video': video, 'channel': channel, 'theme': theme,
+                {'video': video, 'channel': channel, 'theme': theme, 'interactive': interactive,
                     'notes_form': notes_form, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
@@ -510,7 +516,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         return render_to_response(
             'videos/video.html',
             {'video': video, 'channel': channel,
-                'theme': theme, 'show_report': show_report},
+                'theme': theme, 'interactive': interactive, 'show_report': show_report},
             context_instance=RequestContext(request)
         )
 
@@ -1422,6 +1428,7 @@ def video_enrich(request, slug):
 
 
 @csrf_protect
+@login_required
 def video_interactive(request, slug, slug_c=None, slug_t=None):
     video = get_object_or_404(Pod, slug=slug)
     channel = None
@@ -1430,29 +1437,20 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
+    interactive = None
 
-    if 'h5pp' in settings.INSTALLED_APPS:
-        from h5pp.models import h5p_contents, h5p_points
-        interactive = h5p_contents.objects.filter(title=video.title).values()
-
-        if len(interactive) > 0:
-            return render_to_response('videos/video_interactive.html',
-                                      {'video': video, 'channel': channel, 'theme': theme,
-                                       'contentId': interactive[0]['content_id']},
+    from h5pp.models import h5p_contents
+    if h5p_contents.objects.filter(title=video.title).count() > 0:
+        interactive = h5p_contents.objects.get(title=video.title)
+        
+    if request.user.is_authenticated and (request.user == video.owner or request.user.is_superuser):    
+        return render_to_response('videos/video_interactive.html',
+                                      {'video': video, 'channel': channel, 'theme': theme, 'interactive': interactive},
                                       context_instance=RequestContext(request))
-            
-        if request.user.is_authenticated and (request.user == video.owner or request.user.is_superuser):    
-            return render_to_response('videos/video_interactive.html',
-                                      {'video': video, 'channel': channel, 'theme': theme},
-                                      context_instance=RequestContext(request))
-        else:
-            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
-
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'Interactive video is not available in this server.'))
-        return HttpResponseRedirect('/')
-
+                request, messages.ERROR, _(u'You cannot watch this video.'))
+        raise PermissionDenied
 
 @csrf_protect
 @login_required

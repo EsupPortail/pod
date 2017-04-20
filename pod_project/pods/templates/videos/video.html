@@ -100,7 +100,45 @@ $(document).on('click', '#button_video_favorite', function (event) {
     }
     return false;
 });
+{% if H5P_ENABLED and interactive %}
+$(document).ready(function() {
+    $("#player").hide();
+    var score = '';
+    $('#icontent').load(function() {
+        //Content view
+        $('#icontent').contents().find('.score').hide();
+        $('#icontent').contents().find('hr').hide();
+        score = $('#icontent').contents().find('.score').html();
+        $('#score').html(score).show();
 
+        //Editor view
+        $('#icontent').contents().find('input[type="submit"').hide();
+        $('#icontent').contents().find('label[for="id_title"]').hide();
+        $('#icontent').contents().find('#id_title').hide();
+        $('#icontent').contents().find('#id_h5p_type').hide();
+        $('#icontent').contents().find('label[for="h5p-editor-iframe"').hide();
+
+        //Both
+        $('#icontent').contents().find('.h5p-admin-header').hide();
+        $('#icontent').contents().find('.content').css('background-color', 'white');
+        $('#icontent').contents().find('.configuration').hide();
+
+        setTimeout(function() {
+            $('#icontent').fadeIn('fast');
+        }, 1800)
+    });
+});
+$(document).on('click', '#button_video_original', function() {
+    $('#icontent').hide();
+    $('#player').show();
+    $('#button_video_original').attr('id', 'button_video_interactive');
+});
+$(document).on('click', '#button_video_interactive', function() {
+    $('#icontent').show();
+    $('#player').hide();
+    $('#button_video_interactive').attr('id', 'button_video_original');
+});
+{% endif %}
 </script>
 
 {% endblock bootstrap3_extra_head %}
@@ -184,7 +222,12 @@ $(document).on('click', '#button_video_favorite', function (event) {
         <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
         <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" />
 
-        {% include 'videos/video_player.html' %}
+        {% if H5P_ENABLED and interactive %}
+            <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{interactive.content_id}}" style="background:white;" height="620px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+            {% include 'videos/video_player.html' %}
+        {% else %}
+            {% include 'videos/video_player.html' %}
+        {% endif %}
 
         {% if not request.GET.is_iframe %}
             <h3 itemprop="name" >
@@ -232,18 +275,6 @@ $(document).on('click', '#button_video_favorite', function (event) {
                     </form>
                         {%endif%}
                     {%endif%}
-                    {% if H5P_ENABLED %}
-                    <form method="post" action="{% url 'video_interactive' slug=video.slug %}" style="display:inline-block;">
-                        {% csrf_token %}
-                            <button type="submit" class="btn btn-default" id="button_video_interactive" title="{% trans 'View interactive version of this video.' %}" >
-                                <span id="mark-as-interactive" class="glyphicon glyphicon-blackboard"></span>
-                                <span class="sr-only">{% trans 'View interactive version of this video.' %}</span>
-                            </button>
-                        <noscript>
-                            <input type="submit" value="{% trans 'Send' %}" />
-                        </noscript>
-                    </form>
-                {% endif %}
                 {% else %}
                     <button class="btn btn-link" id="button_video_favorite">
                         <span class="glyphicon glyphicon-star"></span>
@@ -255,6 +286,12 @@ $(document).on('click', '#button_video_favorite', function (event) {
                         <span class="sr-only">{% trans 'You must be logged in to report inappropriate content.' %}</span>
                     </button>
                     {% endif %}
+                {% endif %}
+                {% if H5P_ENABLED and interactive %}
+                    <button class="btn btn-default" id="button_video_original" title="{% trans 'View the video without interactivities.' %}">
+                        <span class="glyphicon glyphicon-film"></span>
+                        <span class="sr-only">{% trans 'View the video without interactivities.' %}</span>
+                    </button>
                 {% endif %}
                 </small>
             </h3><!-- end h3 title -->

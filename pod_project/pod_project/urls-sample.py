@@ -89,14 +89,21 @@ urlpatterns = [
         'pods.views.video_chapter', name='video_chapter'),
     url(r'^video_enrich/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_enrich', name='video_enrich'),
-    url(r'^video_interactive/(?P<slug>[\-\d\w]+)/$',
-        'pods.views.video_interactive', name='video_interactive'),
     url(r'^video_notes/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_notes', name='video_notes'),
     url(r'^get_video_encoding/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
         'pods.views.get_video_encoding',
         name='get_video_encoding'),
+]
 
+if settings.H5P_ENABLED:
+    urlpatterns += [
+        url(r'^video_interactive/(?P<interactive>[\-\d\w]+)/$',
+        'pods.views.video_interactive', name='video_interactive'),
+        url(r'^h5p/', include('h5pp.urls')),
+    ]
+
+urlpatterns += [
     # Channel
     url(r'^channels/$', 'pods.views.channels', name='channels'),
     url(r'^(?P<slug_c>[\-\d\w]+)/$', 'pods.views.channel', name='channel'),
@@ -108,9 +115,7 @@ urlpatterns = [
         'pods.views.video', name='video'),
     url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video', name='video'),
-
 ]
-
 
 ##
 # Add-on to serve MEDIA files when using django-admin runserver:
