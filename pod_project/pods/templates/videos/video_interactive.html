@@ -59,6 +59,8 @@ voir http://www.gnu.org/licenses/
             $("#ieditor").fadeIn('slow');
             $('#button_savecontinue_interactive').show();
             $('#button_savequit_interactive').show();
+            $('#configuration').show();
+            $('#info').show();
         } else {
             setTimeout(chargementEditeur,2000); /* rappel après 2 secondes = 2000 millisecondes */
         }
@@ -67,12 +69,17 @@ voir http://www.gnu.org/licenses/
     $(document).ready(function() {
         $('#button_savecontinue_interactive').hide();
         $('#button_savequit_interactive').hide();
-        
+        $('#configuration').hide();
+        $('#info').hide();
         // Save and continue editing
         $('#button_savecontinue_interactive').on('click', function(){
             continueClick = true;
             $('#load-message').show();
             $('.loader').show();
+            $('#info').hide();
+            $('#configuration').hide();
+            $('#button_savecontinue_interactive').hide();
+            $('#button_savequit_interactive').hide();
             $("#ieditor").hide();
             $('#ieditor').contents().find('input[value="Create"').click();
         });
@@ -80,15 +87,24 @@ voir http://www.gnu.org/licenses/
         $('#button_savequit_interactive').on('click', function() {
             quitClick = true;
             $('#load-message').show();
-            $('.loader').shw();
+            $('.loader').show();
             $("#ieditor").hide();
+            $('#info').hide();
+            $('#configuration').hide();
+            $('#button_savecontinue_interactive').hide();
+            $('#button_savequit_interactive').hide();
             $('#ieditor').contents().find('input[value="Create"').click();
         })
-
-        $("#button_delete_video").on('click', function(){
-            console.log('delete');
-        });
-
+        //Delete video
+        $('#button_delete_video').on('click', function() {
+            $.ajax({
+                url: '{% url 'h5plistContents' %}?contentId={{interactive.h5p.content_id}}',
+                type: 'POST',
+                success: function() {
+                    window.location.href = "/video/{{video.slug}}";
+                }
+            });
+        })
 
         chargementEditeur();
 
@@ -110,39 +126,32 @@ voir http://www.gnu.org/licenses/
             $('#ieditor').contents().find('input[type="submit"').hide();
         });
     });
-    /*
-    function action(type) {
-        if(type == 'save') {
-            $('#ieditor').contents().find('input[value="Create"').click();
-            setTimeout(function() {
-                $('#button_video_back').click();
-            }, 1800);
-        }
-    }
-    */
+
     function editor() {
         editorReady = true;
 
         $('#ieditor').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
         $('#ieditor').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
-        {% for encoding in video.get_all_encoding_height %}
-            {% if encoding == 240 %}
-        $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_240_URL }}');
-        $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
-            {% elif encoding == 480 %}
-        $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_480_URL }}');
-        $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
-            {% elif encoding == 720 %}
-        $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_720_URL }}');
-        $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
-            {% elif encoding == 1080 %}
-        $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_1080_URL }}');
-        $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
-            {% endif %}
-        {% endfor %}
-        $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-tab-li:first').hide();
+        {% if not interactive.h5p %}
+            {% for encoding in video.get_all_encoding_height %}
+                {% if encoding == 240 %}
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_240_URL }}');
+            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+                {% elif encoding == 480 %}
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_480_URL }}');
+            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+                {% elif encoding == 720 %}
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_720_URL }}');
+            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+                {% elif encoding == 1080 %}
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_1080_URL }}');
+            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+                {% endif %}
+            {% endfor %}
+        {% endif %}
         $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-tab-a.h5peditor-tab-assets').click();
-        $('#ieditor').fadeIn('fast');
+        $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-tab-li:first').hide();
+        $('#ieditor').fadeIn('slow');
         $('#button_save_interactive').show();
         $('.alert').hide();
     }
@@ -166,7 +175,7 @@ voir http://www.gnu.org/licenses/
             {% else %}
             <li><a href="{% url 'videos' %}">{% trans 'Videos' %}</a></li>
             {% endif %}
-            <li class="active">{{ video.title }}{% if interactive %} ({% trans 'Edit' %}){% else %} ({% trans 'Creation' %}){% endif %}</li>
+            <li class="active">{{ video.title }}{% if interactive.h5p %} ({% trans 'Edit' %}){% else %} ({% trans 'Creation' %}){% endif %}</li>
         {% endblock breadcrumbs %}
         </ol>
         {% if channel %}
@@ -187,45 +196,50 @@ voir http://www.gnu.org/licenses/
         {% endif %}
     {% endif %}
     <div id="load-message" align="center">
-        Chargement en cours, veuillez patienter...
-        <div class="loader"></div>
+        {% trans 'Loading, please wait...' %}
     </div>
-    {% if interactive.h5p %}
-        <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}" style="background:white; display:none" height="1000" width="100%" frameBorder="0"></iframe>
-    {% else %}
-        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}" style="background:white; display:none" height="1000" width="100%" frameBorder="0"></iframe>
-    {% endif %}
-    {% if not request.GET.is_iframe%}
-        <div id="save" align="center">
-            <button type="submit" class="btn btn-default" id="button_savecontinue_interactive" title="{% trans 'Save interactive video' %}">
-                <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
-                <span class="sr-only">{trans 'Save interactive video' %}</span>
-            </button>
-            <button type="submit" class="btn btn-default" id="button_savequit_interactive" title="{% trans 'Save interactive video' %}">
-                <span id="save" class="glyphicon glyphicon-new-window"></span> {% trans 'Save and return to video' %}
-                <span class="sr-only">{trans 'Save and return to video' %}</span>
-            </button>
-        </div>
+    <div class="loader"></div>
+    <div id="configuration" style="display:none;">
         <h3 itemprop="name" >
             {{video.title}}
             <small>
-            {% if interactive %}        
+            {% if interactive.h5p %}        
                 {% if request.user == video.owner %}
-                    <button type="submit" class="btn btn-default" id="button_delete_video" title="{% trans 'Delete this video' %}">
-                        <span id="delete" class="glyphicon glyphicon-remove-sign"></span>
-                        <span class="sr-only">{% trans 'Delete this video' %}</span>
-                    </button>
+                <button type="submit" class="btn btn-default" id="button_delete_video" title="{% trans 'Delete the interactive part of this video' %}">
+                    <span id="delete" class="glyphicon glyphicon-remove-sign"></span>
+                    <span class="sr-only">{% trans 'Delete the interactive part of this video' %}</span>
+                </button>
                 {% endif %}
             {% endif %}
-            <form action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
-                <button type="submit" class="btn btn-default" id="button_video_back" title="{% trans 'Back to video' %}">
-                    <span id="back" class="glyphicon glyphicon-film"></span>
-                    <span class="sr-only">{% trans 'Back to video' %}</span>
-                </button>
-            </form>
+                <form action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
+                    <button type="submit" class="btn btn-default" id="button_video_back" title="{% trans 'Back' %}">
+                        <span id="back" class="glyphicon glyphicon-circle-arrow-left"></span>
+                        <span class="sr-only">{% trans 'Back' %}</span>
+                    </button>
+                </form>
             </small>
         </h3>
-        <div class="score">
+    </div>
+    <div class="well well-sm" id="info" style="display:none;">
+        {% trans 'Do not forget to save your work regularly. Especially if you add an interaction.' %}
+        <br> 
+        {% trans "To save and continue your work click on the button [Save and continue]. If you think you have completed your work click on the button [Save and return to video]. You will be redirected to the video page." %}
+    </div>
+    {% if interactive.h5p %}
+        <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}" style="background:white;display:none;" height="990" width="100%" frameBorder="0"></iframe>
+    {% else %}
+        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}" style="background:white;display:none" height="990" width="100%" frameBorder="0"></iframe>
+    {% endif %}
+    {% if not request.GET.is_iframe%}
+        <div id="save" align="center">
+            <button type="submit" class="btn btn-default" id="button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
+                <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
+                <span class="sr-only">{trans 'Save and continue' %}</span>
+            </button>
+            <button type="submit" class="btn btn-default" id="button_savequit_interactive" title="{% trans 'Save and return to video' %}">
+                <span id="save" class="glyphicon glyphicon-new-window"></span> {% trans 'Save and return to video' %}
+                <span class="sr-only">{trans 'Save and return to video' %}</span>
+            </button>
         </div>
     {% endif %}
 </article>
