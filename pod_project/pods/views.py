@@ -424,18 +424,21 @@ def video(request, slug, slug_c=None, slug_t=None):
     h5p = None
 
     if settings.H5P_ENABLED:
-        from h5pp.models import h5p_contents
+        from h5pp.models import h5p_contents, h5p_libraries
         from h5pp.h5p.h5pmodule import getUserScore, h5pGetContentId
-        score = None
-        if h5p_contents.objects.filter(title=video.title).count() > 0:
-            h5p = h5p_contents.objects.get(title=video.title)
-            if request.user == video.owner:
-                score = getUserScore(h5p.content_id)
-            else:
-                score = getUserScore(h5p.content_id, request.user)
-                if score != None:
-                    score = score[0]
-        interactive = {'h5p': h5p, 'score': score}
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            score = None
+            if h5p_contents.objects.filter(title=video.title).count() > 0:
+                h5p = h5p_contents.objects.get(title=video.title)
+                if request.user == video.owner:
+                    score = getUserScore(h5p.content_id)
+                else:
+                    score = getUserScore(h5p.content_id, request.user)
+                    if score != None:
+                        score = score[0]
+            interactive = {'h5p': h5p, 'score': score}
+        else:
+            interactive = None
 
     if video.is_draft:
         if not request.user.is_authenticated():
