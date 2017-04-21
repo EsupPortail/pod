@@ -2580,6 +2580,10 @@ msgstr "Votre vidéo ne dispose pas de score ou aucun utilisateur n'a terminé l
 msgid "This is the first time you watch this video."
 msgstr "C'est la première fois que vous regardez cette vidéo."
 
+#: pods/templates/videos/video.html:543
+msgid "Video not finished"
+msgstr "Vidéo non terminée"
+
 #: pods/templates/videos/video_chapter.html:29
 #: pods/templates/videos/video_chapter.html:321
 #: pods/templates/videos/video_chapter.html:333
