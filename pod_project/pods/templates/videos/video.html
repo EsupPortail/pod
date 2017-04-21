@@ -122,6 +122,7 @@ $(document).ready(function() {
         $('#icontent').contents().find('.h5p-admin-header').hide();
         $('#icontent').contents().find('.content').css('background-color', 'white');
         $('#icontent').contents().find('.configuration').hide();
+        $('#icontent').fadeIn('slow');
 
         setTimeout(function() {
             $('#icontent').fadeIn('fast');
@@ -223,7 +224,7 @@ $(document).on('click', '#button_video_interactive', function() {
         <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" />
 
         {% if H5P_ENABLED and interactive %}
-            <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{interactive.content_id}}" style="background:white;" height="620px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+            <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{interactive.content_id}}" style="background:white;display:none;" height="620px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
             {% include 'videos/video_player.html' %}
         {% else %}
             {% include 'videos/video_player.html' %}
