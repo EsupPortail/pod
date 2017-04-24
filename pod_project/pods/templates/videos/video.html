@@ -100,7 +100,45 @@ $(document).on('click', '#button_video_favorite', function (event) {
     }
     return false;
 });
+{% if H5P_ENABLED and interactive.h5p %}
+$(document).ready(function() {
+    $("#player").hide();
+    $('#icontent').load(function() {
+        //Content view
+        $('#icontent').contents().find('.score').hide();
+        $('#icontent').contents().find('hr').hide();
 
+        //Editor view
+        $('#icontent').contents().find('input[type="submit"').hide();
+        $('#icontent').contents().find('label[for="id_title"]').hide();
+        $('#icontent').contents().find('#id_title').hide();
+        $('#icontent').contents().find('#id_h5p_type').hide();
+        $('#icontent').contents().find('label[for="h5p-editor-iframe"').hide();
+
+        //Both
+        $('#icontent').contents().find('.h5p-admin-header').hide();
+        $('#icontent').contents().find('.content').css('background-color', 'white');
+        $('#icontent').contents().find('.configuration').hide();
+        $('#icontent').fadeIn('slow');
+
+        setTimeout(function() {
+            $('#icontent').fadeIn('fast');
+        }, 1800)
+    });
+});
+$(document).on('click', '#button_video_original', function() {
+    $('#icontent').hide();
+    $('#player').show();
+    $('#button_video_original').hide();
+    $('#button_video_interactive').show();
+});
+$(document).on('click', '#button_video_interactive', function() {
+    $('#icontent').show();
+    $('#player').hide();
+    $('#button_video_interactive').hide();
+    $('#button_video_original').show();
+});
+{% endif %}
 </script>
 
 {% endblock bootstrap3_extra_head %}
@@ -184,7 +222,12 @@ $(document).on('click', '#button_video_favorite', function (event) {
         <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
         <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" />
 
-        {% include 'videos/video_player.html' %}
+        {% if H5P_ENABLED and interactive.h5p %}
+            <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{interactive.h5p.content_id}}" style="background:white;display:none;" height="620px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+            {% include 'videos/video_player.html' %}
+        {% else %}
+            {% include 'videos/video_player.html' %}
+        {% endif %}
 
         {% if not request.GET.is_iframe %}
             <h3 itemprop="name" >
@@ -244,6 +287,16 @@ $(document).on('click', '#button_video_favorite', function (event) {
                     </button>
                     {% endif %}
                 {% endif %}
+                {% if H5P_ENABLED and interactive.h5p %}
+                    <button class="btn btn-default" id="button_video_original" title="{% trans 'View the original video' %}">
+                        <span class="glyphicon glyphicon-film"></span>
+                        <span class="sr-only">{% trans 'View the original video' %}</span>
+                    </button>
+                    <button class="btn btn-default" id="button_video_interactive" title="{% trans 'View the interactive video' %}" style="display:none;">
+                        <span class="glyphicon glyphicon-blackboard"></span>
+                        <span class="sr-only">{% trans 'View the interactive video' %}</span>
+                    </button>
+                {% endif %}
                 </small>
             </h3><!-- end h3 title -->
         {% endif %}
@@ -279,6 +332,14 @@ $(document).on('click', '#button_video_favorite', function (event) {
                             {% trans 'Embed/Share' %}
                         </a>
                     </li>
+                    {% if request.user.is_authenticated and interactive.h5p %}
+                    <li>
+                        <a href="#score" data-toggle="tab">
+                            <span class="glyphicon glyphicon-star-empty"></span>
+                            {% trans 'Score' %}
+                        </a>
+                    </li>
+                    {% endif %}
                 {% endif %}
                 </ul>
                 <div class="tab-content">
@@ -457,6 +518,39 @@ $(document).on('click', '#button_video_favorite', function (event) {
                                 </div>
                             </form>
                         </div>
+                    </div>
+                    <div id="score" class="tab-pane fade container-fluid">
+                        <h3>{% trans 'Scoreboard' %}</h3>
+                        {% if request.user != video.owner and interactive.score %}
+                            {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
+                        {% elif request.user == video.owner and interactive.score %}
+                        <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>{% trans 'User' %}</th>
+                                        <th>Points</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in interactive.score %}
+                                    {% if user.max_points %}
+                                    <tr>
+                                        <td>{{user.user}}</td><td>{{user.points}} / {{user.max_points}}</td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td>{{user.user}}</td><td>{% trans 'Video not finished' %}</td>
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif request.user == video.owner and not interactive.score %}
+                            {% trans 'Your video does not have a score or no users have done the activities yet.' %}
+                        {% else %}
+                            {% trans 'This is the first time you watch this video.' %}
+                        {% endif %}
                     </div>
                     {% endif %}
                     <!-- /TAB share -->

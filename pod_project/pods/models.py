@@ -367,6 +367,21 @@ class Pod(Video):
             video=self, encodingType__output_height=240, encodingFormat="video/mp4")
         return encoding_240.encodingFile.url
 
+    def get_MP4_480_URL(self):
+        encoding_480 = EncodingPods.objects.get(
+            video=self, encodingType__output_height=480, encodingFormat="video/mp4")
+        return encoding_480.encodingFile.url
+
+    def get_MP4_720_URL(self):
+        encoding_720 = EncodingPods.objects.get(
+            video=self, encodingType__output_height=720, encodingFormat="video/mp4")
+        return encoding_720.encodingFile.url
+
+    def get_MP4_1080_URL(self):
+        encoding_1080 = EncodingPods.objects.get(
+            video=self, encodingType__output_height=1080, encodingFormat="video/mp4")
+        return encoding_1080.encodingFile.url
+
     def get_mediatype(self):
         # print "get_mediatype : %s - %s" %(self.id,
         # self.encodingpods_set.values_list("encodingType__mediatype",

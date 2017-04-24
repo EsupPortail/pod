@@ -37,12 +37,14 @@ voir http://www.gnu.org/licenses/
         <span class="glyphicon glyphicon-list"></span><span class="sr-only">{% trans "Chaptering" %}</span>
     </a>
     {% if user.is_staff %}
-    <a href="{% url 'video_enrich' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add enrichments to the video." %}">
-        <span class="glyphicon glyphicon-file"></span><span class="sr-only">{% trans "Enrich" %}</span>
-    </a>
-    <a href="{% url 'video_interactive' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add interactivity to the video." %}">
-        <span class="glyphicon glyphicon-blackboard"></span><span class="sr-only">{% trans "Interactive" %}</span>
-    </a>
+        <a href="{% url 'video_enrich' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add enrichments to the video." %}">
+            <span class="glyphicon glyphicon-file"></span><span class="sr-only">{% trans "Enrich" %}</span>
+        </a>
+        {% if H5P_ENABLED and interactive %}
+        <a href="{% url 'video_interactive' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add interactivity to the video." %}">
+            <span class="glyphicon glyphicon-blackboard"></span><span class="sr-only">{% trans "Interactivity" %}</span>
+        </a>
+        {% endif %}
     {% endif %}
     {% if withWatchIcon|default:'1' == '1' %}
     <a href="{% url 'video' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Watch the video." %}">

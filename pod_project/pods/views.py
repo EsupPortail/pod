@@ -421,6 +421,24 @@ def video(request, slug, slug_c=None, slug_t=None):
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
+    h5p = None
+
+    if settings.H5P_ENABLED:
+        from h5pp.models import h5p_contents, h5p_libraries
+        from h5pp.h5p.h5pmodule import getUserScore, h5pGetContentId
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            score = None
+            if h5p_contents.objects.filter(title=video.title).count() > 0:
+                h5p = h5p_contents.objects.get(title=video.title)
+                if request.user == video.owner:
+                    score = getUserScore(h5p.content_id)
+                else:
+                    score = getUserScore(h5p.content_id, request.user)
+                    if score != None:
+                        score = score[0]
+            interactive = {'h5p': h5p, 'score': score}
+        else:
+            interactive = None
 
     if video.is_draft:
         if not request.user.is_authenticated():
@@ -454,7 +472,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'form': form, 'channel': channel,
-                    'theme': theme, 'show_report': show_report},
+                    'theme': theme, 'interactive': interactive, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
         else:
@@ -469,7 +487,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                         return render_to_response(
                             'videos/video.html',
                             {'video': video, 'channel': channel,
-                                'theme': theme, 'show_report': show_report},
+                                'theme': theme, 'interactive': interactive, 'show_report': show_report},
                             context_instance=RequestContext(request)
                         )
                 else:
@@ -478,7 +496,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                     return render_to_response(
                         'videos/video.html',
                         {'video': video, 'form': form, 'channel': channel,
-                            'theme': theme, 'show_report': show_report},
+                            'theme': theme, 'interactive': interactive, 'show_report': show_report},
                         context_instance=RequestContext(request)
                     )
             else:
@@ -487,7 +505,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                 return render_to_response(
                     'videos/video.html',
                     {'video': video, 'form': form, 'channel': channel,
-                        'theme': theme, 'show_report': show_report},
+                        'theme': theme, 'interactive': interactive, 'show_report': show_report},
                     context_instance=RequestContext(request)
                 )
 
@@ -500,7 +518,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         else:
             return render_to_response(
                 'videos/video.html',
-                {'video': video, 'channel': channel, 'theme': theme,
+                {'video': video, 'channel': channel, 'theme': theme, 'interactive': interactive,
                     'notes_form': notes_form, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
@@ -510,7 +528,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         return render_to_response(
             'videos/video.html',
             {'video': video, 'channel': channel,
-                'theme': theme, 'show_report': show_report},
+                'theme': theme, 'interactive': interactive, 'show_report': show_report},
             context_instance=RequestContext(request)
         )
 
@@ -1456,6 +1474,34 @@ def video_interactive(request, slug):
     messages.add_message(
       request, messages.ERROR, _(u'Interactive video is not available in this server.'))
     raise PermissionDenied
+
+@csrf_protect
+@login_required
+def video_interactive(request, slug, slug_c=None, slug_t=None):
+    video = get_object_or_404(Pod, slug=slug)
+    channel = None
+    if slug_c:
+        channel = get_object_or_404(Channel, slug=slug_c)
+    theme = None
+    if slug_t:
+        theme = get_object_or_404(Theme, slug=slug_t)
+    interactive = None
+
+    from h5pp.models import h5p_contents, h5p_libraries
+    h5p = None
+    version = h5p_libraries.objects.get(machine_name='H5P.InteractiveVideo')
+    if h5p_contents.objects.filter(title=video.title).count() > 0:
+        h5p = h5p_contents.objects.get(title=video.title)
+    interactive = {'h5p': h5p, 'version': version}
+        
+    if request.user.is_authenticated and (request.user == video.owner or request.user.is_superuser):    
+        return render_to_response('videos/video_interactive.html',
+                                      {'video': video, 'channel': channel, 'theme': theme, 'interactive': interactive},
+                                      context_instance=RequestContext(request))
+    else:
+        messages.add_message(
+                request, messages.ERROR, _(u'You cannot watch this video.'))
+        raise PermissionDenied
 
 @csrf_protect
 @login_required
