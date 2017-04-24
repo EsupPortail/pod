@@ -57,8 +57,8 @@ voir http://www.gnu.org/licenses/
             $('#load-message').hide();
             $('.loader').hide();
             $("#ieditor").fadeIn('slow');
-            $('#button_savecontinue_interactive').show();
-            $('#button_savequit_interactive').show();
+            $('#save-low').show();
+            $('#save-up').show();
             $('#configuration').show();
             $('#info').show();
         } else {
@@ -67,32 +67,30 @@ voir http://www.gnu.org/licenses/
     }
 
     $(document).ready(function() {
-        $('#button_savecontinue_interactive').hide();
-        $('#button_savequit_interactive').hide();
         $('#configuration').hide();
         $('#info').hide();
         // Save and continue editing
-        $('#button_savecontinue_interactive').on('click', function(){
+        $('[id="button_savecontinue_interactive"]').on('click', function(){
             continueClick = true;
             $('#load-message').show();
             $('.loader').show();
             $('#info').hide();
             $('#configuration').hide();
-            $('#button_savecontinue_interactive').hide();
-            $('#button_savequit_interactive').hide();
+            $('#save-low').hide();
+            $('#save-up').hide();
             $("#ieditor").hide();
             $('#ieditor').contents().find('input[value="Create"').click();
         });
         // Save and return to video page
-        $('#button_savequit_interactive').on('click', function() {
+        $('[id="button_savequit_interactive"]').on('click', function() {
             quitClick = true;
             $('#load-message').show();
             $('.loader').show();
             $("#ieditor").hide();
             $('#info').hide();
             $('#configuration').hide();
-            $('#button_savecontinue_interactive').hide();
-            $('#button_savequit_interactive').hide();
+            $('#save-low').hide();
+            $('#save-up').hide();
             $('#ieditor').contents().find('input[value="Create"').click();
         })
         //Delete video
@@ -226,13 +224,25 @@ voir http://www.gnu.org/licenses/
         <br> 
         {% trans "To save and continue your work click on the button [Save and continue]. If you have completed your work click on the button [Save and return to video] to view your new interactive video." %}
     </div>
+    {% if not request.GET.is_iframe%}
+        <div id="save-up" align="center" style="display:none;">
+            <button type="submit" class="btn btn-default" id="button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
+                <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
+                <span class="sr-only">{trans 'Save and continue' %}</span>
+            </button>
+            <button type="submit" class="btn btn-default" id="button_savequit_interactive" title="{% trans 'Save and return to video' %}">
+                <span id="save" class="glyphicon glyphicon-new-window"></span> {% trans 'Save and return to video' %}
+                <span class="sr-only">{trans 'Save and return to video' %}</span>
+            </button>
+        </div>
+    {% endif %}
     {% if interactive.h5p %}
         <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}" style="background:white;display:none;" height="990" width="100%" frameBorder="0"></iframe>
     {% else %}
         <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}" style="background:white;display:none" height="990" width="100%" frameBorder="0"></iframe>
     {% endif %}
     {% if not request.GET.is_iframe%}
-        <div id="save" align="center">
+        <div id="save-low" align="center" style="display:none;">
             <button type="submit" class="btn btn-default" id="button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
                 <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
                 <span class="sr-only">{trans 'Save and continue' %}</span>
