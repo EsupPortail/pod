@@ -307,13 +307,20 @@ def owner_videos_list(request):
 
     videos = get_pagination(page, paginator)
 
+    if settings.H5P_ENABLED:
+        from h5pp.models import h5p_libraries
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
+        else:
+            interactive = None
+
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
                                   {"videos": videos},
                                   context_instance=RequestContext(request))
 
     return render_to_response("videos/my_videos.html",
-                              {"videos": videos},
+                              {"videos": videos, "interactive": interactive},
                               context_instance=RequestContext(request))
 
 

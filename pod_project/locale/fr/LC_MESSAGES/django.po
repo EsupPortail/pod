@@ -742,8 +742,8 @@ msgid "Do not forget to save your work regularly. Especially if you add an inter
 msgstr "N'oubliez pas de sauvegarder votre travail régulièrement. Surtout si vous ajoutez une interaction."
 
 #: pods/templates/videos/video_interactive.html:226
-msgid "To save and continue your work click on the button [Save and continue]. If you think you have completed your work click on the button [Save and return to video]. You will be redirected to the video page."
-msgstr "Pour sauvegarder et continuer votre travail cliquez sur le bouton [Sauvegarder et continuer]. Si vous pensez que vous avez terminé votre travail cliquez sur le bouton [Sauvegarder et retour à la vidéo]. Vous serez redirigé à la page de la vidéo."
+msgid "To save and continue your work click on the button [Save and continue]. If you have completed your work click on the button [Save and return to video] to view your new interactive video."
+msgstr "Pour sauvegarder et continuer votre travail cliquez sur le bouton [Sauvegarder et continuer]. Si vous avez terminé votre travail cliquez sur le bouton [Sauvegarder et retour à la vidéo] pour voir votre nouvelle vidéo interactive."
 
 #: pods/templates/videos/video_interactive.html:235
 #: pods/templates/videos/video_interactive.html:236
@@ -2581,8 +2581,8 @@ msgid "This is the first time you watch this video."
 msgstr "C'est la première fois que vous regardez cette vidéo."
 
 #: pods/templates/videos/video.html:543
-msgid "Video not finished"
-msgstr "Vidéo non terminée"
+msgid "No score available"
+msgstr "Score non disponible"
 
 #: pods/templates/videos/video_chapter.html:29
 #: pods/templates/videos/video_chapter.html:321

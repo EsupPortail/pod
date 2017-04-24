@@ -224,7 +224,7 @@ voir http://www.gnu.org/licenses/
     <div class="well well-sm" id="info" style="display:none;">
         {% trans 'Do not forget to save your work regularly. Especially if you add an interaction.' %}
         <br> 
-        {% trans "To save and continue your work click on the button [Save and continue]. If you think you have completed your work click on the button [Save and return to video]. You will be redirected to the video page." %}
+        {% trans "To save and continue your work click on the button [Save and continue]. If you have completed your work click on the button [Save and return to video] to view your new interactive video." %}
     </div>
     {% if interactive.h5p %}
         <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}" style="background:white;display:none;" height="990" width="100%" frameBorder="0"></iframe>
