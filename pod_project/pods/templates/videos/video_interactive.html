@@ -70,7 +70,7 @@ voir http://www.gnu.org/licenses/
         $('#configuration').hide();
         $('#info').hide();
         // Save and continue editing
-        $('[id="button_savecontinue_interactive"]').on('click', function(){
+        $('.button_savecontinue_interactive').on('click', function(){
             continueClick = true;
             $('#load-message').show();
             $('.loader').show();
@@ -82,15 +82,15 @@ voir http://www.gnu.org/licenses/
             $('#ieditor').contents().find('input[value="Create"').click();
         });
         // Save and return to video page
-        $('[id="button_savequit_interactive"]').on('click', function() {
+        $('.button_savequit_interactive').on('click', function() {
             quitClick = true;
             $('#load-message').show();
             $('.loader').show();
-            $("#ieditor").hide();
             $('#info').hide();
             $('#configuration').hide();
             $('#save-low').hide();
             $('#save-up').hide();
+            $("#ieditor").hide();
             $('#ieditor').contents().find('input[value="Create"').click();
         })
         //Delete video
@@ -108,10 +108,12 @@ voir http://www.gnu.org/licenses/
 
         $('#ieditor').load(function() {
             if(continueClick == true) {
-                window.location.href = "";
+                window.location.assign(window.location.href);
+                //window.location.href = "";
             }
             if(quitClick == true) {
-                window.location.href = "/video/{{video.slug}}";
+                //window.location.href = "/video/{{video.slug}}";
+                window.location.assign("/video/{{video.slug}}");
             }
 
             $('#ieditor').contents().find('#id_title').hide();
@@ -226,11 +228,11 @@ voir http://www.gnu.org/licenses/
     </div>
     {% if not request.GET.is_iframe%}
         <div id="save-up" align="center" style="display:none;">
-            <button type="submit" class="btn btn-default" id="button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
+            <button type="submit" class="btn btn-default button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
                 <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
                 <span class="sr-only">{trans 'Save and continue' %}</span>
             </button>
-            <button type="submit" class="btn btn-default" id="button_savequit_interactive" title="{% trans 'Save and return to video' %}">
+            <button type="submit" class="btn btn-default button_savequit_interactive" title="{% trans 'Save and return to video' %}">
                 <span id="save" class="glyphicon glyphicon-new-window"></span> {% trans 'Save and return to video' %}
                 <span class="sr-only">{trans 'Save and return to video' %}</span>
             </button>
@@ -243,11 +245,11 @@ voir http://www.gnu.org/licenses/
     {% endif %}
     {% if not request.GET.is_iframe%}
         <div id="save-low" align="center" style="display:none;">
-            <button type="submit" class="btn btn-default" id="button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
+            <button type="submit" class="btn btn-default button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
                 <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
                 <span class="sr-only">{trans 'Save and continue' %}</span>
             </button>
-            <button type="submit" class="btn btn-default" id="button_savequit_interactive" title="{% trans 'Save and return to video' %}">
+            <button type="submit" class="btn btn-default button_savequit_interactive" title="{% trans 'Save and return to video' %}">
                 <span id="save" class="glyphicon glyphicon-new-window"></span> {% trans 'Save and return to video' %}
                 <span class="sr-only">{trans 'Save and return to video' %}</span>
             </button>
