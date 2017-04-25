@@ -90,29 +90,26 @@ voir http://www.gnu.org/licenses/
             $('#configuration').hide();
             $('#save-low').hide();
             $('#save-up').hide();
-            $("#ieditor").hide();
+            $('#ieditor').hide();
             $('#ieditor').contents().find('input[value="Create"').click();
-        })
+        });
         //Delete video
         $('#button_delete_video').on('click', function() {
             $.ajax({
                 url: '{% url 'h5plistContents' %}?contentId={{interactive.h5p.content_id}}',
                 type: 'POST',
                 success: function() {
-                    window.location.href = "/video/{{video.slug}}";
+                    window.location.assign("/video/{{video.slug}}");
                 }
             });
-        })
+        });
 
         chargementEditeur();
 
         $('#ieditor').load(function() {
             if(continueClick == true) {
                 window.location.assign(window.location.href);
-                //window.location.href = "";
-            }
             if(quitClick == true) {
-                //window.location.href = "/video/{{video.slug}}";
                 window.location.assign("/video/{{video.slug}}");
             }
 
