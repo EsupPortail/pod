@@ -521,7 +521,7 @@ $(document).on('click', '#button_video_interactive', function() {
                     </div>
                     <div id="score" class="tab-pane fade container-fluid">
                         <h3>{% trans 'Scoreboard' %}</h3>
-                        {% if request.user != video.owner and interactive.score %}
+                        {% if request.user != video.owner and interactive.score.max_points %}
                             {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
                         {% elif request.user == video.owner and interactive.score %}
                         <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>

@@ -307,12 +307,11 @@ def owner_videos_list(request):
 
     videos = get_pagination(page, paginator)
 
+    interactive = None
     if settings.H5P_ENABLED:
         from h5pp.models import h5p_libraries
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             interactive = True
-        else:
-            interactive = None
 
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
@@ -398,6 +397,12 @@ def videos(request):
 
     videos = get_pagination(page, paginator)
 
+    interactive = None
+    if settings.H5P_ENABLED:
+        from h5pp.models import h5p_libraries
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
+
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
                                   {"videos": videos, "owners": list_owner},
@@ -410,7 +415,7 @@ def videos(request):
 
     return render_to_response("videos/videos.html",
                               {"videos": videos, "types": type, "owners": list_owner,
-                                  "disciplines": discipline, "tags_slug": tag},
+                                  "disciplines": discipline, "tags_slug": tag, "interactive": interactive},
                               context_instance=RequestContext(request))
 
 

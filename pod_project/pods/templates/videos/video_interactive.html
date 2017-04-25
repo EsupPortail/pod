@@ -86,23 +86,23 @@ voir http://www.gnu.org/licenses/
             quitClick = true;
             $('#load-message').show();
             $('.loader').show();
-            $("#ieditor").hide();
             $('#info').hide();
             $('#configuration').hide();
             $('#save-low').hide();
             $('#save-up').hide();
+            $('#ieditor').hide();
             $('#ieditor').contents().find('input[value="Create"').click();
-        })
+        });
         //Delete video
         $('#button_delete_video').on('click', function() {
             $.ajax({
                 url: '{% url 'h5plistContents' %}?contentId={{interactive.h5p.content_id}}',
                 type: 'POST',
                 success: function() {
-                    window.location.href = "/video/{{video.slug}}";
+                    window.location.href = "{% if request.is_secure %}https{% else %}http{% endif %}://{{request.get_host}}/video/{{video.slug}}";
                 }
             });
-        })
+        });
 
         chargementEditeur();
 
@@ -111,7 +111,7 @@ voir http://www.gnu.org/licenses/
                 window.location.href = "";
             }
             if(quitClick == true) {
-                window.location.href = "/video/{{video.slug}}";
+                window.location.href = "{% if request.is_secure %}https{% else %}http{% endif %}://{{request.get_host}}/video/{{video.slug}}";
             }
 
             $('#ieditor').contents().find('#id_title').hide();
