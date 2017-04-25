@@ -41,11 +41,6 @@ voir http://www.gnu.org/licenses/
         <span class="glyphicon glyphicon-file"></span><span class="sr-only">{% trans "Enrich" %}</span>
     </a>
     {% endif %}
-    {% if H5P_ENABLED and interactive %}
-    <a href="{% url 'video_interactive' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add interactivity to the video." %}">
-        <span class="glyphicon glyphicon-blackboard"></span><span class="sr-only">{% trans "Interactivity" %}</span>
-    </a>
-    {% endif %}
     {% if withWatchIcon|default:'1' == '1' %}
     <a href="{% url 'video' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Watch the video." %}">
         <span class="glyphicon glyphicon-film"></span><span class="sr-only">{% trans "Watch" %}</span>
@@ -55,6 +50,11 @@ voir http://www.gnu.org/licenses/
     <a href="{% url 'video_delete' slug=video.slug %}" class="btn btn-danger btn-xs" title="{% trans "Delete the video." %}">
         <span class="glyphicon glyphicon-remove"></span><span class="sr-only">{% trans "Delete" %}</span>
     </a>
+        {% if H5P_ENABLED and interactive %}
+        <a href="{% url 'video_interactive' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add interactivity to the video." %}">
+            <span class="glyphicon glyphicon-blackboard"></span><span class="sr-only">{% trans "Interactivity" %}</span>
+        </a>
+        {% endif %}
     {% endif %}
 </span>
 {%endif%}

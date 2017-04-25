@@ -108,13 +108,6 @@ $(document).ready(function() {
         $('#icontent').contents().find('.score').hide();
         $('#icontent').contents().find('hr').hide();
 
-        //Editor view
-        $('#icontent').contents().find('input[type="submit"').hide();
-        $('#icontent').contents().find('label[for="id_title"]').hide();
-        $('#icontent').contents().find('#id_title').hide();
-        $('#icontent').contents().find('#id_h5p_type').hide();
-        $('#icontent').contents().find('label[for="h5p-editor-iframe"').hide();
-
         //Both
         $('#icontent').contents().find('.h5p-admin-header').hide();
         $('#icontent').contents().find('.content').css('background-color', 'white');
@@ -131,12 +124,16 @@ $(document).on('click', '#button_video_original', function() {
     $('#player').show();
     $('#button_video_original').hide();
     $('#button_video_interactive').show();
+    $('#tab-score').hide();
+    $('.checkbox').show();
 });
 $(document).on('click', '#button_video_interactive', function() {
     $('#icontent').show();
     $('#player').hide();
     $('#button_video_interactive').hide();
     $('#button_video_original').show();
+    $('#tab-score').show();
+    $('.checkbox').hide();
 });
 {% endif %}
 </script>
@@ -333,7 +330,7 @@ $(document).on('click', '#button_video_interactive', function() {
                         </a>
                     </li>
                     {% if request.user.is_authenticated and interactive.h5p %}
-                    <li>
+                    <li id="tab-score">
                         <a href="#score" data-toggle="tab">
                             <span class="glyphicon glyphicon-star-empty"></span>
                             {% trans 'Score' %}
@@ -521,9 +518,7 @@ $(document).on('click', '#button_video_interactive', function() {
                     </div>
                     <div id="score" class="tab-pane fade container-fluid">
                         <h3>{% trans 'Scoreboard' %}</h3>
-                        {% if request.user != video.owner and interactive.score.max_points %}
-                            {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
-                        {% elif interactive.score and request.user == video.owner or request.user.is_superuser %}
+                        {% if interactive.score and request.user == video.owner or request.user.is_superuser %}
                         <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
                             <table class="table">
                                 <thead>
@@ -546,6 +541,8 @@ $(document).on('click', '#button_video_interactive', function() {
                                 {% endfor %}
                                 </tbody>
                             </table>
+                        {% elif request.user != video.owner and interactive.score.max_points %}
+                            {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
                         {% elif not interactive.score and request.user == video.owner or request.user.is_superuser %}
                             {% trans 'Your video does not have a score or no users have done the activities yet.' %}
                         {% else %}

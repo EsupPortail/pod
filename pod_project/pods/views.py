@@ -442,7 +442,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             score = None
             if h5p_contents.objects.filter(title=video.title).count() > 0:
                 h5p = h5p_contents.objects.get(title=video.title)
-                if request.user == video.owner:
+                if request.user == video.owner or request.user.is_superuser:
                     score = getUserScore(h5p.content_id)
                 else:
                     score = getUserScore(h5p.content_id, request.user)
