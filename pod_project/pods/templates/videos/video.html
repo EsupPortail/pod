@@ -523,7 +523,7 @@ $(document).on('click', '#button_video_interactive', function() {
                         <h3>{% trans 'Scoreboard' %}</h3>
                         {% if request.user != video.owner and interactive.score.max_points %}
                             {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
-                        {% elif request.user == video.owner and interactive.score %}
+                        {% elif interactive.score and request.user == video.owner or request.user.is_superuser %}
                         <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
                             <table class="table">
                                 <thead>
@@ -546,7 +546,7 @@ $(document).on('click', '#button_video_interactive', function() {
                                 {% endfor %}
                                 </tbody>
                             </table>
-                        {% elif request.user == video.owner and not interactive.score %}
+                        {% elif not interactive.score and request.user == video.owner or request.user.is_superuser %}
                             {% trans 'Your video does not have a score or no users have done the activities yet.' %}
                         {% else %}
                             {% trans 'This is the first time you watch this video.' %}

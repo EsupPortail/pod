@@ -772,10 +772,17 @@ def video_edit(request, slug=None):
     video_ext_accept_text = replace(
         ', '.join(settings.VIDEO_EXT_ACCEPT), ".", "").upper()
 
+    interactive = None
+    if settings.H5P_ENABLED:
+        from h5pp.models import h5p_libraries
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
+
     return render_to_response("videos/video_edit.html",
                               {'form': video_form, "referer": referer,
                                   "video_ext_accept": video_ext_accept,
-                                  "video_ext_accept_text": video_ext_accept_text},
+                                  "video_ext_accept_text": video_ext_accept_text,
+                                  "interactive": interactive},
                               context_instance=RequestContext(request))
 
 
@@ -805,17 +812,25 @@ def video_completion(request, slug):
         else:
             list_contributor = video.contributorpods_set.all()
 
+    interactive = None
+    if settings.H5P_ENABLED:
+        from h5pp.models import h5p_libraries
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
+
     if request.user.is_staff:
         return render_to_response("videos/video_completion.html",
                                   {'video': video,
                                       'list_contributor': list_contributor,
                                       'list_subtitle': list_subtitle,
-                                      'list_download': list_download},
+                                      'list_download': list_download,
+                                      'interactive': interactive},
                                   context_instance=RequestContext(request))
     else:
         return render_to_response("videos/video_completion.html",
                                   {'video': video,
-                                      'list_contributor': list_contributor},
+                                      'list_contributor': list_contributor,
+                                      'interactive': interactive},
                                   context_instance=RequestContext(request))
 
 
@@ -1232,6 +1247,12 @@ def video_chapter(request, slug):
             request, messages.ERROR, _(u'You cannot chapter this video.'))
         raise PermissionDenied
 
+    interactive = None
+    if settings.H5P_ENABLED:
+        from h5pp.models import h5p_libraries
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
+
     # get all chapter video
     list_chapter = video.chapterpods_set.all()
     if request.POST:  # some data sent
@@ -1328,7 +1349,7 @@ def video_chapter(request, slug):
         # end cancel
 
     return render_to_response("videos/video_chapter.html",
-                              {'video': video, 'list_chapter': list_chapter},
+                              {'video': video, 'list_chapter': list_chapter, 'interactive': interactive},
                               context_instance=RequestContext(request))
 
 
@@ -1348,6 +1369,12 @@ def video_enrich(request, slug):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot enrich this video.'))
         raise PermissionDenied
+
+    interactive = None
+    if settings.H5P_ENABLED:
+        from h5pp.models import h5p_libraries
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
 
     # get all video enrich
     list_enrichment = video.enrichpods_set.all()
@@ -1447,7 +1474,8 @@ def video_enrich(request, slug):
 
     return render_to_response("videos/video_enrich.html",
                               {'video': video,
-                                  'list_enrichment': list_enrichment},
+                                  'list_enrichment': list_enrichment,
+                                  'interactive': interactive},
                               context_instance=RequestContext(request))
 
 @csrf_protect
