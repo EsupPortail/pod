@@ -143,7 +143,6 @@ def channel(request, slug_c, slug_t=None):
     videos = get_pagination(page, paginator)
 
     if request.is_ajax():
-	print("AJAX")
         return render_to_response("videos/videos_list.html",
                                   {"videos": videos, "param": param},
                                   context_instance=RequestContext(request))
@@ -331,10 +330,6 @@ def favorites_videos_list(request):
     
     #RSS feed
     param = "favorites=true"
-    #if rss:
-        # traitement pour générer un flux rss
-    #    rss=True
-	#MySelectFeed()
 
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
@@ -397,7 +392,7 @@ def videos(request):
 	if param:
 	    param = param + " owner=%s" % (uowner,)
 	else:
-	    param = "owner%s" % (uowner,)
+	    param = "owner=%s" % (uowner,)
     # tags
     tag = request.GET.getlist(
         'tag') if request.GET.getlist('tag') else None
@@ -427,9 +422,32 @@ def videos(request):
     videos = get_pagination(page, paginator)
 
     if request.is_ajax():
-        return render_to_response("videos/videos_list.html",
-                                  {"videos": videos, "owners": list_owner},
-                                  context_instance=RequestContext(request))
+        some_data_to_dump = {
+	    'json_toolbar': render_to_string('maintoolbar.html',
+	        {'videos': videos, 'param': param}),
+	    'json_videols': render_to_string('videos/videos_list.html',
+	        {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param, 'csrf_token': request.COOKIES['csrftoken']})
+	}
+        data = json.dumps(some_data_to_dump)
+	print data
+	return HttpResponse(data, content_type='application/json')
+	#data_to_dump = {
+	#    'json_videols': render_to_string('videos/videos_list.html',
+	#    {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param},
+	#    context_instance=RequestContext(request)), 
+	#    'json_toolbar': render_to_string('maintoolbar.html',
+	#    {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param},
+	#    context_instance=RequestContext(request)),} 
+	#data_to_dump = {
+	#    'json_videols': render_to_string('videos/videos.html',
+	#    {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param},
+	#    context_instance=RequestContext(request)),} 
+        #data = json.dumps(data_to_dump)
+	#print data
+	#return HttpResponse(data, content_type='application/json')
+        #return render_to_response("videos/videos_list.html",
+        #                          {"videos": videos, "param": param, "owners": list_owner},
+        #                          context_instance=RequestContext(request))
 
     if is_iframe:
         return render_to_response("videos/videos_iframe.html",
@@ -1273,6 +1291,7 @@ def video_chapter(request, slug):
                         'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
                     }
                     data = json.dumps(some_data_to_dump)
+		    print data
                     return HttpResponse(data, content_type='application/json')
                 else:
                     return render_to_response("videos/video_chapter.html",
@@ -1668,7 +1687,7 @@ def search_videos(request):
     bodysearch["aggs"]['main_lang'] = {
         "terms": {"field": "main_lang", "size": 5, "order": {"_count": "asc"}}}
 
-    print json.dumps(bodysearch, indent=4)
+    #print json.dumps(bodysearch, indent=4)
 
     result = es.search(index="pod", body=bodysearch)
 

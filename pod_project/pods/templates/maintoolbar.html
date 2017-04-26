@@ -44,7 +44,10 @@ voir http://www.gnu.org/licenses/
 		<div class="col-sm-4  text-right">
             <div class="results">
             {% blocktrans count counter=videos.paginator.count %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}
-	    	<a href="http://pod-test.univ.run:8080/rss/{{ param }}" title="Click to suscribe to RSS feed">RSS</a>
+	    {% if "?" in request.get_full_path %}
+	    	<a href="http://pod-test.univ.run:8080/rss/sd/{{ param }}" title="Click to suscribe to RSS feed">RSS SD</a>
+	    	<a href="http://pod-test.univ.run:8080/rss/hd/{{ param }}" title="Click to suscribe to RSS feed">RSS HD</a>
+	    {% endif %}
 	    	<!-- <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}rss=1" title="Click to suscribe to RSS feed">RSS</a>-->
             </div>
 		</div>
