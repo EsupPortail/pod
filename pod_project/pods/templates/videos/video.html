@@ -25,8 +25,9 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{{ video.title }}{% endblock bootstrap3_title %}
 
 {% block bootstrap3_extra_head %}
-
-    {% include 'videos/extraheadplayer.html' %}
+    {% if not request.GET.h5p_is_iframe %}
+        {% include 'videos/extraheadplayer.html' %}
+    {% endif %}
 <script>
     $(document).on('submit', 'form#video_report_form', function (event) {
         $('form').show();
@@ -102,7 +103,11 @@ $(document).on('click', '#button_video_favorite', function (event) {
 });
 {% if H5P_ENABLED and interactive.h5p %}
 $(document).ready(function() {
+    {% if request.GET.h5p_is_iframe or not request.GET.is_iframe %}
     $("#player").hide();
+    {% endif %}
+    $('.checkbox').hide();
+    $('#txtintegration').hide();
     $('#icontent').load(function() {
         //Content view
         $('#icontent').contents().find('.score').hide();
@@ -113,10 +118,6 @@ $(document).ready(function() {
         $('#icontent').contents().find('.content').css('background-color', 'white');
         $('#icontent').contents().find('.configuration').hide();
         $('#icontent').fadeIn('slow');
-
-        setTimeout(function() {
-            $('#icontent').fadeIn('fast');
-        }, 1800)
     });
 });
 $(document).on('click', '#button_video_original', function() {
@@ -126,6 +127,8 @@ $(document).on('click', '#button_video_original', function() {
     $('#button_video_interactive').show();
     $('#tab-score').hide();
     $('.checkbox').show();
+    $('#txtintegration').show();
+    $('#h5pintegration').hide();
 });
 $(document).on('click', '#button_video_interactive', function() {
     $('#icontent').show();
@@ -134,6 +137,8 @@ $(document).on('click', '#button_video_interactive', function() {
     $('#button_video_original').show();
     $('#tab-score').show();
     $('.checkbox').hide();
+    $('#txtintegration').hide();
+    $('#h5pintegration').show();
 });
 {% endif %}
 </script>
@@ -221,7 +226,9 @@ $(document).on('click', '#button_video_interactive', function() {
 
         {% if H5P_ENABLED and interactive.h5p %}
             <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{interactive.h5p.content_id}}" style="background:white;display:none;" height="620px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
-            {% include 'videos/video_player.html' %}
+            {% if not request.GET.h5p_is_iframe %}
+                {% include 'videos/video_player.html' %}
+            {% endif %}
         {% else %}
             {% include 'videos/video_player.html' %}
         {% endif %}
@@ -479,7 +486,10 @@ $(document).on('click', '#button_video_interactive', function() {
                                 <div class="form-group col-sm-8">
                                     <label for="txtintegration">
                                         {% trans 'Copy the content of this text box and paste it in the page' %}
-                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                        {% if H5P_ENABLED and interactive.h5p %}
+                                            <textarea name="txtintegration" id="h5pintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&h5p_is_iframe=true" size="240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                        {% endif %}
+                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" size="240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
                                     </label>
                                 </div>
                                 <div class="form-group col-sm-4">

@@ -139,6 +139,12 @@ def channel(request, slug_c, slug_t=None):
 
     videos = get_pagination(page, paginator)
 
+    interactive = None
+    if settings.H5P_ENABLED:
+        from h5pp.models import h5p_libraries
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
+
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
                                   {"videos": videos},
@@ -151,7 +157,7 @@ def channel(request, slug_c, slug_t=None):
 
     return render_to_response("channels/channel.html",
                               {"channel": channel, "theme": theme,
-                                  "videos": videos},
+                                  "videos": videos, "interactive": interactive},
                               context_instance=RequestContext(request))
 
 
@@ -433,13 +439,14 @@ def video(request, slug, slug_c=None, slug_t=None):
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
-    h5p = None
 
+    interactive = None
     if settings.H5P_ENABLED:
         from h5pp.models import h5p_contents, h5p_libraries
         from h5pp.h5p.h5pmodule import getUserScore, h5pGetContentId
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             score = None
+            h5p = None
             if h5p_contents.objects.filter(title=video.title).count() > 0:
                 h5p = h5p_contents.objects.get(title=video.title)
                 if request.user == video.owner or request.user.is_superuser:
@@ -449,8 +456,6 @@ def video(request, slug, slug_c=None, slug_t=None):
                     if score != None:
                         score = score[0]
             interactive = {'h5p': h5p, 'score': score}
-        else:
-            interactive = None
 
     if video.is_draft:
         if not request.user.is_authenticated():
