@@ -33,6 +33,7 @@ from django.test.client import RequestFactory
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import date, timedelta
 import os
+from django.db.models import Count
 # Create your tests here.
 """
     test the channel
@@ -62,7 +63,7 @@ class ChannelTestCase(TestCase):
 	"""
 
     def test_Channel_null_attribut(self):
-        channel = Channel.objects.get(title="ChannelTest1")
+        channel = Channel.objects.annotate(video_count=Count("pod", distinct=True)).get(title="ChannelTest1")
         self.assertEqual(channel.visible, False)
         self.assertFalse(channel.slug == slugify("blabla"))
         self.assertEqual(channel.color, None)
@@ -70,7 +71,7 @@ class ChannelTestCase(TestCase):
         self.assertEqual(channel.headband, None)
         self.assertEqual(channel.style, None)
         self.assertEqual(channel.__unicode__(), 'ChannelTest1')
-        self.assertEqual(channel.video_count(), 0)
+        self.assertEqual(channel.video_count, 0)
         self.assertEqual(channel.get_absolute_url(), "/" + channel.slug + "/")
 
         print (
@@ -81,7 +82,7 @@ class ChannelTestCase(TestCase):
 	"""
 
     def test_Channel_with_attributs(self):
-        channel = Channel.objects.get(title="ChannelTest2")
+        channel = Channel.objects.annotate(video_count=Count("pod", distinct=True)).get(title="ChannelTest2")
         self.assertEqual(channel.visible, True)
         channel.color = "Blue"
         self.assertEqual(channel.color, "Blue")
@@ -89,7 +90,7 @@ class ChannelTestCase(TestCase):
         self.assertEqual(channel.headband, None)
         self.assertEqual(channel.style, "italic")
         self.assertEqual(channel.__unicode__(), 'ChannelTest2')
-        self.assertEqual(channel.video_count(), 0)
+        self.assertEqual(channel.video_count, 0)
         self.assertEqual(channel.get_absolute_url(), "/" + channel.slug + "/")
 
         print (
@@ -137,11 +138,11 @@ class ThemeTestCase(TestCase):
 	"""
 
     def test_Theme_null_attribut(self):
-        theme = Theme.objects.get(title="Theme1")
+        theme = Theme.objects.annotate(video_count=Count("pod", distinct=True)).get(title="Theme1")
         self.assertFalse(theme.slug == slugify("blabla"))
         self.assertEqual(theme.headband, None)
         self.assertEqual(theme.__unicode__(), "ChannelTest1: Theme1")
-        self.assertEqual(theme.video_count(), 0)
+        self.assertEqual(theme.video_count, 0)
         self.assertEqual(theme.description, None)
         self.assertEqual(
             theme.get_absolute_url(), "/" + theme.channel.slug + "/" + theme.slug + "/")
@@ -198,11 +199,11 @@ class TypeTestCase(TestCase):
 	"""
 
     def test_Type_null_attribut(self):
-        type1 = Type.objects.get(title="Type1")
+        type1 = Type.objects.annotate(video_count=Count("pod", distinct=True)).get(title="Type1")
         self.assertFalse(type1.slug == slugify("blabla"))
         self.assertEqual(type1.headband, None)
         self.assertEqual(type1.__unicode__(), "Type1")
-        self.assertEqual(type1.video_count(), 0)
+        self.assertEqual(type1.video_count, 0)
         self.assertEqual(type1.description, None)
 
         print (
@@ -259,11 +260,11 @@ class DisciplineTestCase(TestCase):
 	"""
 
     def test_Discipline_null_attribut(self):
-        discipline = Discipline.objects.get(title="Discipline1")
+        discipline = Discipline.objects.annotate(video_count=Count("pod", distinct=True)).get(title="Discipline1")
         self.assertFalse(discipline.slug == slugify("blabla"))
         self.assertEqual(discipline.headband, None)
         self.assertEqual(discipline.__unicode__(), "Discipline1")
-        self.assertEqual(discipline.video_count(), 0)
+        self.assertEqual(discipline.video_count, 0)
         self.assertEqual(discipline.description, None)
 
         print (

@@ -166,6 +166,7 @@ class Video(models.Model):
         _('Video'),  upload_to=get_storage_path, max_length=255)
     allow_downloading = models.BooleanField(
         _('allow downloading'), default=False)
+    is_360 = models.BooleanField(_('video 360'), default=False)
     title = models.CharField(_('Title'), max_length=250)
     slug = models.SlugField(_('Slug'), unique=True, max_length=255,
                             help_text=_(
@@ -205,6 +206,8 @@ class Video(models.Model):
     duration = models.IntegerField(
         _('Duration'), default=0, editable=False, blank=True)
     infoVideo = models.TextField(null=True, blank=True, editable=False)
+    
+    
 
     class Meta:
         ordering = ['-date_added', '-id']

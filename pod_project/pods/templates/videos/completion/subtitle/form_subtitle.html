@@ -5,7 +5,7 @@ le redistribuer et/ou le modifier sous les termes
 de la licence GNU Public Licence telle que publiée
 par la Free Software Foundation, soit dans la
 version 3 de la licence, ou (selon votre choix)
-toute version ultérieure. 
+toute version ultérieure.
 Ce programme est distribué avec l'espoir
 qu'il sera utile, mais SANS AUCUNE
 GARANTIE : sans même les garanties
@@ -23,14 +23,13 @@ voir http://www.gnu.org/licenses/
 <form  id="form_subtitle" action="{% url 'video_completion_subtitle' slug=video.slug  %}" method="post" >
     {% csrf_token %}
     <div id="formcontent" class="form-container">
-        &nbsp;
         {% if form_subtitle.errors or form_subtitle.non_field_errors %}
-            {% trans "Your form contains errors" %}: <br/>
+            {% trans "Your form contains errors:" %}<br/>
             {% for error in form_subtitle.non_field_errors %}
                 - {{error}} <br/>
             {%endfor%}
         {%endif%}
-       
+
         {% for field_hidden in form_subtitle.hidden_fields %}
         {{ field_hidden }}
         {% endfor %}

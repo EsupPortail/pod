@@ -47,6 +47,11 @@ voir http://www.gnu.org/licenses/
     </a>
     {% endif %}
     {% if not video.encoding_in_progress %}
+        {% if H5P_ENABLED and interactive %}
+            <a href="{% url 'video_interactive' slug=video.slug %}" class="btn btn-default btn-xs" title="{% trans "Add interactivity to the video." %}">
+                <span class="glyphicon glyphicon-blackboard"></span><span class="sr-only">{% trans "Interactivity" %}</span>
+            </a>
+        {% endif %}
     <a href="{% url 'video_delete' slug=video.slug %}" class="btn btn-danger btn-xs" title="{% trans "Delete the video." %}">
         <span class="glyphicon glyphicon-remove"></span><span class="sr-only">{% trans "Delete" %}</span>
     </a>
