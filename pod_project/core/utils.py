@@ -181,7 +181,7 @@ def encode_video(video_to_encode):
                             video_to_encode.encoding_status = "GET SAR"
                             video_to_encode.save()
                             sar_w, sar_h = [
-                                int(_) for _ in stream.get("sample_aspect_ratio").split(':')]
+                                int(__) for __ in stream.get("sample_aspect_ratio").split(':')]
                             sar = 1
                             if sar_w != 0 and sar_h != 0:
                                 sar = (1. * sar_w / sar_h)
