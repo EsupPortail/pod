@@ -148,14 +148,13 @@ def channel(request, slug_c, slug_t=None):
                                   context_instance=RequestContext(request))
 
     if request.GET.get('is_iframe', None):
-        print ("IFRAME")
         return render_to_response("videos/videos_iframe.html",
                                   {"videos": videos, "param": param},
                                   context_instance=RequestContext(request))
 
     return render_to_response("channels/channel.html",
                               {"channel": channel, "theme": theme,
-				  "param": param, "videos": videos},
+				  "param": param, "videos": videos}, 
                               context_instance=RequestContext(request))
 
 
@@ -358,7 +357,6 @@ def videos(request):
     utype = []
     if type:
         for t in type:
-	    print t
 	    utype.append(t.encode('utf8'))
         videos_list = videos_list.filter(type__slug__in=type)
 	param = "type=%s" % (utype,)
@@ -376,7 +374,6 @@ def videos(request):
 	    #param = param + " discipline=%s" % (discipline.encode('utf8'),)
 	else:
 	    param = "discipline=%s" % (udiscipline,)
-    print(param)
 
     # owner
     owner = request.GET.getlist(
@@ -429,22 +426,7 @@ def videos(request):
 	        {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param, 'csrf_token': request.COOKIES['csrftoken']})
 	}
         data = json.dumps(some_data_to_dump)
-	print data
 	return HttpResponse(data, content_type='application/json')
-	#data_to_dump = {
-	#    'json_videols': render_to_string('videos/videos_list.html',
-	#    {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param},
-	#    context_instance=RequestContext(request)), 
-	#    'json_toolbar': render_to_string('maintoolbar.html',
-	#    {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param},
-	#    context_instance=RequestContext(request)),} 
-	#data_to_dump = {
-	#    'json_videols': render_to_string('videos/videos.html',
-	#    {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param},
-	#    context_instance=RequestContext(request)),} 
-        #data = json.dumps(data_to_dump)
-	#print data
-	#return HttpResponse(data, content_type='application/json')
         #return render_to_response("videos/videos_list.html",
         #                          {"videos": videos, "param": param, "owners": list_owner},
         #                          context_instance=RequestContext(request))
@@ -1291,7 +1273,6 @@ def video_chapter(request, slug):
                         'player': render_to_string('videos/video_player.html', {'video': video, "csrf_token": request.COOKIES['csrftoken']})
                     }
                     data = json.dumps(some_data_to_dump)
-		    print data
                     return HttpResponse(data, content_type='application/json')
                 else:
                     return render_to_response("videos/video_chapter.html",
