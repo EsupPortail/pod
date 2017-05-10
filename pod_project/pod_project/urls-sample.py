@@ -98,7 +98,7 @@ urlpatterns = [
 
 if settings.H5P_ENABLED:
     urlpatterns += [
-        url(r'^video_interactive/(?P<interactive>[\-\d\w]+)/$',
+        url(r'^video_interactive/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_interactive', name='video_interactive'),
         url(r'^h5p/', include('h5pp.urls')),
     ]
