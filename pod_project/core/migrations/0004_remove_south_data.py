@@ -11,5 +11,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL("DROP TABLE IF EXISTS `south_migrationhistory`;")
+        migrations.RunSQL("DROP TABLE IF EXISTS south_migrationhistory;")
     ]

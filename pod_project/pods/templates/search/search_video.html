@@ -169,7 +169,7 @@ voir http://www.gnu.org/licenses/
                                         {# Provide only the top 5 owner #}
                                         {% for owner in result.aggregations.owner_full_name.buckets %}
                                             <dd>
-                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=owner_full_name:{{ owner.key|urlencode }}">
+                                                <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=owner_full_name.raw:{{ owner.key|urlencode }}">
                                                     {{ owner.key }}
                                                 </a>
                                                 ({{ owner.doc_count }})

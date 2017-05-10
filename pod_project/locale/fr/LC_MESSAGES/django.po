@@ -575,6 +575,8 @@ msgstr "Effacer"
 #: core/templates/contactus/contactus.html:41
 #: core/templates/registration/login.html:97 core/templates/userProfile.html:70
 #: core/templates/userProfile.html.py:76
+#: pods/templates/videos/video_interactive.html:215
+#: pods/templates/videos/video_interactive.html:217
 msgid "Back"
 msgstr "Retour"
 
@@ -625,6 +627,7 @@ msgstr "Connexion"
 #: pods/templates/channels/channels.html:41
 #: pods/templates/videos/video.html:141
 #: pods/templates/videos/video_edit.html:568
+#: pods/templates/videos/video_interactive.html:173
 msgid "Channels"
 msgstr "Chaînes"
 
@@ -646,6 +649,7 @@ msgstr "Types"
 #: pods/templates/videos/video.html:144 pods/templates/videos/videos.html:26
 #: pods/templates/videos/videos.html:30 pods/templates/videos/videos.html:32
 #: pods/templates/videos/videos_iframe.html:25
+#: pods/templates/videos/video_interactive.html:176
 msgid "Videos"
 msgstr "Vidéos"
 
@@ -723,6 +727,39 @@ msgstr "Mon profil"
 #: pods/templates/videos/video_delete.html:71
 msgid "Cancel"
 msgstr "Annuler"
+
+#: pods/templates/videos/video_interactive.html:178
+msgid "Creation"
+msgstr "Création"
+
+#: pods/templates/videos/video_interactive.html:208
+#: pods/templates/videos/video_interactive.html:210
+msgid "Delete the interactive part of this video"
+msgstr "Supprimer la partie interactive de cette vidéo"
+
+#: pods/templates/videos/video_interactive.html:224
+msgid "Do not forget to save your work regularly. Especially if you add an interaction."
+msgstr "N'oubliez pas de sauvegarder votre travail régulièrement. Surtout si vous ajoutez une interaction."
+
+#: pods/templates/videos/video_interactive.html:226
+msgid "To save and continue your work click on the button [Save and continue]. If you have completed your work click on the button [Save and return to video] to view your new interactive video."
+msgstr "Pour sauvegarder et continuer votre travail cliquez sur le bouton [Sauvegarder et continuer]. Si vous avez terminé votre travail cliquez sur le bouton [Sauvegarder et retour à la vidéo] pour voir votre nouvelle vidéo interactive."
+
+#: pods/templates/videos/video_interactive.html:235
+#: pods/templates/videos/video_interactive.html:236
+#: pods/templates/videos/video_interactive.html:237
+msgid "Save and continue"
+msgstr "Sauvegarder et continuer"
+
+#: pods/templates/videos/video_interactive.html:239
+#: pods/templates/videos/video_interactive.html:240
+#: pods/templates/videos/video_interactive.html:241
+msgid "Save and return to video"
+msgstr "Sauvegarder et retour à la vidéo"
+
+#: pods/templates/videos/video_interactive.html:199
+msgid "Loading, please wait..."
+msgstr "Chargement en cours, veuillez patienter..."
 
 #: core/templates/userProfile.html:95
 msgid ""
@@ -1920,6 +1957,7 @@ msgid "Recorders"
 msgstr "Enregistreurs"
 
 #: pods/models.py:1087
+#: pods/templates/videos/video.html:531
 msgid "User"
 msgstr "Utilisateur"
 
@@ -2364,6 +2402,14 @@ msgstr "Regarder"
 msgid "Delete the video."
 msgstr "Supprimer la vidéo."
 
+#: pods/templates/videos/ownertools.html:43
+msgid "Add interactivity to the video."
+msgstr "Ajoutez de l'interactivité à la vidéo."
+
+#: pods/templates/videos/ownertools.html:44
+msgid "Interactivity"
+msgstr "Interactivité"
+
 #: pods/templates/videos/video.html:44 pods/templates/videos/video.html:75
 #: pods/templates/videos/video_chapter.html:175
 #: pods/templates/videos/video_chapter.html:201
@@ -2503,6 +2549,40 @@ msgstr "Vous devez être connecté pour prendre des notes."
 #: pods/templates/videos/video_enrich.html:483
 msgid "Edit the video"
 msgstr "Modifier la vidéo"
+
+#: pods/templates/videos/video.html:291
+#: pods/templates/videos/video.html:293
+msgid "View the original video"
+msgstr "Voir la vidéo originale"
+
+#: pods/templates/videos/video.html:295
+#: pods/templates/videos/video.html:297
+msgid "View the interactive video"
+msgstr "Voir la vidéo interactive"
+
+#: pods/templates/videos/video.html:523
+msgid "Scoreboard"
+msgstr "Table des scores"
+
+#: pods/templates/videos/video.html:525
+msgid "You got the following score on this video"
+msgstr "Vous avez obtenu le score suivant"
+
+#: pods/templates/videos/video.html:527
+msgid "The scoreboard displays the users who viewed your interactive video and their results."
+msgstr "La table des scores affiche les utilisateurs ayant vues votre vidéo interactive et leurs résultats."
+
+#: pods/templates/videos/video.html:550
+msgid "Your video does not have a score or no users have done the activities yet."
+msgstr "Votre vidéo ne dispose pas de score ou aucun utilisateur n'a terminé les activités."
+
+#: pods/templates/videos/video.html:552
+msgid "This is the first time you watch this video."
+msgstr "C'est la première fois que vous regardez cette vidéo."
+
+#: pods/templates/videos/video.html:543
+msgid "No score available"
+msgstr "Score non disponible"
 
 #: pods/templates/videos/video_chapter.html:29
 #: pods/templates/videos/video_chapter.html:321
