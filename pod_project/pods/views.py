@@ -141,20 +141,24 @@ def channel(request, slug_c, slug_t=None):
     page = request.GET.get('page')
 
     videos = get_pagination(page, paginator)
+    RSS = settings.RSS_ENABLED
+    ATOM_HD = settings.ATOM_HD_ENABLED
+    ATOM_SD = settings.ATOM_SD_ENABLED
+    #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
 
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
-                                  {"videos": videos, "param": param},
+                                  {"videos": videos, "param": param, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD},
                                   context_instance=RequestContext(request))
 
     if request.GET.get('is_iframe', None):
         return render_to_response("videos/videos_iframe.html",
-                                  {"videos": videos, "param": param},
+                                  {"videos": videos, "param": param, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD},
                                   context_instance=RequestContext(request))
 
     return render_to_response("channels/channel.html",
                               {"channel": channel, "theme": theme,
-				  "param": param, "videos": videos}, 
+				  "param": param, "videos": videos, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD}, 
                               context_instance=RequestContext(request))
 
 
@@ -418,10 +422,14 @@ def videos(request):
 
     videos = get_pagination(page, paginator)
 
+    RSS = settings.RSS_ENABLED
+    ATOM_HD = settings.ATOM_HD_ENABLED
+    ATOM_SD = settings.ATOM_SD_ENABLED
+    #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
     if request.is_ajax():
         some_data_to_dump = {
 	    'json_toolbar': render_to_string('maintoolbar.html',
-	        {'videos': videos, 'param': param}),
+	        {'videos': videos, 'param': param, 'RSS': RSS, 'ATOM_HD': ATOM_HD, 'ATOM_SD': ATOM_SD}),
 	    'json_videols': render_to_string('videos/videos_list.html',
 	        {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param, 'csrf_token': request.COOKIES['csrftoken']})
 	}
@@ -438,7 +446,7 @@ def videos(request):
 
     return render_to_response("videos/videos.html",
                               {"videos": videos, "types": type, "owners": list_owner,
-                                  "disciplines": discipline, "tags_slug": tag, "param": param},
+                                  "disciplines": discipline, "tags_slug": tag, "param": param, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD},
                               context_instance=RequestContext(request))
 
 

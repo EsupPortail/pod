@@ -396,3 +396,14 @@ RECORDER_SALT = 'a.string.used.as.salt'
 # Optional settings for test:
 #   if set it's used for download and encoding test
 # HTTP_PROXY = 'http://localhost:3128/'
+
+
+##
+# Enable RSS feed and ATOM feed on channels and search results
+#
+#   - True : button to suscribe to feed appears in navigation toolbar
+#   
+#
+RSS_ENABLED = True
+ATOM_HD_ENABLED = True
+ATOM_SD_ENABLED = True

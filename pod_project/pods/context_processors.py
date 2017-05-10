@@ -31,6 +31,5 @@ def items_menu_header(request):
         'TYPES': Type.objects.all(),
         'DISCIPLINES': Discipline.objects.all(),
         # User.objects.all()
-        'OWNERS': User.objects.filter(pod__in=Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()).order_by('last_name').distinct(),
-        'RSS_ENABLED': django_settings.RSS_ENABLED
+        'OWNERS': User.objects.filter(pod__in=Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()).order_by('last_name').distinct()
     }
