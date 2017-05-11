@@ -411,14 +411,9 @@ RECORDER_SALT = 'a.string.used.as.salt'
 #   - True : button to suscribe to feed appears in navigation toolbar
 #   
 #
-<<<<<<< HEAD
 RSS_ENABLED = False
 ATOM_HD_ENABLED = False
 ATOM_SD_ENABLED = False
-=======
-RSS_ENABLED = True
-ATOM_HD_ENABLED = True
-ATOM_SD_ENABLED = True
 
 # Encode with Celery
 CELERY_TO_ENCODE = False
@@ -435,5 +430,4 @@ H5P_URL = '/h5p/'                                       # All H5PP pages begin w
 H5P_SAVE = 30                                           # How often current content state should be saved
 H5P_EXPORT = '/exports/'                                # Location of exports (packages .h5p)
 H5P_LANGUAGE = 'fr'                                     # Language of the module H5P.
-BASE_URL = 'http://localhost:8000'                      # Hostname of your django app
->>>>>>> e0a6d63711dc69e702a972bb3d6bde0e88b01180
+BASE_URL = 'http://localhost:8000'                      # Hostname of your django ap
