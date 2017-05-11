@@ -404,6 +404,6 @@ RECORDER_SALT = 'a.string.used.as.salt'
 #   - True : button to suscribe to feed appears in navigation toolbar
 #   
 #
-RSS_ENABLED = True
-ATOM_HD_ENABLED = True
-ATOM_SD_ENABLED = True
+RSS_ENABLED = False
+ATOM_HD_ENABLED = False
+ATOM_SD_ENABLED = False
