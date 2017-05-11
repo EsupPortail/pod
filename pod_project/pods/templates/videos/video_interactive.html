@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+{%comment%}
+Copyright (C) 2015 Remi Kroll et Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure.
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{%endcomment%}
+
+{% load i18n list staticfiles %}
+{% load bootstrap3 %}
+
+
+{% block bootstrap3_title %}{{video.title}}{% endblock bootstrap3_title %}
+
+{% block bootstrap3_extra_head %}
+<style>
+    .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+        margin: auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+<script>
+    var editorReady = false;
+    var continueClick = false;
+    var quitClick = false;
+
+    function chargementEditeur(){
+        //lancement interface editeur quand ce dernier est fini de charger
+        if( $('#ieditor').contents().find('.h5p-editor-iframe').length > 0 && 
+            $('#ieditor').contents().find('.h5p-editor-iframe').contents().find('.h5p-add-file').length > 0 && editorReady == false)
+        {
+            editor();
+            $('#load-message').hide();
+            $('.loader').hide();
+            $("#ieditor").fadeIn('slow');
+            $('.save-button').show();
+            $('#configuration').show();
+            $('#info').show();
+        } else {
+            setTimeout(chargementEditeur,2000); /* rappel après 2 secondes = 2000 millisecondes */
+        }
+    }
+
+    $(document).ready(function() {
+        $('#configuration').hide();
+        $('#info').hide();
+        // Save and continue editing
+        $('.button_savecontinue_interactive').on('click', function(){
+            continueClick = true;
+            $('#load-message').show();
+            $('.loader').show();
+            $('#info').hide();
+            $('#configuration').hide();
+            $('.save-button').hide();
+            $("#ieditor").hide();
+            $('#ieditor').contents().find('#submit_editor').click();
+        });
+        // Save and return to video page
+        $('.button_savequit_interactive').on('click', function() {
+            quitClick = true;
+            $('#load-message').show();
+            $('.loader').show();
+            $('#info').hide();
+            $('#configuration').hide();
+            $('.save-button').hide();
+            $('#ieditor').hide();
+            $('#ieditor').contents().find('#submit_editor').click();
+        });
+        //Delete video
+        $('#button_delete_video').on('click', function() {
+            $.ajax({
+                url: '{% url 'h5plistContents' %}?contentId={{interactive.h5p.content_id}}',
+                type: 'POST',
+                success: function() {
+                    window.location.assign("/video/{{video.slug}}");
+                }
+            });
+        });
+
+        chargementEditeur();
+
+        $('#ieditor').load(function() {
+            if(continueClick == true) {
+                window.location.assign(window.location.href);
+            }
+            if(quitClick == true) {
+                window.location.assign("/video/{{video.slug}}");
+            }
+
+            $('#ieditor').contents().find('#id_title').hide();
+            $('#ieditor').contents().find('.label_form').hide();
+            $('#ieditor').contents().find('#id_h5p_type').hide();
+            $('#ieditor').contents().find('.h5p-admin-header').hide();
+            $('#ieditor').contents().find('.content').css('background-color', 'white');
+            $('#ieditor').contents().find('.configuration').hide();
+            $('#ieditor').contents().find('#submit_editor').hide();
+        });
+    });
+
+    function editor() {
+        editorReady = true;
+
+        $('#ieditor').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
+        $('#ieditor').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
+        {% if not interactive.h5p %}
+            {% for encoding in video.get_all_encoding_height %}
+                {% if encoding == 240 %}
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_240_URL }}');
+            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+                {% elif encoding == 480 %}
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_480_URL }}');
+            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+                {% elif encoding == 720 %}
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_720_URL }}');
+            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+                {% elif encoding == 1080 %}
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_1080_URL }}');
+            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-tab-a.h5peditor-tab-assets').click();
+        $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-tab-li:first').hide();
+        $('#ieditor').fadeIn('slow');
+        $('#button_save_interactive').show();
+        $('.alert').hide();
+    }
+    
+</script>
+
+{% endblock bootstrap3_extra_head %}
+
+{% block article_title %}Interactive Video {{video.title}}{% endblock %}
+
+{% block mainToolbar %}{% endblock mainToolbar %}
+
+{% block bootstrap3_content %}
+<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+    {% if not request.GET.is_iframe %}
+        <ol class="breadcrumb">
+        {% block breadcrumbs %}
+            {{ block.super }}
+            {% if channel %}
+            <li><a href="{% url 'channels' %}">{% trans 'Channels' %}</a></li>
+            <li><a href="{% url 'channel' slug_c=channel.slug %}">{{ channel.title }}</a></li>
+            {% else %}
+            <li><a href="{% url 'videos' %}">{% trans 'Videos' %}</a></li>
+            {% endif %}
+            <li class="active">{{ video.title }}{% if interactive.h5p %} ({% trans 'Edit' %}){% else %} ({% trans 'Creation' %}){% endif %}</li>
+        {% endblock breadcrumbs %}
+        </ol>
+        {% if channel %}
+            {% if channel.headband %}
+        <div align="center" class="channelheader">
+            <img src="{{ channel.headband.url }}" alt="{% trans bandeau %} {{ channel.title }}" class="img-responsive" />
+        </div>
+        <h2>{{ channel.title }}</h2>
+            {% endif %}
+        {% endif %}
+        {% if theme %}
+            {% if theme.headband %}
+        <div align="center" class="channelheader">
+            <img src="{{ theme.headband.url }}" alt="{% trans bandeau %} {{ theme.title }}" class="img-responsive" />
+        </div>
+        <h3>{{ theme.title }}</h3>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    <div id="load-message" align="center">
+        {% trans 'Loading, please wait...' %}
+    </div>
+    <div class="loader"></div>
+    <div id="configuration" style="display:none;">
+        <h3 itemprop="name" >
+            {{video.title}}
+            <small>
+            {% if interactive.h5p %}        
+                {% if request.user == video.owner %}
+                <button type="submit" class="btn btn-default" id="button_delete_video" title="{% trans 'Delete the interactive part of this video' %}">
+                    <span id="delete" class="glyphicon glyphicon-remove-sign"></span>
+                    <span class="sr-only">{% trans 'Delete the interactive part of this video' %}</span>
+                </button>
+                {% endif %}
+            {% endif %}
+                <form action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
+                    <button type="submit" class="btn btn-default" id="button_video_back" title="{% trans 'Back' %}">
+                        <span id="back" class="glyphicon glyphicon-circle-arrow-left"></span>
+                        <span class="sr-only">{% trans 'Back' %}</span>
+                    </button>
+                </form>
+            </small>
+        </h3>
+    </div>
+    <div class="well well-sm" id="info" style="display:none;">
+        {% trans 'Do not forget to save your work regularly. Especially if you add an interaction.' %}
+        <br> 
+        {% trans "To save and continue your work click on the button [Save and continue]. If you have completed your work click on the button [Save and return to video] to view your new interactive video." %}
+    </div>
+    {% if not request.GET.is_iframe%}
+        <div class="save-button" align="center" style="display:none;">
+            <button type="submit" class="btn btn-default button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
+                <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
+                <span class="sr-only">{trans 'Save and continue' %}</span>
+            </button>
+            <button type="submit" class="btn btn-default button_savequit_interactive" title="{% trans 'Save and return to video' %}">
+                <span id="save" class="glyphicon glyphicon-new-window"></span> {% trans 'Save and return to video' %}
+                <span class="sr-only">{trans 'Save and return to video' %}</span>
+            </button>
+        </div>
+    {% endif %}
+    {% if interactive.h5p %}
+        <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}" style="background:white;display:none;" height="990" width="100%" frameBorder="0"></iframe>
+    {% else %}
+        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}" style="background:white;display:none" height="990" width="100%" frameBorder="0"></iframe>
+    {% endif %}
+    {% if not request.GET.is_iframe%}
+        <div class="save-button" align="center" style="display:none;">
+            <button type="submit" class="btn btn-default button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
+                <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
+                <span class="sr-only">{trans 'Save and continue' %}</span>
+            </button>
+            <button type="submit" class="btn btn-default button_savequit_interactive" title="{% trans 'Save and return to video' %}">
+                <span id="save" class="glyphicon glyphicon-new-window"></span> {% trans 'Save and return to video' %}
+                <span class="sr-only">{trans 'Save and return to video' %}</span>
+            </button>
+        </div>
+    {% endif %}
+</article>
+{% endblock bootstrap3_content %}
+{% block box %}{% endblock box %}

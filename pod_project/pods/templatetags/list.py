@@ -32,7 +32,7 @@ from django.conf import settings
 import random
 import datetime
 from django.utils.translation import ugettext_lazy as _
-
+from django.db.models import Count, Case, When, IntegerField, Prefetch
 from pods.models import Pod
 
 register = Library()
@@ -155,13 +155,13 @@ def user_menu(filter, queryset_user):
     html = ""
     for user in queryset_user.filter(last_name__iregex=r'^%s+' % filter):
         html += "<li class=\"subItem\"><a href=\"%s%s\">%s %s (%s)</a></li>" % (reverse(
-            'videos'), "?owner=%s" % user.username, user.last_name, user.first_name, user.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count())
+            'videos'), "?owner=%s" % user.username, user.last_name, user.first_name, user.video_count)
     return html
 
 
 @register.simple_tag()
-def video_count(owner):
-    return owner.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count()
+def video_count(obj):
+    return obj.pod_set.filter(is_draft=False, encodingpods__gt=0).distinct().count()
 
 
 @register.simple_tag()

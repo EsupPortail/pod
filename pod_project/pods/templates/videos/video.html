@@ -25,8 +25,9 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{{ video.title }}{% endblock bootstrap3_title %}
 
 {% block bootstrap3_extra_head %}
-    
-    {% include 'videos/extraheadplayer.html' %}
+    {% if not request.GET.h5p_is_iframe %}
+        {% include 'videos/extraheadplayer.html' %}
+    {% endif %}
 <script>
     $(document).on('submit', 'form#video_report_form', function (event) {
         $('form').show();
@@ -100,7 +101,46 @@ $(document).on('click', '#button_video_favorite', function (event) {
     }
     return false;
 });
+{% if H5P_ENABLED and interactive.h5p %}
+$(document).ready(function() {
+    {% if request.GET.h5p_is_iframe or not request.GET.is_iframe %}
+    $("#player").hide();
+    {% endif %}
+    $('.checkbox').hide();
+    $('#txtintegration').hide();
+    $('#icontent').load(function() {
+        //Content view
+        $('#icontent').contents().find('.score').hide();
+        $('#icontent').contents().find('hr').hide();
 
+        //Both
+        $('#icontent').contents().find('.h5p-admin-header').hide();
+        $('#icontent').contents().find('.content').css('background-color', 'white');
+        $('#icontent').contents().find('.configuration').hide();
+        $('#icontent').fadeIn('slow');
+    });
+});
+$(document).on('click', '#button_video_original', function() {
+    $('#icontent').hide();
+    $('#player').show();
+    $('#button_video_original').hide();
+    $('#button_video_interactive').show();
+    $('#tab-score').hide();
+    $('.checkbox').show();
+    $('#txtintegration').show();
+    $('#h5pintegration').hide();
+});
+$(document).on('click', '#button_video_interactive', function() {
+    $('#icontent').show();
+    $('#player').hide();
+    $('#button_video_interactive').hide();
+    $('#button_video_original').show();
+    $('#tab-score').show();
+    $('.checkbox').hide();
+    $('#txtintegration').hide();
+    $('#h5pintegration').show();
+});
+{% endif %}
 </script>
 
 {% endblock bootstrap3_extra_head %}
@@ -184,7 +224,14 @@ $(document).on('click', '#button_video_favorite', function (event) {
         <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
         <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" />
 
-        {% include 'videos/video_player.html' %}
+        {% if H5P_ENABLED and interactive.h5p %}
+            <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{interactive.h5p.content_id}}" style="background:white;display:none;" height="620px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+            {% if not request.GET.h5p_is_iframe %}
+                {% include 'videos/video_player.html' %}
+            {% endif %}
+        {% else %}
+            {% include 'videos/video_player.html' %}
+        {% endif %}
 
         {% if not request.GET.is_iframe %}
             <h3 itemprop="name" >
@@ -244,6 +291,16 @@ $(document).on('click', '#button_video_favorite', function (event) {
                     </button>
                     {% endif %}
                 {% endif %}
+                {% if H5P_ENABLED and interactive.h5p %}
+                    <button class="btn btn-default" id="button_video_original" title="{% trans 'View the original video' %}">
+                        <span class="glyphicon glyphicon-film"></span>
+                        <span class="sr-only">{% trans 'View the original video' %}</span>
+                    </button>
+                    <button class="btn btn-default" id="button_video_interactive" title="{% trans 'View the interactive video' %}" style="display:none;">
+                        <span class="glyphicon glyphicon-blackboard"></span>
+                        <span class="sr-only">{% trans 'View the interactive video' %}</span>
+                    </button>
+                {% endif %}
                 </small>
             </h3><!-- end h3 title -->
         {% endif %}
@@ -279,6 +336,14 @@ $(document).on('click', '#button_video_favorite', function (event) {
                             {% trans 'Embed/Share' %}
                         </a>
                     </li>
+                    {% if request.user.is_authenticated and interactive.h5p %}
+                    <li id="tab-score">
+                        <a href="#score" data-toggle="tab">
+                            <span class="glyphicon glyphicon-star-empty"></span>
+                            {% trans 'Score' %}
+                        </a>
+                    </li>
+                    {% endif %}
                 {% endif %}
                 </ul>
                 <div class="tab-content">
@@ -311,7 +376,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
                                     <img src="{% static 'filer/icons/image_48x48.png' %}" alt="{% trans 'File missing' %}" class="img-rounded" />
                                 {% endif %}
                                     {{ video.owner.get_full_name }}
-                                    <span class="badge">{% video_count video.owner%}</span>
+                                    <span class="badge">{% video_count video.owner %}</span>
                                 </a>
                             </li>
                             <li class="list-group-item">
@@ -324,7 +389,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
                                 {% trans 'Type' %} :
                                 <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
                                     {{ video.type.title }}
-                                    <span class="badge">{{ video.type.video_count }}</span>
+                                    <span class="badge">{% video_count video.type %}</span>
                                 </a>
                             </li>
                         {% if video.discipline.all %}
@@ -332,7 +397,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
                                 {% for disc in video.discipline.all %}
                                     <a href="{% url 'videos' %}?discipline={{ disc.slug }}" title="{{ disc.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
                                         {{ disc.title }}
-                                        <span class="badge">{{ disc.video_count }}</span>
+                                        <span class="badge">{% video_count disc %}</span>
                                     </a>
                                 {% endfor %}
                             </li>
@@ -421,7 +486,10 @@ $(document).on('click', '#button_video_favorite', function (event) {
                                 <div class="form-group col-sm-8">
                                     <label for="txtintegration">
                                         {% trans 'Copy the content of this text box and paste it in the page' %}
-                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                        {% if H5P_ENABLED and interactive.h5p %}
+                                            <textarea name="txtintegration" id="h5pintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&h5p_is_iframe=true" size="240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                        {% endif %}
+                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" size="240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
                                     </label>
                                 </div>
                                 <div class="form-group col-sm-4">
@@ -457,6 +525,39 @@ $(document).on('click', '#button_video_favorite', function (event) {
                                 </div>
                             </form>
                         </div>
+                    </div>
+                    <div id="score" class="tab-pane fade container-fluid">
+                        <h3>{% trans 'Scoreboard' %}</h3>
+                        {% if interactive.score and request.user == video.owner or request.user.is_superuser %}
+                        <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>{% trans 'User' %}</th>
+                                        <th>Points</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in interactive.score %}
+                                    {% if user.max_points %}
+                                    <tr>
+                                        <td>{{user.user}}</td><td>{{user.points}} / {{user.max_points}}</td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td>{{user.user}}</td><td>{% trans 'No score available' %}</td>
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif request.user != video.owner and interactive.score.max_points %}
+                            {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
+                        {% elif not interactive.score and request.user == video.owner or request.user.is_superuser %}
+                            {% trans 'Your video does not have a score or no users have done the activities yet.' %}
+                        {% else %}
+                            {% trans 'This is the first time you watch this video.' %}
+                        {% endif %}
                     </div>
                     {% endif %}
                     <!-- /TAB share -->
