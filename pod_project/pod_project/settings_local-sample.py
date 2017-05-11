@@ -255,6 +255,15 @@ HELP_MAIL = 'support@univ.fr'
 
 
 ##
+# Homepage shows (or not) passworded and restricted access contents.
+#   Note: if both settings are “False”, contents shown on homepage
+#         are accessible to anybody.
+#
+HOMEPAGE_SHOWS_PASSWORDED = True
+HOMEPAGE_SHOWS_RESTRICTED = True
+
+
+##
 # WebM video encoding activation:
 #
 #   True: video files will be available in both mp4 and WebM formats,
