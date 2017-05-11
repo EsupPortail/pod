@@ -85,7 +85,23 @@ voir http://www.gnu.org/licenses/
             {% if videos %}
                 <div class="results">
                     {% blocktrans count counter=videos.paginator.count %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}
-                </div>
+		    {% if RSS %}
+			<a type="application/rss+xml" href="{% url 'rss_select' qparam=param %}" title="Click to suscribe to RSS feed">
+			    <img src="/static/images/rss3_ic.png" alt="RSS" height="27px" width="27px"/></a>&nbsp;
+		    {% endif %}
+		    {% if ATOM_HD %}
+			<a type="application/atom+xml" href="{% url 'podcast_hd' qparam=param %}" title="Click to suscribe to podcasts">
+			    <img src="/static/images/videocast_hd3_ic.png" alt="HD" height="25px" width="25px"/></a>&nbsp;
+		    {% endif %}
+		    {% if ATOM_SD %}
+			<a type="application/atom+xml" href="{% url 'podcast_sd' qparam=param %}" title="Click to suscribe to podcasts">
+			    <img src="/static/images/videocast_sd3_ic.png" alt="SD" height="25px" width="25px"/></a>&nbsp;
+		    {% endif %}
+		    <!--
+			<a type="application/atom+xml" href="" title="Click to suscribe to audiocast">
+			    <img src="/static/images/audiocast3_ic.png" alt="Audio" height="25px" width="25px"/></a>
+		    -->
+		</div>
             {% endif %}
             {% if user.is_authenticated and request.user in channel.owners.all%}
                 <div class="resultschannel">

@@ -405,6 +405,16 @@ RECORDER_SALT = 'a.string.used.as.salt'
 #   if set it's used for download and encoding test
 # HTTP_PROXY = 'http://localhost:3128/'
 
+##
+# Enable RSS feed and ATOM feed on channels and search results
+#
+#   - True : button to suscribe to feed appears in navigation toolbar
+#   
+#
+RSS_ENABLED = False
+ATOM_HD_ENABLED = False
+ATOM_SD_ENABLED = False
+
 # Encode with Celery
 CELERY_TO_ENCODE = False
 CELERY_NAME = "pod_project"
@@ -420,4 +430,4 @@ H5P_URL = '/h5p/'                                       # All H5PP pages begin w
 H5P_SAVE = 30                                           # How often current content state should be saved
 H5P_EXPORT = '/exports/'                                # Location of exports (packages .h5p)
 H5P_LANGUAGE = 'fr'                                     # Language of the module H5P.
-BASE_URL = 'http://localhost:8000'                      # Hostname of your django app
+BASE_URL = 'http://localhost:8000'                      # Hostname of your django ap
