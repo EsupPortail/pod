@@ -255,10 +255,15 @@ HELP_MAIL = 'support@univ.fr'
 
 
 ##
-# Homepage shows (or not) passworded and restricted access contents.
+# Homepage settings:
+#
+#   defines how many contents are shown on homepage,
+#   and if it displays (or not) passworded and restricted access contents.
+#
 #   Note: if both settings are “False”, contents shown on homepage
 #         are accessible to anybody.
 #
+HOMEPAGE_NBR_CONTENTS_SHOWN = 9
 HOMEPAGE_SHOWS_PASSWORDED = False
 HOMEPAGE_SHOWS_RESTRICTED = True
 

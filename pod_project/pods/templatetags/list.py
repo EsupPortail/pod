@@ -189,7 +189,8 @@ def get_last_videos():
         filter_args['is_restricted'] = False
     return {
         'videos': Pod.objects.filter(**filter_args).exclude(
-            channel__visible=0).order_by("-date_added").distinct()[:9],
+            channel__visible=0).order_by(
+            "-date_added").distinct()[:settings.HOMEPAGE_NBR_CONTENTS_SHOWN],
         'DEFAULT_IMG': settings.DEFAULT_IMG
     }
 
