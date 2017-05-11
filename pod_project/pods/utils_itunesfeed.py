@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files import File
 from django.db.models import Max, Min
+from django.conf import settings
 from django.utils.feedgenerator import Rss201rev2Feed, Atom1Feed
 from string import replace
 from datetime import date, datetime
@@ -24,7 +25,7 @@ class MySelectFeed(Feed):
     author_email = settings.DEFAULT_FROM_EMAIL 
     author_link = "/"
     categories = ["Education"]
-    feed_copyright = "Creative Commons Attribution 4.0 International"
+    feed_copyright = settings.DC_COVERAGE + " " + settings.DC_RIGHTS
 
     def get_object(self, request, qparam):
 
@@ -98,7 +99,6 @@ class MySelectFeed(Feed):
                     self.title = channel.title
 		    self.description = unescape(channel.description.replace("<p>", ""))
 		    self.description = self.description.replace("</p>", "")
-		    
 		else:
 		    self.title = 'Result of search request'
 		    self.description = self.description + k + ': ' + v + ' '
@@ -106,17 +106,17 @@ class MySelectFeed(Feed):
 		    lv = v.split(',')
 		    #print 'lv :' + str(lv)
 		    if k == 'theme':
-		        theme = get_object_or_404(Theme, slug=v)
-		        VIDEOS = VIDEOS.filter(theme=theme)
+			theme = get_object_or_404(Theme, slug=v)
+			VIDEOS = VIDEOS.filter(theme=theme)
 		    if k == 'type':
 			VIDEOS = VIDEOS.filter(type__slug__in=lv)
 		    if k == 'discipline':
-		        VIDEOS = VIDEOS.filter(discipline__slug__in=lv)
+			VIDEOS = VIDEOS.filter(discipline__slug__in=lv)
 		    if k == 'owner':
-		        VIDEOS = VIDEOS.filter(owner__username__in=lv)
+			VIDEOS = VIDEOS.filter(owner__username__in=lv)
 		    if k == 'tag':
-		        v = v.encode('utf8')
-		        VIDEOS = VIDEOS.filter(tags__slug__in=lv)
+			v = v.encode('utf8')
+			VIDEOS = VIDEOS.filter(tags__slug__in=lv)
         
 	return VIDEOS
 
@@ -177,7 +177,7 @@ class PodcastHdFeed(AtomFeed):
     iTunes_name = settings.TITLE_ETB
     iTunes_email = settings.DEFAULT_FROM_EMAIL
     my_domain = Site.objects.get_current().domain
-    iTunes_image_url = 'http://' + my_domain + 'pod_ring.png'
+    iTunes_image_url = 'http://' + my_domain + '/static/images/pod_ring.png'
     feed_type = iTunesFeed
 
     def feed_extra_kwargs(self, obj):

@@ -37,8 +37,6 @@
 		{% block stats %}
 		<div class="col-sm-4  text-right">
 			<div class="results">{{request.user.favorites_set.all.count}} {% trans "videos" %}</div>
-			<!-- #<a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}rss=1" title="Click to suscribe to RSS feed">RSS</a>-->
-			<a href="http://pod-test.univ.run/rss/{{ request.GET.q }}" title="Click to suscribe to RSS feed">RSS</a>
 		</div>
 		{% endblock stats %}
 	</div>

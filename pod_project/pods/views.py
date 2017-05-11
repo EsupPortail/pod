@@ -331,8 +331,6 @@ def favorites_videos_list(request):
     videos_list = videos_list.order_by(
         "%s" % replace(order_by, "order_by_", ""))
     
-    #RSS feed
-    param = "favorites=true"
 
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
@@ -345,7 +343,7 @@ def favorites_videos_list(request):
                                   context_instance=RequestContext(request))
 
     return render_to_response("favorites/my_favorites.html",
-                              {"videos": videos, "param": param},
+                              {"videos": videos},
                               context_instance=RequestContext(request))
 
 
