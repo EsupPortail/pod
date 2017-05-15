@@ -27,7 +27,9 @@ from pods.forms import MediacoursesForm
 from pods.forms import EnrichPodsForm
 from pods.forms import SearchForm
 from pods.models import *
+from pods.utils_rssfeed import MySelectFeed
 from django.contrib import messages
+
 # Replaced to allow JSON serialization of localized messages.
 from django.utils.translation import ugettext as _
 # from django.utils.translation import ugettext_lazy as _
@@ -122,9 +124,12 @@ def channel(request, slug_c, slug_t=None):
 
     videos_list = VIDEOS.filter(channel=channel)
 
+    param = "channel=%s" % (slug_c,)
+
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
         videos_list = videos_list.filter(theme=theme)
+	param = "channel=%s&theme=%s" % (slug_c, slug_t.encode('utf8'))
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
         'orderby') else "order_by_-date_added"
@@ -138,6 +143,10 @@ def channel(request, slug_c, slug_t=None):
     page = request.GET.get('page')
 
     videos = get_pagination(page, paginator)
+    RSS = settings.RSS_ENABLED
+    ATOM_HD = settings.ATOM_HD_ENABLED
+    ATOM_SD = settings.ATOM_SD_ENABLED
+    #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
 
     interactive = None
     if settings.H5P_ENABLED:
@@ -147,17 +156,17 @@ def channel(request, slug_c, slug_t=None):
 
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
-                                  {"videos": videos},
+                                  {"videos": videos, "param": param, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD},
                                   context_instance=RequestContext(request))
 
     if request.GET.get('is_iframe', None):
         return render_to_response("videos/videos_iframe.html",
-                                  {"videos": videos},
+                                  {"videos": videos, "param": param, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD},
                                   context_instance=RequestContext(request))
 
     return render_to_response("channels/channel.html",
                               {"channel": channel, "theme": theme,
-                                  "videos": videos, "interactive": interactive},
+				   "param": param, "videos": videos, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD, "interactive": interactive}, 
                               context_instance=RequestContext(request))
 
 
@@ -341,6 +350,7 @@ def favorites_videos_list(request):
         'orderby') else "order_by_-date_added"
     videos_list = videos_list.order_by(
         "%s" % replace(order_by, "order_by_", ""))
+    
 
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
@@ -361,32 +371,59 @@ def videos(request):
     videos_list = VIDEOS
     is_iframe = request.GET.get('is_iframe', None)
 
+    param = None
+
     # type
     type = request.GET.getlist(
         'type') if request.GET.getlist('type') else None
+    utype = []
     if type:
+        for t in type:
+	    utype.append(t.encode('utf8'))
         videos_list = videos_list.filter(type__slug__in=type)
+	param = "type=%s" % (utype,)
 
     # discipline
+    udiscipline = []
     discipline = request.GET.getlist(
         'discipline') if request.GET.getlist('discipline') else None
     if discipline:
         videos_list = videos_list.filter(discipline__slug__in=discipline)
+	for d in discipline:
+	    udiscipline.append(d.encode('utf8'))
+	if param:
+	    param = param + " discipline=%s" % (udiscipline,)
+	    #param = param + " discipline=%s" % (discipline.encode('utf8'),)
+	else:
+	    param = "discipline=%s" % (udiscipline,)
 
     # owner
     owner = request.GET.getlist(
         'owner') if request.GET.getlist('owner') else None
     list_owner = None
     if owner:
+        uowner = []
+        for o in owner:
+	    uowner.append(o.encode('utf8'))
         videos_list = videos_list.filter(owner__username__in=owner)
         if not is_iframe:
             list_owner = User.objects.filter(username__in=owner)
-
+	if param:
+	    param = param + " owner=%s" % (uowner,)
+	else:
+	    param = "owner=%s" % (uowner,)
     # tags
     tag = request.GET.getlist(
         'tag') if request.GET.getlist('tag') else None
     if tag:
+        utag = []
+	for g in tag:
+	    utag.append(g.encode('utf8'))
         videos_list = videos_list.filter(tags__slug__in=tag).distinct()
+	if param:
+	    param = param + " tag=%s" % (utag,)
+	else:
+	    param = "tag=%s" % (utag,)
     # Food.objects.filter(tags__name__in=["delicious", "red"]).distinct()
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
@@ -403,16 +440,29 @@ def videos(request):
 
     videos = get_pagination(page, paginator)
 
+    RSS = settings.RSS_ENABLED
+    ATOM_HD = settings.ATOM_HD_ENABLED
+    ATOM_SD = settings.ATOM_SD_ENABLED
+    #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
+  
     interactive = None
     if settings.H5P_ENABLED:
         from h5pp.models import h5p_libraries
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             interactive = True
-
+            
     if request.is_ajax():
-        return render_to_response("videos/videos_list.html",
-                                  {"videos": videos, "owners": list_owner},
-                                  context_instance=RequestContext(request))
+        some_data_to_dump = {
+	    'json_toolbar': render_to_string('maintoolbar.html',
+	        {'videos': videos, 'param': param, 'RSS': RSS, 'ATOM_HD': ATOM_HD, 'ATOM_SD': ATOM_SD}),
+	    'json_videols': render_to_string('videos/videos_list.html',
+	        {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param})
+	}
+        data = json.dumps(some_data_to_dump)
+	return HttpResponse(data, content_type='application/json')
+        #return render_to_response("videos/videos_list.html",
+        #                          {"videos": videos, "param": param, "owners": list_owner},
+        #                          context_instance=RequestContext(request))
 
     if is_iframe:
         return render_to_response("videos/videos_iframe.html",
@@ -421,7 +471,7 @@ def videos(request):
 
     return render_to_response("videos/videos.html",
                               {"videos": videos, "types": type, "owners": list_owner,
-                                  "disciplines": discipline, "tags_slug": tag, "interactive": interactive},
+                                  "disciplines": discipline, "tags_slug": tag, "param": param, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD, "interactive": interactive},
                               context_instance=RequestContext(request))
 
 
@@ -433,12 +483,16 @@ def video(request, slug, slug_c=None, slug_t=None):
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Pod, id=id)
     show_report = getattr(settings, 'SHOW_REPORT', False)
+    param = None
     channel = None
     if slug_c:
         channel = get_object_or_404(Channel, slug=slug_c)
+	param = "slug_c=%s" % (str(slug_c),)
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
+
+	param = param + "slug_t=%s" % (str(slug_t),)
 
     interactive = None
     if settings.H5P_ENABLED:
@@ -535,7 +589,7 @@ def video(request, slug, slug_c=None, slug_t=None):
         else:
             return render_to_response(
                 'videos/video.html',
-                {'video': video, 'channel': channel, 'theme': theme, 'interactive': interactive,
+                {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
                     'notes_form': notes_form, 'show_report': show_report},
                 context_instance=RequestContext(request)
             )
@@ -544,7 +598,7 @@ def video(request, slug, slug_c=None, slug_t=None):
     else:
         return render_to_response(
             'videos/video.html',
-            {'video': video, 'channel': channel,
+            {'video': video, 'channel': channel, 'param': param,
                 'theme': theme, 'interactive': interactive, 'show_report': show_report},
             context_instance=RequestContext(request)
         )
@@ -1758,7 +1812,7 @@ def search_videos(request):
     bodysearch["aggs"]['main_lang'] = {
         "terms": {"field": "main_lang", "size": 5, "order": {"_count": "asc"}}}
 
-    print json.dumps(bodysearch, indent=4)
+    #print json.dumps(bodysearch, indent=4)
 
     result = es.search(index="pod", body=bodysearch)
 

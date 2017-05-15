@@ -471,19 +471,23 @@ function createCookie(name,value,days) {
 
 function get_ajax_url(newurl, attrs) {
     $("#objects_list").css("height",$("#objects_list").height());
-    $(".mainToolbar").hide();
+    //$(".mainToolbar").hide();
     var filter_is_visible = $('#filters').is(":visible")
     $('#filters').hide();
     $( "#objects_list" ).fadeOut("fast", function() {
         $( "#objects_list" ).html( ajax_image ).fadeIn("fast", function() {
             $.get( newurl, attrs, function( data ) {
                 $( "#objects_list" ).fadeOut("fast", function() {
-                    $( "#objects_list" ).html( data );
+                    $( "#objects_list" ).html( data.json_videols );
                     setOrderBy();
                     $("a.show-desc span").hide();
                     $( "#objects_list" ).fadeIn("fast");
                     $("#objects_list").css("height","auto");
                 });
+                $( "#toolbar" ).fadeOut("fast", function() {
+                    $( "#toolbar" ).html( data.json_toolbar );
+                    $( "#toolbar" ).fadeIn("fast");
+		});
 
                 if(attrs){
                     if (window.history && window.history.pushState) {
@@ -498,7 +502,8 @@ function get_ajax_url(newurl, attrs) {
                     }
                 }
                 setPerPage();
-                $(".mainToolbar").show();
+                //$(".mainToolbar").show();
+
                 if(filter_is_visible) $('#filters').show();
             }).fail(function() { alert( "error" ); });
         });
