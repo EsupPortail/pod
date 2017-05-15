@@ -456,7 +456,7 @@ def videos(request):
 	    'json_toolbar': render_to_string('maintoolbar.html',
 	        {'videos': videos, 'param': param, 'RSS': RSS, 'ATOM_HD': ATOM_HD, 'ATOM_SD': ATOM_SD}),
 	    'json_videols': render_to_string('videos/videos_list.html',
-	        {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param, 'csrf_token': request.COOKIES['csrftoken']})
+	        {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param})
 	}
         data = json.dumps(some_data_to_dump)
 	return HttpResponse(data, content_type='application/json')
