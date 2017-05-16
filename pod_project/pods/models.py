@@ -308,7 +308,7 @@ class Pod(Video):
         _('hash_id'),
         help_text=_(
             u'Hashcode to retrieve de video'),
-        max_length=100, blank=True, null=True)
+        max_length=100, blank=True, null=True, default=None)
 
     class Meta:
         verbose_name = _("Video")
