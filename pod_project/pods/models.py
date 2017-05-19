@@ -43,6 +43,7 @@ from django.core.exceptions import ValidationError
 from core.models import Video, get_storage_path, EncodingType
 import base64
 import logging
+from django.forms.formsets import ORDERING_FIELD_NAME
 logger = logging.getLogger(__name__)
 import unicodedata
 import json
@@ -366,6 +367,21 @@ class Pod(Video):
         encoding_240 = EncodingPods.objects.get(
             video=self, encodingType__output_height=240, encodingFormat="video/mp4")
         return encoding_240.encodingFile.url
+
+    def get_MP4_480_URL(self):
+        encoding_480 = EncodingPods.objects.get(
+            video=self, encodingType__output_height=480, encodingFormat="video/mp4")
+        return encoding_480.encodingFile.url
+
+    def get_MP4_720_URL(self):
+        encoding_720 = EncodingPods.objects.get(
+            video=self, encodingType__output_height=720, encodingFormat="video/mp4")
+        return encoding_720.encodingFile.url
+
+    def get_MP4_1080_URL(self):
+        encoding_1080 = EncodingPods.objects.get(
+            video=self, encodingType__output_height=1080, encodingFormat="video/mp4")
+        return encoding_1080.encodingFile.url
 
     def get_mediatype(self):
         # print "get_mediatype : %s - %s" %(self.id,
@@ -1108,3 +1124,47 @@ class ReportVideo(models.Model):
         verbose_name = _("Report")
         verbose_name_plural = _("Reports")
         unique_together = ('video', 'user',)
+
+@python_2_unicode_compatible
+class Rssfeed(models.Model):
+    AUDIO = 'A'
+    VIDEO = 'V'
+    TYPE_CHOICES = (
+        (AUDIO, 'Audio'),
+        (VIDEO, 'Vidéo'),
+    )
+    title = models.CharField(max_length=200, blank=False, unique_for_year='date_update')
+    description = models.TextField(blank=False)
+    link_rss = models.URLField(max_length=200, blank=False)
+    type_rss = models.CharField(max_length=1,
+                           choices=TYPE_CHOICES,
+                           default=AUDIO)
+    year = models.PositiveSmallIntegerField(default=2017)
+    date_update = models.DateTimeField(auto_now=True)
+    # récupérer le user à la création
+    owner = models.ForeignKey(User, blank=False, null=False, on_delete=models.PROTECT, default=1)
+    filters = models.TextField(blank=True)
+    fil_type_pod = models.ForeignKey(Type, verbose_name=_('Type'))
+    fil_discipline = models.ManyToManyField(
+        Discipline, blank=True, verbose_name=_('Disciplines'))
+    fil_channel = models.ManyToManyField(
+        Channel, verbose_name=_('Channels'), blank=True)
+    fil_theme = models.ManyToManyField(
+        Theme, verbose_name=_('Themes'), blank=True)
+    limit = models.SmallIntegerField(verbose_name=_('Count items'),
+                                     help_text=_(u'Keep 0 to mean all items'),default=0)
+    is_up = models.BooleanField(verbose_name=_('Visible'),
+        help_text=_(
+            u'If this box is checked, the video will be visible and accessible by anyone.'),
+        default=True)
+    
+    class Meta:
+        verbose_name = _("RSS")
+        verbose_name_plural = _("RSS")
+        
+        
+    def __unicode__(self):
+        return self.title
+
+    def __str__(self):
+        return self.title
