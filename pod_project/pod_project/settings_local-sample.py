@@ -259,7 +259,7 @@ HELP_MAIL = 'support@univ.fr'
 #   Note: if both settings are “False”, contents shown on homepage
 #         are accessible to anybody.
 #
-HOMEPAGE_SHOWS_PASSWORDED = True
+HOMEPAGE_SHOWS_PASSWORDED = False
 HOMEPAGE_SHOWS_RESTRICTED = True
 
 
@@ -418,7 +418,7 @@ RECORDER_SALT = 'a.string.used.as.salt'
 # Enable RSS feed and ATOM feed on channels and search results
 #
 #   - True : button to suscribe to feed appears in navigation toolbar
-#   
+#
 #
 RSS_ENABLED = False
 ATOM_HD_ENABLED = False
