@@ -200,14 +200,9 @@ class Video(models.Model):
 
     to_encode = models.BooleanField(default=False, editable=False)
 
-    overview = models.ImageField(
-        _('Overview'), null=True, upload_to=get_storage_path, blank=True, max_length=255, editable=False)
-
     duration = models.IntegerField(
         _('Duration'), default=0, editable=False, blank=True)
     infoVideo = models.TextField(null=True, blank=True, editable=False)
-    
-    
 
     class Meta:
         ordering = ['-date_added', '-id']
