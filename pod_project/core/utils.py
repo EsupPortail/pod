@@ -53,8 +53,6 @@ ENCODE_VIDEO_CMD = getattr(settings, 'ENCODE_VIDEO_CMD',
                            "%(ffprobe)s -v quiet -show_format -show_streams -print_format json -i %(src)s")
 ADD_THUMBNAILS_CMD = getattr(settings, 'ADD_THUMBNAILS_CMD',
                              "%(ffmpeg)s -i \"%(src)s\" -vf fps=\"fps=1/%(thumbnail)s,scale=%(scale)s\" -an -vsync 0 -threads 0 -f image2 -y %(out)s_%(num)s.png")
-ADD_OVERVIEW_CMD = getattr(settings, 'ADD_OVERVIEW_CMD',
-                           "%(ffmpeg)s -i \"%(src)s\" -vf \"thumbnail=%(thumbnail)s,scale=%(scale)s,tile=100x1:nb_frames=100:padding=0:margin=0\" -an -vsync 0 -threads 0 -y %(out)s")
 ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ar %(ar)s -ac 2 -b:a %(ba)s -movflags faststart -y %(out)s")
 ENCODE_WEBM_CMD = getattr(settings, 'ENCODE_WEBM_CMD',
                           "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s")
@@ -252,9 +250,6 @@ def encode_video(video_to_encode):
             # MAKE THUMBNAILS
             if int(video_to_encode.duration) > 3:
                 add_thumbnails(VIDEO_ID, in_width, in_height, folder)
-            # MAKE OVERVIEW
-            if nb_frames > 100:
-                add_overview(VIDEO_ID, in_width, in_height, nb_frames)
 
             list_encod_video = EncodingType.objects.filter(mediatype='video').order_by(
                 'output_height')  # .exclude(output_height=1080).exclude(output_height=720).exclude(output_height=480)
@@ -418,63 +413,6 @@ def add_thumbnails(video_id, in_w, in_h, folder):
         os.remove("%s_5.png" % (tempfile.name))
     except:
         pass
-
-
-def add_overview(video_id, in_w, in_h, frames):
-    if DEBUG:
-        print "OVERVIEW"
-    video = Pod.objects.get(id=video_id)
-    thumbnails = int(frames / 100)
-    scale = get_scale(in_w, in_h, DEFAULT_OVERVIEW_OUT_SIZE_HEIGHT)
-    media_guard_hash = get_media_guard(video.owner.username, video.id)
-    overviewfilename = os.path.join(
-        settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id, "overview.jpg")
-    overviewurl = os.path.join(
-        VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id, "overview.jpg")
-
-    com = ADD_OVERVIEW_CMD % {
-        'ffmpeg': FFMPEG,
-        'src': video.video.path,
-        'thumbnail': thumbnails,
-        'scale': scale,
-        'out': overviewfilename
-    }
-    if DEBUG:
-        print "%s" % com
-    overviewresult = commands.getoutput(com)
-    output = "\n\nOVERVIEW"
-    output += 80 * "~"
-    output += "\n"
-    output += overviewresult
-    output += "\n"
-    output += 80 * "~"
-
-    if os.access(overviewfilename, os.F_OK):  # outfile exists
-        # There was a error cause the outfile size is zero
-        if (os.stat(overviewfilename).st_size == 0):
-            # We remove the file so that it does not cause confusion
-            msg = "\n [add_overview] ERROR : Output size is 0"
-            output += msg
-            log.error(msg)
-            video = Pod.objects.get(id=video_id)
-            addInfoVideo(video, msg)
-            send_email(msg, video)
-            os.remove(overviewfilename)
-        else:
-            # there does not seem to be errors, follow the rest of the
-            # procedures
-            if DEBUG:
-                print "OVERVIEW : %s" % overviewurl
-            video = None
-            video = Pod.objects.get(id=video_id)
-            video.overview = overviewurl
-            video.save()
-
-    f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
-                          video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'a+b')
-    f.write(output)
-    output = ""
-    f.close()
 
 
 def encode_mp4(video_id, in_w, in_h, bufsize, in_ar, encod_video, videofilename, videourl):
