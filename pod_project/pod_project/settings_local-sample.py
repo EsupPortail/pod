@@ -255,6 +255,20 @@ HELP_MAIL = 'support@univ.fr'
 
 
 ##
+# Homepage settings:
+#
+#   defines how many contents are shown on homepage,
+#   and if it displays (or not) passworded and restricted access contents.
+#
+#   Note: if both settings are “False”, contents shown on homepage
+#         are accessible to anybody.
+#
+HOMEPAGE_NBR_CONTENTS_SHOWN = 9
+HOMEPAGE_SHOWS_PASSWORDED = False
+HOMEPAGE_SHOWS_RESTRICTED = True
+
+
+##
 # WebM video encoding activation:
 #
 #   True: video files will be available in both mp4 and WebM formats,
@@ -409,7 +423,7 @@ RECORDER_SALT = 'a.string.used.as.salt'
 # Enable RSS feed and ATOM feed on channels and search results
 #
 #   - True : button to suscribe to feed appears in navigation toolbar
-#   
+#
 #
 RSS_ENABLED = False
 ATOM_HD_ENABLED = False
