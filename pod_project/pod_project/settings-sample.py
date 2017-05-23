@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     # Applications locales
     'pods',
     'core',
+    'h5pp',
 )
 
 

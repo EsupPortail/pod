@@ -47,5 +47,6 @@ def items_menu_header(request):
         'OWNERS': User.objects.filter(
             pod__is_draft=False, pod__encodingpods__gt=0
         ).order_by('last_name').distinct().annotate(
-            video_count=Count("pod", distinct=True)).prefetch_related("userprofile")
+            video_count=Count("pod", distinct=True)).prefetch_related("userprofile"),
+        'H5P_ENABLED': django_settings.H5P_ENABLED
     }
