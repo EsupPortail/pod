@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-09 18:45+0100\n"
-"PO-Revision-Date: 2017-01-09 18:58+0100\n"
+"PO-Revision-Date: 2017-05-19 17:09+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.2\n"
 
 #: core/admin.py:77 core/models.py:288
 msgid "Email"
@@ -738,12 +738,23 @@ msgid "Delete the interactive part of this video"
 msgstr "Supprimer la partie interactive de cette vidéo"
 
 #: pods/templates/videos/video_interactive.html:224
-msgid "Do not forget to save your work regularly. Especially if you add an interaction."
-msgstr "N'oubliez pas de sauvegarder votre travail régulièrement. Surtout si vous ajoutez une interaction."
+msgid ""
+"Do not forget to save your work regularly. Especially if you add an "
+"interaction."
+msgstr ""
+"N'oubliez pas de sauvegarder votre travail régulièrement. Surtout si vous "
+"ajoutez une interaction."
 
 #: pods/templates/videos/video_interactive.html:226
-msgid "To save and continue your work click on the button [Save and continue]. If you have completed your work click on the button [Save and return to video] to view your new interactive video."
-msgstr "Pour sauvegarder et continuer votre travail cliquez sur le bouton [Sauvegarder et continuer]. Si vous avez terminé votre travail cliquez sur le bouton [Sauvegarder et retour à la vidéo] pour voir votre nouvelle vidéo interactive."
+msgid ""
+"To save and continue your work click on the button [Save and continue]. If "
+"you have completed your work click on the button [Save and return to video] "
+"to view your new interactive video."
+msgstr ""
+"Pour sauvegarder et continuer votre travail cliquez sur le bouton "
+"[Sauvegarder et continuer]. Si vous avez terminé votre travail cliquez sur "
+"le bouton [Sauvegarder et retour à la vidéo] pour voir votre nouvelle vidéo "
+"interactive."
 
 #: pods/templates/videos/video_interactive.html:235
 #: pods/templates/videos/video_interactive.html:236
@@ -1956,8 +1967,7 @@ msgstr "Enregistreur"
 msgid "Recorders"
 msgstr "Enregistreurs"
 
-#: pods/models.py:1087
-#: pods/templates/videos/video.html:531
+#: pods/models.py:1087 pods/templates/videos/video.html:531
 msgid "User"
 msgstr "Utilisateur"
 
@@ -2550,13 +2560,11 @@ msgstr "Vous devez être connecté pour prendre des notes."
 msgid "Edit the video"
 msgstr "Modifier la vidéo"
 
-#: pods/templates/videos/video.html:291
-#: pods/templates/videos/video.html:293
+#: pods/templates/videos/video.html:291 pods/templates/videos/video.html:293
 msgid "View the original video"
 msgstr "Voir la vidéo originale"
 
-#: pods/templates/videos/video.html:295
-#: pods/templates/videos/video.html:297
+#: pods/templates/videos/video.html:295 pods/templates/videos/video.html:297
 msgid "View the interactive video"
 msgstr "Voir la vidéo interactive"
 
@@ -2569,12 +2577,19 @@ msgid "You got the following score on this video"
 msgstr "Vous avez obtenu le score suivant"
 
 #: pods/templates/videos/video.html:527
-msgid "The scoreboard displays the users who viewed your interactive video and their results."
-msgstr "La table des scores affiche les utilisateurs ayant vues votre vidéo interactive et leurs résultats."
+msgid ""
+"The scoreboard displays the users who viewed your interactive video and "
+"their results."
+msgstr ""
+"La table des scores affiche les utilisateurs ayant vues votre vidéo "
+"interactive et leurs résultats."
 
 #: pods/templates/videos/video.html:550
-msgid "Your video does not have a score or no users have done the activities yet."
-msgstr "Votre vidéo ne dispose pas de score ou aucun utilisateur n'a terminé les activités."
+msgid ""
+"Your video does not have a score or no users have done the activities yet."
+msgstr ""
+"Votre vidéo ne dispose pas de score ou aucun utilisateur n'a terminé les "
+"activités."
 
 #: pods/templates/videos/video.html:552
 msgid "This is the first time you watch this video."
@@ -3497,6 +3512,44 @@ msgstr ""
 #: pods/views.py:1749
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
+
+#: core/utils.py:333
+#, python-format
+msgid "Encoding #%(content_id)s completed"
+msgstr "Encodage n°%(content_id)s terminé"
+
+#: core/utils.py:338 core/utils.py:352
+#, python-format
+msgid ""
+"The content “%(content_title)s” has been encoded to Web formats, and is now "
+"available on %(site_title)s."
+msgstr ""
+"Le contenu « %(content_title)s » a été encodé aux formats web, et est "
+"maintenant disponible sur %(site_title)s."
+
+#: core/utils.py:342 core/utils.py:356
+msgid "You will find it here:"
+msgstr "Retrouvez-le ici :"
+
+#: core/utils.py:344
+#, python-format
+msgid "and in your content list: %(content_list)s."
+msgstr "ainsi que dans votre liste de contenus: %(content_list)s."
+
+#: core/utils.py:359
+#, python-format
+msgid "and in %(your_content_list)s."
+msgstr "ainsi que dans %(your_content_list)s."
+
+#: core/utils.py:362
+msgid "your content list"
+msgstr "votre liste de contenus"
+
+#: pods/templates/videos/video_edit.html:415
+msgid "An email will be sent to you when all encoding tasks are completed."
+msgstr ""
+"Un courriel vous sera envoyé lorsque toutes les tâches d'encodage seront "
+"terminées."
 
 # DJANGO-FILER FIX
 msgid "Adds a new Folder"

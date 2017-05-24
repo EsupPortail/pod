@@ -287,6 +287,18 @@ ENCODE_WAV = True
 
 
 ##
+# Send email to content owner when encoding is complete:
+#
+#   True: an email is sent to content owner on encoding completion,
+#   False: no email on encoding completion.
+#
+#   Note: even if this setting is set to « True », no email will be sent when
+#         encoding is launched via admin interface (admin re-encoding tasks).
+#
+EMAIL_ON_ENCODING_COMPLETION = False
+
+
+##
 # Dublin Core application-wide tags:
 #
 #   coverage    name, town and country of the institution
