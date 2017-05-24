@@ -345,7 +345,7 @@ $(document).on('click', '#button_video_interactive', function() {
                     </li>
                     {% endif %}
                 {% endif %}
-                {% if video.is_draft and USE_PRIVATE_VIDEO %}
+                {% if video.is_draft and USE_PRIVATE_VIDEO and not interactive.h5p and request.user.is_staff %}
                     <li>
                         <a href="#share_private" data-toggle="tab">
                             <span class="glyphicon glyphicon-send"></span>
@@ -569,7 +569,7 @@ $(document).on('click', '#button_video_interactive', function() {
                     </div>
                     {% endif %}
                     <!-- /TAB share -->
-                    {% if video.is_draft and USE_PRIVATE_VIDEO %}
+                    {% if video.is_draft and USE_PRIVATE_VIDEO and not interactive.h5p and request.user.is_staff %}
                     <div id="share_private" class="tab-pane fade container-fluid">
                     	<div class="embed-content">
                             <form class="row">
