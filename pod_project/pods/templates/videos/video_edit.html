@@ -411,6 +411,9 @@ var name = "";
             {% endif %}
                 <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
                 <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
+            {% if EMAIL_ON_ENCODING_COMPLETION and request.user.email %}
+                <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}<p>
+            {% endif %}
             </div>
         </div>
 

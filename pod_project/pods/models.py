@@ -305,6 +305,7 @@ class Pod(Video):
         help_text=_(
             u'Viewing this video will not be possible without this password.'),
         max_length=50, blank=True, null=True)
+    _encoding_user_email_data = None
 
     class Meta:
         verbose_name = _("Video")
@@ -462,6 +463,16 @@ class Pod(Video):
         }
 
         return json.dumps(data_to_dump)
+
+    def set_encoding_user_email_data(self, user_email, curr_lang, root_url):
+        self._encoding_user_email_data = {
+            'user_email': user_email,
+            'curr_lang': curr_lang,
+            'root_url': root_url
+        }
+
+    def get_encoding_user_email_data(self):
+        return self._encoding_user_email_data
 
 
 @receiver(post_save, sender=Pod)
@@ -1157,12 +1168,12 @@ class Rssfeed(models.Model):
         help_text=_(
             u'If this box is checked, the video will be visible and accessible by anyone.'),
         default=True)
-    
+
     class Meta:
         verbose_name = _("RSS")
         verbose_name_plural = _("RSS")
-        
-        
+
+
     def __unicode__(self):
         return self.title
 

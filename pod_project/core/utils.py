@@ -30,7 +30,8 @@ import json
 import logging
 import traceback
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
+from django.utils.translation import ugettext_lazy as _
+from django.core.mail import EmailMultiAlternatives, send_mail
 from core.models import EncodingType, get_media_guard
 from pods.models import EncodingPods
 from pods.models import Pod
@@ -181,7 +182,7 @@ def encode_video(video_to_encode):
                             video_to_encode.encoding_status = "GET SAR"
                             video_to_encode.save()
                             sar_w, sar_h = [
-                                int(_) for _ in stream.get("sample_aspect_ratio").split(':')]
+                                int(__) for __ in stream.get("sample_aspect_ratio").split(':')]
                             sar = 1
                             if sar_w != 0 and sar_h != 0:
                                 sar = (1. * sar_w / sar_h)
@@ -318,6 +319,51 @@ def encode_video(video_to_encode):
     video.infoVideo += end
     video.encoding_in_progress = False
     video.save()
+
+    encoding_user_email_data = video_to_encode.get_encoding_user_email_data()
+    if encoding_user_email_data and video.encoding_status.startswith("DONE"):
+        from django.utils.translation import override
+        content_url = "%s/video/%s/" % (
+            encoding_user_email_data['root_url'], video.slug)
+        list_url = "%s/owner_videos_list/" % encoding_user_email_data['root_url']
+        with override(encoding_user_email_data['curr_lang']):
+            send_mail(
+                "[%s] %s" % (
+                    settings.TITLE_SITE,
+                    _(u"Encoding #%(content_id)s completed") % {
+                        'content_id': VIDEO_ID
+                    }
+                ),
+                "%s\n\n%s\n%s\n%s" % (
+                    _(u"The content “%(content_title)s” has been encoded to Web formats, and is now available on %(site_title)s.") % {
+                        'content_title': video.title,
+                        'site_title': settings.TITLE_SITE
+                    },
+                    _(u"You will find it here:"),
+                    content_url,
+                    _(u"and in your content list: %(content_list)s.") % {
+                        'content_list': list_url
+                    }
+                ),
+                settings.DEFAULT_FROM_EMAIL,
+                [encoding_user_email_data['user_email']],
+                html_message='<p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
+                        <br>%s</p>' % (
+                    _(u"The content “%(content_title)s” has been encoded to Web formats, and is now available on %(site_title)s.") % {
+                        'content_title': '<b>%s</b>' % video.title,
+                        'site_title': settings.TITLE_SITE
+                    },
+                    _(u"You will find it here:"),
+                    content_url,
+                    content_url,
+                    _(u"and in %(your_content_list)s.") % {
+                        'your_content_list': '<a href="%s">%s</a>' % (
+                            list_url,
+                            _(u"your content list")
+                        )
+                    }
+                )
+            )
 
 # end encode_video(video):
 
