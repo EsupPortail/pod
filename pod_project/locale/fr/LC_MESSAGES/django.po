@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-09 18:45+0100\n"
-"PO-Revision-Date: 2017-05-19 17:09+0200\n"
+"PO-Revision-Date: 2017-05-29 17:57+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -702,20 +702,6 @@ msgstr "Contactez nous"
 #: pods/templates/channels/channel_edit.html:70
 msgid "My profile"
 msgstr "Mon profil"
-
-#: core/templates/userProfile.html:30
-#: pods/templates/channels/channel_edit.html:55
-#: pods/templates/mediacourses/mediacourses_add.html:31
-#: pods/templates/videos/video_chapter.html:122
-#: pods/templates/videos/video_completion.html:175
-#: pods/templates/videos/video_edit.html:147
-#: pods/templates/videos/video_enrich.html:137
-msgid ""
-"Warning, you will leave this page. If you have made changes without clicking "
-"the Save button, your changes will be lost."
-msgstr ""
-"Attention, vous quittez cette page. Si vous avez apporté des modifications "
-"sans cliquer sur le bouton Enregistrer, vos modifications seront perdues."
 
 #: core/templates/userProfile.html:38 core/templates/userProfile.html.py:48
 msgid "My Profile"
