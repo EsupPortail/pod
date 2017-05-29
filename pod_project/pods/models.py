@@ -404,8 +404,6 @@ class Pod(Video):
         return self.encodingpods_set.values_list("encodingType__mediatype", flat=True).distinct()
 
     def delete(self):
-        if self.overview:
-            self.overview.delete()
         # on supprime les encoding pods
         for encoding in self.encodingpods_set.all():
             if encoding.encodingFile:
