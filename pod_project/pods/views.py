@@ -50,6 +50,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Count
 import simplejson as json
+import base64
+import logging
 
 from django.core.servers.basehttp import FileWrapper
 
@@ -166,7 +168,7 @@ def channel(request, slug_c, slug_t=None):
 
     return render_to_response("channels/channel.html",
                               {"channel": channel, "theme": theme,
-				   "param": param, "videos": videos, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD, "interactive": interactive}, 
+				   "param": param, "videos": videos, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD, "interactive": interactive},
                               context_instance=RequestContext(request))
 
 
@@ -350,7 +352,7 @@ def favorites_videos_list(request):
         'orderby') else "order_by_-date_added"
     videos_list = videos_list.order_by(
         "%s" % replace(order_by, "order_by_", ""))
-    
+
 
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
@@ -444,13 +446,13 @@ def videos(request):
     ATOM_HD = settings.ATOM_HD_ENABLED
     ATOM_SD = settings.ATOM_SD_ENABLED
     #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
-  
+
     interactive = None
     if settings.H5P_ENABLED:
         from h5pp.models import h5p_libraries
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             interactive = True
-            
+
     if request.is_ajax():
         some_data_to_dump = {
 	    'json_toolbar': render_to_string('maintoolbar.html',
@@ -603,6 +605,101 @@ def video(request, slug, slug_c=None, slug_t=None):
             context_instance=RequestContext(request)
         )
 
+@csrf_protect
+def video_priv(request, slug, slug_c=None, slug_t=None):
+    try:
+        h_id = slug
+    except ValueError:
+        raise SuspiciousOperation('Invalid video id')
+    video = get_object_or_404(Pod, hash_id=slug)
+    show_report = getattr(settings, 'SHOW_REPORT', False)
+    channel = None
+    if slug_c:
+        channel = get_object_or_404(Channel, slug=slug_c)
+    theme = None
+    if slug_t:
+        theme = get_object_or_404(Theme, slug=slug_t)
+
+    if video.is_restricted:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+
+    if request.POST:
+        if request.POST.get("action") and request.POST.get("action") == "increase_view_count":
+            if request.user.is_authenticated() and (request.user == video.owner or request.user.is_superuser):
+                pass
+            else:
+                video.view_count += 1
+                video.save()
+            if request.is_ajax():
+                return HttpResponse(_(u'The changes have been saved.'))
+
+    ####### VIDEO PASSWORD #########
+    if video.password and not (request.user == video.owner or request.user.is_superuser):
+        form = VideoPasswordForm()
+        if not request.POST:
+            return render_to_response(
+                'videos/video.html',
+                {'video': video, 'form': form, 'channel': channel,
+                    'theme': theme, 'show_report': show_report},
+                context_instance=RequestContext(request)
+            )
+        else:
+            # A form bound to the POST data
+            form = VideoPasswordForm(request.POST)
+            if form.is_valid():
+                password = form.cleaned_data['password']
+                if password == video.password:
+                    if request.GET.get('action') and request.GET.get('action') == "download":
+                        return download_video(video, request.GET)
+                    else:
+                        return render_to_response(
+                            'videos/video.html',
+                            {'video': video, 'channel': channel,
+                                'theme': theme, 'show_report': show_report},
+                            context_instance=RequestContext(request)
+                        )
+                else:
+                    messages.add_message(
+                        request, messages.ERROR, _(u'Incorrect password'))
+                    return render_to_response(
+                        'videos/video.html',
+                        {'video': video, 'form': form, 'channel': channel,
+                            'theme': theme, 'show_report': show_report},
+                        context_instance=RequestContext(request)
+                    )
+            else:
+                messages.add_message(
+                    request, messages.ERROR, _(u'One or more errors have been found in the form.'))
+                return render_to_response(
+                    'videos/video.html',
+                    {'video': video, 'form': form, 'channel': channel,
+                        'theme': theme, 'show_report': show_report},
+                    context_instance=RequestContext(request)
+                )
+
+    if request.user.is_authenticated():
+        note, created = Notes.objects.get_or_create(
+            video=video, user=request.user)
+        notes_form = NotesForm(instance=note)
+        if request.GET.get('action') and request.GET.get('action') == "download":
+            return download_video(video, request.GET)
+        else:
+            return render_to_response(
+                'videos/video.html',
+                {'video': video, 'channel': channel, 'theme': theme,
+                    'notes_form': notes_form, 'show_report': show_report},
+                context_instance=RequestContext(request)
+            )
+    if request.GET.get('action') and request.GET.get('action') == "download":
+        return download_video(video, request.GET)
+    else:
+        return render_to_response(
+            'videos/video.html',
+            {'video': video, 'channel': channel,
+                'theme': theme, 'show_report': show_report},
+            context_instance=RequestContext(request)
+        )
 
 def download_video(video, get_request):
     format = "video/mp4" if "video" in video.get_mediatype() else "audio/mp3"
@@ -788,6 +885,16 @@ def video_edit(request, slug=None):
                 vid.owner = request.user
 
             if request.FILES:
+                if settings.EMAIL_ON_ENCODING_COMPLETION and request.user.email:
+                    from django.utils.translation import get_language
+                    vid.set_encoding_user_email_data(
+                        request.user.email,
+                        get_language(),
+                        "%s://%s" % (
+                            request.scheme,
+                            request.get_host()
+                        )
+                    )
                 vid.to_encode = True
 
             vid.save()
@@ -1553,7 +1660,7 @@ def video_interactive(request, slug):
     messages.add_message(
       request, messages.ERROR, _(u'You cannot add interactivity to this video.'))
     raise PermissionDenied
-  
+
   if 'h5pp' in settings.INSTALLED_APPS:
     from h5pp.models import h5p_contents
     interactive = h5p_contents.objects.filter(slug=slug).values()
@@ -1563,7 +1670,7 @@ def video_interactive(request, slug):
 				'contentId': interactive[0]['content_id'],
 				'slug': slug},
 				context_instance=RequestContext(request))
-    
+
     return render_to_response('videos/video_interactive.html',
 			      {'video': video,
 			      'slug': slug},
@@ -1592,8 +1699,8 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
     if h5p_contents.objects.filter(title=video.title).count() > 0:
         h5p = h5p_contents.objects.get(title=video.title)
     interactive = {'h5p': h5p, 'version': version}
-        
-    if request.user.is_authenticated and (request.user == video.owner or request.user.is_superuser):    
+
+    if request.user.is_authenticated and (request.user == video.owner or request.user.is_superuser):
         return render_to_response('videos/video_interactive.html',
                                       {'video': video, 'channel': channel, 'theme': theme, 'interactive': interactive},
                                       context_instance=RequestContext(request))
@@ -1683,6 +1790,14 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
     """
     return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
 
+def get_video_encoding_private(request, slug, csrftoken, size, type, ext):
+    video = get_object_or_404(Pod, slug=slug)
+    if video.is_restricted:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+    encodingpods = get_object_or_404(EncodingPods,
+                                     encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
+    return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
 
 def autocomplete(request):
     suggestions = [entry.object.title for entry in res]

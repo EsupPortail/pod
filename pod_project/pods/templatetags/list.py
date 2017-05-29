@@ -182,8 +182,15 @@ def get_label_cursus(cursus):
 
 @register.inclusion_tag("videos/videos_list.html")
 def get_last_videos():
+    filter_args = {'encodingpods__gt': 0, 'is_draft': False}
+    if not settings.HOMEPAGE_SHOWS_PASSWORDED:
+        filter_args['password'] = ""
+    if not settings.HOMEPAGE_SHOWS_RESTRICTED:
+        filter_args['is_restricted'] = False
     return {
-        'videos': Pod.objects.filter(is_draft=False, password='', encodingpods__gt=0).exclude(channel__visible=0).order_by("-date_added").distinct()[:9],
+        'videos': Pod.objects.filter(**filter_args).exclude(
+            channel__visible=0).order_by(
+            "-date_added").distinct()[:settings.HOMEPAGE_NBR_CONTENTS_SHOWN],
         'DEFAULT_IMG': settings.DEFAULT_IMG
     }
 

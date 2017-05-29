@@ -255,6 +255,20 @@ HELP_MAIL = 'support@univ.fr'
 
 
 ##
+# Homepage settings:
+#
+#   defines how many contents are shown on homepage,
+#   and if it displays (or not) passworded and restricted access contents.
+#
+#   Note: if both settings are “False”, contents shown on homepage
+#         are accessible to anybody.
+#
+HOMEPAGE_NBR_CONTENTS_SHOWN = 9
+HOMEPAGE_SHOWS_PASSWORDED = False
+HOMEPAGE_SHOWS_RESTRICTED = True
+
+
+##
 # WebM video encoding activation:
 #
 #   True: video files will be available in both mp4 and WebM formats,
@@ -270,6 +284,18 @@ ENCODE_WEBM = True
 #   False: audio files will only be available in mp3 format.
 #
 ENCODE_WAV = True
+
+
+##
+# Send email to content owner when encoding is complete:
+#
+#   True: an email is sent to content owner on encoding completion,
+#   False: no email on encoding completion.
+#
+#   Note: even if this setting is set to « True », no email will be sent when
+#         encoding is launched via admin interface (admin re-encoding tasks).
+#
+EMAIL_ON_ENCODING_COMPLETION = False
 
 
 ##
@@ -409,7 +435,7 @@ RECORDER_SALT = 'a.string.used.as.salt'
 # Enable RSS feed and ATOM feed on channels and search results
 #
 #   - True : button to suscribe to feed appears in navigation toolbar
-#   
+#
 #
 RSS_ENABLED = False
 ATOM_HD_ENABLED = False
@@ -420,6 +446,10 @@ CELERY_TO_ENCODE = False
 CELERY_NAME = "pod_project"
 CELERY_BACKEND = "amqp"
 CELERY_BROKER = "amqp://guest@localhost//"
+
+##
+# Video in draft mode can be shared 
+USE_PRIVATE_VIDEO = False
 
 # H5P relative parameters
 H5P_ENABLED = False                                     # Active the module or not

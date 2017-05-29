@@ -345,6 +345,14 @@ $(document).on('click', '#button_video_interactive', function() {
                     </li>
                     {% endif %}
                 {% endif %}
+                {% if video.is_draft and USE_PRIVATE_VIDEO and not interactive.h5p and request.user.is_staff %}
+                    <li>
+                        <a href="#share_private" data-toggle="tab">
+                            <span class="glyphicon glyphicon-send"></span>
+                            {% trans 'Embed/Share (Private Mode)' %}
+                        </a>
+                    </li>
+                {% endif %}
                 </ul>
                 <div class="tab-content">
                     <!-- TAB summary -->
@@ -514,7 +522,7 @@ $(document).on('click', '#button_video_interactive', function() {
                                 <div class="form-group">
                                     <label for="txtpartage">{% trans 'Use this link to share the video' %}</label>
                                     <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
-                                </div>
+                                    </div>
                                 <div class="checkbox">
                                     <label for="displaytime"></label>
                                     <input type="checkbox" name="displaytime" id="displaytime" />
@@ -561,6 +569,52 @@ $(document).on('click', '#button_video_interactive', function() {
                     </div>
                     {% endif %}
                     <!-- /TAB share -->
+                    {% if video.is_draft and USE_PRIVATE_VIDEO and not interactive.h5p and request.user.is_staff %}
+                    <div id="share_private" class="tab-pane fade container-fluid">
+                    	<div class="embed-content">
+                            <form class="row">
+                                <div class="form-group col-sm-8">
+                                    <label for="txtintegration">
+                                        {% trans 'Copy the content of this text box and paste it in the page' %}
+                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}/video_priv/{{ video.hash_id }}/?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                    </label>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label for="integration_size">
+                                        {% trans 'Video size' %}
+                                        <select id="integration_size" class="form-control">
+                                        {% for enc in video.get_all_encoding_height %}
+                                            {% if enc == 240 %}<option value="240" data-width="640" data-height="360">240p</option>{% endif %}
+                                            {% if enc == 480 %}<option value="480" data-width="854" data-height="480">480p</option>{% endif %}
+                                            {% if enc == 720 %}<option value="720" data-width="1280" data-height="720">720p</option>{% endif %}
+                                        {% endfor %}
+                                        </select>
+                                    </label>
+                                    <br />
+                                    <label for="autoplay">
+                                        {% trans 'Autoplay' %} <input type="checkbox" id="autoplay" class="form-control" />
+                                    </label>
+                                </div>
+                            </form>
+                            <hr />
+                            <form>
+                                <div class="form-group">
+                                    <label for="txtpartageprive">{% trans 'Use this link to share the video in private mode' %}</label>
+                                    <input class="form-control" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video_priv/{{ video.hash_id }}/" />
+                                </div>
+                                <div class="checkbox">
+                                    <label for="displaytime"></label>
+                                    <input type="checkbox" name="displaytime" id="displaytime" />
+                                    <span class="glyphicon glyphicon-time"></span> {% trans 'Start video' %}
+                                    <input type="text" class="start-at form-control input-sm" name="txtposition" id="txtposition" readonly />
+                                    <br />
+                                    <small>{% trans 'Check the box to indicate the beginning of playing desired.' %}</small>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- /TAB share in private mode -->
                 </div>
             </div>
             {% if not request.GET.is_iframe %}
