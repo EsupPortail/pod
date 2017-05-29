@@ -447,6 +447,10 @@ CELERY_NAME = "pod_project"
 CELERY_BACKEND = "amqp"
 CELERY_BROKER = "amqp://guest@localhost//"
 
+##
+# Video in draft mode can be shared 
+USE_PRIVATE_VIDEO = False
+
 # H5P relative parameters
 H5P_ENABLED = False                                     # Active the module or not
 H5P_VERSION = '7.x'                                     # Current version of H5P module

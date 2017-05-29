@@ -305,6 +305,12 @@ class Pod(Video):
         help_text=_(
             u'Viewing this video will not be possible without this password.'),
         max_length=50, blank=True, null=True)
+    hash_id = models.CharField(
+        _('hash_id'),
+        help_text=_(
+            u'Hashcode to retrieve de video'),
+        max_length=100, blank=True, null=True, default=None)
+    
     _encoding_user_email_data = None
 
     class Meta:
@@ -348,6 +354,13 @@ class Pod(Video):
         else:
             newid = self.id
         newid = '%04d' % newid
+        if not self.hash_id:
+            idToEncode = ''.join([str(newid), self.title]) # on encode id+title pour avoir un id unique et plus dur à retrouver
+            encodedId = base64.b64encode(idToEncode)
+            self.hash_id = slugify(encodedId)
+        else:
+            tmp_slug = slugify(self.hash_id)
+            self.hash_id = tmp_slug
         self.slug = "%s-%s" % (newid, slugify(self.title))
         super(Pod, self).save(*args, **kwargs)
 

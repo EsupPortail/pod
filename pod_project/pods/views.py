@@ -50,6 +50,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Count
 import simplejson as json
+import base64
+import logging
 
 from django.core.servers.basehttp import FileWrapper
 
@@ -603,6 +605,101 @@ def video(request, slug, slug_c=None, slug_t=None):
             context_instance=RequestContext(request)
         )
 
+@csrf_protect
+def video_priv(request, slug, slug_c=None, slug_t=None):
+    try:
+        h_id = slug
+    except ValueError:
+        raise SuspiciousOperation('Invalid video id')
+    video = get_object_or_404(Pod, hash_id=slug)
+    show_report = getattr(settings, 'SHOW_REPORT', False)
+    channel = None
+    if slug_c:
+        channel = get_object_or_404(Channel, slug=slug_c)
+    theme = None
+    if slug_t:
+        theme = get_object_or_404(Theme, slug=slug_t)
+
+    if video.is_restricted:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+
+    if request.POST:
+        if request.POST.get("action") and request.POST.get("action") == "increase_view_count":
+            if request.user.is_authenticated() and (request.user == video.owner or request.user.is_superuser):
+                pass
+            else:
+                video.view_count += 1
+                video.save()
+            if request.is_ajax():
+                return HttpResponse(_(u'The changes have been saved.'))
+
+    ####### VIDEO PASSWORD #########
+    if video.password and not (request.user == video.owner or request.user.is_superuser):
+        form = VideoPasswordForm()
+        if not request.POST:
+            return render_to_response(
+                'videos/video.html',
+                {'video': video, 'form': form, 'channel': channel,
+                    'theme': theme, 'show_report': show_report},
+                context_instance=RequestContext(request)
+            )
+        else:
+            # A form bound to the POST data
+            form = VideoPasswordForm(request.POST)
+            if form.is_valid():
+                password = form.cleaned_data['password']
+                if password == video.password:
+                    if request.GET.get('action') and request.GET.get('action') == "download":
+                        return download_video(video, request.GET)
+                    else:
+                        return render_to_response(
+                            'videos/video.html',
+                            {'video': video, 'channel': channel,
+                                'theme': theme, 'show_report': show_report},
+                            context_instance=RequestContext(request)
+                        )
+                else:
+                    messages.add_message(
+                        request, messages.ERROR, _(u'Incorrect password'))
+                    return render_to_response(
+                        'videos/video.html',
+                        {'video': video, 'form': form, 'channel': channel,
+                            'theme': theme, 'show_report': show_report},
+                        context_instance=RequestContext(request)
+                    )
+            else:
+                messages.add_message(
+                    request, messages.ERROR, _(u'One or more errors have been found in the form.'))
+                return render_to_response(
+                    'videos/video.html',
+                    {'video': video, 'form': form, 'channel': channel,
+                        'theme': theme, 'show_report': show_report},
+                    context_instance=RequestContext(request)
+                )
+
+    if request.user.is_authenticated():
+        note, created = Notes.objects.get_or_create(
+            video=video, user=request.user)
+        notes_form = NotesForm(instance=note)
+        if request.GET.get('action') and request.GET.get('action') == "download":
+            return download_video(video, request.GET)
+        else:
+            return render_to_response(
+                'videos/video.html',
+                {'video': video, 'channel': channel, 'theme': theme,
+                    'notes_form': notes_form, 'show_report': show_report},
+                context_instance=RequestContext(request)
+            )
+    if request.GET.get('action') and request.GET.get('action') == "download":
+        return download_video(video, request.GET)
+    else:
+        return render_to_response(
+            'videos/video.html',
+            {'video': video, 'channel': channel,
+                'theme': theme, 'show_report': show_report},
+            context_instance=RequestContext(request)
+        )
 
 def download_video(video, get_request):
     format = "video/mp4" if "video" in video.get_mediatype() else "audio/mp3"
@@ -1693,6 +1790,14 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
     """
     return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
 
+def get_video_encoding_private(request, slug, csrftoken, size, type, ext):
+    video = get_object_or_404(Pod, slug=slug)
+    if video.is_restricted:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+    encodingpods = get_object_or_404(EncodingPods,
+                                     encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
+    return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
 
 def autocomplete(request):
     suggestions = [entry.object.title for entry in res]
