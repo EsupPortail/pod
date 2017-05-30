@@ -114,20 +114,6 @@ if settings.H5P_ENABLED:
         url(r'^h5p/', include('h5pp.urls')),
     ]
 
-urlpatterns += [
-    # Channel
-    url(r'^channels/$', 'pods.views.channels', name='channels'),
-    url(r'^(?P<slug_c>[\-\d\w]+)/$', 'pods.views.channel', name='channel'),
-    url(r'^(?P<slug_c>[\-\d\w]+)/edit$',
-        'pods.views.channel_edit', name='channel_edit'),
-    url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$',
-        'pods.views.channel', name='theme'),
-    url(r'^(?P<slug_c>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$',
-        'pods.views.video', name='video'),
-    url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$',
-        'pods.views.video', name='video'),
-]
-
 ##
 # Add-on to serve MEDIA files when using django-admin runserver:
 #   - django.contrib.staticfiles.views.serve() works only in debug mode, so
@@ -165,3 +151,17 @@ if settings.ATOM_AUDIO_ENABLED:
             AudiocastFeed(), name = 'audiocast'),
     ]
 """
+
+urlpatterns += [
+    # Channel
+    url(r'^channels/$', 'pods.views.channels', name='channels'),
+    url(r'^(?P<slug_c>[\-\d\w]+)/$', 'pods.views.channel', name='channel'),
+    url(r'^(?P<slug_c>[\-\d\w]+)/edit$',
+        'pods.views.channel_edit', name='channel_edit'),
+    url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$',
+        'pods.views.channel', name='theme'),
+    url(r'^(?P<slug_c>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video', name='video'),
+    url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video', name='video'),
+]
