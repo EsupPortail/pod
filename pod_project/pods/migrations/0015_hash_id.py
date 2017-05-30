@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pod',
             name='hash_id',
-            field=models.CharField(default=None, max_length=100, blank=True, help_text='Hashcode to retrieve de video', null=True, verbose_name='hash_id'),
+            field=models.CharField(default=None, max_length=100, blank=True, help_text='Hashcode to retrieve the video', null=True, verbose_name='hash_id'),
         ),
         migrations.RunPython(create_hash_if_exist),
     ]
