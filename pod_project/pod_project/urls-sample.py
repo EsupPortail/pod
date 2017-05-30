@@ -8,6 +8,10 @@ from pods.utils_itunesfeed import PodcastHdFeed, PodcastSdFeed, MySelectFeed
 
 admin.autodiscover()
 
+
+##
+#   Pod standard patterns
+#
 urlpatterns = [
     url(r'^favicon\.ico$', RedirectView.as_view(
         url=settings.STATIC_URL + 'images/favicon.ico', permanent=True)),
@@ -100,6 +104,18 @@ urlpatterns = [
         name='get_video_encoding'),
 ]
 
+
+###############################################################################
+#
+#       Optional feature patterns
+#
+#           All optional feature url patterns should be inserted below.
+#
+#
+
+##
+# Private video feature pattern
+#
 if settings.USE_PRIVATE_VIDEO:
     urlpatterns += [
         url(r'^get_video_encoding_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
@@ -107,6 +123,9 @@ if settings.USE_PRIVATE_VIDEO:
             name='get_video_encoding_private'),
     ]
 
+##
+# H5P feature patterns
+#
 if settings.H5P_ENABLED:
     urlpatterns += [
         url(r'^video_interactive/(?P<slug>[\-\d\w]+)/$',
@@ -114,35 +133,46 @@ if settings.H5P_ENABLED:
         url(r'^h5p/', include('h5pp.urls')),
     ]
 
-# RSS Feed
+##
+# RSS /ATOM feature patterns
+#
 if settings.RSS_ENABLED:
+    # RSS Feed
     urlpatterns += [
         url(r'^rss/select/(?P<qparam>[^\/]+)/$',
             MySelectFeed(), name='rss_select'),
     ]
-# ATOM HD Feed
-if settings.ATOM_HD_ENABLED:
-    urlpatterns += [
-        url(r'^rss/hd/(?P<qparam>[^\/]+)/$',
-            PodcastHdFeed(), name='podcast_hd'),
-    ]
-# ATOM SD Feed
-if settings.ATOM_SD_ENABLED:
-    urlpatterns += [
-        url(r'^rss/sd/(?P<qparam>[^\/]+)/$',
-            PodcastSdFeed(), name='podcast_sd'),
-    ]
 """
-# ATOM Audio Feed
 if settings.ATOM_AUDIO_ENABLED:
+    # ATOM Audio Feed
     urlpatterns += [
         url(r'^rss/audio/(?P<qparam>[^\/]+)/$',
             AudiocastFeed(), name = 'audiocast'),
     ]
 """
+if settings.ATOM_HD_ENABLED:
+    # ATOM HD Feed
+    urlpatterns += [
+        url(r'^rss/hd/(?P<qparam>[^\/]+)/$',
+            PodcastHdFeed(), name='podcast_hd'),
+    ]
+if settings.ATOM_SD_ENABLED:
+    # ATOM SD Feed
+    urlpatterns += [
+        url(r'^rss/sd/(?P<qparam>[^\/]+)/$',
+            PodcastSdFeed(), name='podcast_sd'),
+    ]
 
+#
+#       End of optional feature patterns
+#
+###############################################################################
+
+
+##
+#   Pod channels standard patterns
+#
 urlpatterns += [
-    # Channel
     url(r'^channels/$', 'pods.views.channels', name='channels'),
     url(r'^(?P<slug_c>[\-\d\w]+)/$', 'pods.views.channel', name='channel'),
     url(r'^(?P<slug_c>[\-\d\w]+)/edit$',
