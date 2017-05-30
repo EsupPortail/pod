@@ -7,13 +7,14 @@ import base64
 
 def create_hash_if_exist(apps, schema_editor):
     from pods.models import *
-    Videos = Pod.objects.filter(pod__is_draft=True)
+    # Videos = Pod.objects.filter(pod__is_draft=True)
+    Videos = Pod.objects.filter(is_draft=True)
     # Check if we have videos before this migration
     if len(Videos) > 0:
         # Create hash_id
         for video in Videos:
             if video.is_draft:
-                newid = video.id 
+                newid = video.id
                 newid = '%04d' % newid
                 idToEncode = ''.join([str(newid), video.title])
                 encodeId = base64.b64encode(idToEncode.encode('utf-8'))
@@ -23,7 +24,7 @@ def create_hash_if_exist(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pods', '0013_pod_is_360'),
+        ('pods', '0014_rssfeed'),
     ]
 
     operations = [
