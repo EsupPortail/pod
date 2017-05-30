@@ -97,6 +97,7 @@ urlpatterns = [
     url(r'^get_video_encoding/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
         'pods.views.get_video_encoding',
         name='get_video_encoding'),
+]
 
 if settings.USE_PRIVATE_VIDEO:
   urlpatterns += [
@@ -111,7 +112,7 @@ if settings.H5P_ENABLED:
         'pods.views.video_interactive', name='video_interactive'),
         url(r'^h5p/', include('h5pp.urls')),
     ]
-    
+
 urlpatterns += [
     # Channel
     url(r'^channels/$', 'pods.views.channels', name='channels'),
@@ -141,7 +142,7 @@ if settings.DEBUG:
 if settings.RSS_ENABLED:
     urlpatterns += [
         url(r'^rss/select/(?P<qparam>[^\/]+)/$', MySelectFeed(), name = 'rss_select'),
-   ] 
+   ]
 #ATOM HD Feed
 if settings.ATOM_HD_ENABLED:
     urlpatterns += [
