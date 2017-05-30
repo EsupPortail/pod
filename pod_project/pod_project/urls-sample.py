@@ -3,9 +3,10 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import RedirectView
 from django.contrib import admin
-admin.autodiscover()
+from pods.utils_itunesfeed import PodcastHdFeed, PodcastSdFeed, MySelectFeed
+# from pods.utils_itunesfeed import AudiocastFeed
 
-from pods.utils_itunesfeed import PodcastHdFeed, PodcastSdFeed, AudiocastFeed, MySelectFeed
+admin.autodiscover()
 
 urlpatterns = [
     url(r'^favicon\.ico$', RedirectView.as_view(
@@ -100,16 +101,16 @@ urlpatterns = [
 ]
 
 if settings.USE_PRIVATE_VIDEO:
-  urlpatterns += [
-      url(r'^get_video_encoding_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
-      'pods.views.get_video_encoding_private',
-      name='get_video_encoding_private'),
-]
+    urlpatterns += [
+        url(r'^get_video_encoding_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
+            'pods.views.get_video_encoding_private',
+            name='get_video_encoding_private'),
+    ]
 
 if settings.H5P_ENABLED:
     urlpatterns += [
         url(r'^video_interactive/(?P<slug>[\-\d\w]+)/$',
-        'pods.views.video_interactive', name='video_interactive'),
+            'pods.views.video_interactive', name='video_interactive'),
         url(r'^h5p/', include('h5pp.urls')),
     ]
 
@@ -138,23 +139,29 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
 
-#RSS Feed
+# RSS Feed
 if settings.RSS_ENABLED:
     urlpatterns += [
-        url(r'^rss/select/(?P<qparam>[^\/]+)/$', MySelectFeed(), name = 'rss_select'),
-   ]
-#ATOM HD Feed
+        url(r'^rss/select/(?P<qparam>[^\/]+)/$',
+            MySelectFeed(), name='rss_select'),
+    ]
+# ATOM HD Feed
 if settings.ATOM_HD_ENABLED:
     urlpatterns += [
-        url(r'^rss/hd/(?P<qparam>[^\/]+)/$', PodcastHdFeed(), name = 'podcast_hd'),
+        url(r'^rss/hd/(?P<qparam>[^\/]+)/$',
+            PodcastHdFeed(), name='podcast_hd'),
     ]
 # ATOM SD Feed
 if settings.ATOM_SD_ENABLED:
     urlpatterns += [
-        url(r'^rss/sd/(?P<qparam>[^\/]+)/$', PodcastSdFeed(), name = 'podcast_sd'),
+        url(r'^rss/sd/(?P<qparam>[^\/]+)/$',
+            PodcastSdFeed(), name='podcast_sd'),
     ]
-#ATOM Audio Feed
-#if settings.ATOM_AUDIO_ENABLED:
-#    urlpatterns += [
-#        url(r'^rss/audio/(?P<qparam>[^\/]+)/$', AudiocastFeed(), name = 'audiocast'),
-#    ]
+"""
+# ATOM Audio Feed
+if settings.ATOM_AUDIO_ENABLED:
+    urlpatterns += [
+        url(r'^rss/audio/(?P<qparam>[^\/]+)/$',
+            AudiocastFeed(), name = 'audiocast'),
+    ]
+"""
