@@ -529,7 +529,6 @@ def update_video_index(sender, instance=None, created=False, **kwargs):
 
 @receiver(post_delete)  # instead of @receiver(post_save, sender=Rebel)
 def update_es_index(sender, instance=None, created=False, **kwargs):
-    print "POST DELETE"
     list_of_models = ('ChapterPods', 'EnrichPods', 'ContributorPods', 'Pod')
     if sender.__name__ in list_of_models:  # this is the dynamic part you want
         pod = None

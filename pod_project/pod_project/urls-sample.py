@@ -136,27 +136,27 @@ if settings.H5P_ENABLED:
 ##
 # RSS /ATOM feature patterns
 #
-if settings.RSS_ENABLED:
+if settings.RSS:
     # RSS Feed
     urlpatterns += [
         url(r'^rss/select/(?P<qparam>[^\/]+)/$',
             MySelectFeed(), name='rss_select'),
     ]
 """
-if settings.ATOM_AUDIO_ENABLED:
+if settings.ATOM_AUDIO:
     # ATOM Audio Feed
     urlpatterns += [
         url(r'^rss/audio/(?P<qparam>[^\/]+)/$',
             AudiocastFeed(), name = 'audiocast'),
     ]
 """
-if settings.ATOM_HD_ENABLED:
+if settings.ATOM_HD:
     # ATOM HD Feed
     urlpatterns += [
         url(r'^rss/hd/(?P<qparam>[^\/]+)/$',
             PodcastHdFeed(), name='podcast_hd'),
     ]
-if settings.ATOM_SD_ENABLED:
+if settings.ATOM_SD:
     # ATOM SD Feed
     urlpatterns += [
         url(r'^rss/sd/(?P<qparam>[^\/]+)/$',
