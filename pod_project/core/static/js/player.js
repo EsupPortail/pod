@@ -85,8 +85,11 @@ function loadVideo() {
               clickToToggle: (!isMobile()),
               clickAndDrag: true,
               autoMobileOrientation: true,
+              backToVerticalCenter: false,
+              backToHorizonCenter: false,
               initFov: 100,
-              NoticeMessage: (isMobile())? "please move your phone" : "please use your mouse drag and drop the video",
+              VREnable: false,
+              NoticeMessage: (isMobile())? NoticeMessageMobile : NoticeMessageMouse,
               callback: function () {
                 //if(!isMobile()) myPlayer.play();
               }

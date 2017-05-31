@@ -83,6 +83,8 @@ voir http://www.gnu.org/licenses/
 <script>
     {% if video.is_360 %}
         is_360 = true;
+        NoticeMessageMobile = '{% trans 'please move your phone' %}'; //"Déplacez le téléphone pour faire bouger la vidéo";
+        NoticeMessageMouse = '{% trans 'please use your mouse drag and drop the video' %}'; //"Utilisez votre souris pour vous déplacer dans la vidéo";
     {% endif %}
     {% if video.overview and video.overview.width != None %}
         var overview = '{{ video.overview.url }}';
