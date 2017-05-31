@@ -3,10 +3,15 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import RedirectView
 from django.contrib import admin
+from pods.utils_itunesfeed import PodcastHdFeed, PodcastSdFeed, MySelectFeed
+# from pods.utils_itunesfeed import AudiocastFeed
+
 admin.autodiscover()
 
-from pods.utils_itunesfeed import PodcastHdFeed, PodcastSdFeed, AudiocastFeed, MySelectFeed
 
+##
+#   Pod standard patterns
+#
 urlpatterns = [
     url(r'^favicon\.ico$', RedirectView.as_view(
         url=settings.STATIC_URL + 'images/favicon.ico', permanent=True)),
@@ -97,23 +102,77 @@ urlpatterns = [
     url(r'^get_video_encoding/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
         'pods.views.get_video_encoding',
         name='get_video_encoding'),
-
-if settings.USE_PRIVATE_VIDEO:
-  urlpatterns += [
-      url(r'^get_video_encoding_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
-      'pods.views.get_video_encoding_private',
-      name='get_video_encoding_private'),
 ]
 
+
+###############################################################################
+#
+#       Optional feature patterns
+#
+#           All optional feature url patterns should be inserted below.
+#
+#
+
+##
+# Private video feature pattern
+#
+if settings.USE_PRIVATE_VIDEO:
+    urlpatterns += [
+        url(r'^get_video_encoding_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
+            'pods.views.get_video_encoding_private',
+            name='get_video_encoding_private'),
+    ]
+
+##
+# H5P feature patterns
+#
 if settings.H5P_ENABLED:
     urlpatterns += [
         url(r'^video_interactive/(?P<slug>[\-\d\w]+)/$',
-        'pods.views.video_interactive', name='video_interactive'),
+            'pods.views.video_interactive', name='video_interactive'),
         url(r'^h5p/', include('h5pp.urls')),
     ]
-    
+
+##
+# RSS /ATOM feature patterns
+#
+if settings.RSS_ENABLED:
+    # RSS Feed
+    urlpatterns += [
+        url(r'^rss/select/(?P<qparam>[^\/]+)/$',
+            MySelectFeed(), name='rss_select'),
+    ]
+"""
+if settings.ATOM_AUDIO_ENABLED:
+    # ATOM Audio Feed
+    urlpatterns += [
+        url(r'^rss/audio/(?P<qparam>[^\/]+)/$',
+            AudiocastFeed(), name = 'audiocast'),
+    ]
+"""
+if settings.ATOM_HD_ENABLED:
+    # ATOM HD Feed
+    urlpatterns += [
+        url(r'^rss/hd/(?P<qparam>[^\/]+)/$',
+            PodcastHdFeed(), name='podcast_hd'),
+    ]
+if settings.ATOM_SD_ENABLED:
+    # ATOM SD Feed
+    urlpatterns += [
+        url(r'^rss/sd/(?P<qparam>[^\/]+)/$',
+            PodcastSdFeed(), name='podcast_sd'),
+    ]
+
+#
+#       End of optional feature patterns
+#
+###############################################################################
+
+
+##
+#   Pod channels standard patterns
+#
 urlpatterns += [
-    # Channel
     url(r'^channels/$', 'pods.views.channels', name='channels'),
     url(r'^(?P<slug_c>[\-\d\w]+)/$', 'pods.views.channel', name='channel'),
     url(r'^(?P<slug_c>[\-\d\w]+)/edit$',
@@ -126,6 +185,7 @@ urlpatterns += [
         'pods.views.video', name='video'),
 ]
 
+
 ##
 # Add-on to serve MEDIA files when using django-admin runserver:
 #   - django.contrib.staticfiles.views.serve() works only in debug mode, so
@@ -136,24 +196,3 @@ urlpatterns += [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
-
-#RSS Feed
-if settings.RSS_ENABLED:
-    urlpatterns += [
-        url(r'^rss/select/(?P<qparam>[^\/]+)/$', MySelectFeed(), name = 'rss_select'),
-   ] 
-#ATOM HD Feed
-if settings.ATOM_HD_ENABLED:
-    urlpatterns += [
-        url(r'^rss/hd/(?P<qparam>[^\/]+)/$', PodcastHdFeed(), name = 'podcast_hd'),
-    ]
-# ATOM SD Feed
-if settings.ATOM_SD_ENABLED:
-    urlpatterns += [
-        url(r'^rss/sd/(?P<qparam>[^\/]+)/$', PodcastSdFeed(), name = 'podcast_sd'),
-    ]
-#ATOM Audio Feed
-#if settings.ATOM_AUDIO_ENABLED:
-#    urlpatterns += [
-#        url(r'^rss/audio/(?P<qparam>[^\/]+)/$', AudiocastFeed(), name = 'audiocast'),
-#    ]
