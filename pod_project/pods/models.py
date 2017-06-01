@@ -34,7 +34,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save, post_delete
+from django.db.models.signals import post_save, pre_save, pre_delete, post_delete
 from django.contrib.sites.shortcuts import get_current_site
 from elasticsearch import Elasticsearch
 # django-taggit
@@ -406,19 +406,6 @@ class Pod(Video):
         # flat=True).distinct())
         return self.encodingpods_set.values_list("encodingType__mediatype", flat=True).distinct()
 
-    def delete(self):
-        if self.overview:
-            self.overview.delete()
-        # on supprime les encoding pods
-        for encoding in self.encodingpods_set.all():
-            if encoding.encodingFile:
-                encoding.encodingFile.delete()
-
-        # on supprime le fichier source
-        if REMOVE_VIDEO_FILE_SOURCE_ON_DELETE:
-            self.video.delete()
-        super(Pod, self).delete()
-
     def is_richmedia(self):
         return True if self.enrichpods_set.exclude(type=None) else False
 
@@ -529,6 +516,23 @@ def update_video_index(sender, instance=None, created=False, **kwargs):
         else:
             delete = es.delete(
                 index="pod", doc_type='pod', id=pod.id, refresh=True, ignore=[400, 404])
+
+
+@receiver(pre_delete, sender=Pod, dispatch_uid='pre_delete-pod_files_removal')
+def pod_files_removal(sender, instance, using, **kwargs):
+
+    if instance.overview:
+        # Overview removal
+        instance.overview.delete()
+
+    for encoding in instance.encodingpods_set.all():
+        # Encoded files removal
+        if encoding.encodingFile:
+            encoding.encodingFile.delete()
+
+    if REMOVE_VIDEO_FILE_SOURCE_ON_DELETE:
+        # Original file removal
+        instance.video.delete()
 
 
 @receiver(post_delete)  # instead of @receiver(post_save, sender=Rebel)
