@@ -309,7 +309,7 @@ class Pod(Video):
     hash_id = models.CharField(
         _('hash_id'),
         help_text=_(
-            u'Hashcode to retrieve de video'),
+            u'Hashcode to retrieve the video'),
         max_length=100, blank=True, null=True, default=None)
 
     _encoding_user_email_data = None
