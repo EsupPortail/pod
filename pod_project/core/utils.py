@@ -325,7 +325,8 @@ def encode_video(video_to_encode):
         from django.utils.translation import override
         content_url = "%s/video/%s/" % (
             encoding_user_email_data['root_url'], video.slug)
-        list_url = "%s/owner_videos_list/" % encoding_user_email_data['root_url']
+        list_url = "%s/owner_videos_list/" % encoding_user_email_data[
+            'root_url']
         with override(encoding_user_email_data['curr_lang']):
             send_mail(
                 "[%s] %s" % (

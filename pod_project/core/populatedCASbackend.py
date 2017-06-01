@@ -86,7 +86,8 @@ class PopulatedCASBackend(CASBackend):
                                     user.is_staff = True
 
                             except:
-                                #print u'\n*****Unexpected error link :%s - %s' % (sys.exc_info()[0], sys.exc_info()[1])
+                                # print u'\n*****Unexpected error link :%s -
+                                # %s' % (sys.exc_info()[0], sys.exc_info()[1])
                                 msg = u'\n*****Unexpected error link :%s - %s' % (
                                     sys.exc_info()[0], sys.exc_info()[1])
                                 logger.error(msg, extra=d)

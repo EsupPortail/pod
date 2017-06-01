@@ -83,7 +83,8 @@ def get_pagination(page, paginator):
 
 @login_required
 def owner_channels_list(request):
-    channels_list = request.user.owners_channels.all().annotate(video_count=Count("pod", distinct=True))
+    channels_list = request.user.owners_channels.all().annotate(
+        video_count=Count("pod", distinct=True))
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
@@ -136,7 +137,7 @@ def channel(request, slug_c, slug_t=None):
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
         videos_list = videos_list.filter(theme=theme)
-	param = "channel=%s&theme=%s" % (slug_c, slug_t.encode('utf8'))
+        param = "channel=%s&theme=%s" % (slug_c, slug_t.encode('utf8'))
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
         'orderby') else "order_by_-date_added"
@@ -169,7 +170,7 @@ def channel(request, slug_c, slug_t=None):
 
     return render_to_response("channels/channel.html",
                               {"channel": channel, "theme": theme,
-				   "param": param, "videos": videos, "interactive": interactive},
+                               "param": param, "videos": videos, "interactive": interactive},
                               context_instance=RequestContext(request))
 
 
@@ -353,7 +354,6 @@ def favorites_videos_list(request):
     videos_list = videos_list.order_by(
         "%s" % replace(order_by, "order_by_", ""))
 
-
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
 
@@ -381,9 +381,9 @@ def videos(request):
     utype = []
     if type:
         for t in type:
-	    utype.append(t.encode('utf8'))
+            utype.append(t.encode('utf8'))
         videos_list = videos_list.filter(type__slug__in=type)
-	param = "type=%s" % (utype,)
+        param = "type=%s" % (utype,)
 
     # discipline
     udiscipline = []
@@ -391,13 +391,13 @@ def videos(request):
         'discipline') if request.GET.getlist('discipline') else None
     if discipline:
         videos_list = videos_list.filter(discipline__slug__in=discipline)
-	for d in discipline:
-	    udiscipline.append(d.encode('utf8'))
-	if param:
-	    param = param + " discipline=%s" % (udiscipline,)
-	    #param = param + " discipline=%s" % (discipline.encode('utf8'),)
-	else:
-	    param = "discipline=%s" % (udiscipline,)
+        for d in discipline:
+            udiscipline.append(d.encode('utf8'))
+        if param:
+            param = param + " discipline=%s" % (udiscipline,)
+            #param = param + " discipline=%s" % (discipline.encode('utf8'),)
+        else:
+            param = "discipline=%s" % (udiscipline,)
 
     # owner
     owner = request.GET.getlist(
@@ -406,26 +406,26 @@ def videos(request):
     if owner:
         uowner = []
         for o in owner:
-	    uowner.append(o.encode('utf8'))
+            uowner.append(o.encode('utf8'))
         videos_list = videos_list.filter(owner__username__in=owner)
         if not is_iframe:
             list_owner = User.objects.filter(username__in=owner)
-	if param:
-	    param = param + " owner=%s" % (uowner,)
-	else:
-	    param = "owner=%s" % (uowner,)
+        if param:
+            param = param + " owner=%s" % (uowner,)
+        else:
+            param = "owner=%s" % (uowner,)
     # tags
     tag = request.GET.getlist(
         'tag') if request.GET.getlist('tag') else None
     if tag:
         utag = []
-	for g in tag:
-	    utag.append(g.encode('utf8'))
+        for g in tag:
+            utag.append(g.encode('utf8'))
         videos_list = videos_list.filter(tags__slug__in=tag).distinct()
-	if param:
-	    param = param + " tag=%s" % (utag,)
-	else:
-	    param = "tag=%s" % (utag,)
+        if param:
+            param = param + " tag=%s" % (utag,)
+        else:
+            param = "tag=%s" % (utag,)
     # Food.objects.filter(tags__name__in=["delicious", "red"]).distinct()
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
@@ -452,14 +452,14 @@ def videos(request):
 
     if request.is_ajax():
         some_data_to_dump = {
-	    'json_toolbar': render_to_string('maintoolbar.html',
-	        {'videos': videos, 'param': param}),
-	    'json_videols': render_to_string('videos/videos_list.html',
-	        {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param})
-	}
+            'json_toolbar': render_to_string('maintoolbar.html',
+                                             {'videos': videos, 'param': param}),
+            'json_videols': render_to_string('videos/videos_list.html',
+                                             {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param})
+        }
         data = json.dumps(some_data_to_dump)
-	return HttpResponse(data, content_type='application/json')
-        #return render_to_response("videos/videos_list.html",
+        return HttpResponse(data, content_type='application/json')
+        # return render_to_response("videos/videos_list.html",
         #                          {"videos": videos, "param": param, "owners": list_owner},
         #                          context_instance=RequestContext(request))
 
@@ -486,12 +486,12 @@ def video(request, slug, slug_c=None, slug_t=None):
     channel = None
     if slug_c:
         channel = get_object_or_404(Channel, slug=slug_c)
-	param = "slug_c=%s" % (str(slug_c),)
+        param = "slug_c=%s" % (str(slug_c),)
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
 
-	param = param + "slug_t=%s" % (str(slug_t),)
+        param = param + "slug_t=%s" % (str(slug_t),)
 
     interactive = None
     if H5P_ENABLED:
@@ -600,6 +600,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             context_instance=RequestContext(request)
         )
 
+
 @csrf_protect
 def video_priv(request, slug, slug_c=None, slug_t=None):
     try:
@@ -695,6 +696,7 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
                 'theme': theme, 'show_report': show_report},
             context_instance=RequestContext(request)
         )
+
 
 def download_video(video, get_request):
     format = "video/mp4" if "video" in video.get_mediatype() else "audio/mp3"
@@ -1508,7 +1510,8 @@ def video_chapter(request, slug):
         # end cancel
 
     return render_to_response("videos/video_chapter.html",
-                              {'video': video, 'list_chapter': list_chapter, 'interactive': interactive},
+                              {'video': video, 'list_chapter': list_chapter,
+                                  'interactive': interactive},
                               context_instance=RequestContext(request))
 
 
@@ -1637,41 +1640,43 @@ def video_enrich(request, slug):
                                   'interactive': interactive},
                               context_instance=RequestContext(request))
 
+
 @csrf_protect
 @login_required
 @staff_member_required
 def video_interactive(request, slug):
-  video = get_object_or_404(Pod, slug=slug)
-  # Add this to improve folder selection and view list
-  if not request.session.get('filer_last_folder_id'):
-    from filer.models import Folder
-    folder = Folder.objects.get(
-      owner=request.user, name=request.user.username)
-    request.session['filer_last_folder_id'] = folder.id
+    video = get_object_or_404(Pod, slug=slug)
+    # Add this to improve folder selection and view list
+    if not request.session.get('filer_last_folder_id'):
+        from filer.models import Folder
+        folder = Folder.objects.get(
+            owner=request.user, name=request.user.username)
+        request.session['filer_last_folder_id'] = folder.id
 
-  if request.user != video.owner and not request.user.is_superuser:
-    messages.add_message(
-      request, messages.ERROR, _(u'You cannot add interactivity to this video.'))
-    raise PermissionDenied
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot add interactivity to this video.'))
+        raise PermissionDenied
 
-  if 'h5pp' in settings.INSTALLED_APPS:
-    interactive = h5p_contents.objects.filter(slug=slug).values()
-    if len(interactive) > 0:
-      return render_to_response('videos/video_interactive.html',
-				{'video': video,
-				'contentId': interactive[0]['content_id'],
-				'slug': slug},
-				context_instance=RequestContext(request))
+    if 'h5pp' in settings.INSTALLED_APPS:
+        interactive = h5p_contents.objects.filter(slug=slug).values()
+        if len(interactive) > 0:
+            return render_to_response('videos/video_interactive.html',
+                                      {'video': video,
+                                       'contentId': interactive[0]['content_id'],
+                                       'slug': slug},
+                                      context_instance=RequestContext(request))
 
-    return render_to_response('videos/video_interactive.html',
-			      {'video': video,
-			      'slug': slug},
-			      context_instance=RequestContext(request))
+        return render_to_response('videos/video_interactive.html',
+                                  {'video': video,
+                                   'slug': slug},
+                                  context_instance=RequestContext(request))
 
-  else:
-    messages.add_message(
-      request, messages.ERROR, _(u'Interactive video is not available in this server.'))
-    raise PermissionDenied
+    else:
+        messages.add_message(
+            request, messages.ERROR, _(u'Interactive video is not available in this server.'))
+        raise PermissionDenied
+
 
 @csrf_protect
 @login_required
@@ -1693,12 +1698,14 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
 
     if request.user.is_authenticated and (request.user == video.owner or request.user.is_superuser):
         return render_to_response('videos/video_interactive.html',
-                                      {'video': video, 'channel': channel, 'theme': theme, 'interactive': interactive},
-                                      context_instance=RequestContext(request))
+                                  {'video': video, 'channel': channel,
+                                      'theme': theme, 'interactive': interactive},
+                                  context_instance=RequestContext(request))
     else:
         messages.add_message(
-                request, messages.ERROR, _(u'You cannot watch this video.'))
+            request, messages.ERROR, _(u'You cannot watch this video.'))
         raise PermissionDenied
+
 
 @csrf_protect
 @login_required
@@ -1781,6 +1788,7 @@ def get_video_encoding(request, slug, csrftoken, size, type, ext):
     """
     return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
 
+
 def get_video_encoding_private(request, slug, csrftoken, size, type, ext):
     video = get_object_or_404(Pod, slug=slug)
     if video.is_restricted:
@@ -1789,6 +1797,7 @@ def get_video_encoding_private(request, slug, csrftoken, size, type, ext):
     encodingpods = get_object_or_404(EncodingPods,
                                      encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
     return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
+
 
 def autocomplete(request):
     suggestions = [entry.object.title for entry in res]
@@ -1918,7 +1927,7 @@ def search_videos(request):
     bodysearch["aggs"]['main_lang'] = {
         "terms": {"field": "main_lang", "size": 5, "order": {"_count": "asc"}}}
 
-    #print json.dumps(bodysearch, indent=4)
+    # print json.dumps(bodysearch, indent=4)
 
     result = es.search(index="pod", body=bodysearch)
 

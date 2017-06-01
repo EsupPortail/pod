@@ -207,7 +207,8 @@ class PodcastHdFeed(AtomFeed):
 
     def item_enclosure_url(self, item):
         link = reverse('pods.views.video', args=(item.slug,))
-        encodingFormat = "audio/mp3" if len(item.get_mediatype()) > 0 and item.get_mediatype()[0] == "audio" else "video/mp4"
+        encodingFormat = "audio/mp3" if len(item.get_mediatype(
+        )) > 0 and item.get_mediatype()[0] == "audio" else "video/mp4"
         ENCODINGS = EncodingPods.objects.filter(
             video=Pod.objects.get(slug=item.slug), encodingFormat=encodingFormat)
         resolmax = ENCODINGS.aggregate(
@@ -215,11 +216,12 @@ class PodcastHdFeed(AtomFeed):
         link = 'http://' + self.current_site.domain + link + \
             "?action=download&resolution=" + str(resolmax)
         #link = 'http://' + str(get_current_site(self.request).domain) + str(ENCODINGS.filter(encodingType__output_height = resolmax)[0].encodingFile)
-        #print link
+        # print link
         return link
 
     def item_enclosure_length(self, item):
-        encodingFormat = "audio/mp3" if len(item.get_mediatype()) > 0 and item.get_mediatype()[0] == "audio" else "video/mp4"
+        encodingFormat = "audio/mp3" if len(item.get_mediatype(
+        )) > 0 and item.get_mediatype()[0] == "audio" else "video/mp4"
         ENCODINGS = EncodingPods.objects.filter(
             video=Pod.objects.get(slug=item.slug), encodingFormat=encodingFormat)
         resolmax = ENCODINGS.aggregate(
@@ -237,7 +239,8 @@ class PodcastSdFeed(PodcastHdFeed):
 
     def item_enclosure_url(self, item):
         link = reverse('pods.views.video', args=(item.slug,))
-        encodingFormat = "audio/mp3" if len(item.get_mediatype()) > 0 and item.get_mediatype()[0] == "audio" else "video/mp4"
+        encodingFormat = "audio/mp3" if len(item.get_mediatype(
+        )) > 0 and item.get_mediatype()[0] == "audio" else "video/mp4"
         ENCODINGS = EncodingPods.objects.filter(
             video=Pod.objects.get(slug=item.slug), encodingFormat=encodingFormat)
         resolmin = ENCODINGS.aggregate(
@@ -247,7 +250,8 @@ class PodcastSdFeed(PodcastHdFeed):
         return link
 
     def item_enclosure_length(self, item):
-        encodingFormat = "audio/mp3" if len(item.get_mediatype()) > 0 and item.get_mediatype()[0] == "audio" else "video/mp4"
+        encodingFormat = "audio/mp3" if len(item.get_mediatype(
+        )) > 0 and item.get_mediatype()[0] == "audio" else "video/mp4"
         ENCODINGS = EncodingPods.objects.filter(
             video=Pod.objects.get(slug=item.slug), encodingFormat=encodingFormat)
         resolmin = ENCODINGS.aggregate(

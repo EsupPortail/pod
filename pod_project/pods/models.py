@@ -50,7 +50,8 @@ import json
 from pod_project.tasks import task_start_encode
 
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
-REMOVE_VIDEO_FILE_SOURCE_ON_DELETE = getattr(settings, 'REMOVE_VIDEO_FILE_SOURCE_ON_DELETE', True)
+REMOVE_VIDEO_FILE_SOURCE_ON_DELETE = getattr(
+    settings, 'REMOVE_VIDEO_FILE_SOURCE_ON_DELETE', True)
 
 
 # gloabl function to remove accent, use in tags
@@ -310,7 +311,7 @@ class Pod(Video):
         help_text=_(
             u'Hashcode to retrieve de video'),
         max_length=100, blank=True, null=True, default=None)
-    
+
     _encoding_user_email_data = None
 
     class Meta:
@@ -355,7 +356,9 @@ class Pod(Video):
             newid = self.id
         newid = '%04d' % newid
         if not self.hash_id:
-            idToEncode = ''.join([str(newid), self.title]) # on encode id+title pour avoir un id unique et plus dur à retrouver
+            # on encode id+title pour avoir un id unique et plus dur à
+            # retrouver
+            idToEncode = ''.join([str(newid), self.title])
             encodedId = base64.b64encode(idToEncode)
             self.hash_id = slugify(encodedId)
         else:
@@ -526,6 +529,7 @@ def update_video_index(sender, instance=None, created=False, **kwargs):
         else:
             delete = es.delete(
                 index="pod", doc_type='pod', id=pod.id, refresh=True, ignore=[400, 404])
+
 
 @receiver(post_delete)  # instead of @receiver(post_save, sender=Rebel)
 def update_es_index(sender, instance=None, created=False, **kwargs):
@@ -1148,6 +1152,7 @@ class ReportVideo(models.Model):
         verbose_name_plural = _("Reports")
         unique_together = ('video', 'user',)
 
+
 @python_2_unicode_compatible
 class Rssfeed(models.Model):
     AUDIO = 'A'
@@ -1156,16 +1161,18 @@ class Rssfeed(models.Model):
         (AUDIO, 'Audio'),
         (VIDEO, 'Vidéo'),
     )
-    title = models.CharField(max_length=200, blank=False, unique_for_year='date_update')
+    title = models.CharField(max_length=200, blank=False,
+                             unique_for_year='date_update')
     description = models.TextField(blank=False)
     link_rss = models.URLField(max_length=200, blank=False)
     type_rss = models.CharField(max_length=1,
-                           choices=TYPE_CHOICES,
-                           default=AUDIO)
+                                choices=TYPE_CHOICES,
+                                default=AUDIO)
     year = models.PositiveSmallIntegerField(default=2017)
     date_update = models.DateTimeField(auto_now=True)
     # récupérer le user à la création
-    owner = models.ForeignKey(User, blank=False, null=False, on_delete=models.PROTECT, default=1)
+    owner = models.ForeignKey(
+        User, blank=False, null=False, on_delete=models.PROTECT, default=1)
     filters = models.TextField(blank=True)
     fil_type_pod = models.ForeignKey(Type, verbose_name=_('Type'))
     fil_discipline = models.ManyToManyField(
@@ -1175,16 +1182,15 @@ class Rssfeed(models.Model):
     fil_theme = models.ManyToManyField(
         Theme, verbose_name=_('Themes'), blank=True)
     limit = models.SmallIntegerField(verbose_name=_('Count items'),
-                                     help_text=_(u'Keep 0 to mean all items'),default=0)
+                                     help_text=_(u'Keep 0 to mean all items'), default=0)
     is_up = models.BooleanField(verbose_name=_('Visible'),
-        help_text=_(
-            u'If this box is checked, the video will be visible and accessible by anyone.'),
+                                help_text=_(
+        u'If this box is checked, the video will be visible and accessible by anyone.'),
         default=True)
 
     class Meta:
         verbose_name = _("RSS")
         verbose_name_plural = _("RSS")
-
 
     def __unicode__(self):
         return self.title

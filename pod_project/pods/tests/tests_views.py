@@ -68,12 +68,12 @@ class ChannelsTestView(TestCase):
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(
-                video=pod, encodingType=EncodingType.objects.get(id=1))
+            video=pod, encodingType=EncodingType.objects.get(id=1))
         while i <= 15:
             c = Channel.objects.create(title="ChannelTest" + str(i), visible=True,
-                                   color="Black", style="italic", description="blabla")
+                                       color="Black", style="italic", description="blabla")
             t = Theme.objects.create(
-                    title="Theme" + str(i), channel=Channel.objects.get(id=i))
+                title="Theme" + str(i), channel=Channel.objects.get(id=i))
             pod.channel.add(c)
             pod.theme.add(t)
             i += 1
@@ -81,12 +81,14 @@ class ChannelsTestView(TestCase):
         print(" --->  SetUp of ChannelsTestView : OK !")
 
     def test_channels_with_paginator(self):
-        channels = list(Channel.objects.filter(pod__is_draft=False, pod__encodingpods__gt=0).distinct())
+        channels = list(Channel.objects.filter(
+            pod__is_draft=False, pod__encodingpods__gt=0).distinct())
         # test when a index of page is a caractere
         response = self.client.get("/channels/?page=a")
         self.assertEqual(response.status_code, 200)
         liste = list(response.context[u"channels"].__dict__["object_list"])
-        paginator = Paginator(Channel.objects.filter(pod__is_draft=False, pod__encodingpods__gt=0).distinct(), 12)
+        paginator = Paginator(Channel.objects.filter(
+            pod__is_draft=False, pod__encodingpods__gt=0).distinct(), 12)
         self.assertEqual(liste, channels[:12])
 
         self.assertEqual(
@@ -159,7 +161,8 @@ class Owner_channels_listTestView(TestCase):
         self.user = User.objects.get(username="testuser")
         self.user = authenticate(username='testuser', password='hello')
         login = self.client.login(username='testuser', password='hello')
-        channels = list(Channel.objects.filter(owners=self.user, pod__is_draft=False, pod__encodingpods__gt=0).distinct())
+        channels = list(Channel.objects.filter(
+            owners=self.user, pod__is_draft=False, pod__encodingpods__gt=0).distinct())
         self.assertEqual(login, True)
         response = self.client.get("/owner_channels_list/")
         self.assertEqual(response.status_code, 200)
@@ -393,7 +396,8 @@ class TypesTestView(TestCase):
         print(" --->  SetUp of TypesTestView : OK !")
 
     def test_types(self):
-        types = list(Type.objects.filter(pod__is_draft=False, pod__encodingpods__gt=0).distinct())
+        types = list(Type.objects.filter(pod__is_draft=False,
+                                         pod__encodingpods__gt=0).distinct())
         response = self.client.get("/types/")
         liste = list(response.context[u"types"].__dict__["object_list"])
         self.assertEqual(response.status_code, 200)
@@ -508,7 +512,8 @@ class DisciplinesTestView(TestCase):
         print(" --->  SetUp of DisciplinesTestView : OK !")
 
     def test_disciplines(self):
-        disciplines = list(Discipline.objects.filter(pod__is_draft=False, pod__encodingpods__gt=0).distinct())
+        disciplines = list(Discipline.objects.filter(
+            pod__is_draft=False, pod__encodingpods__gt=0).distinct())
         response = self.client.get("/disciplines/")
         liste = list(response.context[u"disciplines"].__dict__["object_list"])
         self.assertEqual(response.status_code, 200)

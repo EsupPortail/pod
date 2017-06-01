@@ -114,7 +114,7 @@ class XmlTextRenderer(renderers.BaseRenderer):
         if type(data) is dict:
             data_str = ""
             for k, v in data.iteritems():
-                data_str += str(k+': '+v).encode(self.charset)
+                data_str += str(k + ': ' + v).encode(self.charset)
             return data_str
         else:
             return data.encode(self.charset)
