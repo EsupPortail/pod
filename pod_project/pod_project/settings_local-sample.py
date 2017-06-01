@@ -437,9 +437,9 @@ RECORDER_SALT = 'a.string.used.as.salt'
 #   - True : button to suscribe to feed appears in navigation toolbar
 #
 #
-RSS_ENABLED = False
-ATOM_HD_ENABLED = False
-ATOM_SD_ENABLED = False
+RSS = False
+ATOM_HD = False
+ATOM_SD = False
 
 # Encode with Celery
 CELERY_TO_ENCODE = False
