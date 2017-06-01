@@ -55,6 +55,11 @@ import logging
 
 from django.core.servers.basehttp import FileWrapper
 
+H5P_ENABLED = getattr(settings, 'H5P_ENABLED', False)
+if H5P_ENABLED:
+    from h5pp.models import h5p_contents, h5p_libraries
+    from h5pp.h5p.h5pmodule import getUserScore, h5pGetContentId
+
 DEFAULT_PER_PAGE = 12
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
@@ -145,30 +150,26 @@ def channel(request, slug_c, slug_t=None):
     page = request.GET.get('page')
 
     videos = get_pagination(page, paginator)
-    RSS = settings.RSS_ENABLED
-    ATOM_HD = settings.ATOM_HD_ENABLED
-    ATOM_SD = settings.ATOM_SD_ENABLED
     #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
 
     interactive = None
-    if settings.H5P_ENABLED:
-        from h5pp.models import h5p_libraries
+    if H5P_ENABLED:
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             interactive = True
 
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
-                                  {"videos": videos, "param": param, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD},
+                                  {"videos": videos, "param": param},
                                   context_instance=RequestContext(request))
 
     if request.GET.get('is_iframe', None):
         return render_to_response("videos/videos_iframe.html",
-                                  {"videos": videos, "param": param, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD},
+                                  {"videos": videos, "param": param},
                                   context_instance=RequestContext(request))
 
     return render_to_response("channels/channel.html",
                               {"channel": channel, "theme": theme,
-				   "param": param, "videos": videos, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD, "interactive": interactive},
+				   "param": param, "videos": videos, "interactive": interactive},
                               context_instance=RequestContext(request))
 
 
@@ -325,8 +326,7 @@ def owner_videos_list(request):
     videos = get_pagination(page, paginator)
 
     interactive = None
-    if settings.H5P_ENABLED:
-        from h5pp.models import h5p_libraries
+    if H5P_ENABLED:
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             interactive = True
 
@@ -442,9 +442,6 @@ def videos(request):
 
     videos = get_pagination(page, paginator)
 
-    RSS = settings.RSS_ENABLED
-    ATOM_HD = settings.ATOM_HD_ENABLED
-    ATOM_SD = settings.ATOM_SD_ENABLED
     #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
 
     interactive = None
@@ -456,7 +453,7 @@ def videos(request):
     if request.is_ajax():
         some_data_to_dump = {
 	    'json_toolbar': render_to_string('maintoolbar.html',
-	        {'videos': videos, 'param': param, 'RSS': RSS, 'ATOM_HD': ATOM_HD, 'ATOM_SD': ATOM_SD}),
+	        {'videos': videos, 'param': param}),
 	    'json_videols': render_to_string('videos/videos_list.html',
 	        {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param})
 	}
@@ -473,7 +470,7 @@ def videos(request):
 
     return render_to_response("videos/videos.html",
                               {"videos": videos, "types": type, "owners": list_owner,
-                                  "disciplines": discipline, "tags_slug": tag, "param": param, "RSS": RSS, "ATOM_HD": ATOM_HD, "ATOM_SD": ATOM_SD, "interactive": interactive},
+                                  "disciplines": discipline, "tags_slug": tag, "param": param, "interactive": interactive},
                               context_instance=RequestContext(request))
 
 
@@ -497,9 +494,7 @@ def video(request, slug, slug_c=None, slug_t=None):
 	param = param + "slug_t=%s" % (str(slug_t),)
 
     interactive = None
-    if settings.H5P_ENABLED:
-        from h5pp.models import h5p_contents, h5p_libraries
-        from h5pp.h5p.h5pmodule import getUserScore, h5pGetContentId
+    if H5P_ENABLED:
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             score = None
             h5p = None
@@ -939,8 +934,7 @@ def video_edit(request, slug=None):
         ', '.join(settings.VIDEO_EXT_ACCEPT), ".", "").upper()
 
     interactive = None
-    if settings.H5P_ENABLED:
-        from h5pp.models import h5p_libraries
+    if H5P_ENABLED:
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             interactive = True
 
@@ -979,8 +973,7 @@ def video_completion(request, slug):
             list_contributor = video.contributorpods_set.all()
 
     interactive = None
-    if settings.H5P_ENABLED:
-        from h5pp.models import h5p_libraries
+    if H5P_ENABLED:
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             interactive = True
 
@@ -1662,7 +1655,6 @@ def video_interactive(request, slug):
     raise PermissionDenied
 
   if 'h5pp' in settings.INSTALLED_APPS:
-    from h5pp.models import h5p_contents
     interactive = h5p_contents.objects.filter(slug=slug).values()
     if len(interactive) > 0:
       return render_to_response('videos/video_interactive.html',
@@ -1693,7 +1685,6 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
         theme = get_object_or_404(Theme, slug=slug_t)
     interactive = None
 
-    from h5pp.models import h5p_contents, h5p_libraries
     h5p = None
     version = h5p_libraries.objects.get(machine_name='H5P.InteractiveVideo')
     if h5p_contents.objects.filter(title=video.title).count() > 0:

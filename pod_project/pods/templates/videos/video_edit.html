@@ -144,8 +144,7 @@ onUploadFailure = function( smText, smUrl, smType ) {
 };
 {% endif %}
 
-var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}",
-    themetab = new Array();
+var themetab = new Array();
 
 {% for c in form.fields.channel.queryset %}
     themetab[{{c.id}}] = [];
@@ -210,7 +209,6 @@ $(document).ready(function() {
 
                     } else {
 
-                        Pod.preventUnloadPrompt = true;
                         $uploadMessageBox.find( 'div.panel-body > img' ).removeClass( 'hidden' );
                         form.submit( );
                     }
