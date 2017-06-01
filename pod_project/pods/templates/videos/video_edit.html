@@ -144,8 +144,7 @@ onUploadFailure = function( smText, smUrl, smType ) {
 };
 {% endif %}
 
-var messageBeforeUnload = "{% trans "Warning, you will leave this page. If you have made changes without clicking the Save button, your changes will be lost." %}",
-    themetab = new Array();
+var themetab = new Array();
 
 {% for c in form.fields.channel.queryset %}
     themetab[{{c.id}}] = [];
@@ -159,6 +158,9 @@ $(document).ready(function() {
 
     var $videoForm = $('#video_form'),
         $uploadMessageBox = $('#js-process');
+    
+    var $hashIdGroup = $('#id_hash_id').parent('.form-group');
+    $hashIdGroup.hide();
 
     $uploadMessageBox.hide();
 
@@ -207,7 +209,6 @@ $(document).ready(function() {
 
                     } else {
 
-                        Pod.preventUnloadPrompt = true;
                         $uploadMessageBox.find( 'div.panel-body > img' ).removeClass( 'hidden' );
                         form.submit( );
                     }
@@ -411,6 +412,9 @@ var name = "";
             {% endif %}
                 <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
                 <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
+            {% if EMAIL_ON_ENCODING_COMPLETION and request.user.email %}
+                <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}<p>
+            {% endif %}
             </div>
         </div>
 

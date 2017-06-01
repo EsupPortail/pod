@@ -91,6 +91,9 @@ CAS_SERVER_URL = 'https://cas.univ.fr'
 CAS_LOGOUT_COMPLETELY = True
 CAS_RETRY_LOGIN = True
 CAS_VERSION = '3'
+CAS_PROXY = False
+CAS_PROXY_HTTP = 'http://proxy:3128'
+CAS_PROXY_HTTPS = 'https://proxy:3128'
 USE_LDAP_TO_POPULATE_USER = True
 
 
@@ -255,6 +258,20 @@ HELP_MAIL = 'support@univ.fr'
 
 
 ##
+# Homepage settings:
+#
+#   defines how many contents are shown on homepage,
+#   and if it displays (or not) passworded and restricted access contents.
+#
+#   Note: if both settings are “False”, contents shown on homepage
+#         are accessible to anybody.
+#
+HOMEPAGE_NBR_CONTENTS_SHOWN = 9
+HOMEPAGE_SHOWS_PASSWORDED = False
+HOMEPAGE_SHOWS_RESTRICTED = True
+
+
+##
 # WebM video encoding activation:
 #
 #   True: video files will be available in both mp4 and WebM formats,
@@ -270,6 +287,18 @@ ENCODE_WEBM = True
 #   False: audio files will only be available in mp3 format.
 #
 ENCODE_WAV = True
+
+
+##
+# Send email to content owner when encoding is complete:
+#
+#   True: an email is sent to content owner on encoding completion,
+#   False: no email on encoding completion.
+#
+#   Note: even if this setting is set to « True », no email will be sent when
+#         encoding is launched via admin interface (admin re-encoding tasks).
+#
+EMAIL_ON_ENCODING_COMPLETION = False
 
 
 ##
@@ -378,8 +407,8 @@ FFPROBE = '/usr/local/ffmpeg/ffprobe'
 # Encoding tools default parameters overriding:
 #
 # ENCODE_VIDEO_CMD = "%(ffprobe)s -v quiet -show_format -show_streams -print_format json -i %(src)s"
-ADD_THUMBNAILS_CMD = "nice -n 19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -f -t 10%% -o %(out)s_2.png && nice -n 19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -f -t 50%% -o %(out)s_3.png && nice -n 19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -f -t 75%% -o %(out)s_4.png"
-ADD_OVERVIEW_CMD = "rm %(out)s;for i in $(seq 0 99); do nice -n 19 ffmpegthumbnailer -t $i%% -s %(scale)s -c jpeg -i \"%(src)s\" -o %(out)s_strip$i.jpg; nice -n 19 montage -geometry +0+0 %(out)s %(out)s_strip$i.jpg %(out)s; done; rm %(out)s_strip*.jpg"
+ADD_THUMBNAILS_CMD = "nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 10%% -o %(out)s_2.png && nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 50%% -o %(out)s_3.png && nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 75%% -o %(out)s_4.png"
+ADD_OVERVIEW_CMD = "rm %(out)s;for i in $(seq 0 99); do nice -19 ffmpegthumbnailer -t $i%% -s %(scale)s -c jpeg -i \"%(src)s\" -o %(out)s_strip$i.jpg; nice -19 montage -geometry +0+0 %(out)s %(out)s_strip$i.jpg %(out)s; done; rm %(out)s_strip*.jpg"
 # ENCODE_MP4_CMD = "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ar %(ar)s -ac 2 -b:a %(ba)s -movflags faststart -y %(out)s"
 # ENCODE_WEBM_CMD = "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s"
 # ENCODE_MP3_CMD = "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s"
@@ -409,17 +438,21 @@ RECORDER_SALT = 'a.string.used.as.salt'
 # Enable RSS feed and ATOM feed on channels and search results
 #
 #   - True : button to suscribe to feed appears in navigation toolbar
-#   
 #
-RSS_ENABLED = False
-ATOM_HD_ENABLED = False
-ATOM_SD_ENABLED = False
+#
+RSS = False
+ATOM_HD = False
+ATOM_SD = False
 
 # Encode with Celery
 CELERY_TO_ENCODE = False
 CELERY_NAME = "pod_project"
 CELERY_BACKEND = "amqp"
 CELERY_BROKER = "amqp://guest@localhost//"
+
+##
+# Video in draft mode can be shared
+USE_PRIVATE_VIDEO = False
 
 # H5P relative parameters
 H5P_ENABLED = False                                     # Active the module or not

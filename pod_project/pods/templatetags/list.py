@@ -39,6 +39,9 @@ register = Library()
 
 DOT = '.'
 PAGE_VAR = 'page'
+HOMEPAGE_SHOWS_PASSWORDED = getattr(settings, 'HOMEPAGE_SHOWS_PASSWORDED', True)
+HOMEPAGE_SHOWS_RESTRICTED = getattr(settings, 'HOMEPAGE_SHOWS_RESTRICTED', True)
+HOMEPAGE_NBR_CONTENTS_SHOWN = getattr(settings, 'HOMEPAGE_NBR_CONTENTS_SHOWN', 12)
 
 
 @register.simple_tag(takes_context=True)
@@ -182,8 +185,15 @@ def get_label_cursus(cursus):
 
 @register.inclusion_tag("videos/videos_list.html")
 def get_last_videos():
+    filter_args = {'encodingpods__gt': 0, 'is_draft': False}
+    if not HOMEPAGE_SHOWS_PASSWORDED:
+        filter_args['password'] = ""
+    if not HOMEPAGE_SHOWS_RESTRICTED:
+        filter_args['is_restricted'] = False
     return {
-        'videos': Pod.objects.filter(is_draft=False, password='', encodingpods__gt=0).exclude(channel__visible=0).order_by("-date_added").distinct()[:9],
+        'videos': Pod.objects.filter(**filter_args).exclude(
+            channel__visible=0).order_by(
+            "-date_added").distinct()[:HOMEPAGE_NBR_CONTENTS_SHOWN],
         'DEFAULT_IMG': settings.DEFAULT_IMG
     }
 

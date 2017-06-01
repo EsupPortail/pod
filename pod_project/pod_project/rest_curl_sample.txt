@@ -68,3 +68,9 @@ curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715
 # dublin core
 curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X GET http://127.0.0.1:8000/rest/dublincore/
 
+#Dublincore with set of video : (list of video who owner is root, not restricted, without password and date added greater than 2011-01-01)
+curl -H "Content-Type: application/json" -H 'Authorization: Token 7f813c4e3d9715f9c6345e5da904c2554d60510c' -X GET http://127.0.0.1:8000/rest/dublincore/?owner__username=root&is_restricted=0&password=&date_added__gte=2011-01-01
+
+
+
+

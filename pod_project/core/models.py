@@ -206,8 +206,6 @@ class Video(models.Model):
     duration = models.IntegerField(
         _('Duration'), default=0, editable=False, blank=True)
     infoVideo = models.TextField(null=True, blank=True, editable=False)
-    
-    
 
     class Meta:
         ordering = ['-date_added', '-id']
