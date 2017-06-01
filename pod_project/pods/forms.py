@@ -38,6 +38,7 @@ ALLOW_VISIBILITY_SETTING_TO_CHANNEL_OWNERS = getattr(
 SHOW_IS_360_IN_FORM_UPLOAD = getattr(
     settings, 'SHOW_IS_360_IN_FORM_UPLOAD', False)
 
+
 class ChannelForm(TranslationModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -198,7 +199,6 @@ class PodForm(ModelForm):
             fields = '__all__'
         else:
             exclude = ('is_360', )
-            
 
 
 class ContributorPodsForm(ModelForm):

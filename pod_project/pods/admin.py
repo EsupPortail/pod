@@ -207,15 +207,15 @@ admin.site.register(ReportVideo, ReportAdmin)
 
 # RSS Feed
 class RssfeedAdmin(admin.ModelAdmin):
-    
+
     def get_owner_by_name(self, obj):
         owner = obj.owner
         url = url_to_edit_object(owner)
         return u'%s %s (%s)' % (owner.first_name, owner.last_name, url)
-    
+
     get_owner_by_name.allow_tags = True
     get_owner_by_name.short_description = _('Owner')
-    
+
     list_display = ('title', 'type_rss', 'year', 'get_owner_by_name', 'is_up')
     list_filter = ('date_update', 'year', 'type_rss', 'is_up')
     list_editable = ('year', 'is_up')

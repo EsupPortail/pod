@@ -91,6 +91,9 @@ CAS_SERVER_URL = 'https://cas.univ.fr'
 CAS_LOGOUT_COMPLETELY = True
 CAS_RETRY_LOGIN = True
 CAS_VERSION = '3'
+CAS_PROXY = False
+CAS_PROXY_HTTP = 'http://proxy:3128'
+CAS_PROXY_HTTPS = 'https://proxy:3128'
 USE_LDAP_TO_POPULATE_USER = True
 
 
