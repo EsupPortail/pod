@@ -1,4 +1,4 @@
-Django==1.8.13
+Django==1.8.18
 django-bootstrap3==6.2.2
 django-ckeditor-updated==4.4.4
 django-extensions==1.3.3
