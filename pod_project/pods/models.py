@@ -359,7 +359,7 @@ class Pod(Video):
             # on encode id+title pour avoir un id unique et plus dur à
             # retrouver
             idToEncode = ''.join([str(newid), self.title])
-            encodedId = base64.b64encode(idToEncode)
+            encodedId = base64.b64encode(idToEncode.encode('utf-8'))
             self.hash_id = slugify(encodedId)
         else:
             tmp_slug = slugify(self.hash_id)
