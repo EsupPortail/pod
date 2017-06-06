@@ -211,7 +211,7 @@ class Video(models.Model):
         ordering = ['-date_added', '-id']
         get_latest_by = 'date_added'
         verbose_name = _("video")
-        verbose_name_plural = _("video")
+        verbose_name_plural = _("videos")
         abstract = True
 
     def __unicode__(self):
