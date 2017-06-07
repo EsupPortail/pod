@@ -193,7 +193,7 @@ def get_last_videos():
     return {
         'videos': Pod.objects.filter(**filter_args).exclude(
             channel__visible=0).order_by(
-            "-date_added").distinct()[:HOMEPAGE_NBR_CONTENTS_SHOWN],
+            '-date_added', '-id').distinct()[:HOMEPAGE_NBR_CONTENTS_SHOWN],
         'DEFAULT_IMG': settings.DEFAULT_IMG
     }
 
