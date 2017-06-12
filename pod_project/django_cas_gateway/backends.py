@@ -71,13 +71,14 @@ def _verify_cas3(ticket, service):
     params = {'ticket': ticket, 'service': service}
     url = (urljoin(settings.CAS_SERVER_URL, 'proxyValidate') + '?' +
            urlencode(params))
+    
     if settings.CAS_PROXY:
-	proxy_support = urllib2.ProxyHandler({'http': settings.CAS_PROXY_HTTP, 'https': settings.CAS_PROXY_HTTPS})
-	opener = urllib2.build_opener(proxy_support)
-	urllib2.install_opener(opener) 
-   	page = urllib2.urlopen(url)
-    else:
-	page = urlopen(url) 
+    	proxy_support = urllib2.ProxyHandler({'http': settings.CAS_PROXY_HTTP, 'https': settings.CAS_PROXY_HTTPS})
+    	opener = urllib2.build_opener(proxy_support)
+    	urllib2.install_opener(opener)
+
+	page = urllib2.urlopen(url)
+
     try:
         user = None
         attributes = {}
