@@ -114,9 +114,6 @@ voir http://www.gnu.org/licenses/
             $('#ieditor').contents().find('#id_title').hide();
             $('#ieditor').contents().find('.label_form').hide();
             $('#ieditor').contents().find('#id_h5p_type').hide();
-            $('#ieditor').contents().find('.h5p-admin-header').hide();
-            $('#ieditor').contents().find('.content').css('background-color', 'white');
-            $('#ieditor').contents().find('.configuration').hide();
             $('#ieditor').contents().find('#submit_editor').hide();
         });
     });
@@ -233,9 +230,9 @@ voir http://www.gnu.org/licenses/
         </div>
     {% endif %}
     {% if interactive.h5p %}
-        <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}" style="background:white;display:none;" height="990" width="100%" frameBorder="0"></iframe>
+        <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}&is_iframe=true" style="background:white;display:none;" height="990px" width="100%" frameBorder="0"></iframe>
     {% else %}
-        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}" style="background:white;display:none" height="990" width="100%" frameBorder="0"></iframe>
+        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}&is_iframe=true" style="background:white;display:none" height="990px" width="100%" frameBorder="0"></iframe>
     {% endif %}
     {% if not request.GET.is_iframe%}
         <div class="save-button" align="center" style="display:none;">
