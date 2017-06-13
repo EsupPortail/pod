@@ -120,7 +120,8 @@ if settings.USE_PRIVATE_VIDEO:
         url(r'^get_video_encoding_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
             'pods.views.get_video_encoding_private',
             name='get_video_encoding_private'),
-        url(r'^video_priv/(?P<slug>[\-\d\w]+)/$', 'pods.views.video_priv', name='video_priv'),
+        url(r'^video_priv/(?P<id>[\-\d]+)/(?P<slug>[\-\d\w]+)/$',
+            'pods.views.video_priv', name='video_priv'),
     ]
 
 ##
