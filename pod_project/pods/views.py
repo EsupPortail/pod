@@ -318,8 +318,13 @@ def owner_videos_list(request):
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
         'orderby') else "order_by_-date_added"
-    videos_list = videos_list.order_by(
-        "%s" % replace(order_by, "order_by_", ""))
+    if order_by == 'order_by_date_added':
+        videos_list = videos_list.order_by('date_added', 'id')
+    elif order_by == 'order_by_-date_added':
+        videos_list = videos_list.order_by('-date_added', '-id')
+    else:
+        videos_list = videos_list.order_by(
+            "%s" % replace(order_by, "order_by_", ""))
 
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
@@ -351,8 +356,13 @@ def favorites_videos_list(request):
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
         'orderby') else "order_by_-date_added"
-    videos_list = videos_list.order_by(
-        "%s" % replace(order_by, "order_by_", ""))
+    if order_by == 'order_by_date_added':
+        videos_list = videos_list.order_by('date_added', 'id')
+    elif order_by == 'order_by_-date_added':
+        videos_list = videos_list.order_by('-date_added', '-id')
+    else:
+        videos_list = videos_list.order_by(
+            "%s" % replace(order_by, "order_by_", ""))
 
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
@@ -430,8 +440,14 @@ def videos(request):
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
         'orderby') else "order_by_-date_added"
-    videos_list = videos_list.order_by(
-        "%s" % replace(order_by, "order_by_", ""))
+    if order_by == 'order_by_date_added':
+        videos_list = videos_list.order_by('date_added', 'id')
+    elif order_by == 'order_by_-date_added':
+        # Already defined in model, so…
+        pass
+    else:
+        videos_list = videos_list.order_by(
+            "%s" % replace(order_by, "order_by_", ""))
 
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get(

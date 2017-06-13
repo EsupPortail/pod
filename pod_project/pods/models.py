@@ -314,10 +314,6 @@ class Pod(Video):
 
     _encoding_user_email_data = None
 
-    class Meta:
-        verbose_name = _("Video")
-        verbose_name_plural = _("Videos")
-
     def __unicode__(self):
         return u"Titre:%s - Prop:%s - Date:%s" % (self.title, self.owner, self.date_added)
 
