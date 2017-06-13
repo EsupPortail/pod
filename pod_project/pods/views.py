@@ -59,6 +59,9 @@ H5P_ENABLED = getattr(settings, 'H5P_ENABLED', False)
 if H5P_ENABLED:
     from h5pp.models import h5p_contents, h5p_libraries
     from h5pp.h5p.h5pmodule import getUserScore, h5pGetContentId
+USE_PRIVATE_VIDEO = getattr(settings, 'USE_PRIVATE_VIDEO', False)
+if USE_PRIVATE_VIDEO:
+    from core.models import get_media_guard
 
 DEFAULT_PER_PAGE = 12
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
@@ -508,7 +511,12 @@ def video(request, slug, slug_c=None, slug_t=None):
                         score = score[0]
             interactive = {'h5p': h5p, 'score': score}
 
+    hash_id = None
+
     if video.is_draft:
+        if USE_PRIVATE_VIDEO:
+            hash_id = get_media_guard(video.owner.username, video.id)
+
         if not request.user.is_authenticated():
             return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
         else:
@@ -540,7 +548,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'form': form, 'channel': channel,
-                    'theme': theme, 'interactive': interactive, 'show_report': show_report},
+                    'theme': theme, 'interactive': interactive, 'show_report': show_report, 'hash_id': hash_id},
                 context_instance=RequestContext(request)
             )
         else:
@@ -555,7 +563,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                         return render_to_response(
                             'videos/video.html',
                             {'video': video, 'channel': channel,
-                                'theme': theme, 'interactive': interactive, 'show_report': show_report},
+                                'theme': theme, 'interactive': interactive, 'show_report': show_report, 'hash_id': hash_id},
                             context_instance=RequestContext(request)
                         )
                 else:
@@ -587,7 +595,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
-                    'notes_form': notes_form, 'show_report': show_report},
+                    'notes_form': notes_form, 'show_report': show_report, 'hash_id': hash_id},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
@@ -602,12 +610,13 @@ def video(request, slug, slug_c=None, slug_t=None):
 
 
 @csrf_protect
-def video_priv(request, slug, slug_c=None, slug_t=None):
+def video_priv(request, id, slug, slug_c=None, slug_t=None):
     try:
+        v_id = id
         h_id = slug
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
-    video = get_object_or_404(Pod, hash_id=slug)
+    video = get_object_or_404(Pod, id=v_id)
     show_report = getattr(settings, 'SHOW_REPORT', False)
     channel = None
     if slug_c:
@@ -615,6 +624,26 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
+
+    interactive = None
+    if H5P_ENABLED:
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            score = None
+            h5p = None
+            if h5p_contents.objects.filter(title=video.title).count() > 0:
+                h5p = h5p_contents.objects.get(title=video.title)
+                if request.user == video.owner or request.user.is_superuser:
+                    score = getUserScore(h5p.content_id)
+                else:
+                    score = getUserScore(h5p.content_id, request.user)
+                    if score != None:
+                        score = score[0]
+            interactive = {'h5p': h5p, 'score': score}
+
+
+    hash_id = get_media_guard(video.owner.username, video.id)
+    if hash_id != slug:
+        return HttpResponse("nok : key is not valid")
 
     if video.is_restricted:
         if not request.user.is_authenticated():
@@ -637,7 +666,7 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'form': form, 'channel': channel,
-                    'theme': theme, 'show_report': show_report},
+                    'theme': theme, 'show_report': show_report, 'interactive': interactive, 'hash_id': hash_id},
                 context_instance=RequestContext(request)
             )
         else:
@@ -652,7 +681,7 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
                         return render_to_response(
                             'videos/video.html',
                             {'video': video, 'channel': channel,
-                                'theme': theme, 'show_report': show_report},
+                                'theme': theme, 'show_report': show_report, 'interactive': interactive, 'hash_id': hash_id},
                             context_instance=RequestContext(request)
                         )
                 else:
@@ -684,7 +713,7 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'theme': theme,
-                    'notes_form': notes_form, 'show_report': show_report},
+                    'notes_form': notes_form, 'show_report': show_report, 'interactive': interactive, 'hash_id': hash_id},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
@@ -693,7 +722,7 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
         return render_to_response(
             'videos/video.html',
             {'video': video, 'channel': channel,
-                'theme': theme, 'show_report': show_report},
+                'theme': theme, 'show_report': show_report, 'interactive': interactive},
             context_instance=RequestContext(request)
         )
 
