@@ -27,6 +27,7 @@ from filer.fields.file import FilerFileField
 from django.utils.encoding import python_2_unicode_compatible
 from ckeditor.fields import RichTextField
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.core.urlresolvers import reverse
@@ -1032,7 +1033,7 @@ class Mediacourses(models.Model):
     user = models.ForeignKey(User)
     title = models.CharField(_('title'), max_length=200)
     date_added = models.DateTimeField(
-        'date added', default=datetime.now, editable=False)
+        'date added', default=timezone.now, editable=False)
     mediapath = models.CharField(max_length=250, unique=True)
     started = models.BooleanField(default=0)
     error = models.TextField(null=True, blank=True)
@@ -1120,7 +1121,7 @@ class ReportVideo(models.Model):
         null=True, blank=True, verbose_name=_('Comment'))
     answer = models.TextField(null=True, blank=True, verbose_name=_('Answer'))
     date_added = models.DateTimeField(
-        'Date', default=datetime.now, editable=False)
+        'Date', default=timezone.now, editable=False)
 
     def __unicode__(self):
         return "%s - %s" % (self.video, self.user)
