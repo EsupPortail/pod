@@ -346,7 +346,7 @@ class Pod(Video):
                     newid = 1
         else:
             newid = self.id
-        newid = '%04d' % newid
+        newid = '%04d' % newid     
         self.slug = "%s-%s" % (newid, slugify(self.title))
         super(Pod, self).save(*args, **kwargs)
 
