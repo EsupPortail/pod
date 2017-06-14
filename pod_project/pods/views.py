@@ -1900,7 +1900,7 @@ def search_videos(request):
             if start_date:
                 filter_date_search["range"]["date_added"]["gte"] = "%04d-%02d-%02d" % (start_date.year, start_date.month, start_date.day)
             if end_date:
-                filter_date_search["range"]["date_added"]["lte"] = "%0d4-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
+                filter_date_search["range"]["date_added"]["lte"] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
 
             filter_search["and"].append(filter_date_search)
 
