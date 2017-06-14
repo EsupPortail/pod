@@ -76,8 +76,8 @@ def _verify_cas3(ticket, service):
     	proxy_support = urllib2.ProxyHandler({'http': settings.CAS_PROXY_HTTP, 'https': settings.CAS_PROXY_HTTPS})
     	opener = urllib2.build_opener(proxy_support)
     	urllib2.install_opener(opener)
-
-	page = urllib2.urlopen(url)
+    
+    page = urllib2.urlopen(url)
 
     try:
         user = None
