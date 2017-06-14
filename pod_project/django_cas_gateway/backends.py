@@ -77,8 +77,7 @@ def _verify_cas3(ticket, service):
     	opener = urllib2.build_opener(proxy_support)
     	urllib2.install_opener(opener)
 
-	page = urllib2.urlopen(url)
-
+    page = urllib2.urlopen(url)
     try:
         user = None
         attributes = {}
