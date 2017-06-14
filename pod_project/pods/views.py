@@ -2011,7 +2011,7 @@ def search_videos(request):
         url_value = url_value.encode('utf-8')
         url_value = urllib2.quote(url_value)
         link = request.get_full_path().replace("&selected_facets=%s:%s" %(term, url_value), "")
-        msg_title = (u'Supprimer la selection')
+        msg_title = (u'Remove selection')
         remove_selected_facet += u'&nbsp;<a href="%s" title="%s"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>%s</a>&nbsp;' %(link, msg_title, value)
 
 
