@@ -2175,6 +2175,10 @@ msgstr[1] "%(counter)s utilisateurs ayant posté"
 msgid "Show all"
 msgstr "Tout afficher"
 
+#: pods/templates/search/search_video.html:74
+msgid "Remove filters"
+msgstr "Supprimer les filtres"
+
 #: pods/templates/search/search_video.html:76
 #, python-format
 msgid "%(counter)s video found"
@@ -3561,6 +3565,10 @@ msgid ""
 msgstr ""
 "Votre publication est enregistrée. Son ajout à vos vidéos se fera dans "
 "quelques minutes."
+
+#: pods/views.py:2014
+msgid "Remove selection"
+msgstr "Supprimer la sélection"
 
 #: pods/views.py:2031
 msgid "Recording"

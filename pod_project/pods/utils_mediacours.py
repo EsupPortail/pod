@@ -27,6 +27,8 @@ import zipfile
 import traceback
 import logging
 
+from xml.dom import minidom
+
 from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
 from django.conf import settings
@@ -67,8 +69,6 @@ def process_mediazipfile(media):
 
     try:
         smil = zip.open(media_name + "/cours.smil")
-        from xml.dom import minidom
-        #fsock = open('xml exemple.xml')
         xmldoc = minidom.parse(smil)
         smil.close()
 
@@ -86,10 +86,12 @@ def process_mediazipfile(media):
                 mediaerror(media, "> video file %s" % video_src)
                 video_data = zip.read(media_name + "/%s" % video_src)
                 pod = save_video(media, video_data, video_src)
+
                 # IMG MANAGE
                 list_node_img = xmldoc.getElementsByTagName("img")
                 mediaerror(media, "> slides found %s" % len(list_node_img))
                 if len(list_node_img):
+
                     # SLIDES FOLDER
                     rootFolder = Folder.objects.get(
                         name=pod.owner, owner=pod.owner, level=0)
@@ -97,6 +99,7 @@ def process_mediazipfile(media):
                         name=pod.slug, owner=pod.owner, parent=rootFolder)
                     slideFolder, created = Folder.objects.get_or_create(
                         name="slides", owner=pod.owner, parent=videoFolder)
+
                     # Delete previous enrichment
                     EnrichPods.objects.filter(video=pod).delete()
                     i = 0
@@ -111,12 +114,14 @@ def process_mediazipfile(media):
                         timecode = int(round(timecode))
                         mediaerror(media, ">> timecode %s" % timecode)
                         if timecode >= 0:
+
                             # Record the enrichment
                             ep, c = EnrichPods.objects.get_or_create(
                                 video=pod, title="Record Slide %s" % i, start=timecode, end=timecode + 1)
                             try:
                                 data = zip.read(filename)
                                 if len(data):
+
                                     # Save the slide
                                     slide_name, ext = os.path.splitext(
                                         os.path.basename(filename))
@@ -129,6 +134,7 @@ def process_mediazipfile(media):
                                         slugify(pod.title + "_" + slide_name) + ext, ContentFile(data), save=True)
                                     upc_file.owner = pod.owner
                                     upc_file.save()
+
                                     # attach slide to the enrichment
                                     ep.type = "image"
                                     ep.image = upc_file
@@ -145,6 +151,7 @@ def process_mediazipfile(media):
 
                     # End for each slide
                     # Update the end time of each enrichment
+
                     enrich_set = EnrichPods.objects.filter(
                         video=pod).order_by("start")
                     enrich_iterator = enrich_set.iterator()
@@ -183,8 +190,6 @@ def process_mediazipfile(media):
 
                     # End update enrich end time
             except KeyError:  # end try video_src
-                # print u'\n*****Unexpected error link :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
-                #mediaerror(media,'\n audio or video file not found')
                 msg = u'\n key error ***** Unexpected error :%r' % e
                 msg += '\n%s' % traceback.format_exc()
                 log.error(msg)
@@ -196,8 +201,7 @@ def process_mediazipfile(media):
         msg += '\n%s' % traceback.format_exc()
         log.error(msg)
         mediaerror(media, "%s\nSmil file not found" % (msg))
-        # print u'\n*****Unexpected error link :%s - %s' %(sys.exc_info()[0], sys.exc_info()[1])
-        #mediaerror(media,'Smil file not found')
+
     zip.close()
     mediaerror(media, 'End processing zip file')
 
@@ -215,8 +219,8 @@ def save_video(media, video_data, video_src):
     ext = ext.lower()
     pod.video.save(
         "record_" + slugify(media.title) + ext, ContentFile(video_data), save=False)
-    # os.path.basename(vid.original_video.name) #on recupere le nom du fichier
-    # sur le serveur
+    
+    #on recupere le nom du fichier sur le serveur
     pod.title = media.title
     pod.to_encode = True
     pod.save()

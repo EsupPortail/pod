@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os
 import hashlib
+import urllib2
 from string import find
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
@@ -59,6 +60,9 @@ H5P_ENABLED = getattr(settings, 'H5P_ENABLED', False)
 if H5P_ENABLED:
     from h5pp.models import h5p_contents, h5p_libraries
     from h5pp.h5p.h5pmodule import getUserScore, h5pGetContentId
+USE_PRIVATE_VIDEO = getattr(settings, 'USE_PRIVATE_VIDEO', False)
+if USE_PRIVATE_VIDEO:
+    from core.models import get_media_guard
 
 DEFAULT_PER_PAGE = 12
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
@@ -88,7 +92,7 @@ def owner_channels_list(request):
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
-    page = request.GET.get('page')  # request.GET.get('page')
+    page = request.GET.get('page')
 
     channels = get_pagination(page, paginator)
 
@@ -107,7 +111,7 @@ def channels(request):
     channels_list = Channel.objects.filter(
         visible=True, pod__is_draft=False, pod__encodingpods__gt=0
     ).distinct().annotate(video_count=Count("pod", distinct=True))
-    #per_page = request.GET.get('per_page') if request.GET.get('per_page') and request.GET.get('per_page').isdigit() else DEFAULT_PER_PAGE
+
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
@@ -144,14 +148,12 @@ def channel(request, slug_c, slug_t=None):
     videos_list = videos_list.order_by(
         "%s" % replace(order_by, "order_by_", ""))
 
-    #per_page = request.GET.get('per_page') if request.GET.get('per_page') and request.GET.get('per_page').isdigit() else DEFAULT_PER_PAGE
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
 
     videos = get_pagination(page, paginator)
-    #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
 
     interactive = None
     if H5P_ENABLED:
@@ -318,8 +320,13 @@ def owner_videos_list(request):
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
         'orderby') else "order_by_-date_added"
-    videos_list = videos_list.order_by(
-        "%s" % replace(order_by, "order_by_", ""))
+    if order_by == 'order_by_date_added':
+        videos_list = videos_list.order_by('date_added', 'id')
+    elif order_by == 'order_by_-date_added':
+        videos_list = videos_list.order_by('-date_added', '-id')
+    else:
+        videos_list = videos_list.order_by(
+            "%s" % replace(order_by, "order_by_", ""))
 
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
@@ -351,8 +358,13 @@ def favorites_videos_list(request):
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
         'orderby') else "order_by_-date_added"
-    videos_list = videos_list.order_by(
-        "%s" % replace(order_by, "order_by_", ""))
+    if order_by == 'order_by_date_added':
+        videos_list = videos_list.order_by('date_added', 'id')
+    elif order_by == 'order_by_-date_added':
+        videos_list = videos_list.order_by('-date_added', '-id')
+    else:
+        videos_list = videos_list.order_by(
+            "%s" % replace(order_by, "order_by_", ""))
 
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
@@ -430,8 +442,14 @@ def videos(request):
 
     order_by = request.COOKIES.get('orderby') if request.COOKIES.get(
         'orderby') else "order_by_-date_added"
-    videos_list = videos_list.order_by(
-        "%s" % replace(order_by, "order_by_", ""))
+    if order_by == 'order_by_date_added':
+        videos_list = videos_list.order_by('date_added', 'id')
+    elif order_by == 'order_by_-date_added':
+        # Already defined in model, so…
+        pass
+    else:
+        videos_list = videos_list.order_by(
+            "%s" % replace(order_by, "order_by_", ""))
 
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get(
@@ -442,7 +460,6 @@ def videos(request):
 
     videos = get_pagination(page, paginator)
 
-    #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
 
     interactive = None
     if settings.H5P_ENABLED:
@@ -459,9 +476,6 @@ def videos(request):
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
-        # return render_to_response("videos/videos_list.html",
-        #                          {"videos": videos, "param": param, "owners": list_owner},
-        #                          context_instance=RequestContext(request))
 
     if is_iframe:
         return render_to_response("videos/videos_iframe.html",
@@ -508,7 +522,12 @@ def video(request, slug, slug_c=None, slug_t=None):
                         score = score[0]
             interactive = {'h5p': h5p, 'score': score}
 
+    hash_id = None
+
     if video.is_draft:
+        if USE_PRIVATE_VIDEO:
+            hash_id = get_media_guard(video.owner.username, video.id)
+
         if not request.user.is_authenticated():
             return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
         else:
@@ -540,7 +559,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'form': form, 'channel': channel,
-                    'theme': theme, 'interactive': interactive, 'show_report': show_report},
+                    'theme': theme, 'interactive': interactive, 'show_report': show_report, 'hash_id': hash_id},
                 context_instance=RequestContext(request)
             )
         else:
@@ -555,7 +574,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                         return render_to_response(
                             'videos/video.html',
                             {'video': video, 'channel': channel,
-                                'theme': theme, 'interactive': interactive, 'show_report': show_report},
+                                'theme': theme, 'interactive': interactive, 'show_report': show_report, 'hash_id': hash_id},
                             context_instance=RequestContext(request)
                         )
                 else:
@@ -587,7 +606,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
-                    'notes_form': notes_form, 'show_report': show_report},
+                    'notes_form': notes_form, 'show_report': show_report, 'hash_id': hash_id},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
@@ -602,12 +621,13 @@ def video(request, slug, slug_c=None, slug_t=None):
 
 
 @csrf_protect
-def video_priv(request, slug, slug_c=None, slug_t=None):
+def video_priv(request, id, slug, slug_c=None, slug_t=None):
     try:
+        v_id = id
         h_id = slug
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
-    video = get_object_or_404(Pod, hash_id=slug)
+    video = get_object_or_404(Pod, id=v_id)
     show_report = getattr(settings, 'SHOW_REPORT', False)
     channel = None
     if slug_c:
@@ -615,6 +635,26 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
+
+    interactive = None
+    if H5P_ENABLED:
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            score = None
+            h5p = None
+            if h5p_contents.objects.filter(title=video.title).count() > 0:
+                h5p = h5p_contents.objects.get(title=video.title)
+                if request.user == video.owner or request.user.is_superuser:
+                    score = getUserScore(h5p.content_id)
+                else:
+                    score = getUserScore(h5p.content_id, request.user)
+                    if score != None:
+                        score = score[0]
+            interactive = {'h5p': h5p, 'score': score}
+
+
+    hash_id = get_media_guard(video.owner.username, video.id)
+    if hash_id != slug:
+        return HttpResponse("nok : key is not valid")
 
     if video.is_restricted:
         if not request.user.is_authenticated():
@@ -637,7 +677,7 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'form': form, 'channel': channel,
-                    'theme': theme, 'show_report': show_report},
+                    'theme': theme, 'show_report': show_report, 'interactive': interactive, 'hash_id': hash_id},
                 context_instance=RequestContext(request)
             )
         else:
@@ -652,7 +692,7 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
                         return render_to_response(
                             'videos/video.html',
                             {'video': video, 'channel': channel,
-                                'theme': theme, 'show_report': show_report},
+                                'theme': theme, 'show_report': show_report, 'interactive': interactive, 'hash_id': hash_id},
                             context_instance=RequestContext(request)
                         )
                 else:
@@ -684,7 +724,7 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'theme': theme,
-                    'notes_form': notes_form, 'show_report': show_report},
+                    'notes_form': notes_form, 'show_report': show_report, 'interactive': interactive, 'hash_id': hash_id},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
@@ -693,7 +733,7 @@ def video_priv(request, slug, slug_c=None, slug_t=None):
         return render_to_response(
             'videos/video.html',
             {'video': video, 'channel': channel,
-                'theme': theme, 'show_report': show_report},
+                'theme': theme, 'show_report': show_report, 'interactive': interactive},
             context_instance=RequestContext(request)
         )
 
@@ -1843,26 +1883,26 @@ def search_videos(request):
     # Filter query
     filter_search = {}
     filter_query = ""
-    for facet in selected_facets:
-        filter_query += " %s AND" % facet
-    else:
-        filter_query = filter_query[:-3]
+    
+    if len(selected_facets) > 0 or start_date or end_date:
+        filter_search = { "and" :[] }
+        for facet in selected_facets:
+            term = facet.split(":")[0]
+            value = facet.split(":")[1]
+            filter_search["and"].append({
+                "term": {
+                    "%s" %term: "%s" %value
+                }
+            })
+        if start_date or end_date:
+            filter_date_search = {}
+            filter_date_search["range"] = {"date_added": {}}
+            if start_date:
+                filter_date_search["range"]["date_added"]["gte"] = "%04d-%02d-%02d" % (start_date.year, start_date.month, start_date.day)
+            if end_date:
+                filter_date_search["range"]["date_added"]["lte"] = "%0d4-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
 
-    if filter_query != "":
-        filter_search["query"] = {
-            "query_string": {
-                "query": "%s" % filter_query
-            }
-        }
-    # filter date range
-    if start_date or end_date:
-        filter_search["range"] = {"date_added": {}}
-        if start_date:
-            filter_search["range"]["date_added"][
-                "gte"] = "%04d-%02d-%02d" % (start_date.year, start_date.month, start_date.day)
-        if end_date:
-            filter_search["range"]["date_added"][
-                "lte"] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
+            filter_search["and"].append(filter_date_search)
 
     # Query
     query = {"match_all": {}}
@@ -1927,9 +1967,47 @@ def search_videos(request):
     bodysearch["aggs"]['main_lang'] = {
         "terms": {"field": "main_lang", "size": 5, "order": {"_count": "asc"}}}
 
-    # print json.dumps(bodysearch, indent=4)
+    if settings.DEBUG:
+        print json.dumps(bodysearch, indent=4)
 
     result = es.search(index="pod", body=bodysearch)
+
+    if settings.DEBUG:
+        print json.dumps(result, indent=4)
+
+    remove_selected_facet = ""
+    for facet in selected_facets:
+        term = facet.split(":")[0]
+        value = facet.split(":")[1]
+        agg_term = term.replace(".raw", "")
+        if result["aggregations"].get(agg_term):
+            del result["aggregations"][agg_term]
+        else:
+            if agg_term == "type.slug":
+                del result["aggregations"]["type_title"]
+            if agg_term == "tags.slug":
+                del result["aggregations"]["tags_name"]
+            if agg_term == "disciplines.slug":
+                del result["aggregations"]["disciplines_title"]
+
+        # Create link to remove facet
+        url_value = value
+        if agg_term == "cursus":
+            for tab in settings.CURSUS_CODES:
+                if tab[0] == value:
+                    value = tab[1]
+        if agg_term == "main_lang":
+            for tab in settings.ALL_LANG_CHOICES:
+                if tab[0] == value:
+                    value = tab[1]
+
+        url_value = u'%s'.decode('latin1') %url_value
+        url_value = url_value.encode('utf-8')
+        url_value = urllib2.quote(url_value)
+        link = request.get_full_path().replace("&selected_facets=%s:%s" %(term, url_value), "")
+        msg_title = (u'Remove selection')
+        remove_selected_facet += u'&nbsp;<a href="%s" title="%s"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>%s</a>&nbsp;' %(link, msg_title, value)
+
 
     # Pagination mayby better idea ?
     objects = []
@@ -1943,7 +2021,7 @@ def search_videos(request):
 
     return render_to_response("search/search_video.html",
                               {"result": result, "page": page,
-                                  "search_pagination": search_pagination, "form": searchForm},
+                                  "search_pagination": search_pagination, "form": searchForm, "remove_selected_facet": remove_selected_facet},
                               context_instance=RequestContext(request))
 
 ####### RECORDER #######

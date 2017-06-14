@@ -27,6 +27,7 @@ from filer.fields.file import FilerFileField
 from django.utils.encoding import python_2_unicode_compatible
 from ckeditor.fields import RichTextField
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.core.urlresolvers import reverse
@@ -34,7 +35,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save, post_delete
+from django.db.models.signals import post_save, pre_save, pre_delete, post_delete
 from django.contrib.sites.shortcuts import get_current_site
 from elasticsearch import Elasticsearch
 # django-taggit
@@ -306,17 +307,8 @@ class Pod(Video):
         help_text=_(
             u'Viewing this video will not be possible without this password.'),
         max_length=50, blank=True, null=True)
-    hash_id = models.CharField(
-        _('hash_id'),
-        help_text=_(
-            u'Hashcode to retrieve the video'),
-        max_length=100, blank=True, null=True, default=None)
 
     _encoding_user_email_data = None
-
-    class Meta:
-        verbose_name = _("Video")
-        verbose_name_plural = _("Videos")
 
     def __unicode__(self):
         return u"Titre:%s - Prop:%s - Date:%s" % (self.title, self.owner, self.date_added)
@@ -354,16 +346,7 @@ class Pod(Video):
                     newid = 1
         else:
             newid = self.id
-        newid = '%04d' % newid
-        if not self.hash_id:
-            # on encode id+title pour avoir un id unique et plus dur à
-            # retrouver
-            idToEncode = ''.join([str(newid), self.title])
-            encodedId = base64.b64encode(idToEncode.encode('utf-8'))
-            self.hash_id = slugify(encodedId)
-        else:
-            tmp_slug = slugify(self.hash_id)
-            self.hash_id = tmp_slug
+        newid = '%04d' % newid     
         self.slug = "%s-%s" % (newid, slugify(self.title))
         super(Pod, self).save(*args, **kwargs)
 
@@ -405,19 +388,6 @@ class Pod(Video):
         # self.encodingpods_set.values_list("encodingType__mediatype",
         # flat=True).distinct())
         return self.encodingpods_set.values_list("encodingType__mediatype", flat=True).distinct()
-
-    def delete(self):
-        if self.overview:
-            self.overview.delete()
-        # on supprime les encoding pods
-        for encoding in self.encodingpods_set.all():
-            if encoding.encodingFile:
-                encoding.encodingFile.delete()
-
-        # on supprime le fichier source
-        if REMOVE_VIDEO_FILE_SOURCE_ON_DELETE:
-            self.video.delete()
-        super(Pod, self).delete()
 
     def is_richmedia(self):
         return True if self.enrichpods_set.exclude(type=None) else False
@@ -529,6 +499,23 @@ def update_video_index(sender, instance=None, created=False, **kwargs):
         else:
             delete = es.delete(
                 index="pod", doc_type='pod', id=pod.id, refresh=True, ignore=[400, 404])
+
+
+@receiver(pre_delete, sender=Pod, dispatch_uid='pre_delete-pod_files_removal')
+def pod_files_removal(sender, instance, using, **kwargs):
+
+    if instance.overview:
+        # Overview removal
+        instance.overview.delete()
+
+    for encoding in instance.encodingpods_set.all():
+        # Encoded files removal
+        if encoding.encodingFile:
+            encoding.encodingFile.delete()
+
+    if REMOVE_VIDEO_FILE_SOURCE_ON_DELETE:
+        # Original file removal
+        instance.video.delete()
 
 
 @receiver(post_delete)  # instead of @receiver(post_save, sender=Rebel)
@@ -1046,7 +1033,7 @@ class Mediacourses(models.Model):
     user = models.ForeignKey(User)
     title = models.CharField(_('title'), max_length=200)
     date_added = models.DateTimeField(
-        'date added', default=datetime.now, editable=False)
+        'date added', default=timezone.now, editable=False)
     mediapath = models.CharField(max_length=250, unique=True)
     started = models.BooleanField(default=0)
     error = models.TextField(null=True, blank=True)
@@ -1134,7 +1121,7 @@ class ReportVideo(models.Model):
         null=True, blank=True, verbose_name=_('Comment'))
     answer = models.TextField(null=True, blank=True, verbose_name=_('Answer'))
     date_added = models.DateTimeField(
-        'Date', default=datetime.now, editable=False)
+        'Date', default=timezone.now, editable=False)
 
     def __unicode__(self):
         return "%s - %s" % (self.video, self.user)

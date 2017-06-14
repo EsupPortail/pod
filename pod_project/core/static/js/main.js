@@ -483,7 +483,6 @@ function get_ajax_url(newurl, attrs) {
                     }
                 }
                 setPerPage();
-                //$(".mainToolbar").show();
 
                 if(filter_is_visible) $('#filters').show();
             }).fail(function() { alert( "error" ); });
