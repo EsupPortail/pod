@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os
 import hashlib
+import urllib2
 from string import find
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
@@ -1888,26 +1889,26 @@ def search_videos(request):
     # Filter query
     filter_search = {}
     filter_query = ""
-    for facet in selected_facets:
-        filter_query += " %s AND" % facet
-    else:
-        filter_query = filter_query[:-3]
+    
+    if len(selected_facets) > 0 or start_date or end_date:
+        filter_search = { "and" :[] }
+        for facet in selected_facets:
+            term = facet.split(":")[0]
+            value = facet.split(":")[1]
+            filter_search["and"].append({
+                "term": {
+                    "%s" %term: "%s" %value
+                }
+            })
+        if start_date or end_date:
+            filter_date_search = {}
+            filter_date_search["range"] = {"date_added": {}}
+            if start_date:
+                filter_date_search["range"]["date_added"]["gte"] = "%04d-%02d-%02d" % (start_date.year, start_date.month, start_date.day)
+            if end_date:
+                filter_date_search["range"]["date_added"]["lte"] = "%0d4-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
 
-    if filter_query != "":
-        filter_search["query"] = {
-            "query_string": {
-                "query": "%s" % filter_query
-            }
-        }
-    # filter date range
-    if start_date or end_date:
-        filter_search["range"] = {"date_added": {}}
-        if start_date:
-            filter_search["range"]["date_added"][
-                "gte"] = "%04d-%02d-%02d" % (start_date.year, start_date.month, start_date.day)
-        if end_date:
-            filter_search["range"]["date_added"][
-                "lte"] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
+            filter_search["and"].append(filter_date_search)
 
     # Query
     query = {"match_all": {}}
@@ -1972,9 +1973,47 @@ def search_videos(request):
     bodysearch["aggs"]['main_lang'] = {
         "terms": {"field": "main_lang", "size": 5, "order": {"_count": "asc"}}}
 
-    # print json.dumps(bodysearch, indent=4)
+    if settings.DEBUG:
+        print json.dumps(bodysearch, indent=4)
 
     result = es.search(index="pod", body=bodysearch)
+
+    if settings.DEBUG:
+        print json.dumps(result, indent=4)
+
+    remove_selected_facet = ""
+    for facet in selected_facets:
+        term = facet.split(":")[0]
+        value = facet.split(":")[1]
+        agg_term = term.replace(".raw", "")
+        if result["aggregations"].get(agg_term):
+            del result["aggregations"][agg_term]
+        else:
+            if agg_term == "type.slug":
+                del result["aggregations"]["type_title"]
+            if agg_term == "tags.slug":
+                del result["aggregations"]["tags_name"]
+            if agg_term == "disciplines.slug":
+                del result["aggregations"]["disciplines_title"]
+
+        # Create link to remove facet
+        url_value = value
+        if agg_term == "cursus":
+            for tab in settings.CURSUS_CODES:
+                if tab[0] == value:
+                    value = tab[1]
+        if agg_term == "main_lang":
+            for tab in settings.ALL_LANG_CHOICES:
+                if tab[0] == value:
+                    value = tab[1]
+
+        url_value = u'%s'.decode('latin1') %url_value
+        url_value = url_value.encode('utf-8')
+        url_value = urllib2.quote(url_value)
+        link = request.get_full_path().replace("&selected_facets=%s:%s" %(term, url_value), "")
+        msg_title = (u'Supprimer la selection')
+        remove_selected_facet += u'&nbsp;<a href="%s" title="%s"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>%s</a>&nbsp;' %(link, msg_title, value)
+
 
     # Pagination mayby better idea ?
     objects = []
@@ -1988,7 +2027,7 @@ def search_videos(request):
 
     return render_to_response("search/search_video.html",
                               {"result": result, "page": page,
-                                  "search_pagination": search_pagination, "form": searchForm},
+                                  "search_pagination": search_pagination, "form": searchForm, "remove_selected_facet": remove_selected_facet},
                               context_instance=RequestContext(request))
 
 ####### RECORDER #######
