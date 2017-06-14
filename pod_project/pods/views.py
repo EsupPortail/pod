@@ -92,7 +92,7 @@ def owner_channels_list(request):
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
-    page = request.GET.get('page')  # request.GET.get('page')
+    page = request.GET.get('page')
 
     channels = get_pagination(page, paginator)
 
@@ -111,7 +111,7 @@ def channels(request):
     channels_list = Channel.objects.filter(
         visible=True, pod__is_draft=False, pod__encodingpods__gt=0
     ).distinct().annotate(video_count=Count("pod", distinct=True))
-    #per_page = request.GET.get('per_page') if request.GET.get('per_page') and request.GET.get('per_page').isdigit() else DEFAULT_PER_PAGE
+
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(channels_list, per_page)
@@ -148,14 +148,12 @@ def channel(request, slug_c, slug_t=None):
     videos_list = videos_list.order_by(
         "%s" % replace(order_by, "order_by_", ""))
 
-    #per_page = request.GET.get('per_page') if request.GET.get('per_page') and request.GET.get('per_page').isdigit() else DEFAULT_PER_PAGE
     per_page = request.COOKIES.get('perpage') if request.COOKIES.get(
         'perpage') and request.COOKIES.get('perpage').isdigit() else DEFAULT_PER_PAGE
     paginator = Paginator(videos_list, per_page)
     page = request.GET.get('page')
 
     videos = get_pagination(page, paginator)
-    #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
 
     interactive = None
     if H5P_ENABLED:
@@ -462,7 +460,6 @@ def videos(request):
 
     videos = get_pagination(page, paginator)
 
-    #ATOM_AUDIO = settings.ATOM_AUDIO_ENABLED
 
     interactive = None
     if settings.H5P_ENABLED:
@@ -479,9 +476,6 @@ def videos(request):
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
-        # return render_to_response("videos/videos_list.html",
-        #                          {"videos": videos, "param": param, "owners": list_owner},
-        #                          context_instance=RequestContext(request))
 
     if is_iframe:
         return render_to_response("videos/videos_iframe.html",
