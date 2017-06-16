@@ -333,9 +333,9 @@ class SearchForm(Form):
     q = forms.CharField(required=False, label=_('Search'),
                         widget=forms.TextInput(attrs={'type': 'search'}))
     start_date = forms.DateField(
-        required=False, label=u'Date de début', widget=widgets.AdminDateWidget)
+        required=False, label=u'Start date', widget=widgets.AdminDateWidget)
     end_date = forms.DateField(
-        required=False, label=u'Date de fin', widget=widgets.AdminDateWidget)
+        required=False, label=u'End date', widget=widgets.AdminDateWidget)
 
     def __init__(self, *args, **kwargs):
         super(SearchForm, self).__init__(*args, **kwargs)
