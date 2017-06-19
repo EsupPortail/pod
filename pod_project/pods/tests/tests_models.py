@@ -23,6 +23,7 @@ from django.core.files import File
 from core.models import *
 from django.conf import settings
 from django.test import TestCase, override_settings
+from django.utils import timezone
 from pods.models import *
 from django.core.files.temp import NamedTemporaryFile
 from django.template.defaultfilters import slugify
@@ -604,7 +605,7 @@ class MediaCoursesTestCase(TestCase):
     def setUp(self):
         remi = User.objects.create_user("Remi")
         remi2 = User.objects.create_user("Remi2")
-        Mediacourses.objects.create(user=remi, title="media1", date_added=datetime.today(
+        Mediacourses.objects.create(user=remi, title="media1", date_added=timezone.now(
         ), mediapath="blabla", started=True, error="error1")
         #Mediacourses.objects.get_or_create(user=remi2, title="media2")
         Mediacourses.objects.create(user=remi2, title="media2", started=True)

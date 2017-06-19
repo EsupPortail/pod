@@ -69,6 +69,10 @@ voir http://www.gnu.org/licenses/
         <div class="row">
             <div class="col-sm-8">
                 &nbsp;
+                {% if remove_selected_facet != "" %}
+                    <!-- Add link to remove facets selected -->
+                    <strong>{% trans 'Remove filters' %} : </strong>{{remove_selected_facet|safe}}
+                {% endif %}
             </div>
             {% block stats %}
             <div class="col-sm-4  text-right">

@@ -72,7 +72,6 @@ urlpatterns = [
     url(r'^tags/$', 'pods.views.tags', name='tags'),
     url(r'^videos/$', 'pods.views.videos', name='videos'),
     url(r'^video/(?P<slug>[\-\d\w]+)/$', 'pods.views.video', name='video'),
-    url(r'^video_priv/(?P<slug>[\-\d\w]+)/$', 'pods.views.video_priv', name='video_priv'),
     url(r'^video_edit/$', 'pods.views.video_edit', name='video_edit'),
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_edit', name='video_edit'),
@@ -121,6 +120,8 @@ if settings.USE_PRIVATE_VIDEO:
         url(r'^get_video_encoding_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
             'pods.views.get_video_encoding_private',
             name='get_video_encoding_private'),
+        url(r'^video_priv/(?P<id>[\-\d]+)/(?P<slug>[\-\d\w]+)/$',
+            'pods.views.video_priv', name='video_priv'),
     ]
 
 ##

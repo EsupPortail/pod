@@ -459,7 +459,7 @@ function get_ajax_url(newurl, attrs) {
         $( "#objects_list" ).html( ajax_image ).fadeIn("fast", function() {
             $.get( newurl, attrs, function( data ) {
                 $( "#objects_list" ).fadeOut("fast", function() {
-                    $( "#objects_list" ).html( data.json_videols );
+                    $( "#objects_list" ).html( data );
                     setOrderBy();
                     $("a.show-desc span").hide();
                     $( "#objects_list" ).fadeIn("fast");
@@ -483,7 +483,6 @@ function get_ajax_url(newurl, attrs) {
                     }
                 }
                 setPerPage();
-                //$(".mainToolbar").show();
 
                 if(filter_is_visible) $('#filters').show();
             }).fail(function() { alert( "error" ); });

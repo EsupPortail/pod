@@ -160,30 +160,3 @@ voir http://www.gnu.org/licenses/
 {% endblock box_filtre %}
 </aside>
 {% endblock %}
-
-<!--
-<script>
-
-/*** table scroll ***/
-// Change the selector if needed
-$(document).on("submit", "#filters form", function (e) {
-    e.preventDefault();
-    var jqxhr= '';
-    jqxhr.done(function(data){
-        if(data.json_toolbar) {
-            refresh_list_and_toolbar(data);
-        } 
-	else {
-	}
-    });
-});
-
-
-/*** Refreshes the list of videos after filtering ***/
-function refresh_list_and_toolbar(data){
-    $("span#toolbar").html(data.json_toolbar);
-    $("div#objects_list").html(data.json_videols);
-};
-</script>
--->
-

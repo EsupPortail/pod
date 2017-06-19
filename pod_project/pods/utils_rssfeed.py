@@ -40,9 +40,7 @@ class MySelectFeed(Feed):
             param = obj.split("&")
 
             for p in param:
-                print "p : %s" % (p,)
                 k, v = p.split('=')
-                print "k : %s, v : %s" % (k, v)
 
                 if k == 'channel':
                     channel = get_object_or_404(Channel, slug=v)
@@ -56,7 +54,6 @@ class MySelectFeed(Feed):
                     v = (((v.replace('\'', '')).replace(
                         '[', '')).replace(']', '')).replace(', ', ',')
                     lv = v.split(',')
-                    # print 'lv :' + str(lv)
                     if k == 'theme':
                         theme = get_object_or_404(Theme, slug=v)
                         VIDEOS = VIDEOS.filter(theme=theme)
@@ -69,8 +66,6 @@ class MySelectFeed(Feed):
                     if k == 'tag':
                         v = v.encode('utf8')
                         VIDEOS = VIDEOS.filter(tags__slug__in=lv)
-
-                # print(VIDEOS)
 
         return VIDEOS
 
@@ -102,9 +97,7 @@ class MySelectPodVideoHd(Feed):
             param = obj.split("&")
 
             for p in param:
-                # print "p : %s" % (p,)
                 k, v = p.split('=')
-                # print "k : %s, v : %s" % (k,v)
 
                 if k == 'channel':
                     channel = get_object_or_404(Channel, slug=v)
@@ -118,7 +111,6 @@ class MySelectPodVideoHd(Feed):
                     v = (((v.replace('\'', '')).replace(
                         '[', '')).replace(']', '')).replace(', ', ',')
                     lv = v.split(',')
-                    # print 'lv :' + str(lv)
                     if k == 'theme':
                         theme = get_object_or_404(Theme, slug=v)
                         VIDEOS = VIDEOS.filter(theme=theme)
@@ -132,8 +124,6 @@ class MySelectPodVideoHd(Feed):
                         v = v.encode('utf8')
                         VIDEOS = VIDEOS.filter(tags__slug__in=lv)
 
-                # print(VIDEOS)
-
         return VIDEOS
 
     def item_title(self, item):
@@ -141,6 +131,7 @@ class MySelectPodVideoHd(Feed):
 
     def item_description(self, item):
         description = item.description + 'dur&eacute;e : ' + item.duration_in_time()
+
         return description
 
     def item_link(self, item):
@@ -150,6 +141,7 @@ class MySelectPodVideoHd(Feed):
         resolmax = ENCODINGS.aggregate(Max('encodingType__output_height'))[
             'encodingType__output_height__max']
         link = link + "?action=download&resolution=" + str(resolmax)
+
         return link
 
     def item_pubdate(self, item):
@@ -183,9 +175,7 @@ class MySelectPodVideoSd(Feed):
             param = obj.split("&")
 
             for p in param:
-                # print "p : %s" % (p,)
                 k, v = p.split('=')
-                # print "k : %s, v : %s" % (k,v)
 
                 if k == 'channel':
                     channel = get_object_or_404(Channel, slug=v)
@@ -199,7 +189,6 @@ class MySelectPodVideoSd(Feed):
                     v = (((v.replace('\'', '')).replace(
                         '[', '')).replace(']', '')).replace(', ', ',')
                     lv = v.split(',')
-                    # print 'lv :' + str(lv)
                     if k == 'theme':
                         theme = get_object_or_404(Theme, slug=v)
                         VIDEOS = VIDEOS.filter(theme=theme)
@@ -213,8 +202,6 @@ class MySelectPodVideoSd(Feed):
                         v = v.encode('utf8')
                         VIDEOS = VIDEOS.filter(tags__slug__in=lv)
 
-                # print(VIDEOS)
-
         return VIDEOS
 
     def item_title(self, item):
@@ -222,6 +209,7 @@ class MySelectPodVideoSd(Feed):
 
     def item_description(self, item):
         description = item.description + 'dur&eacute;e : ' + item.duration_in_time()
+
         return description
 
     def item_link(self, item):
@@ -231,6 +219,7 @@ class MySelectPodVideoSd(Feed):
         resolmin = ENCODINGS.aggregate(Min('encodingType__output_height'))[
             'encodingType__output_height__min']
         link = link + "?action=download&resolution=" + str(resolmin)
+
         return link
 
     def item_pubdate(self, item):

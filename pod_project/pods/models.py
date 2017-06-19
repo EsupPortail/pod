@@ -27,6 +27,7 @@ from filer.fields.file import FilerFileField
 from django.utils.encoding import python_2_unicode_compatible
 from ckeditor.fields import RichTextField
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.core.urlresolvers import reverse
@@ -306,17 +307,8 @@ class Pod(Video):
         help_text=_(
             u'Viewing this video will not be possible without this password.'),
         max_length=50, blank=True, null=True)
-    hash_id = models.CharField(
-        _('hash_id'),
-        help_text=_(
-            u'Hashcode to retrieve the video'),
-        max_length=100, blank=True, null=True, default=None)
 
     _encoding_user_email_data = None
-
-    class Meta:
-        verbose_name = _("Video")
-        verbose_name_plural = _("Videos")
 
     def __unicode__(self):
         return u"Titre:%s - Prop:%s - Date:%s" % (self.title, self.owner, self.date_added)
@@ -354,16 +346,7 @@ class Pod(Video):
                     newid = 1
         else:
             newid = self.id
-        newid = '%04d' % newid
-        if not self.hash_id:
-            # on encode id+title pour avoir un id unique et plus dur à
-            # retrouver
-            idToEncode = ''.join([str(newid), self.title])
-            encodedId = base64.b64encode(idToEncode.encode('utf-8'))
-            self.hash_id = slugify(encodedId)
-        else:
-            tmp_slug = slugify(self.hash_id)
-            self.hash_id = tmp_slug
+        newid = '%04d' % newid     
         self.slug = "%s-%s" % (newid, slugify(self.title))
         super(Pod, self).save(*args, **kwargs)
 
@@ -1050,7 +1033,7 @@ class Mediacourses(models.Model):
     user = models.ForeignKey(User)
     title = models.CharField(_('title'), max_length=200)
     date_added = models.DateTimeField(
-        'date added', default=datetime.now, editable=False)
+        'date added', default=timezone.now, editable=False)
     mediapath = models.CharField(max_length=250, unique=True)
     started = models.BooleanField(default=0)
     error = models.TextField(null=True, blank=True)
@@ -1138,7 +1121,7 @@ class ReportVideo(models.Model):
         null=True, blank=True, verbose_name=_('Comment'))
     answer = models.TextField(null=True, blank=True, verbose_name=_('Answer'))
     date_added = models.DateTimeField(
-        'Date', default=datetime.now, editable=False)
+        'Date', default=timezone.now, editable=False)
 
     def __unicode__(self):
         return "%s - %s" % (self.video, self.user)

@@ -93,9 +93,7 @@ class MySelectFeed(Feed):
             param = obj.split("&")
 
             for p in param:
-                print "p : %s" % (p,)
                 k, v = p.split('=')
-                print "k : %s, v : %s" % (k, v)
 
                 if k == 'channel':
                     channel = get_object_or_404(Channel, slug=v)
@@ -110,7 +108,6 @@ class MySelectFeed(Feed):
                     v = (((v.replace('\'', '')).replace('[', '')).replace(']', '')).replace(
                         ', ', ',')
                     lv = v.split(',')
-                    # print 'lv :' + str(lv)
                     if k == 'theme':
                         theme = get_object_or_404(Theme, slug=v)
                         VIDEOS = VIDEOS.filter(theme=theme)
@@ -215,8 +212,7 @@ class PodcastHdFeed(AtomFeed):
             Max('encodingType__output_height'))['encodingType__output_height__max']
         link = 'http://' + self.current_site.domain + link + \
             "?action=download&resolution=" + str(resolmax)
-        #link = 'http://' + str(get_current_site(self.request).domain) + str(ENCODINGS.filter(encodingType__output_height = resolmax)[0].encodingFile)
-        # print link
+
         return link
 
     def item_enclosure_length(self, item):
@@ -226,6 +222,7 @@ class PodcastHdFeed(AtomFeed):
             video=Pod.objects.get(slug=item.slug), encodingFormat=encodingFormat)
         resolmax = ENCODINGS.aggregate(
             Max('encodingType__output_height'))['encodingType__output_height__max']
+
         return File(ENCODINGS.filter(encodingType__output_height=resolmax)[0].encodingFile).size
 
     def item_enclosure_mime_type(self, item):
@@ -247,6 +244,7 @@ class PodcastSdFeed(PodcastHdFeed):
             Min('encodingType__output_height'))['encodingType__output_height__min']
         link = 'http://' + self.current_site.domain + link + \
             "?action=download&resolution=" + str(resolmin)
+
         return link
 
     def item_enclosure_length(self, item):
@@ -256,6 +254,7 @@ class PodcastSdFeed(PodcastHdFeed):
             video=Pod.objects.get(slug=item.slug), encodingFormat=encodingFormat)
         resolmin = ENCODINGS.aggregate(
             Min('encodingType__output_height'))['encodingType__output_height__min']
+
         return File(ENCODINGS.filter(encodingType__output_height=resolmin)[0].encodingFile).size
 
 
@@ -265,14 +264,15 @@ class AudiocastFeed(PodcastHdFeed):
         link = reverse('pods.views.video', args=(item.slug,))
         ENCODINGS = EncodingPods.objects.filter(
             video=Pod.objects.get(slug=item.slug), encodingFormat="audio/mp3")
-        print ENCODINGS
         link = 'http://' + self.current_site.domain + \
             link + "?action=download&resolution="
+
         return link
 
     def item_enclosure_length(self, item):
         ENCODINGS = EncodingPods.objects.filter(
             video=Pod.objects.get(slug=item.slug), encodingFormat="audio/mp3")
+
         return File(ENCODINGS[0].encodingFile).size
 
     def item_enclosure_mime_type(self, item):
@@ -291,6 +291,7 @@ class MySelectPodVideoHd(MySelectFeed):
         resolmax = ENCODINGS.aggregate(
             Max('encodingType__output_height'))['encodingType__output_height__max']
         link = link + "?action=download&resolution=" + str(resolmax)
+
         return link
 
 
@@ -306,4 +307,5 @@ class MySelectPodVideoSd(MySelectFeed):
         resolmin = ENCODINGS.aggregate(
             Min('encodingType__output_height'))['encodingType__output_height__min']
         link = link + "?action=download&resolution=" + str(resolmin)
+
         return link
