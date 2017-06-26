@@ -108,6 +108,7 @@ $(document).ready(function() {
         $("#player").hide();
     {% endif %}
     $('.checkbox').hide();
+    $('#txtintegration').hide();
     $('#icontent').load(function() {
         $('#icontent').fadeIn('slow');
     });
@@ -125,6 +126,35 @@ $(document).on('click', '#button_video_interactive', function() {
     $('#button_video_interactive').hide();
     $('#button_video_original').show();
     $('#tab-score').show();
+});
+$(document).on('click', '#refresh-score', function() {
+    $.ajax({
+        url: '{% url "h5pajax" %}?user-scores={{interactive.h5p.content_id}}',
+        type: 'GET',
+        success: function(list) {
+            var table = $('#user-score')[0];
+            if (table == undefined) {
+                var personnal = $('#personnal-score')[0];
+                for (i = 0; i < list.length; i++) {
+                    if (list[i]['user'] == '{{ request.user.username }}' && list[i]['max_points'] != null) {
+                        personnal.innerHTML = "{% trans 'You got the following score on this video' %}: " + list[i]['points'] + ' / ' + list[i]['max_points'];
+                    }
+                }
+            } else {
+                var html = ''
+                for (i = 0; i < list.length; i++) {
+                    html = html + '<tr>';
+                    if (list[i]['max_points'] != null) {
+                        html = html + '<td>' + list[i]['user'] + '</td><td>' + list[i]['points'] + ' / ' + list[i]['max_points'] + '</td>';
+                    } else {
+                        html = html + '<td>' + list[i]['user'] + '</td><td>{% trans "No score available" %}</td>'; 
+                    }
+                    html = html + '</tr>';
+                    table.innerHTML = html;
+                }
+            }
+        }
+    });
 });
 {% endif %}
 </script>
@@ -519,36 +549,42 @@ $(document).on('click', '#button_video_interactive', function() {
                     </div>
                     <div id="score" class="tab-pane fade container-fluid">
                         <h3>{% trans 'Scoreboard' %}</h3>
-                        {% if interactive.score and request.user == video.owner or request.user.is_superuser %}
-                        <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>{% trans 'User' %}</th>
-                                        <th>Points</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for user in interactive.score %}
-                                    {% if user.max_points %}
-                                    <tr>
-                                        <td>{{user.user}}</td><td>{{user.points}} / {{user.max_points}}</td>
-                                    </tr>
-                                    {% else %}
-                                    <tr>
-                                        <td>{{user.user}}</td><td>{% trans 'No score available' %}</td>
-                                    </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        {% elif request.user != video.owner and interactive.score.max_points %}
-                            {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
-                        {% elif not interactive.score and request.user == video.owner or request.user.is_superuser %}
-                            {% trans 'Your video does not have a score or no users have done the activities yet.' %}
-                        {% else %}
-                            {% trans 'This is the first time you watch this video.' %}
-                        {% endif %}
+                        <i>{% trans 'Click below to refresh the information.' %}</i><br>
+                        <button type="submit" class="btn btn-default" id="refresh-score" style="border: 0px;">
+                            {% if interactive.score and request.user == video.owner or request.user.is_superuser %}
+                            <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>{% trans 'User' %}</th>
+                                            <th>Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="user-score">
+                                    {% for user in interactive.score %}
+                                        {% if user.max_points %}
+                                        <tr>
+                                            <td>{{user.user}}</td>
+                                            <td>{{user.points}} / {{user.max_points}}</td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                            <td>{{user.user}}</td><td>{% trans 'No score available' %}</td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% elif request.user != video.owner and interactive.score.max_points %}
+                            <div id="personnal-score">
+                                {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
+                            </div>
+                            {% else %}
+                            <div id="personnal-score">
+                                {% trans 'This is the first time you watch this video.' %}
+                            </div>
+                            {% endif %}
+                        </button>
                     </div>
                     {% endif %}
                     <!-- /TAB share -->

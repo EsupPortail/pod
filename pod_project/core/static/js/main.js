@@ -467,6 +467,8 @@ function get_ajax_url(newurl, attrs) {
                 });
                 $( "#toolbar" ).fadeOut("fast", function() {
                     $( "#toolbar" ).html( data.json_toolbar );
+                    setOrderBy();
+                    setPerPage();
                     $( "#toolbar" ).fadeIn("fast");
 		});
 
