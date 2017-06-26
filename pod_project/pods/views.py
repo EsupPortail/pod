@@ -97,9 +97,15 @@ def owner_channels_list(request):
     channels = get_pagination(page, paginator)
 
     if request.is_ajax():
-        return render_to_response("channels/channels_list.html",
-                                  {"channels": channels},
-                                  context_instance=RequestContext(request))
+        some_data_to_dump = {
+            'json_videols': render_to_string("channels/channels_list.html",
+                                {"channels": channels},
+                                  context_instance=RequestContext(request)),
+            'json_toolbar': render_to_string("maintoolbar.html",
+                                {"channels": channels})
+        }
+        data = json.dumps(some_data_to_dump)
+        return HttpResponse(data, content_type='application/json')
 
     return render_to_response("channels/my_channels.html",
                               {"channels": channels, "video_count": VIDEOS.filter(
@@ -120,9 +126,15 @@ def channels(request):
     channels = get_pagination(page, paginator)
 
     if request.is_ajax():
-        return render_to_response("channels/channels_list.html",
-                                  {"channels": channels},
-                                  context_instance=RequestContext(request))
+        some_data_to_dump = {
+            'json_videols': render_to_string("channels/channels_list.html",
+                                {"channels": channels},
+                                  context_instance=RequestContext(request)),
+            'json_toolbar': render_to_string("maintoolbar.html",
+                                {"channels": channels})
+        }
+        data = json.dumps(some_data_to_dump)
+        return HttpResponse(data, content_type='application/json')
 
     return render_to_response("channels/channels.html",
                               {"channels": channels, "video_count": VIDEOS.filter(
@@ -463,7 +475,6 @@ def videos(request):
 
     interactive = None
     if settings.H5P_ENABLED:
-        from h5pp.models import h5p_libraries
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             interactive = True
 
@@ -472,7 +483,8 @@ def videos(request):
             'json_toolbar': render_to_string('maintoolbar.html',
                                              {'videos': videos, 'param': param}),
             'json_videols': render_to_string('videos/videos_list.html',
-                                             {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param})
+                                             {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param},
+                                             context_instance=RequestContext(request))
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
@@ -514,6 +526,8 @@ def video(request, slug, slug_c=None, slug_t=None):
             h5p = None
             if h5p_contents.objects.filter(title=video.title).count() > 0:
                 h5p = h5p_contents.objects.get(title=video.title)
+                if request.GET.get('is_iframe'):
+                    return HttpResponseRedirect('/h5p/content/?contentId=%d&is_iframe=true' %h5p.content_id)
                 if request.user == video.owner or request.user.is_superuser:
                     score = getUserScore(h5p.content_id)
                 else:
@@ -1680,44 +1694,6 @@ def video_enrich(request, slug):
                                   'interactive': interactive},
                               context_instance=RequestContext(request))
 
-
-@csrf_protect
-@login_required
-@staff_member_required
-def video_interactive(request, slug):
-    video = get_object_or_404(Pod, slug=slug)
-    # Add this to improve folder selection and view list
-    if not request.session.get('filer_last_folder_id'):
-        from filer.models import Folder
-        folder = Folder.objects.get(
-            owner=request.user, name=request.user.username)
-        request.session['filer_last_folder_id'] = folder.id
-
-    if request.user != video.owner and not request.user.is_superuser:
-        messages.add_message(
-            request, messages.ERROR, _(u'You cannot add interactivity to this video.'))
-        raise PermissionDenied
-
-    if 'h5pp' in settings.INSTALLED_APPS:
-        interactive = h5p_contents.objects.filter(slug=slug).values()
-        if len(interactive) > 0:
-            return render_to_response('videos/video_interactive.html',
-                                      {'video': video,
-                                       'contentId': interactive[0]['content_id'],
-                                       'slug': slug},
-                                      context_instance=RequestContext(request))
-
-        return render_to_response('videos/video_interactive.html',
-                                  {'video': video,
-                                   'slug': slug},
-                                  context_instance=RequestContext(request))
-
-    else:
-        messages.add_message(
-            request, messages.ERROR, _(u'Interactive video is not available in this server.'))
-        raise PermissionDenied
-
-
 @csrf_protect
 @login_required
 def video_interactive(request, slug, slug_c=None, slug_t=None):
@@ -1736,14 +1712,14 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
         h5p = h5p_contents.objects.get(title=video.title)
     interactive = {'h5p': h5p, 'version': version}
 
-    if request.user.is_authenticated and (request.user == video.owner or request.user.is_superuser):
+    if request.user == video.owner or request.user.is_superuser:
         return render_to_response('videos/video_interactive.html',
                                   {'video': video, 'channel': channel,
                                       'theme': theme, 'interactive': interactive},
                                   context_instance=RequestContext(request))
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot watch this video.'))
+            request, messages.ERROR, _(u'You cannot edit this video.'))
         raise PermissionDenied
 
 

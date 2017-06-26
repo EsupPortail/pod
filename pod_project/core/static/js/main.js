@@ -459,7 +459,7 @@ function get_ajax_url(newurl, attrs) {
         $( "#objects_list" ).html( ajax_image ).fadeIn("fast", function() {
             $.get( newurl, attrs, function( data ) {
                 $( "#objects_list" ).fadeOut("fast", function() {
-                    $( "#objects_list" ).html( data );
+                    $( "#objects_list" ).html( data.json_videols );
                     setOrderBy();
                     $("a.show-desc span").hide();
                     $( "#objects_list" ).fadeIn("fast");
@@ -467,6 +467,8 @@ function get_ajax_url(newurl, attrs) {
                 });
                 $( "#toolbar" ).fadeOut("fast", function() {
                     $( "#toolbar" ).html( data.json_toolbar );
+                    setOrderBy();
+                    setPerPage();
                     $( "#toolbar" ).fadeIn("fast");
 		});
 

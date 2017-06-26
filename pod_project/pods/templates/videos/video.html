@@ -25,9 +25,7 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{{ video.title }}{% endblock bootstrap3_title %}
 
 {% block bootstrap3_extra_head %}
-    {% if not request.GET.h5p_is_iframe %}
-        {% include 'videos/extraheadplayer.html' %}
-    {% endif %}
+{% include 'videos/extraheadplayer.html' %}
 
 <script>
     $(document).on('submit', 'form#video_report_form', function (event) {
@@ -104,9 +102,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
 });
 {% if H5P_ENABLED and interactive.h5p %}
 $(document).ready(function() {
-    {% if request.GET.h5p_is_iframe or not request.GET.is_iframe %}
-        $("#player").hide();
-    {% endif %}
+    $("#player").hide();
     $('.checkbox').hide();
     $('#icontent').load(function() {
         $('#icontent').fadeIn('slow');
@@ -212,9 +208,7 @@ $(document).on('click', '#button_video_interactive', function() {
 
         {% if H5P_ENABLED and interactive.h5p %}
             <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{interactive.h5p.content_id}}&is_iframe=true" style="background:white;display:none;" height="550px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
-            {% if not request.GET.h5p_is_iframe %}
-                {% include 'videos/video_player.html' %}
-            {% endif %}
+            {% include 'videos/video_player.html' %}
         {% else %}
             {% include 'videos/video_player.html' %}
         {% endif %}
@@ -289,6 +283,23 @@ $(document).on('click', '#button_video_interactive', function() {
                 {% endif %}
                 </small>
             </h3><!-- end h3 title -->
+        {% else %}
+            <h3 itemprop="name" >
+                {{ video.title }}
+                <small>
+                {% if video.date_evt %}
+                    {{ video.date_evt }}
+                {% endif %}
+                    <button class="btn btn-default" id="button_video_original" title="{% trans 'View the original video' %}">
+                        <span class="glyphicon glyphicon-film"></span>
+                        <span class="sr-only">{% trans 'View the original video' %}</span>
+                    </button>
+                    <button class="btn btn-default" id="button_video_interactive" title="{% trans 'View the interactive video' %}" style="display:none;">
+                        <span class="glyphicon glyphicon-blackboard"></span>
+                        <span class="sr-only">{% trans 'View the interactive video' %}</span>
+                    </button>
+                </small>
+            </h3>
         {% endif %}
 
         <div class="row" id="info_video">
