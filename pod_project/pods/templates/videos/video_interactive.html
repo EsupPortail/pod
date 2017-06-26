@@ -103,7 +103,7 @@ voir http://www.gnu.org/licenses/
 
         //Go to H5PP plugin management
         $('#button_manage').on('click', function() {
-            window.location.assign("/h5p/home");
+            window.location.assign("/h5p/score/{{interactive.h5p.content_id}}");
         });
 
         chargementEditeur();
@@ -206,9 +206,9 @@ voir http://www.gnu.org/licenses/
                     <span id="delete" class="glyphicon glyphicon-remove-sign"></span>
                     <span class="sr-only">{% trans 'Delete the interactive part of this video' %}</span>
                 </button>
-                <button type="submit" class="btn btn-default" id="button_manage" title="{% trans 'Manage H5PP' %}">
+                <button type="submit" class="btn btn-default" id="button_manage" title="{% trans 'Manage score' %}">
                     <span id="score" class="glyphicon glyphicon-list-alt"></span>
-                    <span class="sr-only">{% trans 'Manage H5PP' %}</span>
+                    <span class="sr-only">{% trans 'Manage score' %}</span>
                 </button>
                 {% endif %}
             {% endif %}
