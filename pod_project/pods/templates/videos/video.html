@@ -543,7 +543,8 @@ $(document).on('click', '#button_video_interactive', function() {
                                 {% for user in interactive.score %}
                                     {% if user.max_points %}
                                     <tr>
-                                        <td>{{user.user}}</td><td>{{user.points}} / {{user.max_points}}</td>
+                                        <td>{{user.user}}</td>
+                                        <td>{{user.points}} / {{user.max_points}}</td>
                                     </tr>
                                     {% else %}
                                     <tr>
