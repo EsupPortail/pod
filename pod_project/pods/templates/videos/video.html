@@ -29,6 +29,16 @@ voir http://www.gnu.org/licenses/
         {% include 'videos/extraheadplayer.html' %}
     {% endif %}
 
+{% if H5P_ENABLED and interactive.h5p %}
+<style>
+#h5pcontent {
+    margin: auto;
+    text-align: center;
+    background-color: black;
+}
+</style>
+{% endif %}
+
 <script>
     $(document).on('submit', 'form#video_report_form', function (event) {
         $('form').show();
@@ -104,28 +114,31 @@ $(document).on('click', '#button_video_favorite', function (event) {
 });
 {% if H5P_ENABLED and interactive.h5p %}
 $(document).ready(function() {
-    {% if request.GET.h5p_is_iframe or not request.GET.is_iframe %}
+    {% if not request.GET.is_iframe %}
         $("#player").hide();
     {% endif %}
     $('.checkbox').hide();
-    $('#txtintegration').hide();
     $('#icontent').load(function() {
         $('#icontent').fadeIn('slow');
     });
 });
 $(document).on('click', '#button_video_original', function() {
     $('#icontent').hide();
+    $('#h5pcontent').hide();
     $('#player').show();
     $('#button_video_original').hide();
     $('#button_video_interactive').show();
     $('#tab-score').hide();
+    $('.checkbox').show();
 });
 $(document).on('click', '#button_video_interactive', function() {
     $('#icontent').show();
+    $('#h5pcontent').show();
     $('#player').hide();
     $('#button_video_interactive').hide();
     $('#button_video_original').show();
     $('#tab-score').show();
+    $('.checkbox').hide();
 });
 $(document).on('click', '#refresh-score', function() {
     $.ajax({
@@ -241,7 +254,9 @@ $(document).on('click', '#refresh-score', function() {
         <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" />
 
         {% if H5P_ENABLED and interactive.h5p %}
-            <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{interactive.h5p.content_id}}&is_iframe=true" style="background:white;display:none;" height="550px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+        <div id="h5pcontent">
+            <iframe id="icontent" src="{% url "h5pembed" %}?contentId={{interactive.h5p.content_id}}" style="background:white;display:none;" height="478px" width="800px" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+        </div>
             {% if not request.GET.h5p_is_iframe %}
                 {% include 'videos/video_player.html' %}
             {% endif %}
