@@ -201,7 +201,7 @@ voir http://www.gnu.org/licenses/
             {{video.title}}
             <small>
             {% if interactive.h5p %}        
-                {% if request.user == video.owner %}
+                {% if request.user == video.owner or request.user.is_superuser %}
                 <button type="submit" class="btn btn-default" id="button_delete_video" title="{% trans 'Delete the interactive part of this video' %}">
                     <span id="delete" class="glyphicon glyphicon-remove-sign"></span>
                     <span class="sr-only">{% trans 'Delete the interactive part of this video' %}</span>
