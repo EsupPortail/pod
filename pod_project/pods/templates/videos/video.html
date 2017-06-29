@@ -120,9 +120,13 @@ $(document).ready(function() {
     $('.checkbox').hide();
     $('#icontent').load(function() {
         $('#icontent').fadeIn('slow');
+        if ('{{request.GET.interactive}}' == 'false') {
+            $('#button_video_original').click();
+        }
     });
     $('#showinteractive').click();
     $("label[for=integration_size]").hide();
+    $("label[for=autoplay").hide();
 });
 $(document).on('click', '#button_video_original', function() {
     $('#icontent').hide();
@@ -134,6 +138,7 @@ $(document).on('click', '#button_video_original', function() {
     $('.checkbox').show();
     $('#showinteractive').click();
     $("label[for=integration_size]").show();
+    $("label[for=autoplay").show();
 });
 $(document).on('click', '#button_video_interactive', function() {
     $('#icontent').show();
@@ -145,6 +150,7 @@ $(document).on('click', '#button_video_interactive', function() {
     $('.checkbox').hide();
     $('#showinteractive').click();
     $("label[for=integration_size]").hide();
+    $("label[for=autoplay").hide();
 });
 $(document).on('click', '#refresh-score', function() {
     $.ajax({
@@ -183,13 +189,16 @@ $(document).on('change', '#showinteractive', function() {
                 str = str.replace(/(width=)\S+/, '$1' + '\"' + '620' +'\"');
                 str = str.replace(/(height=)\S+/, '$1' + '\"' + '400' +'\"');
                 str = str.replace('is_iframe=true', 'is_iframe=true&interactive=true');
+                $('#txtpartage').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?interactive=true');
             }
     } else if (str.indexOf('interactive=true') > 0) {
         str = str.replace(/(width=)\S+/, '$1' + '\"' + '640' +'\"');
         str = str.replace(/(height=)\S+/, '$1' + '\"' + '360' +'\"');
         str = str.replace('&interactive=true', '');
+        $('#txtpartage').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?interactive=false');
     }
     $('#txtintegration').val(str);
+
 });
 {% endif %}
 </script>
