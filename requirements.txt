@@ -33,4 +33,4 @@ virtualenvwrapper==4.3.2
 coverage==3.7.1
 sqlparse==0.2.1
 celery==3.1.24
-git+git://github.com/drclockwork/H5PP@0.1.7#egg=H5PP
+git+git://github.com/drclockwork/H5PP@0.1.8#egg=H5PP
