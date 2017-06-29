@@ -186,16 +186,24 @@ $(document).on('change', '#showinteractive', function() {
     // Interactive mode
     if ($('#showinteractive').is(':checked')) {
             if(str.indexOf('interactive=true') < 0){
-                str = str.replace(/(width=)\S+/, '$1' + '\"' + '620' +'\"');
-                str = str.replace(/(height=)\S+/, '$1' + '\"' + '400' +'\"');
+                str = str.replace(/(width=)\S+/, '$1' + '\"' + '625' +'\"');
+                str = str.replace(/(height=)\S+/, '$1' + '\"' + '530' +'\"');
                 str = str.replace('is_iframe=true', 'is_iframe=true&interactive=true');
-                $('#txtpartage').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?interactive=true');
+                {% if not video.is_draft %}
+                    $('#txtpartage').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?interactive=true');
+                {% else %}
+                    $('#txtpartageprive').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video_priv/{{ video.id }}/{{ hash_id }}/?interactive=true');
+                {% endif %}
             }
     } else if (str.indexOf('interactive=true') > 0) {
         str = str.replace(/(width=)\S+/, '$1' + '\"' + '640' +'\"');
         str = str.replace(/(height=)\S+/, '$1' + '\"' + '360' +'\"');
         str = str.replace('&interactive=true', '');
-        $('#txtpartage').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?interactive=false');
+        {% if not video.is_draft %}
+            $('#txtpartage').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?interactive=false');
+        {% else %}
+            $('#txtpartageprive').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video_priv/{{ video.id }}/{{ hash_id }}/');
+        {% endif %}
     }
     $('#txtintegration').val(str);
 
