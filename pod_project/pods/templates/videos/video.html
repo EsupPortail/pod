@@ -255,7 +255,7 @@ $(document).on('click', '#refresh-score', function() {
 
         {% if H5P_ENABLED and interactive.h5p %}
         <div id="h5pcontent">
-            <iframe id="icontent" src="{% url "h5pembed" %}?contentId={{interactive.h5p.content_id}}" style="background:white;display:none;" height="478px" width="800px" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+            <iframe id="icontent" src="{% url "h5pembed" %}?contentId={{interactive.h5p.content_id}}" style="background:white;display:none;" height="476px" width="800px" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
         </div>
             {% if not request.GET.h5p_is_iframe %}
                 {% include 'videos/video_player.html' %}
