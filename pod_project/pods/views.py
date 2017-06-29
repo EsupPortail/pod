@@ -526,7 +526,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             h5p = None
             if h5p_contents.objects.filter(title=video.title).count() > 0:
                 h5p = h5p_contents.objects.get(title=video.title)
-                if request.GET.get('is_iframe'):
+                if request.GET.get('is_iframe') and request.GET.get('interactive'):
                     return HttpResponseRedirect('/h5p/embed/?contentId=%d' %h5p.content_id)
                 if request.user == video.owner or request.user.is_superuser:
                     score = getUserScore(h5p.content_id)
@@ -657,6 +657,8 @@ def video_priv(request, id, slug, slug_c=None, slug_t=None):
             h5p = None
             if h5p_contents.objects.filter(title=video.title).count() > 0:
                 h5p = h5p_contents.objects.get(title=video.title)
+                if request.GET.get('is_iframe') and request.GET.get('interactive'):
+                    return HttpResponseRedirect('/h5p/embed/?contentId=%d' %h5p.content_id)
                 if request.user == video.owner or request.user.is_superuser:
                     score = getUserScore(h5p.content_id)
                 else:

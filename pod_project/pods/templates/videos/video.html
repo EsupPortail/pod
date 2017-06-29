@@ -121,6 +121,8 @@ $(document).ready(function() {
     $('#icontent').load(function() {
         $('#icontent').fadeIn('slow');
     });
+    $('#showinteractive').click();
+    $("label[for=integration_size]").hide();
 });
 $(document).on('click', '#button_video_original', function() {
     $('#icontent').hide();
@@ -130,6 +132,8 @@ $(document).on('click', '#button_video_original', function() {
     $('#button_video_interactive').show();
     $('#tab-score').hide();
     $('.checkbox').show();
+    $('#showinteractive').click();
+    $("label[for=integration_size]").show();
 });
 $(document).on('click', '#button_video_interactive', function() {
     $('#icontent').show();
@@ -139,6 +143,8 @@ $(document).on('click', '#button_video_interactive', function() {
     $('#button_video_original').show();
     $('#tab-score').show();
     $('.checkbox').hide();
+    $('#showinteractive').click();
+    $("label[for=integration_size]").hide();
 });
 $(document).on('click', '#refresh-score', function() {
     $.ajax({
@@ -168,6 +174,22 @@ $(document).on('click', '#refresh-score', function() {
             }
         }
     });
+});
+$(document).on('change', '#showinteractive', function() {
+    var str = $('#txtintegration').val();
+    // Interactive mode
+    if ($('#showinteractive').is(':checked')) {
+            if(str.indexOf('interactive=true') < 0){
+                str = str.replace(/(width=)\S+/, '$1' + '\"' + '620' +'\"');
+                str = str.replace(/(height=)\S+/, '$1' + '\"' + '400' +'\"');
+                str = str.replace('is_iframe=true', 'is_iframe=true&interactive=true');
+            }
+    } else if (str.indexOf('interactive=true') > 0) {
+        str = str.replace(/(width=)\S+/, '$1' + '\"' + '640' +'\"');
+        str = str.replace(/(height=)\S+/, '$1' + '\"' + '360' +'\"');
+        str = str.replace('&interactive=true', '');
+    }
+    $('#txtintegration').val(str);
 });
 {% endif %}
 </script>
@@ -255,7 +277,7 @@ $(document).on('click', '#refresh-score', function() {
 
         {% if H5P_ENABLED and interactive.h5p %}
         <div id="h5pcontent">
-            <iframe id="icontent" src="{% url "h5pembed" %}?contentId={{interactive.h5p.content_id}}" style="background:white;display:none;" height="476px" width="800px" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+            <iframe id="icontent" src="{% url 'video' slug=video.slug %}?is_iframe=true&interactive=true" style="background:white;display:none;" height="476px" width="800px" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
         </div>
             {% if not request.GET.h5p_is_iframe %}
                 {% include 'videos/video_player.html' %}
@@ -543,6 +565,11 @@ $(document).on('click', '#refresh-score', function() {
                                     <label for="autoplay">
                                         {% trans 'Autoplay' %} <input type="checkbox" id="autoplay" class="form-control" />
                                     </label>
+                                    {% if H5P_ENABLED and interactive.h5p %}
+                                    <label for="showinteractive">
+                                        {% trans 'Interactive' %} <input type="checkbox" id="showinteractive" class="form-control" />
+                                    </label>
+                                    {% endif %}
                                 </div>
                             </form>
                             <hr />
@@ -628,6 +655,11 @@ $(document).on('click', '#refresh-score', function() {
                                     <label for="autoplay">
                                         {% trans 'Autoplay' %} <input type="checkbox" id="autoplay" class="form-control" />
                                     </label>
+                                    {% if H5P_ENABLED and interactive.h5p %}
+                                    <label for="showinteractive">
+                                        {% trans 'Interactive' %} <input type="checkbox" id="showinteractive" class="form-control" />
+                                    </label>
+                                    {% endif %}
                                 </div>
                             </form>
                             <hr />
