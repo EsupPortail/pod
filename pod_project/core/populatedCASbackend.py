@@ -29,11 +29,11 @@ from django.utils.translation import ugettext as _
 
 import sys
 import logging
-#logger = logging.getLogger(__name__)
-FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
-logging.basicConfig(format=FORMAT)
-d = {'clientip': '192.168.0.1', 'user': 'fbloggs'}
 logger = logging.getLogger(__name__)
+#FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
+#logging.basicConfig(format=FORMAT)
+#d = {'clientip': '192.168.0.1', 'user': 'fbloggs'}
+#logger = logging.getLogger(__name__)
 
 
 class PopulatedCASBackend(CASBackend):
@@ -90,15 +90,15 @@ class PopulatedCASBackend(CASBackend):
                                 # %s' % (sys.exc_info()[0], sys.exc_info()[1])
                                 msg = u'\n*****Unexpected error link :%s - %s' % (
                                     sys.exc_info()[0], sys.exc_info()[1])
-                                logger.error(msg, extra=d)
+                                logger.error(msg)
                     except:
                         user.is_active = False
                         user.save()
                         msg = u'\n*****Unexpected error link :%s - %s' % (
                             sys.exc_info()[0], sys.exc_info()[1])
-                        logger.error(msg, extra=d)
+                        logger.error(msg)
                 except ldap.LDAPError, e:
-                    logger.error(e, extra=d)
+                    logger.error(e)
             else:
                 if request.session.get('attributes') and settings.AUTH_USER_ATTR_MAP != ():
                     if settings.AUTH_USER_ATTR_MAP.get('first_name') and request.session['attributes'].get(settings.AUTH_USER_ATTR_MAP['first_name']):
@@ -122,7 +122,7 @@ class PopulatedCASBackend(CASBackend):
                         except:
                             msg = u'\n*****Unexpected error link :%s - %s' % (
                                 sys.exc_info()[0], sys.exc_info()[1])
-                            logger.error(msg, extra=d)
+                            logger.error(msg)
 
             # on sauvegarde l'utilisateur
             user.save()
@@ -132,7 +132,7 @@ class PopulatedCASBackend(CASBackend):
             except:
                 msg = u'\n*****Unexpected error link :%s - %s' % (
                     sys.exc_info()[0], sys.exc_info()[1])
-                logger.error(msg, extra=d)
+                logger.error(msg)
 
         else:
             msg = u'%s' % _(u'Unable to authenticate')
