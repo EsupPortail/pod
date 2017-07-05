@@ -445,10 +445,15 @@ ATOM_HD = False
 ATOM_SD = False
 
 # Encode with Celery
-CELERY_TO_ENCODE = False
-CELERY_NAME = "pod_project"
-CELERY_BACKEND = "amqp"
-CELERY_BROKER = "amqp://guest@localhost//"
+
+# def encode_video(video):
+#     from pod_project.tasks import task_start_encode
+#     task_start_encode.delay(instance)
+#
+# ENCODE_VIDEO = encode_video
+# CELERY_NAME = "pod_project"
+# CELERY_BACKEND = "amqp"
+# CELERY_BROKER = "amqp://guest@localhost//"
 
 ##
 # Video in draft mode can be shared
