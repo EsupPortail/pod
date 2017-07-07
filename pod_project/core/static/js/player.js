@@ -130,13 +130,14 @@ function loadVideo() {
         if (defsize != '480' && defsize != '720') {
             defsize = 240;
         }
-        myPlayer.resolutionSelector({default_res : ''+defsize});
+        myPlayer.videoJsResolutionSwitcher();
 
         if ($('ul#slides li[data-type!="None"]').length > 0) {
-            myPlayer.displaySelector({
+            myPlayer.videojsDisplaySelector({
                 default_disp: '100/0',
                 list_disp: list_disp
             });
+            $('.player_video-dimensions').css('width', '100%');
         }
         $('ul#slides').hide();
 
@@ -145,7 +146,7 @@ function loadVideo() {
             $('ul#chapters li').each(function () {
                 list_chap[$(this).attr('data-start')] = $(this).attr('data-title');
             });
-            myPlayer.chapterSelector({
+            myPlayer.videojsChapterSelector({
                 list_chap : list_chap
             });
             $('ul#chapters').hide();
@@ -154,7 +155,8 @@ function loadVideo() {
         $('div.vjs-slide').hide();
         $('div.vjs-title').hide();
 
-        myPlayer.on('changeRes', function() {
+        myPlayer.on('updateSrc', function() {
+            alert('active');
             changeRes = true;
         });
         myPlayer.on('changeDisp', function() {
