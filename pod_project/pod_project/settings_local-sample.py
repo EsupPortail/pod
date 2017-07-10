@@ -445,6 +445,7 @@ ATOM_HD = False
 ATOM_SD = False
 
 # Encode with Celery
+#--------------------
 
 # def encode_video(video):
 #     from pod_project.tasks import task_start_encode
@@ -454,6 +455,25 @@ ATOM_SD = False
 # CELERY_NAME = "pod_project"
 # CELERY_BACKEND = "amqp"
 # CELERY_BROKER = "amqp://guest@localhost//"
+# ENCODE_VIDEO = encode_video
+
+# Encode with an external command
+#--------------------------------
+
+# def external_command(command):
+#     (status,out) = commands.getstatusoutput(command)
+#     logging.getLogger(__name__).info(
+#         'command %s exited with %s outputed %s' %
+#         ( command, status, out )
+#     )
+#
+# def encode_video(video):
+#     external_command( 'ssh hpc process %s' % video.id )
+#
+# ENCODE_VIDEO = encode_video
+
+
+
 
 ##
 # Video in draft mode can be shared
