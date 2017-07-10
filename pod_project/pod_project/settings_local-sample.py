@@ -446,9 +446,9 @@ ATOM_SD = False
 
 # Encode with Celery
 
+# from pod_project.tasks import task_start_encode
 # def encode_video(video):
-#     from pod_project.tasks import task_start_encode
-#     task_start_encode.delay(instance)
+#     task_start_encode.delay(video)
 #
 # ENCODE_VIDEO = encode_video
 # CELERY_NAME = "pod_project"
