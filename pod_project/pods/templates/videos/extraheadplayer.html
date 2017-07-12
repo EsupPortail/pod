@@ -75,10 +75,17 @@ voir http://www.gnu.org/licenses/
         margin: 0;
         left: 5px;
     }
+    .video-js .vjs-big-play-button {
+        height: auto;
+    }   
+    .vjs-big-play-button .vjs-icon-placeholder {
+        display: none;
+    }
 </style>
 
 <script src="{% static 'js/videojs-resolution-switcher.js' %}"></script>
-<script src="{% static 'js/videojs-contrib-hls.js' %}"></script>
+<script src ="https://unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
+<script src="{% static 'js/videojs-contrib-hls.min.js' %}"></script>
 <script src="{% static 'js/video-display-selector.js' %}"></script>
 <script src="{% static 'js/video-chapter-selector.js' %}"></script>
 <script src="{% static 'js/player.js' %}"></script>

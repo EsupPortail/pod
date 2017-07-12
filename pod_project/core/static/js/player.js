@@ -64,7 +64,7 @@ function loadVideo() {
     //reinitialize somes var :
     currentslide = '';
     timestamps = [];
-
+    
     videojs.options.flash.swf = 'video-js.swf';
     videojs('player_video').ready(function() {
         // PLAYER READY
@@ -101,7 +101,7 @@ function loadVideo() {
         myPlayer.on('loadedmetadata', loadedmetadata);
         myPlayer.on('error', error); // error log for dev
         myPlayer.on('durationchange', loadChapBar);
-        myPlayer.on('progress', progress);
+        /*myPlayer.on('progress', progress)*/;
         myPlayer.on('timeupdate', timeupdate);
          myPlayer.on('firstplay', function(){
             $.post(
@@ -126,12 +126,10 @@ function loadVideo() {
         });
 
         // Load plugin
-        var defsize = decodeURIComponent($.urlParam('size'));
-        if (defsize != '480' && defsize != '720') {
-            defsize = 240;
-        }
+        // Resolution(s)
         myPlayer.videoJsResolutionSwitcher();
 
+        // Display format
         if ($('ul#slides li[data-type!="None"]').length > 0) {
             myPlayer.videojsDisplaySelector({
                 default_disp: '100/0',
@@ -141,6 +139,7 @@ function loadVideo() {
         }
         $('ul#slides').hide();
 
+        // Chapter(s)
         if ($('ul#chapters li').length > 0) {
             var list_chap = {};
             $('ul#chapters li').each(function () {
@@ -155,8 +154,7 @@ function loadVideo() {
         $('div.vjs-slide').hide();
         $('div.vjs-title').hide();
 
-        myPlayer.on('updateSrc', function() {
-            alert('active');
+        myPlayer.on('changeRes', function() {
             changeRes = true;
         });
         myPlayer.on('changeDisp', function() {
@@ -276,6 +274,7 @@ function loadVideo() {
                     });
                 }
             }
+        /*************************************************************************/
         } else {
             // On a ajoute l'overview
             if ($('.vjs-control-bar').length && overview && overview != '') {

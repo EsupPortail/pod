@@ -363,7 +363,7 @@
       }
 
       player.ready(function(){
-        if( settings.ui ) {
+        if( settings.ui && player.options_.sources.length > 1 ) {
           var menuButton = new ResolutionMenuButton(player, settings);
           player.controlBar.resolutionSwitcher = player.controlBar.el_.insertBefore(menuButton.el_, player.controlBar.getChild('fullscreenToggle').el_);
           player.controlBar.resolutionSwitcher.dispose = function(){
