@@ -69,6 +69,7 @@
         // Sets this.player_, this.options_ and initializes the component
         MenuButton.call(this, player, options);
         this.el().setAttribute('aria-label','Quality');
+        videojs.dom.addClass(this.el(), 'vjs-resolution-button');
         this.controlText('Quality');
 
         if(options.dynamicLabel){
@@ -204,7 +205,7 @@
             if(!isPaused){
               // Start playing and hide loadingSpinner (flash issue ?)
               player.play();
-              player.handleTechSeeked_()
+              player.handleTechSeeked_();
             }
             player.trigger('resolutionchange');
           });

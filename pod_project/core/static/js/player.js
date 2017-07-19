@@ -101,7 +101,7 @@ function loadVideo() {
         myPlayer.on('loadedmetadata', loadedmetadata);
         myPlayer.on('error', error); // error log for dev
         myPlayer.on('durationchange', loadChapBar);
-        /*myPlayer.on('progress', progress)*/;
+        myPlayer.on('progress', progress);
         myPlayer.on('timeupdate', timeupdate);
          myPlayer.on('firstplay', function(){
             $.post(
@@ -154,7 +154,7 @@ function loadVideo() {
         $('div.vjs-slide').hide();
         $('div.vjs-title').hide();
 
-        myPlayer.on('changeRes', function() {
+        myPlayer.on('resolutionchange', function() {
             changeRes = true;
         });
         myPlayer.on('changeDisp', function() {
@@ -643,11 +643,12 @@ function loadChapBar() {
  * Calcule de manière automatique la résolution la plus optimisée pour le débit de la connexion de l'utilisateur
  */
 function progress() {
-    if (typeof myPlayer.availableRes != 'undefined' && myPlayer.availableRes.length > 0 && changeResBd == false) {
+    if (typeof myPlayer.getGroupedSrc() != 'undefined' && myPlayer.getGroupedSrc().res && changeResBd == false) {
         var howMuchIsDownloaded = myPlayer.bufferedPercent();
         var seconds = Math.round(Date.now() / 1000);
         var filesize = myPlayer.currentSrc().indexOf('video/mp4') != -1 ? videosize_mp4 : videosize_webm;
-
+        alert(seconds);
+        alert(previoustime);
         if (seconds != previoustime && howMuchIsDownloaded < 1) {
             intcheck++;
             var lapstime = seconds - previoustime;
@@ -655,32 +656,31 @@ function progress() {
             var downloaded = filesize * howMuchIsDownloaded;
             var laspdl = downloaded - previousuploaded;
             mediumspeed = mediumspeed + Math.round((laspdl / lapstime) / 1000);
-
             if (intcheck % 4 == 0) {
                 mediumspeed = mediumspeed / 4;
-                if (mediumspeed > 2200 && typeof myPlayer.availableRes['1080'] != 'undefined') {
-                    $('div.vjs-res-button').find('li:contains("1080p")').trigger('click');
+                if (mediumspeed > 2200 && typeof myPlayer.getGroupedSrc().res['1080'] != 'undefined') {
+                    $('div.vjs-resolution-button').find('li:contains("1080p")').trigger('click');
                     changeResBd = true;
                 } else {
-                    if (mediumspeed > 1200 && typeof myPlayer.availableRes['720'] != 'undefined') {
-                        $('div.vjs-res-button').find('li:contains("720p")').trigger('click');
+                    if (mediumspeed > 1200 && typeof myPlayer.getGroupedSrc().res['720'] != 'undefined') {
+                        $('div.vjs-resolution-button').find('li:contains("720p")').trigger('click');
                         changeResBd = true;
                     } else {
-                        if (mediumspeed > 700 && typeof myPlayer.availableRes['480'] != 'undefined') {
-                            $('div.vjs-res-button').find('li:contains("480p")').trigger('click');
+                        if (mediumspeed > 700 && typeof myPlayer.getGroupedSrc().res['480'] != 'undefined') {
+                            $('div.vjs-resolution-button').find('li:contains("480p")').trigger('click');
                             changeResBd = true;
                         }
                     }
                 }
             } else if (howMuchIsDownloaded == 1) {
-                $($('div.vjs-res-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
+                $($('div.vjs-resolution-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
                 changeResBd = true;
             }
 
             previoustime = seconds;
             previousuploaded = downloaded;
         } else if (howMuchIsDownloaded == 1) {
-            $($('div.vjs-res-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
+            $($('div.vjs-resolution-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
             changeResBd = true;
         }
     }
