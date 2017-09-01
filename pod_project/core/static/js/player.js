@@ -64,11 +64,11 @@ function loadVideo() {
     //reinitialize somes var :
     currentslide = '';
     timestamps = [];
-    
-    videojs.options.flash.swf = 'video-js.swf';
+
     videojs('player_video').ready(function() {
         // PLAYER READY
         myPlayer = this;
+        myPlayer.preload("auto");
         
         //if video 360
         if(is_360) {
@@ -101,8 +101,8 @@ function loadVideo() {
         myPlayer.on('loadedmetadata', loadedmetadata);
         myPlayer.on('error', error); // error log for dev
         myPlayer.on('durationchange', loadChapBar);
-        myPlayer.on('progress', progress);
-        myPlayer.on('timeupdate', timeupdate);
+        //myPlayer.on('progress', progress);
+        myPlayer.on('seeked', timeupdate);
          myPlayer.on('firstplay', function(){
             $.post(
                 location,
@@ -571,7 +571,6 @@ $.urlParam = function(name) {
 function loadstart() {
     if (changeRes == true) {
         changeRes = false;
-        myPlayer.play();
     } else {
         if (start && start != 'null' && start !=0) {
             myPlayer.play();
@@ -647,9 +646,7 @@ function progress() {
         var howMuchIsDownloaded = myPlayer.bufferedPercent();
         var seconds = Math.round(Date.now() / 1000);
         var filesize = myPlayer.currentSrc().indexOf('video/mp4') != -1 ? videosize_mp4 : videosize_webm;
-        alert(seconds);
-        alert(previoustime);
-        if (seconds != previoustime && howMuchIsDownloaded < 1) {
+        if (seconds != previoustime && howMuchIsDownloaded <= 1) {
             intcheck++;
             var lapstime = seconds - previoustime;
             if(previoustime==0) lapstime = 1;
@@ -676,7 +673,6 @@ function progress() {
                 $($('div.vjs-resolution-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
                 changeResBd = true;
             }
-
             previoustime = seconds;
             previousuploaded = downloaded;
         } else if (howMuchIsDownloaded == 1) {

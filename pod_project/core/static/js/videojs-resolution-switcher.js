@@ -33,7 +33,7 @@
 
         player.on('resolutionchange', videojs.bind(this, this.update));
       }
-    } );
+    });
     ResolutionMenuItem.prototype.handleClick = function(event){
       MenuItem.prototype.handleClick.call(this,event);
       this.player_.currentResolution(this.options_.label);
@@ -185,8 +185,10 @@
         var isPaused = player.paused();
 
         // Hide bigPlayButton
-        if(!isPaused && this.player_.options_.bigPlayButton){
+        if(!isPaused && this.player_.bigPlayButton){
           this.player_.bigPlayButton.hide();
+        }else{
+          this.player_.bigPlayButton.show();
         }
 
         // Change player source and wait for loadeddata event, then play video
@@ -198,7 +200,8 @@
           handleSeekEvent = 'timeupdate';
         }
         player
-          .setSourcesSanitized(sources, label, customSourcePicker || settings.customSourcePicker)
+          .setSourcesSanitized(sources, label, customSourcePicker || settings.customSourcePicker);
+        player 
           .one(handleSeekEvent, function() {
             player.currentTime(currentTime);
             player.handleTechSeeked_();
@@ -225,9 +228,11 @@
           label: label,
           sources: sources
         };
+        
         if(typeof customSourcePicker === 'function'){
           return customSourcePicker(player, sources, label);
         }
+
         player.src(sources.map(function(src) {
           return {src: src.src, type: src.type, res: src.res};
         }));

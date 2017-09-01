@@ -20,6 +20,7 @@ voir http://www.gnu.org/licenses/
 */
 
 (function() {
+	'use-strict';
 	var videojs = null;
 	if(typeof window.videojs === 'undefined' && typeof require === 'function') {
 		videojs = require('video.js');
@@ -102,7 +103,7 @@ voir http://www.gnu.org/licenses/
 		});
 		// Handle clicks on the menu items
 		ChapterMenuItem.prototype.onClick = function() {
-			this.player.currentTime(this.chapter);
+			this.player_.currentTime(this.chapter);
 		};
 		MenuItem.registerComponent('ChapterMenuItem', ChapterMenuItem);
 		  
@@ -143,7 +144,7 @@ voir http://www.gnu.org/licenses/
 		
 		// Create a menu item for each available chapter
 		ChapterSelectorButton.prototype.createItems = function() {
-			var player = this.player(),
+			var player = this.player_,
 			items = [],
 			current_chap;
 			
@@ -179,23 +180,30 @@ voir http://www.gnu.org/licenses/
 			 player = this,
 			 available_chap = { length: 0 },
 			 chapterSelector;
-			  
-			if (settings.list_chap != {}) {
-				list_chap = settings.list_chap;
-			}
-			  
-			for (var chap in list_chap) {
-				available_chap.length++;
-			  	available_chap[chap] = chap ;
-			}
-			  
-			chapterSelector = new ChapterSelectorButton(player, {
-			  	available_chap: available_chap
+			
+			player.ready(function() {
+				if (settings.list_chap != {}) {
+					list_chap = settings.list_chap;
+				}
+				  
+				for (var chap in list_chap) {
+					available_chap.length++;
+				  	available_chap[chap] = chap ;
+				}
+				  
+				chapterSelector = new ChapterSelectorButton(player, {
+				  	available_chap: available_chap
+				});
+				  
+				// Add the button to the control bar object and the DOM
+				player.controlBar.videojsChapterSelector = player.controlBar.addChild(chapterSelector);
+				player.controlBar.videojsChapterSelector.dispose = function() {
+					this.parentNode.removeChild(this);
+				}
 			});
-			  
-			// Add the button to the control bar object and the DOM
-			player.controlBar.videojsChapterSelector = player.controlBar.addChild(chapterSelector);
 		};
+
+		// Register the plugin
 		videojs.registerPlugin('videojsChapterSelector', videojsChapterSelector);	
 	})(window, videojs);
 })();
