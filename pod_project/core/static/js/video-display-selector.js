@@ -77,12 +77,12 @@ voir http://www.gnu.org/licenses/
 		        '50/50': '50/50',
 		        '30/70': '30/70',
 		        '70/30': '70/30',
-		        '100/20': 'Pip vidéo',
+		        '100/20': 'Pip video',
 		        '20/100': 'Pip media',
 		        '100/0': 'only video',
 		        '0/100': 'only media'
 		    }
-		}
+		};
 	/***********************************************************************************
 	 * Setup our display menu items
 	 ***********************************************************************************/
@@ -168,6 +168,7 @@ voir http://www.gnu.org/licenses/
 				player.availableDisp = options.available_disp;
 				// Call the parent constructor
 				MenuButton.call(this, player, options);
+				videojs.dom.addClass(this.el(), 'vjs-disp-button');
 	            // Set the button text based on the option provided
 	            this.el().firstChild.firstChild.innerHTML = options.buttonText;
 			}

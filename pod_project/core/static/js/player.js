@@ -101,9 +101,9 @@ function loadVideo() {
         myPlayer.on('loadedmetadata', loadedmetadata);
         myPlayer.on('error', error); // error log for dev
         myPlayer.on('durationchange', loadChapBar);
-        //myPlayer.on('progress', progress);
-        myPlayer.on('seeked', timeupdate);
-         myPlayer.on('firstplay', function(){
+        myPlayer.on('progress', progress);
+        myPlayer.on('timeupdate', timeupdate);
+        myPlayer.on('firstplay', function(){
             $.post(
                 location,
                 {
