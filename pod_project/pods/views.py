@@ -905,6 +905,14 @@ def video_edit(request, slug=None):
     if not request.POST:
         referer = request.META.get('HTTP_REFERER', '/')
 
+    interactive = False
+    h5p = None    
+    if H5P_ENABLED and h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+        interactive = True
+        video = get_object_or_404(Pod, slug=slug)
+        if h5p_contents.objects.filter(title=video.title).count() > 0:
+                h5p = h5p_contents.objects.get(title=video.title)
+
     if slug:
         video = get_object_or_404(Pod, slug=slug)
         if request.user != video.owner and not request.user.is_superuser:
@@ -960,6 +968,11 @@ def video_edit(request, slug=None):
             # Without this next line the tags does not appear in search engine
             vid.save()
 
+            # Optional : Update interactive
+            if h5p != None:
+                h5p.title = video.title
+                h5p.save()
+
             # go back
             action = request.POST.get("user_choice")
 
@@ -992,11 +1005,6 @@ def video_edit(request, slug=None):
     video_ext_accept = replace('|'.join(settings.VIDEO_EXT_ACCEPT), ".", "")
     video_ext_accept_text = replace(
         ', '.join(settings.VIDEO_EXT_ACCEPT), ".", "").upper()
-
-    interactive = None
-    if H5P_ENABLED:
-        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
-            interactive = True
 
     return render_to_response("videos/video_edit.html",
                               {'form': video_form, "referer": referer,
