@@ -646,7 +646,7 @@ function progress() {
         var howMuchIsDownloaded = myPlayer.bufferedPercent();
         var seconds = Math.round(Date.now() / 1000);
         var filesize = myPlayer.currentSrc().indexOf('video/mp4') != -1 ? videosize_mp4 : videosize_webm;
-        if (seconds != previoustime && howMuchIsDownloaded <= 1) {
+        if (seconds != previoustime && howMuchIsDownloaded < 1) {
             intcheck++;
             var lapstime = seconds - previoustime;
             if(previoustime==0) lapstime = 1;
@@ -669,7 +669,7 @@ function progress() {
                         }
                     }
                 }
-            } else if (howMuchIsDownloaded == 1) {
+            } else {
                 $($('div.vjs-resolution-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
                 changeResBd = true;
             }
