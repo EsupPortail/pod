@@ -170,6 +170,7 @@ function loadVideo() {
         $('.vjs-loading-spinner').css('zIndex', videozindex + 6);
         $('.vjs-text-track-display').css('zIndex', videozindex + 7);
         $('.vjs-control-bar').css('zIndex', videozindex + 8);
+        $('.vjs-text-track-settings').css('zIndex', videozindex + 9);
 
         var IS_MOBILE = /mobile|android/i.test (navigator.userAgent);
         var IS_IPHONE = (/iPhone/i).test(navigator.userAgent);

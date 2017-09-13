@@ -25,7 +25,7 @@ voir http://www.gnu.org/licenses/
 
 {% if video.is_360 %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.js"></script>
-    <script src="{% static 'videojs-panorama/videojs-panorama.v4.min.js' %}"></script>
+    <script src="{% static 'videojs-panorama/videojs-panorama.min.js' %}"></script>
     <link href="{% static 'videojs-panorama/videojs-panorama.min.css' %}" rel="stylesheet" type="text/css" />
 {% else %}
     
@@ -45,44 +45,22 @@ voir http://www.gnu.org/licenses/
 
     {{ channel.style }}
 
-    .vjs-control.vjs-chap-button:before {
-        font-family: FontAwesome;
-        content: "\f03a";
-    }
-
     /* Position the button */
-    .vjs-res-button {
+    .vjs-resolution-button {
         float: right;
         line-height: 3em;
     }
-    /* Don't show hover effects on title */
-    ul li.vjs-menu-title.vjs-res-menu-title:hover,
-    ul li.vjs-menu-title.vjs-disp-menu-title:hover,
-    ul li.vjs-menu-title.vjs-chap-menu-title:hover{
-        cursor: default;
-        background-color: transparent;
-        color: #CCC;
-        -moz-box-shadow: none;
-        -webkit-box-shadow: none;
-        box-shadow: none;
-    }
-    /* Needed to keep text visible in video.js 4.9 */
-    .vjs-res-button .vjs-control-text,
-    .vjs-disp-button .vjs-control-text {
-        width: auto;
-        height: auto;
-        clip: auto;
-        margin: 0;
-        left: 5px;
-    }
+
+    /* Track settings */
+    .vjs-modal-dialog.vjs-text-track-settings {
+        color: #000;
+    }   
+
+    /* Big Play Button */
     .video-js .vjs-big-play-button {
         height: auto;
     }   
     .vjs-big-play-button .vjs-icon-placeholder {
-        display: none;
-    }
-
-    .vjs-texttrack-settings {
         display: none;
     }
 </style>
