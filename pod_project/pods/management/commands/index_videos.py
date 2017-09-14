@@ -43,8 +43,17 @@ class Command(BaseCommand):
                         pod = Pod.objects.get(pk=int(pod_id))
                     except Pod.DoesNotExist:
                         raise CommandError('Pod "%s" does not exist.' % pod_id)
-                    res = es.index(index="pod", doc_type='pod', id=pod.id,
-                                   body=pod.get_json_to_index(), refresh=True)
+                    #res = es.index(index="pod", doc_type='pod', id=pod.id,
+                    #               body=pod.get_json_to_index(), refresh=True)
+
+                    if pod.is_draft == False and pod.encodingpods_set.all().count() > 0:
+                        res = es.index(index="pod", doc_type='pod', id=pod.id,
+                                       body=pod.get_json_to_index(), refresh=True)
+                    else:
+                        delete = es.delete(
+                            index="pod", doc_type='pod', id=pod.id, refresh=True, ignore=[400, 404])
+
+
         else:
             print "******* Warning: you must give some arguments: %s *******" % self.args
 
