@@ -98,6 +98,10 @@ class DocPodsInline(admin.TabularInline):
     model = DocPods
     extra = 0
 
+class OverlayPodsInLine(admin.TabularInline):
+    model = OverlayPods
+    extra = 0
+
 
 class ChapterPodsInline(admin.TabularInline):
     model = ChapterPods
@@ -136,6 +140,7 @@ class PodAdmin(admin.ModelAdmin):
         ContributorPodsInline,
         TrackPodsInline,
         DocPodsInline,
+        OverlayPodsInLine,
         ChapterPodsInline,
         EnrichPodsInline
     ]
@@ -169,6 +174,7 @@ admin.site.register(EncodingPods, EncodingPodsAdmin)
 admin.site.register(ContributorPods)
 admin.site.register(TrackPods)
 admin.site.register(DocPods)
+admin.site.register(OverlayPods)
 admin.site.register(ChapterPods)
 admin.site.register(EnrichPods)
 admin.site.register(Notes)

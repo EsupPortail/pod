@@ -154,6 +154,26 @@ function loadVideo() {
         $('div.vjs-slide').hide();
         $('div.vjs-title').hide();
 
+        // Overlay(s)
+        if ($('ul#overlays li').length > 0) {
+            var list_overlays = new Array();
+            $('ul#overlays li').each(function() {
+                list_overlays.push({
+                    content: $(this).attr('data-content'),
+                    align: $(this).attr('data-style'),
+                    showBackground: $(this).attr('data-background') === 'True',
+                    start: parseInt($(this).attr('data-timestart')),
+                    end: parseInt($(this).attr('data-timeend'))
+                });
+            });
+            console.log(list_overlays);
+            myPlayer.overlay({
+                content: 'Default overlay content',
+                // debug: true,
+                overlays: list_overlays
+            });
+        }
+
         myPlayer.on('resolutionchange', function() {
             changeRes = true;
         });
@@ -161,6 +181,8 @@ function loadVideo() {
             isPlaying = !myPlayer.paused();
             changeDisplay(myPlayer.getCurrentDisp());
         });
+
+
 
         // LOAD Z-INDEX
         $('video').css('zIndex', videozindex + 1);
@@ -171,6 +193,7 @@ function loadVideo() {
         $('.vjs-text-track-display').css('zIndex', videozindex + 7);
         $('.vjs-control-bar').css('zIndex', videozindex + 8);
         $('.vjs-text-track-settings').css('zIndex', videozindex + 9);
+        $('.vjs-overlay').css('zIndex', videozindex + 10);
 
         var IS_MOBILE = /mobile|android/i.test (navigator.userAgent);
         var IS_IPHONE = (/iPhone/i).test(navigator.userAgent);

@@ -437,6 +437,7 @@ class Pod(Video):
             "contributors": list(self.contributorpods_set.values_list('name', 'role')),
             "chapters": list(self.chapterpods_set.values('title', 'slug')),
             "enrichments": list(self.enrichpods_set.values('title', 'slug')),
+            "overlays": list(self.overlaypods_set.values('title', 'slug')),
             "full_url": self.get_full_url(),
             "is_restricted": self.is_restricted,
             "password": True if self.password != "" else False,
@@ -759,6 +760,120 @@ class DocPods(models.Model):
     def icon(self):
         return self.document.name.split('.')[-1]
 
+@python_2_unicode_compatible
+class OverlayPods(models.Model):
+    STYLE_CHOICES = (
+        ('top-left', _('top-left')),
+        ('top', _('top')),
+        ('top-right', _('top-right')),
+        ('right', _('right')),
+        ('bottom-right', _('bottom-right')),
+        ('bottom', _('bottom')),
+        ('bottom-left', _('bottom-left')),
+        ('left', _('left')),
+    )
+
+    video = models.ForeignKey(Pod, verbose_name=_('Video'))
+    title = models.CharField(_('title'), max_length=100)
+    slug = models.SlugField(
+        _('slug'), unique=True, max_length=105,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'),
+        editable=False)
+    time_start = models.PositiveIntegerField(
+        _('Start time'), default=0,
+        help_text=_(u'Start time of the overlay, in seconds.'))
+    time_end = models.PositiveIntegerField(
+        _('End time'), default=1,
+        help_text=_(u'End time of the overlay, in seconds.'))
+    content = models.TextField(
+        _('Content'), max_length=300, null=False, blank=False,
+        help_text=_(
+            u'Content of the overlay'))
+    style = models.CharField(
+        _('Style'), max_length=100, null=True, blank=False, choices=STYLE_CHOICES, default="bottom-right",
+        help_text=_(
+            u'Style of the overlay'))
+    background = models.BooleanField(_('Show background'), default=True,
+        help_text=_(u'Show the background of the overlay'))
+
+    class Meta:
+        verbose_name = _("Overlay")
+        verbose_name_plural = _("Overlays")
+        ordering = ['time_start']
+
+    def __unicode__(self):
+        return u"Overlay : %s - video: %s" % (self.title, self.video)
+
+    def __str__(self):
+        return u"Overlay : %s - video: %s" % (self.title, self.video)
+
+    def clean(self):
+        msg = []
+        msg = self.verify_title_items() + self.verify_time_items() + self.verify_overlap()
+        if(len(msg) > 0):
+            raise ValidationError(msg)
+
+    def verify_title_items(self):
+        msg = []
+        if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
+            msg.append(_('Please ener a title from 2 to 100 characters.'))
+
+        if len(msg) > 0:
+            return msg
+        return []
+
+    def verify_time_items(self):
+        msg = []
+        video = Pod.objects.get(id=self.video.id)
+        if(self.time_start > self.time_end):
+            msg.append(
+                _('The value of the time start field is greater than the value of the end time field.'))
+        elif(self.time_end > video.duration):
+            msg.append(
+                _('The value of time end field is greater than the video duration.'))
+        elif(self.time_start == self.time_end):
+            msg.append(
+                _('Time end field and time start field can\'t be equal.'))
+        if(len(msg) > 0):
+            return msg
+        else:
+            return []
+
+    def verify_overlap(self):
+        msg = []
+        instance = None
+        if self.slug:
+            instance = OverlayPods.objects.get(slug=self.slug)
+        list_overlay = OverlayPods.objects.filter(video=self.video)
+        if instance:
+            list_overlay = list_overlay.exclude(id=instance.id)
+        if len(list_overlay) > 0:
+            for element in list_overlay:
+                if not ((self.time_start < element.time_start and self.time_end <= element.time_start) or (self.time_start >= element.time_end and self.time_end > element.time_end)):
+                    msg.append(_("There is an overlap with the overlay " + element.title +
+                        ", please change time start and/or time end values."))
+            if len(msg) > 0:
+                return msg
+        return []
+
+    def save(self, *args, **kwargs):
+        newid = -1
+        if not self.id:
+            try:
+                newid = get_nextautoincrement(OverlayPods)
+            except:
+                try:
+                    newid = OverlayPods.objects.latest('id').id
+                    newid += 1
+                except:
+                    newid = 1
+        else:
+            newid = self.id
+        newid = '%04d' % newid
+        self.slug = "%s-%s" % (newid, slugify(self.title))
+
+        super(OverlayPods, self).save(*args, **kwargs)
 
 @python_2_unicode_compatible
 class EnrichPods(models.Model):

@@ -21,6 +21,7 @@ from pods.forms import PodForm
 from pods.forms import ContributorPodsForm
 from pods.forms import DocPodsForm
 from pods.forms import TrackPodsForm
+from pods.forms import OverlayPodsForm
 from pods.forms import ChapterPodsForm
 from pods.forms import VideoPasswordForm
 from pods.forms import NotesForm
@@ -1029,6 +1030,7 @@ def video_completion(request, slug):
             list_contributor = video.contributorpods_set.all()
             list_subtitle = video.trackpods_set.all()
             list_download = video.docpods_set.all()
+            list_overlay = video.overlaypods_set.all()
         else:
             list_contributor = video.contributorpods_set.all()
 
@@ -1043,6 +1045,7 @@ def video_completion(request, slug):
                                       'list_contributor': list_contributor,
                                       'list_subtitle': list_subtitle,
                                       'list_download': list_download,
+                                      'list_overlay': list_overlay,
                                       'interactive': interactive},
                                   context_instance=RequestContext(request))
     else:
@@ -1449,6 +1452,142 @@ def video_completion_download(request, slug):
                                   'list_download': list_download},
                               context_instance=RequestContext(request))
 
+@csrf_protect
+#@staff_member_required
+def video_completion_overlay(request, slug):
+    if not request.user.is_authenticated() or not request.user.is_staff:
+        raise PermissionDenied
+    video = get_object_or_404(Pod, slug=slug)
+
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot complement this video.'))
+        raise PermissionDenied
+
+    list_contributor = video.contributorpods_set.all()
+    list_subtitle = video.trackpods_set.all()
+    list_download = video.docpods_set.all()
+    list_overlay = video.overlaypods_set.all()
+
+    if request.POST:
+        # New overlay
+        if request.POST.get("action") and request.POST['action'] == 'new':
+            form_overlay = OverlayPodsForm(initial={"video": video})
+            if request.is_ajax():
+                return render_to_response("videos/completion/overlay/form_overlay.html",
+                    {
+                        'form_overlay': form_overlay,
+                        'video': video
+                    },
+                    context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_completion.html",
+                    {
+                        'video': video,
+                        'list_contributor': list_contributor,
+                        'list_subtitle': list_subtitle,
+                        'list_download': list_download,
+                        'list_overlay': list_overlay,
+                        'form_overlay': form_overlay
+                    },
+                    context_instance=RequestContext(request))
+        # Save overlay
+        if request.POST.get("action") and request.POST['action'] == 'save':
+            form_overlay = None
+            if request.POST.get("overlay_id") and request.POST.get("overlay_id") != "None":
+                overlay = get_object_or_404(
+                    OverlayPods, id=request.POST.get("overlay_id"))
+                form_overlay = OverlayPodsForm(request.POST, instance=overlay)
+            else:
+                form_overlay = OverlayPodsForm(request.POST)
+
+            if form_overlay.is_valid():
+                form_overlay.save()
+                list_overlay = video.overlaypods_set.all()
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'list_data': render_to_string('videos/completion/overlay/list_overlay.html', {'list_overlay': list_overlay, 'video': video}, context_instance=RequestContext(request))
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_completion.html",
+                        {
+                            'video': video,
+                            'list_contributor': list_contributor,
+                            'list_subtitle': list_subtitle,
+                            'list_download': list_download,
+                            'list_overlay': list_overlay
+                        },
+                        context_instance=RequestContext(request))
+            else:
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'errors': "%s" % _('Please correct errors'),
+                        'form': render_to_string('videos/completion/overlay/form_overlay.html', {'video': video, 'form_overlay': form_overlay}, context_instance=RequestContext(request))
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_completion.html",
+                        {
+                            'video': video,
+                            'list_contributor': list_contributor,
+                            'list_subtitle': list_subtitle,
+                            'list_download': list_download,
+                            'list_overlay': list_overlay,
+                            'form_overlay': form_overlay
+                        },
+                        context_instance=RequestContext(request))
+        # Modify overlay
+        if request.POST.get("action") and request.POST['action'] == 'modify':
+            overlay = get_object_or_404(OverlayPods, id=request.POST['id'])
+            form_overlay = OverlayPodsForm(instance=overlay)
+            if request.is_ajax():
+                return render_to_response("videos/completion/overlay/form_overlay.html",
+                    {'form_overlay': form_overlay,
+                        'video': video},
+                    context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_completion.html",
+                    {
+                        'video': video,
+                        'list_contributor': list_contributor,
+                        'list_subtitle': list_subtitle,
+                        'list_download': list_download,
+                        'list_overlay': list_overlay,
+                        'form_overlay': form_overlay
+                    },
+                    context_instance=RequestContext(request))
+
+        # Delete overlay
+        if request.POST.get("action") and request.POST['action'] == 'delete':
+            overlay = get_object_or_404(OverlayPods, id=request.POST['id'])
+            overlay_delete = overlay.delete()
+            list_overlay = video.overlaypods_set.all()
+            if request.is_ajax():
+                some_data_to_dump = {
+                    'list_data': render_to_string('videos/completion/overlay/list_overlay.html', {'list_overlay': list_overlay, 'video': video}, context_instance=RequestContext(request))
+                }
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+            else:
+                return render_to_response("videos/video_completion.html",
+                    {
+                        'video': video,
+                        'list_contributor': list_contributor,
+                        'list_subtitle': list_subtitle,
+                        'list_download': list_download,
+                        'list_overlay': list_overlay
+                    },
+                    context_instance=RequestContext(request))
+    return render_to_response("videos/video_completion.html",
+            {'video': video,
+                'list_contributor': list_contributor,
+                'list_subtitle': list_subtitle,
+                'list_download': list_download,
+                'list_overlay': list_overlay},
+            context_instance=RequestContext(request))
 
 @csrf_protect
 @login_required

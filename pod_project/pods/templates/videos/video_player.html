@@ -176,4 +176,16 @@ voir http://www.gnu.org/licenses/
             {% endfor %}
         </ul>
     {% endif %}
+    {% if video.overlaypods_set.all %}
+        <ul id="overlays" style="display: none;">
+            {% for overlay in video.overlaypods_set.all %}
+                <li data-timestart="{{ overlay.time_start }}"
+                    data-timeend="{{ overlay.time_end }}"
+                    data-content="{{ overlay.content }}"
+                    data-style="{{ overlay.style }}"
+                    data-background="{{ overlay.background }}"
+                    data-id="{{ overlay.id }}"></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 </div>
