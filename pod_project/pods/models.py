@@ -817,7 +817,7 @@ class OverlayPods(models.Model):
     def verify_title_items(self):
         msg = []
         if (not self.title or (self.title == "") or (len(self.title) < 2) or (len(self.title) > 100)):
-            msg.append(_('Please ener a title from 2 to 100 characters.'))
+            msg.append(_('Please enter a title from 2 to 100 characters.'))
 
         if len(msg) > 0:
             return msg
