@@ -30,19 +30,21 @@ voir http://www.gnu.org/licenses/
 
 		<thead>
 			<tr>
-				<th>{% trans 'Title' %}</th>
-				<th class="overlay_start">{% trans 'Start' %}</th>
-				<th class="overlay_end">{% trans 'End' %}</th>
+				<th class="overlay_title">{% trans 'Title' %}</th>
+				<th>{% trans 'Start' %}</th>
+				<th>{% trans 'End' %}</th>
+				<th>{% trans 'Position' %}</th>
 				<th></th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for overlay in list_overlay %}
-			<tr>
+			<tr class="overlay">
 				<td class="overlay_title">{{ overlay.title }}</td>
 				<td class="overlay_start">{{ overlay.time_start }}</td>
 				<td class="overlay_end">{{ overlay.time_end }}</td>
+				<td class="overlay_position">{{ overlay.position }}</td>
 				<td>
 					<form class="form_modif" action="{% url 'video_completion_overlay' slug=video.slug %}" method="post">
 						{% csrf_token %}

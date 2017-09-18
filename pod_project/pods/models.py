@@ -762,7 +762,7 @@ class DocPods(models.Model):
 
 @python_2_unicode_compatible
 class OverlayPods(models.Model):
-    STYLE_CHOICES = (
+    POSITION_CHOICES = (
         ('top-left', _('top-left')),
         ('top', _('top')),
         ('top-right', _('top-right')),
@@ -790,10 +790,10 @@ class OverlayPods(models.Model):
         _('Content'), max_length=300, null=False, blank=False,
         help_text=_(
             u'Content of the overlay'))
-    style = models.CharField(
-        _('Style'), max_length=100, null=True, blank=False, choices=STYLE_CHOICES, default="bottom-right",
+    position = models.CharField(
+        _('Position'), max_length=100, null=True, blank=False, choices=POSITION_CHOICES, default="bottom-right",
         help_text=_(
-            u'Style of the overlay'))
+            u'Position of the overlay'))
     background = models.BooleanField(_('Show background'), default=True,
         help_text=_(u'Show the background of the overlay'))
 

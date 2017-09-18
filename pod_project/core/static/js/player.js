@@ -160,7 +160,7 @@ function loadVideo() {
             $('ul#overlays li').each(function() {
                 list_overlays.push({
                     content: $(this).attr('data-content'),
-                    align: $(this).attr('data-style'),
+                    align: $(this).attr('data-position'),
                     showBackground: $(this).attr('data-background') === 'True',
                     start: parseInt($(this).attr('data-timestart')),
                     end: parseInt($(this).attr('data-timeend'))

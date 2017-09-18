@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-15 14:37+0200\n"
+"POT-Creation-Date: 2017-09-15 16:11+0200\n"
 "PO-Revision-Date: 2017-05-31 12:14+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
@@ -513,7 +513,7 @@ msgstr "Enregistrer"
 #: pods/templates/channels/my_channels.html:76
 #: pods/templates/videos/my_videos.html:64
 #: pods/templates/videos/video_chapter.html:377
-#: pods/templates/videos/video_completion.html:558
+#: pods/templates/videos/video_completion.html:564
 #: pods/templates/videos/video_enrich.html:491
 msgid "Information"
 msgstr "Information"
@@ -1817,12 +1817,13 @@ msgid "Content of the overlay"
 msgstr "Contenu de la superposition"
 
 #: pods/models.py:794
-msgid "Style"
-msgstr "Style"
+#: pods/templates/videos/completion/overlay/list_overlay.html:36
+msgid "Position"
+msgstr "Position"
 
 #: pods/models.py:796
-msgid "Style of the overlay"
-msgstr "Style de la superposition"
+msgid "Position of the overlay"
+msgstr "Emplacement de la superposition"
 
 #: pods/models.py:797
 msgid "Show background"
@@ -1839,6 +1840,12 @@ msgstr "Superposition"
 #: pods/models.py:802
 msgid "Overlays"
 msgstr "Superpositions"
+
+#: pods/models.py:820 pods/models.py:944 pods/models.py:1067
+#: pods/templates/videos/video_chapter.html:271
+#: pods/templates/videos/video_enrich.html:327
+msgid "Please enter a title from 2 to 100 characters."
+msgstr "Veuillez renseigner un titre contenant entre 2 et 100 caractères."
 
 #: pods/models.py:831
 msgid ""
@@ -1927,12 +1934,6 @@ msgstr "Enrichissement"
 msgid "Enrichments"
 msgstr "Enrichissements"
 
-#: pods/models.py:944 pods/models.py:1067 pods/models.py:820
-#: pods/templates/videos/video_chapter.html:271
-#: pods/templates/videos/video_enrich.html:327
-msgid "Please enter a title from 2 to 100 characters."
-msgstr "Veuillez renseigner un titre contenant entre 2 et 100 caractères."
-
 #: pods/models.py:947 pods/models.py:1070
 #, python-format
 msgid "Please enter a correct start field between 0 and %(duration)s."
@@ -1959,7 +1960,7 @@ msgstr "Veuillez renseigner un texte."
 msgid "Please enter a correct weblink."
 msgstr "Veuillez renseigner un lien internet."
 
-#: pods/models.py:967 pods/templates/videos/video_completion.html:422
+#: pods/models.py:967 pods/templates/videos/video_completion.html:428
 #: pods/templates/videos/video_enrich.html:372
 msgid "Please select a document."
 msgstr "Veuillez sélectionner un document."
@@ -2241,7 +2242,7 @@ msgstr "Ajouter un nouvel enregistrement"
 #: pods/templates/videos/my_videos.html:32
 #: pods/templates/videos/my_videos.html:43
 #: pods/templates/videos/video_chapter.html:331
-#: pods/templates/videos/video_completion.html:452
+#: pods/templates/videos/video_completion.html:458
 #: pods/templates/videos/video_delete.html:35
 #: pods/templates/videos/video_edit.html:274
 #: pods/templates/videos/video_enrich.html:445
@@ -2398,7 +2399,7 @@ msgstr "Editer le contributeur"
 
 #: pods/templates/videos/completion/contributor/list_contributor.html:53
 #: pods/templates/videos/completion/download/list_download.html:46
-#: pods/templates/videos/completion/overlay/list_overlay.html:51
+#: pods/templates/videos/completion/overlay/list_overlay.html:53
 #: pods/templates/videos/completion/subtitle/list_subtitle.html:51
 msgid "modify"
 msgstr "modifier"
@@ -2409,7 +2410,7 @@ msgstr "Supprimer le contributeur"
 
 #: pods/templates/videos/completion/contributor/list_contributor.html:61
 #: pods/templates/videos/completion/download/list_download.html:54
-#: pods/templates/videos/completion/overlay/list_overlay.html:59
+#: pods/templates/videos/completion/overlay/list_overlay.html:61
 #: pods/templates/videos/completion/subtitle/list_subtitle.html:59
 msgid "delete"
 msgstr "supprimer"
@@ -2434,11 +2435,11 @@ msgstr "Supprimer un document à télécharger"
 msgid "List of overlay"
 msgstr "Liste des superpositions"
 
-#: pods/templates/videos/completion/overlay/list_overlay.html:51
+#: pods/templates/videos/completion/overlay/list_overlay.html:53
 msgid "Edit the overlay"
 msgstr "Modifier la superposition"
 
-#: pods/templates/videos/completion/overlay/list_overlay.html:59
+#: pods/templates/videos/completion/overlay/list_overlay.html:61
 msgid "Delete the overlay"
 msgstr "Supprimer la superposition"
 
@@ -2733,7 +2734,7 @@ msgstr "Vous devez être connecté pour prendre des notes."
 
 #: pods/templates/videos/video.html:740
 #: pods/templates/videos/video_chapter.html:369
-#: pods/templates/videos/video_completion.html:550
+#: pods/templates/videos/video_completion.html:556
 #: pods/templates/videos/video_enrich.html:483
 msgid "Edit the video"
 msgstr "Modifier la vidéo"
@@ -2745,13 +2746,13 @@ msgid "Chaptering the video"
 msgstr "Chapitrer la vidéo "
 
 #: pods/templates/videos/video_chapter.html:183
-#: pods/templates/videos/video_completion.html:247
+#: pods/templates/videos/video_completion.html:253
 #: pods/templates/videos/video_enrich.html:191
 msgid "Error getting form."
 msgstr "Erreur lors de la récupération du formulaire."
 
 #: pods/templates/videos/video_chapter.html:183
-#: pods/templates/videos/video_completion.html:247
+#: pods/templates/videos/video_completion.html:253
 #: pods/templates/videos/video_enrich.html:191
 msgid "The form could not be recovered."
 msgstr "Le formulaire n'a pu être rechargé."
@@ -2761,25 +2762,25 @@ msgid "Are you sure you want to delete this chapter?"
 msgstr "Etes-vous sûr de vouloir supprimer ce chapitre ?"
 
 #: pods/templates/videos/video_chapter.html:205
-#: pods/templates/videos/video_completion.html:277
+#: pods/templates/videos/video_completion.html:283
 #: pods/templates/videos/video_enrich.html:213
 msgid "Error during deletion."
 msgstr "Erreur lors de la suppression."
 
 #: pods/templates/videos/video_chapter.html:205
-#: pods/templates/videos/video_completion.html:277
+#: pods/templates/videos/video_completion.html:283
 #: pods/templates/videos/video_enrich.html:213
 msgid "No data could be deleted."
 msgstr "Aucune données n'a pu être supprimée."
 
 #: pods/templates/videos/video_chapter.html:244
-#: pods/templates/videos/video_completion.html:315
+#: pods/templates/videos/video_completion.html:321
 #: pods/templates/videos/video_enrich.html:251
 msgid "Error during recording."
 msgstr "Erreur lors de l'enregistrement."
 
 #: pods/templates/videos/video_chapter.html:244
-#: pods/templates/videos/video_completion.html:315
+#: pods/templates/videos/video_completion.html:321
 #: pods/templates/videos/video_enrich.html:251
 msgid "No data could be stored."
 msgstr "Aucune donnée n'a pu être enregistrée."
@@ -2841,147 +2842,147 @@ msgid "You must save your chapters to view the result."
 msgstr "Vous devez sauvegarder pour visualiser le résultat."
 
 #: pods/templates/videos/video_completion.html:29
-#: pods/templates/videos/video_completion.html:441
-#: pods/templates/videos/video_completion.html:453
+#: pods/templates/videos/video_completion.html:447
+#: pods/templates/videos/video_completion.html:459
 msgid "Completion video"
 msgstr "Complétion de la vidéo "
 
-#: pods/templates/videos/video_completion.html:136
+#: pods/templates/videos/video_completion.html:142
 msgid "Hide"
 msgstr "Cacher"
 
-#: pods/templates/videos/video_completion.html:145
+#: pods/templates/videos/video_completion.html:151
 msgid "Display"
 msgstr "Afficher"
 
-#: pods/templates/videos/video_completion.html:239
-#: pods/templates/videos/video_completion.html:272
-#: pods/templates/videos/video_completion.html:310
+#: pods/templates/videos/video_completion.html:245
+#: pods/templates/videos/video_completion.html:278
+#: pods/templates/videos/video_completion.html:316
 msgid "You are no longer authenticated. Please log in again"
 msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnecter."
 
-#: pods/templates/videos/video_completion.html:256
+#: pods/templates/videos/video_completion.html:262
 msgid "Are you sure you want to delete this file?"
 msgstr "Etes-vous sûr de vouloir supprimer ce fichier ?"
 
-#: pods/templates/videos/video_completion.html:258
+#: pods/templates/videos/video_completion.html:264
 msgid "Are you sure you want to delete this contributor?"
 msgstr "Etes-vous sûr de vouloir supprimer ce contributeur ?"
 
-#: pods/templates/videos/video_completion.html:260
+#: pods/templates/videos/video_completion.html:266
 msgid "Are you sure you want to delete this download?"
 msgstr "Etes-vous sûr de vouloir supprimer ce document à télécharger ?"
 
-#: pods/templates/videos/video_completion.html:262
+#: pods/templates/videos/video_completion.html:268
 msgid "Are you sure you want to delete this overlay?"
 msgstr "Etes-vous sûr de vouloir supprimer cette superposition ?"
 
-#: pods/templates/videos/video_completion.html:307
+#: pods/templates/videos/video_completion.html:313
 #: pods/templates/videos/video_enrich.html:243
 msgid "Changes have been saved."
 msgstr "Les modifications ont été enregistrées."
 
-#: pods/templates/videos/video_completion.html:319
+#: pods/templates/videos/video_completion.html:325
 msgid "Errors found in the form, please correct it."
 msgstr ""
 "Des erreurs ont été trouvées dans le formulaire. Veuillez les corriger."
 
-#: pods/templates/videos/video_completion.html:334
+#: pods/templates/videos/video_completion.html:340
 msgid "Display '+ name_section + ' section"
 msgstr "Afficher la section  '+ name_section + ' "
 
-#: pods/templates/videos/video_completion.html:357
+#: pods/templates/videos/video_completion.html:363
 msgid "Please enter a name from 2 to 100 caracteres."
 msgstr "Veuillez renseigner un nom contenant entre 2 et 100 caractères."
 
-#: pods/templates/videos/video_completion.html:362
+#: pods/templates/videos/video_completion.html:368
 msgid "You cannot enter a weblink with more than 200 caracteres."
 msgstr "les liens internet doivent être inférieur à 200 caractères."
 
-#: pods/templates/videos/video_completion.html:367
+#: pods/templates/videos/video_completion.html:373
 msgid "Please enter a role."
 msgstr "Veuillez renseigner un rôle."
 
-#: pods/templates/videos/video_completion.html:375
+#: pods/templates/videos/video_completion.html:381
 msgid ""
 "There is already a contributor with this same name and role in the list."
 msgstr "il y a déjà un contributeur avec le même nom et le même rôle."
 
-#: pods/templates/videos/video_completion.html:386
+#: pods/templates/videos/video_completion.html:392
 msgid "Please enter a correct kind."
 msgstr "Veuillez renseigner le type de piste (sous-titre ou légende)."
 
-#: pods/templates/videos/video_completion.html:393
+#: pods/templates/videos/video_completion.html:399
 msgid "Please select a language."
 msgstr "Veuillez sélectionner une langue."
 
-#: pods/templates/videos/video_completion.html:398
+#: pods/templates/videos/video_completion.html:404
 msgid "Please specify a track file."
 msgstr "Veuillez indiquer un fichier de sous-titre ou de légende."
 
-#: pods/templates/videos/video_completion.html:403
+#: pods/templates/videos/video_completion.html:409
 msgid "Only “.vtt” format is allowed."
 msgstr "Seul le format « .vtt » est autorisé."
 
-#: pods/templates/videos/video_completion.html:415
+#: pods/templates/videos/video_completion.html:421
 msgid ""
 "There is already a subtitle with the same kind and language in the list."
 msgstr "Un sous-titrage de même nature et de même langue existe déjà."
 
-#: pods/templates/videos/video_completion.html:429
+#: pods/templates/videos/video_completion.html:435
 msgid ""
 "There is already a download with this same name of document in the list."
 msgstr "Il y a déjà un document à télécharger portant le même nom."
 
-#: pods/templates/videos/video_completion.html:462
+#: pods/templates/videos/video_completion.html:468
 msgid "Display &quot;Contributor(s)&quot; section"
 msgstr "Afficher la section des contributeurs"
 
-#: pods/templates/videos/video_completion.html:463
+#: pods/templates/videos/video_completion.html:469
 msgid "Contributor(s)"
 msgstr "Contributeurs"
 
-#: pods/templates/videos/video_completion.html:481
+#: pods/templates/videos/video_completion.html:487
 msgid "Add a new contributor"
 msgstr "Ajouter un nouveau contributeur"
 
-#: pods/templates/videos/video_completion.html:486
+#: pods/templates/videos/video_completion.html:492
 msgid "Display &quot;Subtitle(s) and Captions(s) &quot; section"
 msgstr "Afficher la section de sous-titre ou de légende"
 
-#: pods/templates/videos/video_completion.html:486
+#: pods/templates/videos/video_completion.html:492
 msgid "Subtitle(s) and caption(s)"
 msgstr "Sous-titre(s) et légende(s)"
 
-#: pods/templates/videos/video_completion.html:502
+#: pods/templates/videos/video_completion.html:508
 msgid "Add a new subtitle or caption file"
 msgstr "Ajouter un nouveau fichier de sous-titre ou de légende"
 
-#: pods/templates/videos/video_completion.html:506
+#: pods/templates/videos/video_completion.html:512
 msgid "Display &quot; Additional resource(s)&quot; section"
 msgstr "Afficher la section documents complémentaires"
 
-#: pods/templates/videos/video_completion.html:506
+#: pods/templates/videos/video_completion.html:512
 msgid "Additional resource(s)"
 msgstr "Document(s) complémentaire(s)"
 
-#: pods/templates/videos/video_completion.html:521
+#: pods/templates/videos/video_completion.html:527
 msgid "Add a new additional resource"
 msgstr "Ajouter un nouveau document à télécharger"
 
-#: pods/templates/videos/video_completion.html:525
+#: pods/templates/videos/video_completion.html:531
 msgid "Display &quot; Overlay(s)&quot; section"
 msgstr "Afficher la section des superpositions"
 
-#: pods/templates/videos/video_completion.html:525
+#: pods/templates/videos/video_completion.html:531
 msgid "Overlay(s)"
 msgstr "Superposition(s)"
 
-#: pods/templates/videos/video_completion.html:539
+#: pods/templates/videos/video_completion.html:545
 msgid "Add a new overlay"
 msgstr "Ajouter une nouvelle superposition"
 
-#: pods/templates/videos/video_completion.html:561
+#: pods/templates/videos/video_completion.html:567
 msgid ""
 "Several web sites allows you to subtitle or caption videos (for example: "
 "Amara)."
@@ -2989,7 +2990,7 @@ msgstr ""
 "Plusieurs sites Web offrent des outils pour sous-titrer ou légender des "
 "vidéos (Par exemple : Amara)."
 
-#: pods/templates/videos/video_completion.html:562
+#: pods/templates/videos/video_completion.html:568
 msgid ""
 "You can add several subtitle or caption files to a single video (for "
 "example, in order to subtitle or caption this video in several languages)."
@@ -2997,11 +2998,11 @@ msgstr ""
 "Vous pouvez ajouter plusieurs fichiers de sous-titre ou de légende pour une "
 "même vidéo (par exemple, vous pouvez sous-titrer en plusieurs langues)."
 
-#: pods/templates/videos/video_completion.html:563
+#: pods/templates/videos/video_completion.html:569
 msgid "Those files must be in “.vtt” format."
 msgstr "Ces fichiers doivent être au format « .vtt »."
 
-#: pods/templates/videos/video_completion.html:564
+#: pods/templates/videos/video_completion.html:570
 msgid ""
 "For this purpose, you will need the URL of your video. This URL is a direct "
 "access to this video. Please do not communicate it outside of this site in "
@@ -3012,20 +3013,22 @@ msgstr ""
 "Evitez de la communiquer en dehors de ce site pour éviter tout "
 "téléchargement et utilisation abusive."
 
-#: pods/templates/videos/video_completion.html:566
+#: pods/templates/videos/video_completion.html:572
 msgid ""
 "Overlay allows you to display text (with or without html tag) over the video "
 "at specific times."
-msgstr "La superposition vous permet d'afficher du texte (avec ou sans balise html) par dessus la vidéo à des moments spécifiques."
+msgstr ""
+"La superposition vous permet d'afficher du texte (avec ou sans balise html) "
+"par dessus la vidéo à des moments spécifiques."
 
-#: pods/templates/videos/video_completion.html:569
+#: pods/templates/videos/video_completion.html:575
 msgid ""
 "Your current permissions do not allow you to add subtitle files, overlays or "
 "documents to download videos. Please contact us to add these rights."
 msgstr ""
 "Vos permissions actuelles ne vous permettent pas d'ajouter des fichiers de "
-"sous-titre, des superpositions ou des documents à télécharger à vos vidéos. Veuillez nous "
-"contacter pour vous ajouter ces droits"
+"sous-titre, des superpositions ou des documents à télécharger à vos vidéos. "
+"Veuillez nous contacter pour vous ajouter ces droits"
 
 #: pods/templates/videos/video_delete.html:26
 #: pods/templates/videos/video_delete.html:35
