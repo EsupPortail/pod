@@ -29,6 +29,16 @@ voir http://www.gnu.org/licenses/
         {% include 'videos/extraheadplayer.html' %}
     {% endif %}
 
+{% if H5P_ENABLED and interactive.h5p %}
+<style>
+#h5pcontent {
+    margin: auto;
+    text-align: center;
+    background-color: black;
+}
+</style>
+{% endif %}
+
 <script>
     $(document).on('submit', 'form#video_report_form', function (event) {
         $('form').show();
@@ -104,27 +114,99 @@ $(document).on('click', '#button_video_favorite', function (event) {
 });
 {% if H5P_ENABLED and interactive.h5p %}
 $(document).ready(function() {
-    {% if request.GET.h5p_is_iframe or not request.GET.is_iframe %}
+    {% if not request.GET.is_iframe %}
         $("#player").hide();
     {% endif %}
     $('.checkbox').hide();
     $('#icontent').load(function() {
         $('#icontent').fadeIn('slow');
+        if ('{{request.GET.interactive}}' == 'false') {
+            $('#button_video_original').click();
+        }
     });
+    $('#showinteractive').click();
+    $("label[for=integration_size]").hide();
+    $("label[for=autoplay").hide();
 });
 $(document).on('click', '#button_video_original', function() {
     $('#icontent').hide();
+    $('#h5pcontent').hide();
     $('#player').show();
     $('#button_video_original').hide();
     $('#button_video_interactive').show();
     $('#tab-score').hide();
+    $('.checkbox').show();
+    $('#showinteractive').click();
+    $("label[for=integration_size]").show();
+    $("label[for=autoplay").show();
 });
 $(document).on('click', '#button_video_interactive', function() {
     $('#icontent').show();
+    $('#h5pcontent').show();
     $('#player').hide();
     $('#button_video_interactive').hide();
     $('#button_video_original').show();
     $('#tab-score').show();
+    $('.checkbox').hide();
+    $('#showinteractive').click();
+    $("label[for=integration_size]").hide();
+    $("label[for=autoplay").hide();
+});
+$(document).on('click', '#refresh-score', function() {
+    $.ajax({
+        url: '{% url "h5pajax" %}?user-scores={{interactive.h5p.content_id}}',
+        type: 'GET',
+        success: function(list) {
+            var table = $('#user-score')[0];
+            if (table == undefined) {
+                var personnal = $('#personnal-score')[0];
+                for (i = 0; i < list.length; i++) {
+                    if (list[i]['user'] == '{{ request.user.username }}' && list[i]['max_points'] != null) {
+                        personnal.innerHTML = "{% trans 'You got the following score on this video' %}: " + list[i]['points'] + ' / ' + list[i]['max_points'];
+                    }
+                }
+            } else {
+                var html = ''
+                for (i = 0; i < list.length; i++) {
+                    html = html + '<tr>';
+                    if (list[i]['max_points'] != null) {
+                        html = html + '<td>' + list[i]['user'] + '</td><td>' + list[i]['points'] + ' / ' + list[i]['max_points'] + '</td>';
+                    } else {
+                        html = html + '<td>' + list[i]['user'] + '</td><td>{% trans "No score available" %}</td>'; 
+                    }
+                    html = html + '</tr>';
+                    table.innerHTML = html;
+                }
+            }
+        }
+    });
+});
+$(document).on('change', '#showinteractive', function() {
+    var str = $('#txtintegration').val();
+    // Interactive mode
+    if ($('#showinteractive').is(':checked')) {
+            if(str.indexOf('interactive=true') < 0){
+                str = str.replace(/(width=)\S+/, '$1' + '\"' + '625' +'\"');
+                str = str.replace(/(height=)\S+/, '$1' + '\"' + '530' +'\"');
+                str = str.replace('is_iframe=true', 'is_iframe=true&interactive=true');
+                {% if not video.is_draft %}
+                    $('#txtpartage').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?interactive=true');
+                {% else %}
+                    $('#txtpartageprive').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video_priv/{{ video.id }}/{{ hash_id }}/?interactive=true');
+                {% endif %}
+            }
+    } else if (str.indexOf('interactive=true') > 0) {
+        str = str.replace(/(width=)\S+/, '$1' + '\"' + '640' +'\"');
+        str = str.replace(/(height=)\S+/, '$1' + '\"' + '360' +'\"');
+        str = str.replace('&interactive=true', '');
+        {% if not video.is_draft %}
+            $('#txtpartage').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?interactive=false');
+        {% else %}
+            $('#txtpartageprive').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video_priv/{{ video.id }}/{{ hash_id }}/');
+        {% endif %}
+    }
+    $('#txtintegration').val(str);
+
 });
 {% endif %}
 </script>
@@ -211,7 +293,9 @@ $(document).on('click', '#button_video_interactive', function() {
         <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" />
 
         {% if H5P_ENABLED and interactive.h5p %}
-            <iframe id="icontent" src="{% url "h5pcontent" %}?contentId={{interactive.h5p.content_id}}&is_iframe=true" style="background:white;display:none;" height="550px" width="100%" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+        <div id="h5pcontent">
+            <iframe id="icontent" src="{% url 'video' slug=video.slug %}?is_iframe=true&interactive=true" style="background:white;display:none;" height="476px" width="800px" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+        </div>
             {% if not request.GET.h5p_is_iframe %}
                 {% include 'videos/video_player.html' %}
             {% endif %}
@@ -498,6 +582,11 @@ $(document).on('click', '#button_video_interactive', function() {
                                     <label for="autoplay">
                                         {% trans 'Autoplay' %} <input type="checkbox" id="autoplay" class="form-control" />
                                     </label>
+                                    {% if H5P_ENABLED and interactive.h5p %}
+                                    <label for="showinteractive">
+                                        {% trans 'Interactive' %} <input type="checkbox" id="showinteractive" class="form-control" />
+                                    </label>
+                                    {% endif %}
                                 </div>
                             </form>
                             <hr />
@@ -519,36 +608,42 @@ $(document).on('click', '#button_video_interactive', function() {
                     </div>
                     <div id="score" class="tab-pane fade container-fluid">
                         <h3>{% trans 'Scoreboard' %}</h3>
-                        {% if interactive.score and request.user == video.owner or request.user.is_superuser %}
-                        <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>{% trans 'User' %}</th>
-                                        <th>Points</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for user in interactive.score %}
-                                    {% if user.max_points %}
-                                    <tr>
-                                        <td>{{user.user}}</td><td>{{user.points}} / {{user.max_points}}</td>
-                                    </tr>
-                                    {% else %}
-                                    <tr>
-                                        <td>{{user.user}}</td><td>{% trans 'No score available' %}</td>
-                                    </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        {% elif request.user != video.owner and interactive.score.max_points %}
-                            {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
-                        {% elif not interactive.score and request.user == video.owner or request.user.is_superuser %}
-                            {% trans 'Your video does not have a score or no users have done the activities yet.' %}
-                        {% else %}
-                            {% trans 'This is the first time you watch this video.' %}
-                        {% endif %}
+                        <i>{% trans 'Click below to refresh the information.' %}</i><br>
+                        <button type="submit" class="btn btn-default" id="refresh-score" style="border: 0px;">
+                            {% if interactive.score and request.user == video.owner or request.user.is_superuser %}
+                            <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>{% trans 'User' %}</th>
+                                            <th>Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="user-score">
+                                    {% for user in interactive.score %}
+                                        {% if user.max_points %}
+                                        <tr>
+                                            <td>{{user.user}}</td>
+                                            <td>{{user.points}} / {{user.max_points}}</td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                            <td>{{user.user}}</td><td>{% trans 'No score available' %}</td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% elif request.user != video.owner and interactive.score.max_points %}
+                            <div id="personnal-score">
+                                {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
+                            </div>
+                            {% else %}
+                            <div id="personnal-score">
+                                {% trans 'This is the first time you watch this video.' %}
+                            </div>
+                            {% endif %}
+                        </button>
                     </div>
                     {% endif %}
                     <!-- /TAB share -->
@@ -577,6 +672,11 @@ $(document).on('click', '#button_video_interactive', function() {
                                     <label for="autoplay">
                                         {% trans 'Autoplay' %} <input type="checkbox" id="autoplay" class="form-control" />
                                     </label>
+                                    {% if H5P_ENABLED and interactive.h5p %}
+                                    <label for="showinteractive">
+                                        {% trans 'Interactive' %} <input type="checkbox" id="showinteractive" class="form-control" />
+                                    </label>
+                                    {% endif %}
                                 </div>
                             </form>
                             <hr />
