@@ -26,14 +26,16 @@
 
 -------------------------
 
-> Documentation : [https://github.com/EsupPortail/pod/wiki] (https://github.com/EsupPortail/pod/wiki "documentation/wiki")
+> Documentation technique : https://github.com/EsupPortail/pod/wiki
+
+> Documentation fonctionnelle : https://www.esup-portail.org/wiki/display/ESPADHERENT/Wiki+application+Pod
 
 -------------------------
 
-> Avec la participation de :
+> *Avec la participation de :*
 
->  ![Université de Lille, Sciences et technologies](http://www.univ-lille1.fr/digitalAssets/38/38040_logo-trans.png "Université de Lille, Sciences et technologies")
+> Université de Lille, Sciences et technologies: http://www.univ-lille1.fr/
 
->  [UNR Nord pas de calais] (http://www.unr-npdc.org/) ![UNR Nord pas de calais] (http://www.unr-npdc.org/sites/www.unr-npdc.org/themes/unrnpdc/img/logo_unr.gif "UNR Nord pas de calais")
+> Le consortium Esup Portail: https://www.esup-portail.org/
 
->  [Ministère de l'éducation nationale, de l'enseignement supérieur et de la recherche](http://www.enseignementsup-recherche.gouv.fr/) ![ministère de l'éducation nationale, de l'enseignement supérieur et de la recherche](http://cache.media.enseignementsup-recherche.gouv.fr/image/Global/16/8/Logo_MENESR_312537_313168.jpg "ministère de l'éducation nationale, de l'enseignement supérieur et de la recherche")
+> Ministère de lʼEnseignement supérieur, de la Recherche et de lʼInnovation: http://www.enseignementsup-recherche.gouv.fr/
