@@ -1,5 +1,14 @@
 # Pod, plateforme de gestion de video
 
+-------------------------
+
+> Documentation technique : https://github.com/EsupPortail/pod/wiki
+
+> Documentation fonctionnelle : https://www.esup-portail.org/wiki/display/ESPADHERENT/Wiki+application+Pod
+
+-------------------------
+# Presentation
+
 ![Pod, plateforme de gestion de vidéo](http://pod.univ-lille1.fr/static/images/share.png "Pod, plateforme de gestion de vidéo")![Esup Portail](https://www.esup-portail.org/sites/esup-portail.org/files/logo-esup%2Baccroche_2.png "Esup Portail")
 
 > La plateforme Pod, développée et déployée par l'université de Lille, sciences et technologies, est maintenue et promue par le consortium Esup Portail.
@@ -23,12 +32,6 @@
 > Deux types d'authentification sont possibles : via le service central d'authentification CAS et via l'authentification locale gérée par la plateforme.
 
 > Développée en python à l'aide du framework Django, elle utilise ffmpeg pour encoder les fichiers et elasticsearch comme moteur de recherche. "Full HTML5", son affichage est responsive et s'adapte ainsi aux différents types de terminaux web.
-
--------------------------
-
-> Documentation technique : https://github.com/EsupPortail/pod/wiki
-
-> Documentation fonctionnelle : https://www.esup-portail.org/wiki/display/ESPADHERENT/Wiki+application+Pod
 
 -------------------------
 
