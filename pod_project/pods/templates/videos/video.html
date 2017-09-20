@@ -276,7 +276,7 @@ $(document).on('change', '#showinteractive', function() {
         <form method="post" action="{{ request.get_full_path }}" id="video_password_form">
             {% csrf_token %}
             <fieldset>
-                <legend>{% trans 'Password requiered' %}</legend>
+                <legend>{% trans 'Password required' %}</legend>
                 {% bootstrap_form form %}
                 {% buttons %}
                     <button type="submit" class="btn btn-success" value="{% trans 'Send' %}" name="action1">
