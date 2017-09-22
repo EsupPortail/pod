@@ -232,8 +232,13 @@ def contact_us(request):
                 form = ContactUsModelForm(request, initial={"name": request.user.get_full_name(
                       ), "email": request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
         else:
-            form = ContactUsModelForm(request, initial={"url_referrer": request.META.get(
-                'HTTP_REFERER', request.build_absolute_uri("/"))})
+            if owner and video:
+                video = Pod.objects.get(id=video)
+                form = ContactUsModelForm(request, initial={"subject": _(u'Password request for video : ') + video.title, "url_referrer": request.META.get(
+                    'HTTP_REFERER', request.build_absolute_uri("/"))})
+            else:
+                form = ContactUsModelForm(request, initial={"url_referrer": request.META.get(
+                    'HTTP_REFERER', request.build_absolute_uri("/"))})
 
     if owner and video:
         form_html = render_to_string(
