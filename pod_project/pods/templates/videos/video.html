@@ -285,7 +285,7 @@ $(document).on('change', '#showinteractive', function() {
                 {% endbuttons %}
             </fieldset>
         </form>
-        <p>{% trans 'If you do not have the password for this content, please' %} <a href="mailto:{{ video.owner.email }}?subject=[{{ TITLE_SITE }}] {% with video_title=video.title|truncatewords:7 %}{% blocktrans %}Password request for “{{ video_title }}”.{% endblocktrans %}{% endwith %}" title="{% blocktrans %}Send password request email.{% endblocktrans %}">{% trans 'contact its owner' %}</a>.</p>
+        <p>{% trans 'If you do not have the password for this content, please' %} <a href="{% url "contact_us" %}?owner={{video.owner.id}}&video={{video.id}}">{% trans 'contact its owner' %}</a>.</p>
     {% else %}
         <meta itemprop="duration" content="{{ video.duration }}" />
         <meta itemprop="thumbnailUrl" content="{{ video.thumbnail.url }}" />

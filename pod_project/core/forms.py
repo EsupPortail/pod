@@ -67,6 +67,8 @@ class ContactUsModelForm(ModelForm):
         super(ContactUsModelForm, self).__init__(*args, **kwargs)
 
         if request.user and request.user.is_authenticated():
+            if request.GET.get('owner'):
+                self.fields['subject'].widget.attrs['readonly'] = True
             self.fields['name'].widget = HiddenInput()
             self.fields['email'].widget = HiddenInput()
             del self.fields['captcha']
