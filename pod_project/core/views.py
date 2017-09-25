@@ -226,7 +226,7 @@ def contact_us(request):
         if request.user.is_authenticated():
             if owner and video:
                 video = Pod.objects.get(id=video)
-                subject = '[' + settings.TITLE_SITE + '] Password request for : "' + video.title + '"'
+                subject = '[' + settings.TITLE_SITE + '] %s %s' % (_('Password request for : '), video.title)
                 form = ContactUsModelForm(request, initial={"name": request.user.get_full_name(
                       ), "subject": subject, "email": request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
             else:
@@ -235,7 +235,7 @@ def contact_us(request):
         else:
             if owner and video:
                 video = Pod.objects.get(id=video)
-                subject = '[' + settings.TITLE_SITE + '] Password request for : "' + video.title + '"'
+                subject = '[' + settings.TITLE_SITE + '] %s %s' % (_('Password request for : '), video.title)
                 form = ContactUsModelForm(request, initial={"subject": subject, "url_referrer": request.META.get(
                     'HTTP_REFERER', request.build_absolute_uri("/"))})
             else:

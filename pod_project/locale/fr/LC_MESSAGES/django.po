@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-22 11:01+0200\n"
+"POT-Creation-Date: 2017-09-25 15:22+0200\n"
 "PO-Revision-Date: 2017-09-20 16:27+0200\n"
 "Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
@@ -243,7 +243,7 @@ msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 
 #: core/templates/403.html:51 core/templates/404.html:51
 #: core/templates/admin/base.html:47 core/templates/base.html:98
-#: core/templates/contactus/contactus.html:43 core/templates/navbar.html:41
+#: core/templates/contactus/contactus.html:47 core/templates/navbar.html:41
 #: core/templates/registration/login.html:99
 #: core/templates/userProfile.html:71
 msgid "Home"
@@ -556,7 +556,7 @@ msgstr "Signaler cette vidéo"
 msgid "Please, specify the problem:"
 msgstr "Veuillez expliquer le problème :"
 
-#: core/templates/base.html:278 core/templates/contactus/contactus.html:35
+#: core/templates/base.html:278 core/templates/contactus/contactus.html:39
 #: core/templates/header.html:50 core/templates/userProfile.html:63
 #: pods/templates/mediacourses/mediacourses_add.html:62
 #: pods/templates/videos/video.html:282 pods/templates/videos/video.html:283
@@ -576,12 +576,12 @@ msgstr "Envoyer"
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 
-#: core/templates/contactus/contactus.html:38
+#: core/templates/contactus/contactus.html:42
 #: core/templates/registration/login.html:93
 msgid "Erase"
 msgstr "Effacer"
 
-#: core/templates/contactus/contactus.html:41
+#: core/templates/contactus/contactus.html:45
 #: core/templates/registration/login.html:97
 #: core/templates/userProfile.html:69 core/templates/userProfile.html.py:75
 #: pods/templates/videos/video_interactive.html:216
@@ -703,7 +703,7 @@ msgstr "N'hésitez pas à nous contacter pour toute assistance :"
 #: core/templates/registration/login.html:118
 #: core/templates/registration/login.html:119
 #: core/theme/DEFAULT/templates/footer.html:27
-#: core/theme/DEFAULT/templates/footer.html:28 core/views.py:245
+#: core/theme/DEFAULT/templates/footer.html:28 core/views.py:252
 msgid "Contact us"
 msgstr "Contactez nous"
 
@@ -850,11 +850,11 @@ msgstr "Votre message intitulé"
 msgid "Your message has been sent."
 msgstr "Votre message a bien été envoyé"
 
-#: core/views.py:230
-msgid "Password request for video : "
-msgstr "Demande de mot de passe pour la vidéo : "
+#: core/views.py:229 core/views.py:238
+msgid "Password request for : "
+msgstr "Mot de passe requis pour : "
 
-#: core/views.py:241
+#: core/views.py:248
 msgid "Contact the owner"
 msgstr "Contacter le propriétaire"
 
@@ -3604,6 +3604,3 @@ msgstr ""
 #: pods/views.py:2111
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
-
-#~ msgid "Send password request email."
-#~ msgstr "Envoyer un courriel de demande de mot de passe."
