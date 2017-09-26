@@ -474,6 +474,67 @@ class VideoTestCase(TestCase):
             "   --->  test_delete_object of VideoTestCase : OK !")
 
 """
+    test the overlaypods object
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class OverlayPodsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type, title="Video1", slug="tralala", owner=remi)
+        OverlayPods.objects.create(video=pod, title="overlay1", content="tralala", time_end=5, position="top-left")
+        OverlayPods.objects.create(video=pod, title="overlay2", content="tralala")
+
+        print (" ---> SetUp of OverlayPodsTestCase : OK !")
+
+    """
+        test atributs and str function
+    """
+
+    def test_attributs_and_str(self):
+        overlay = OverlayPods.objects.get(id=1)
+        overlay2 = OverlayPods.objects.get(id=2)
+        self.assertEqual(overlay.video.id, 1)
+        self.assertEqual(overlay.content, "tralala")
+        self.assertEqual(overlay.time_start, 0)
+        self.assertEqual(overlay.time_end, 1)
+        self.assertEqual(overlay.position, "bottom-right")
+        self.assertEqual(overlay2.time_end, 5)
+        self.assertEqual(overlay2.position, "top-left")
+        self.assertEqual(overlay.__unicode__(), "%s-%s" %
+                          (overlay.title, overlay.video))
+
+        print (
+            "   ---> test_attributs_and_str of OverlayPodsTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        OverlayPods.objects.get(id=1).delete()
+        OverlayPods.objects.get(id=2).delete()
+        self.assertEquals(OverlayPods.objects.all().count(), 0)
+
+        print (
+            "   ---> test_delete_object of OverlayPodsTestCase : OK !")
+
+
+"""
 	test the favorites object
 """
 
@@ -508,7 +569,8 @@ class FavoritesTestCase(TestCase):
         favorite = Favorites.objects.get(id=1)
         self.assertEqual(favorite.user.username, "Remi")
         self.assertEqual(favorite.video.id, 1)
-        self.assertEqual(favorite.__unicode__(), "%s-%s" %
+        self.assertEqual()
+        self.assertEqual(favorite.__unicode__(), "Overlay : %s - video: %s" %
                          (favorite.user.username, favorite.video))
 
         print (

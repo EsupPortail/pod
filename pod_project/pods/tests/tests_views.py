@@ -1541,6 +1541,216 @@ class Video_completion_TestView(TestCase):
     },
     LANGUAGE_CODE='en'
 )
+class Video_overlayTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        user = User.objects.create(
+            username='remi', password='12345', is_active=True, is_staff=True)
+        user.set_password('hello')
+        user.save()
+        user2 = User.objects.create(
+            username='remi2', password='12345', is_active=True)
+        user2.set_password('hello')
+        user2.save()
+        c = Channel.objects.create(title="ChannelTest1", visible=True,
+                                   color="Black", style="italic", description="blabla")
+        t = Theme.objects.create(
+            title="Theme1", channel=c)
+        other_type = Type.objects.get(id=1)
+        media_guard_hash = get_media_guard("remi", 1)
+        pod = Pod.objects.create(type=other_type, title=u'Bunny',
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
+                                 allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
+                                 to_encode=False)
+        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+
+        pod.channel.add(c)
+        pod.theme.add(t)
+        pod.save()
+        print(" --->  SetUp of Video_overlayTestView : OK !")
+
+    def test_insert_overlay(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        # access to the page
+        response = self.client.get('/video_completion/%s/' % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_overlay']), 0)
+        # click 'add a new overlay' button
+        response = self.client.post('/video_completion_overlay/%s/' % pod.slug,{u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_overlay'] != "")
+        self.assertTrue('<form id="form_overlay"' in response.content)
+        # send form with 'save' button
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {
+                u'title': [u'overlay1'],
+                u'time_start': [u'0'],
+                u'time_end': [u'5'],
+                u'content': [u'blabla'],
+                u'position': [u'bottom-right'],
+                u'background': [u'on'],
+                u'overlay_id': [u'None'],
+                u'video': [u'1'],
+                u'action': [u'save']
+            })
+        list_overlay = pod.overlaypods_set.all()
+        self.assertEqual(len(list_overlay), 1)
+        self.assertEqual(list_overlay[0].title, u'overlay1')
+        self.assertEqual(list_overlay[0].time_start, 0)
+        self.assertEqual(list_overlay[0].time_end, 5)
+        self.assertEqual(list_overlay[0].video.id, 1)
+        self.assertEqual(len(response.context['list_overlay']), 1)
+        self.assertEqual(response.context['list_overlay'][0].title, u'overlay1')
+        # click 'modify' button
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_overlay'] != "")
+        self.assertTrue(
+            '<input type="hidden" id="id_overlay" name="overlay_id" value="1">' in response.content)
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {
+                u'title': [u'overlay2'],
+                u'time_start': [u'0'],
+                u'time_end': [u'5'],
+                u'content': [u'blabla'],
+                u'position': [u'bottom-right'],
+                u'background': [u'on'],
+                u'overlay_id': [u'1'],
+                u'video': [u'1'],
+                u'action': [u'save']
+        })
+        self.assertEqual(response.status_code, 200)
+        list_overlay = pod.overlaypods_set.all()
+        self.assertEqual(len(list_overlay), 1)
+        self.assertEqual(list_overlay[0].title, u'overlay2')
+        # cancel and delete overlay
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {u'action': [u'cancel']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('"Add a new overlay"' in response.content)
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {u'action': [u'delete'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(len(response.context['list_overlay']), 0)
+        list_overlay = pod.overlaypods_set.all()
+        self.assertEqual(len(list_overlay), 0)
+
+        print(
+            "   ---> test_insert_overlay of Video_overlayTestView : OK !")
+
+    def test_insert_overlay_with_overlap_errors(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        # access to the page
+        response = self.client.get("/video_completion/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_overlay']), 0)
+        # click 'add a new overlay' button
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_overlay'] != "")
+        # send form with 'save' button
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {
+                u'title': [u'overlay1'],
+                u'time_start': [u'0'],
+                u'time_end': [u'5'],
+                u'content': [u'blabla'],
+                u'position': [u'bottom-right'],
+                u'background': [u'on'],
+                u'overlay_id': [u'None'],
+                u'video': [u'1'],
+                u'action': [u'save']
+            })
+        # click 'add a new overlay' button
+        response = self.client.post("/video_completion_overlay/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # test to add new overlay with overlap
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {
+                u'title': [u'overlay2'],
+                u'time_start': [u'0'],
+                u'time_end': [u'5'],
+                u'content': [u'blabla'],
+                u'position': [u'bottom-right'],
+                u'background': [u'on'],
+                u'overlay_id': [u'None'],
+                u'video': [u'1'],
+                u'action': [u'save']
+            })
+        list_overlay = pod.overlaypods_set.all()
+        self.assertEqual(len(list_overlay), 1)
+
+        print(
+            "   ---> test_insert_overlay_with_overlap_errors of Video_overlayTestView : OK !")
+
+    def test_insert_overlay_with_title_errors(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        # access to the page
+        response = self.client.get("/video_completion/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_overlay']), 0)
+        # click 'add a new overlay' button
+        response = self.client.post("/video_completion_overlay/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_overlay'] != "")
+        # send form with 'save' button
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {
+                u'title': [u'o'],
+                u'time_start': [u'0'],
+                u'time_end': [u'5'],
+                u'content': [u'blabla'],
+                u'position': [u'bottom-right'],
+                u'background': [u'on'],
+                u'overlay_id': [u'None'],
+                u'video': [u'1'],
+                u'action': [u'save']
+            })
+        list_overlay = pod.overlaypods_set.all()
+        self.assertEqual(len(list_overlay), 0)
+
+        print(
+            "   ---> test_insert_overlay_with_title_errors of Video_overlayTestView : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class Video_chapterTestView(TestCase):
     fixtures = ['initial_data.json', ]
 

@@ -773,7 +773,7 @@ class OverlayPods(models.Model):
         ('left', _('left')),
     )
 
-    video = models.ForeignKey(Pod, verbose_name=_('Video'))
+    video = models.ForeignKey(Pod, verbose_name=_('video'))
     title = models.CharField(_('title'), max_length=100)
     slug = models.SlugField(
         _('slug'), unique=True, max_length=105,
@@ -825,11 +825,10 @@ class OverlayPods(models.Model):
 
     def verify_time_items(self):
         msg = []
-        video = Pod.objects.get(id=self.video.id)
         if(self.time_start > self.time_end):
             msg.append(
                 _('The value of the time start field is greater than the value of the end time field.'))
-        elif(self.time_end > video.duration):
+        elif(self.time_end > self.video.duration):
             msg.append(
                 _('The value of time end field is greater than the video duration.'))
         elif(self.time_start == self.time_end):
