@@ -19,9 +19,7 @@ GNU General Public Licence
 avec ce programme. Si ce n'est pas le cas,
 voir http://www.gnu.org/licenses/
 """
-from pods.models import Pod, Channel, Type, Discipline, Theme
-from django.contrib.sites.models import Site
-from django.conf import settings as django_settings
+from pods.models import Channel, Type, Discipline, Theme
 from django.contrib.auth.models import User
 from django.db.models import Count, Prefetch
 
