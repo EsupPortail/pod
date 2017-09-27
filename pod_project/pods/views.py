@@ -926,6 +926,9 @@ def video_edit(request, slug=None):
     if request.POST:
 
         if video:
+            if H5P_ENABLED:
+                if h5p_contents.objects.filter(slug=slugify(video.title)) > 0:
+                    interactive = h5p_contents.objects.get(slug=slugify(video.title))
             video_form = PodForm(
                 request, request.POST, request.FILES, instance=video)
         else:
@@ -952,6 +955,11 @@ def video_edit(request, slug=None):
                         )
                     )
                 vid.to_encode = True
+
+            if H5P_ENABLED:
+                interactive.title = vid.title
+                interactive.slug = slugify(vid.title)
+                interactive.save()
 
             vid.save()
             # Without this next line the tags won't be saved.
