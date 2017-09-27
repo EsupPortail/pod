@@ -77,11 +77,33 @@ def core_login(request):
     next = request.GET['next'] if request.GET.get('next') else request.POST['next'] if request.POST.get(
         'next') else request.META['HTTP_REFERER'] if request.META.get('HTTP_REFERER') else "/"
 
-    if settings.USE_CAS and not request.GET.get("gateway") and not request.POST:
-        if request.GET.get("is_iframe"):
-            return HttpResponseRedirect(reverse('cas_login') + '?gateway=True&next=%s&is_iframe=true' % urlquote(next))
+    
+    if settings.USE_CAS:
+        from django_cas_gateway.views import login
+        from urllib import urlencode
+
+        if request.user.is_authenticated():
+            # Is Authed, fine
+            pass
         else:
-            return HttpResponseRedirect(reverse('cas_login') + '?gateway=True&next=%s' % urlquote(next))
+            path_with_params = request.path + '?' + urlencode(request.GET.copy())
+            if request.GET.get('ticket'):
+                # Not Authed, but have a ticket !
+                # Try to authenticate
+                response = login(request, path_with_params, False, True)
+                if isinstance(response, HttpResponseRedirect):
+                    # For certain instances where a forbidden occurs, we need to pass instead of return a response.
+                    return response
+            else:
+                # Not Authed, but no ticket
+                gatewayed = request.GET.get('gatewayed')
+                if gatewayed == 'true':
+                    pass
+                else:
+                    # Not Authed, try to authenticate
+                    response = login(request, path_with_params, False, True)
+                    if isinstance(response, HttpResponseRedirect):
+                        return response
 
     if request.user.is_authenticated():
         return HttpResponseRedirect(next)  # Redirect to a success page.
