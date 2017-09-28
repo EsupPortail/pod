@@ -676,29 +676,29 @@ function progress() {
             var downloaded = filesize * howMuchIsDownloaded;
             var laspdl = downloaded - previousuploaded;
             mediumspeed = mediumspeed + Math.round((laspdl / lapstime) / 1000);
-            if (intcheck % 4 == 0) {
+            if (intcheck % 2 == 0) {
                 mediumspeed = mediumspeed / 4;
-                if (mediumspeed > 2200 && typeof myPlayer.getGroupedSrc().res['1080'] != 'undefined') {
+                if (mediumspeed > 5000 && typeof myPlayer.getGroupedSrc().res['1080'] != 'undefined') {
                     $('div.vjs-resolution-button').find('li:contains("1080p")').trigger('click');
                     changeResBd = true;
                 } else {
-                    if (mediumspeed > 1200 && typeof myPlayer.getGroupedSrc().res['720'] != 'undefined') {
+                    if (mediumspeed > 2500 && typeof myPlayer.getGroupedSrc().res['720'] != 'undefined') {
                         $('div.vjs-resolution-button').find('li:contains("720p")').trigger('click');
                         changeResBd = true;
                     } else {
-                        if (mediumspeed > 700 && typeof myPlayer.getGroupedSrc().res['480'] != 'undefined') {
+                        if (mediumspeed > 1200 && typeof myPlayer.getGroupedSrc().res['480'] != 'undefined') {
                             $('div.vjs-resolution-button').find('li:contains("480p")').trigger('click');
                             changeResBd = true;
                         }
                     }
                 }
-            } else {
-                $($('div.vjs-resolution-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
+            } else if (howMuchIsDownloaded > 0.9) {
+                $($('div.vjs-resolution-button li').get(1)).trigger('click');
                 changeResBd = true;
             }
             previoustime = seconds;
             previousuploaded = downloaded;
-        } else if (howMuchIsDownloaded == 1) {
+        } else if (howMuchIsDownloaded > 0.9) {
             $($('div.vjs-resolution-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
             changeResBd = true;
         }
