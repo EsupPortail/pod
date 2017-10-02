@@ -79,7 +79,7 @@ def core_login(request):
 
     
     if settings.USE_CAS:
-        from django_cas_gateway.views import login
+        from django_cas_gateway.views import login as login_cas
         from urllib import urlencode
 
         if request.user.is_authenticated():
@@ -90,7 +90,7 @@ def core_login(request):
             if request.GET.get('ticket'):
                 # Not Authed, but have a ticket !
                 # Try to authenticate
-                response = login(request, path_with_params, False, True)
+                response = login_cas(request, path_with_params, False, True)
                 if isinstance(response, HttpResponseRedirect):
                     # For certain instances where a forbidden occurs, we need to pass instead of return a response.
                     return response
@@ -101,7 +101,7 @@ def core_login(request):
                     pass
                 else:
                     # Not Authed, try to authenticate
-                    response = login(request, path_with_params, False, True)
+                    response = login_cas(request, path_with_params, False, True)
                     if isinstance(response, HttpResponseRedirect):
                         return response
 
