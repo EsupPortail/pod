@@ -382,6 +382,11 @@ class Pod(Video):
             video=self, encodingType__output_height=1080, encodingFormat="video/mp4")
         return encoding_1080.encodingFile.url
 
+    def get_highest_encoding_URL(self):
+        encoding_highest = EncodingPods.objects.filter(video=self)\
+            .order_by('-encodingType__output_height', '-encodingType__mediatype').first()
+        return encoding_highest.encodingFile.url if encoding_highest else ''
+
     def get_mediatype(self):
         # print "get_mediatype : %s - %s" %(self.id,
         # self.encodingpods_set.values_list("encodingType__mediatype",

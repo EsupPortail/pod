@@ -542,7 +542,7 @@ function verify_fields(form){
                 <p>{% trans 'You can add several subtitle or caption files to a single video (for example, in order to subtitle or caption this video in several languages).' %}</p>
                 <p>{% trans 'Those files must be in “.vtt” format.' %}</p>
                 <p>{% trans 'For this purpose, you will need the URL of your video. This URL is a direct access to this video. Please do not communicate it outside of this site in order to avoid any misuse.' %}</p>
-                <input maxlength="250" value="//{{ request.get_host }}{{ video.get_MP4_240_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
+                <input maxlength="250" value="//{{ request.get_host }}{{ video.get_highest_encoding_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
             {% else %}
                 <p>
                     {% trans 'Your current permissions do not allow you to add subtitle files or documents to download videos. Please contact us to add these rights.' %} :
