@@ -172,7 +172,7 @@ $(document).on('click', '#refresh-score', function() {
                     if (list[i]['max_points'] != null) {
                         html = html + '<td>' + list[i]['user'] + '</td><td>' + list[i]['points'] + ' / ' + list[i]['max_points'] + '</td>';
                     } else {
-                        html = html + '<td>' + list[i]['user'] + '</td><td>{% trans "No score available" %}</td>'; 
+                        html = html + '<td>' + list[i]['user'] + '</td><td>{% trans "No score available" %}</td>';
                     }
                     html = html + '</tr>';
                     table.innerHTML = html;
@@ -276,7 +276,7 @@ $(document).on('change', '#showinteractive', function() {
         <form method="post" action="{{ request.get_full_path }}" id="video_password_form">
             {% csrf_token %}
             <fieldset>
-                <legend>{% trans 'Password requiered' %}</legend>
+                <legend>{% trans 'Password required' %}</legend>
                 {% bootstrap_form form %}
                 {% buttons %}
                     <button type="submit" class="btn btn-success" value="{% trans 'Send' %}" name="action1">
@@ -285,7 +285,7 @@ $(document).on('change', '#showinteractive', function() {
                 {% endbuttons %}
             </fieldset>
         </form>
-        <p>{% trans 'If you do not have the password or if you have connection problems' %} : <a href="{% url "contact_us" %}" title="{% trans "Contact us" %}">{% trans "Contact us" %}</a>.</p>
+        <p>{% trans 'If you do not have the password for this content, please' %} <a href="{% url "contact_us" %}?owner={{video.owner.id}}&video={{video.id}}">{% trans 'contact its owner' %}</a>.</p>
     {% else %}
         <meta itemprop="duration" content="{{ video.duration }}" />
         <meta itemprop="thumbnailUrl" content="{{ video.thumbnail.url }}" />
