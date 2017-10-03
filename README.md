@@ -3,8 +3,12 @@
 -------------------------
 
 > Documentation technique : https://github.com/EsupPortail/pod/wiki
-
+>
 > Documentation fonctionnelle : https://www.esup-portail.org/wiki/display/ESPADHERENT/Wiki+application+Pod
+>
+> Plugin Moodle : 
+>  - Filtre : https://github.com/EsupPortail/moodle-mod_pod-filter
+>  - Repository : https://github.com/EsupPortail/moodle-mod_pod
 
 -------------------------
 # Presentation
