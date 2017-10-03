@@ -33,6 +33,7 @@ from django.test.client import RequestFactory
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate
 from django.forms.models import inlineformset_factory
+from django.db.models import Max, Min
 from pods.forms import ChannelForm, ThemeForm, PodForm, ContributorPodsForm, ChapterPodsForm, EnrichPodsForm
 import threading
 from core.utils import encode_video
@@ -2152,3 +2153,174 @@ class Video_mediacourses_notify(TestCase):
         self.assertEqual(response.content, "ok")
         print(
             "   --->  test_mediacourses_notify_good of Video_mediacourses_notify : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class RSSTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        user = User.objects.create(
+            username='remi', password='12345', is_active=True, is_staff=True)
+        user.set_password('hello')
+        user.save()
+        c = Channel.objects.create(title="ChannelTest1", visible=True,
+                                   color="Black", style="italic", description="blabla")
+        t = Theme.objects.create(
+            title="Theme1", channel=c)
+        other_type = Type.objects.get(id=1)
+        media_guard_hash = get_media_guard("remi", 1)
+        pod = Pod.objects.create(type=other_type, title=u'Bunny',
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
+                                 allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=False,
+                                 to_encode=False)
+        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+
+        pod.channel.add(c)
+        pod.theme.add(t)
+        pod.save()
+        print(" --->  SetUp of RSSTestView : OK !")
+
+    def test_mySelectFeed(self):
+        pod = Pod.objects.get(id=1)
+        channel = Channel.objects.get(id=1)
+        theme = Theme.objects.get(id=1)
+        types = Type.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        # Access to the page RSS (by channel)
+        response = self.client.get("/rss/select/channel=%s/" % channel.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        # Access to the page RSS (by type)
+        response = self.client.get("/rss/select/type=['%s']/" % types.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        # Access to the page RSS (by theme)
+        response = self.client.get("/rss/select/channel=%s&theme=%s/" % (channel.slug, theme.slug))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        # Access to the page RSS (by owner)
+        response = self.client.get("/rss/select/owner=['%s']/" % user.username)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+
+        print(
+            "   ---> test_mySelectFeed of RSSTestView : OK !")
+
+    def test_PodcastHDFeed(self):
+        pod = Pod.objects.get(id=1)
+        channel = Channel.objects.get(id=1)
+        theme = Theme.objects.get(id=1)
+        types = Type.objects.get(id=1)
+        link = reverse('pods.views.video', args=(pod.slug,))
+        encodings = EncodingPods.objects.filter(video=pod, encodingFormat="video/mp4")
+        maxencodings = encodings.aggregate(
+            Max('encodingType__output_height'))['encodingType__output_height__max']
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        # Access to the page RSS (by channel)
+        response = self.client.get("/rss/hd/channel=%s/" % channel.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(maxencodings)) in response.content)
+        # Access to the page RSS (by type)
+        response = self.client.get("/rss/hd/type=['%s']/" % types.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(maxencodings)) in response.content)
+        # Access to the page RSS (by theme)
+        response = self.client.get("/rss/hd/channel=%s&theme=%s/" % (channel.slug, theme.slug))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        self.assertTrue("type: ['%s']" % (types.slug) in response.content)
+        self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(maxencodings)) in response.content)
+        # Access to the page RSS (by owner)
+        response = self.client.get("/rss/hd/owner=['%s']/" % user.username)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        self.assertTrue("theme: %s" % (theme.slug) in response.content)
+        self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(maxencodings)) in response.content)
+
+        print(
+            "   ---> test_PodcastHDFeed of RSSTestView : OK !")
+
+    def test_PodcastSDFeed(self):
+        pod = Pod.objects.get(id=1)
+        channel = Channel.objects.get(id=1)
+        theme = Theme.objects.get(id=1)
+        types = Type.objects.get(id=1)
+        link = reverse('pods.views.video', args=(pod.slug,))
+        encodings = EncodingPods.objects.filter(video=pod, encodingFormat="video/mp4")
+        minencodings = encodings.aggregate(
+            Min('encodingType__output_height'))['encodingType__output_height__min']
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        # Access to the page RSS (by channel)
+        response = self.client.get("/rss/sd/channel=%s/" % channel.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(minencodings)) in response.content)
+        # Access to the page RSS (by type)
+        response = self.client.get("/rss/sd/type=['%s']/" % types.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(minencodings)) in response.content)
+        # Access to the page RSS (by theme)
+        response = self.client.get("/rss/sd/channel=%s&theme=%s/" % (channel.slug, theme.slug))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        self.assertTrue("type: ['%s']" % (types.slug) in response.content)
+        self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(minencodings)) in response.content)
+        # Access to the page RSS (by owner)
+        response = self.client.get("/rss/sd/owner=['%s']/" % user.username)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(" | %s" % (pod.title) in response.content)
+        self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+        self.assertTrue("theme: %s" % (theme.slug) in response.content)
+        self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(minencodings)) in response.content)
+
+
+        print(
+            "   ---> test_PodcastSDFeed of RSSTestView : OK !")
