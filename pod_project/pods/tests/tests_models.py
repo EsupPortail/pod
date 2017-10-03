@@ -834,3 +834,101 @@ class ReportVideoTestCase(TestCase):
     """
         test delete object
     """
+
+    def test_delete_object(self):
+        ReportVideo.objects.get(id=1).delete()
+        ReportVideo.objects.get(id=2).delete()
+        self.assertEquals(ReportVideo.objects.all().count(), 0)
+
+        print (
+            "   ---> test_delete_object of ReportVideoTestCase : OK !")
+
+
+"""
+    test the rss
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
+class RSSTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        if settings.RSS:
+            user = User.objects.create(
+                username='remi', password='12345', is_active=True, is_staff=True)
+            other_type = Type.objects.get(id=1)
+            Rssfeed.objects.create(title='test1', description="blabla",
+                link_rss='http://test.com', owner=user, fil_type_pod=other_type)
+            Rssfeed.objects.create(title='test2', description="blabla",
+                link_rss='http://test.com', owner=user, fil_type_pod=other_type, type_rss='V', year=2018, is_up=False)
+
+
+            print(" ---> SetUp of RSSTestCase : OK !")
+
+    """
+        test all attributs when a rssfeed have been save with the minimum of attributs
+    """
+
+    def test_Rssfeed_null_attribut(self):
+        if settings.RSS:
+            date = datetime.today()
+            user = User.objects.get(username='remi')
+            rssfeed = Rssfeed.objects.get(id=1)
+            self.assertEqual(rssfeed.title, 'test1')
+            self.assertEqual(rssfeed.year, 2017)
+            self.assertEqual(rssfeed.type_rss, 'A')
+            self.assertEqual(rssfeed.is_up, True)
+            self.assertEqual(rssfeed.limit, 0)
+            self.assertEqual(rssfeed.date_update.year, date.year)
+            self.assertEqual(rssfeed.date_update.month, date.month)
+            self.assertEqual(rssfeed.date_update.day, date.day)
+            self.assertEqual(rssfeed.owner, user)
+            self.assertEqual(rssfeed.__unicode__(), rssfeed.title)
+
+            print (
+                "   ---> test_Rssfeed_null_attribut of RSSTestCase : OK !")
+
+    """
+        test attributs when a rssfeed have many attributs
+    """
+
+    def test_Rssfeed_with_attributs(self):
+        if settings.RSS:
+            date = datetime.today()
+            user = User.objects.get(username='remi')
+            rssfeed = Rssfeed.objects.get(id=2)
+            self.assertEqual(rssfeed.year, 2018)
+            self.assertEqual(rssfeed.type_rss, 'V')
+            self.assertEqual(rssfeed.is_up, False)
+            self.assertEqual(rssfeed.limit, 0)
+            self.assertEqual(rssfeed.date_update.year, date.year)
+            self.assertEqual(rssfeed.date_update.month, date.month)
+            self.assertEqual(rssfeed.date_update.day, date.day)
+            self.assertEqual(rssfeed.owner, user)
+            self.assertEqual(rssfeed.__unicode__(), rssfeed.title)
+
+            print (
+                "   ---> test_Rssfeed_with_attributs of RSSTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        if settings.RSS:
+            Rssfeed.objects.get(id=1).delete()
+            Rssfeed.objects.get(id=2).delete()
+            self.assertEquals(Rssfeed.objects.all().count(), 0)
+
+            print (
+                "   ---> test_delete_object of RSSTestCase : OK !")
+
