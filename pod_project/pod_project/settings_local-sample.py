@@ -272,6 +272,15 @@ HOMEPAGE_SHOWS_RESTRICTED = True
 
 
 ##
+# Main menu settings:
+#
+# Do not show inactive users in “Owners” main menu list.
+MENUBAR_HIDE_INACTIVE_OWNERS = False
+# Show only staff users in “Owners” main menu list.
+MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
+
+
+##
 # WebM video encoding activation:
 #
 #   True: video files will be available in both mp4 and WebM formats,
