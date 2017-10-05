@@ -1591,7 +1591,8 @@ class Video_overlayTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['list_overlay']), 0)
         # click 'add a new overlay' button
-        response = self.client.post('/video_completion_overlay/%s/' % pod.slug,{u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.post('/video_completion_overlay/%s/' % pod.slug, {
+                                    u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_overlay'] != "")
         self.assertTrue('<form id="form_overlay"' in response.content)
@@ -1615,7 +1616,8 @@ class Video_overlayTestView(TestCase):
         self.assertEqual(list_overlay[0].time_end, 5)
         self.assertEqual(list_overlay[0].video.id, 1)
         self.assertEqual(len(response.context['list_overlay']), 1)
-        self.assertEqual(response.context['list_overlay'][0].title, u'overlay1')
+        self.assertEqual(response.context['list_overlay'][
+                         0].title, u'overlay1')
         # click 'modify' button
         response = self.client.post(
             "/video_completion_overlay/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -1634,7 +1636,7 @@ class Video_overlayTestView(TestCase):
                 u'overlay_id': [u'1'],
                 u'video': [u'1'],
                 u'action': [u'save']
-        })
+            })
         self.assertEqual(response.status_code, 200)
         list_overlay = pod.overlaypods_set.all()
         self.assertEqual(len(list_overlay), 1)
@@ -1685,7 +1687,8 @@ class Video_overlayTestView(TestCase):
                 u'action': [u'save']
             })
         # click 'add a new overlay' button
-        response = self.client.post("/video_completion_overlay/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.post("/video_completion_overlay/%s/" % pod.slug, {
+                                    u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         # test to add new overlay with overlap
         response = self.client.post(
             "/video_completion_overlay/%s/" % pod.slug, {
@@ -1719,7 +1722,8 @@ class Video_overlayTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['list_overlay']), 0)
         # click 'add a new overlay' button
-        response = self.client.post("/video_completion_overlay/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.post("/video_completion_overlay/%s/" % pod.slug, {
+                                    u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form_overlay'] != "")
         # send form with 'save' button
@@ -2424,22 +2428,28 @@ class RSSTestView(TestCase):
             response = self.client.get("/rss/select/channel=%s/" % channel.slug)
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
             # Access to the page RSS (by type)
             response = self.client.get("/rss/select/type=['%s']/" % types.slug)
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
             # Access to the page RSS (by theme)
-            response = self.client.get("/rss/select/channel=%s&theme=%s/" % (channel.slug, theme.slug))
+            response = self.client.get(
+                "/rss/select/channel=%s&theme=%s/" % (channel.slug, theme.slug))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
             # Access to the page RSS (by owner)
-            response = self.client.get("/rss/select/owner=['%s']/" % user.username)
+            response = self.client.get(
+                "/rss/select/owner=['%s']/" % user.username)
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
 
             print(
                 "   ---> test_mySelectFeed of RSSTestView : OK !")
@@ -2451,7 +2461,8 @@ class RSSTestView(TestCase):
             theme = Theme.objects.get(id=1)
             types = Type.objects.get(id=1)
             link = reverse('pods.views.video', args=(pod.slug,))
-            encodings = EncodingPods.objects.filter(video=pod, encodingFormat="video/mp4")
+            encodings = EncodingPods.objects.filter(
+                video=pod, encodingFormat="video/mp4")
             maxencodings = encodings.aggregate(
                 Max('encodingType__output_height'))['encodingType__output_height__max']
             self.client = Client()
@@ -2465,28 +2476,37 @@ class RSSTestView(TestCase):
             response = self.client.get("/rss/hd/channel=%s/" % channel.slug)
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
-            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(maxencodings)) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(maxencodings)) in response.content)
             # Access to the page RSS (by type)
             response = self.client.get("/rss/hd/type=['%s']/" % types.slug)
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
-            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(maxencodings)) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(maxencodings)) in response.content)
             # Access to the page RSS (by theme)
-            response = self.client.get("/rss/hd/channel=%s&theme=%s/" % (channel.slug, theme.slug))
+            response = self.client.get(
+                "/rss/hd/channel=%s&theme=%s/" % (channel.slug, theme.slug))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
             self.assertTrue("type: ['%s']" % (types.slug) in response.content)
-            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(maxencodings)) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(maxencodings)) in response.content)
             # Access to the page RSS (by owner)
             response = self.client.get("/rss/hd/owner=['%s']/" % user.username)
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
             self.assertTrue("theme: %s" % (theme.slug) in response.content)
-            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(maxencodings)) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(maxencodings)) in response.content)
 
             print(
                 "   ---> test_PodcastHDFeed of RSSTestView : OK !")
@@ -2498,7 +2518,8 @@ class RSSTestView(TestCase):
             theme = Theme.objects.get(id=1)
             types = Type.objects.get(id=1)
             link = reverse('pods.views.video', args=(pod.slug,))
-            encodings = EncodingPods.objects.filter(video=pod, encodingFormat="video/mp4")
+            encodings = EncodingPods.objects.filter(
+                video=pod, encodingFormat="video/mp4")
             minencodings = encodings.aggregate(
                 Min('encodingType__output_height'))['encodingType__output_height__min']
             self.client = Client()
@@ -2512,29 +2533,37 @@ class RSSTestView(TestCase):
             response = self.client.get("/rss/sd/channel=%s/" % channel.slug)
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
-            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(minencodings)) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(minencodings)) in response.content)
             # Access to the page RSS (by type)
             response = self.client.get("/rss/sd/type=['%s']/" % types.slug)
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
-            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(minencodings)) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(minencodings)) in response.content)
             # Access to the page RSS (by theme)
-            response = self.client.get("/rss/sd/channel=%s&theme=%s/" % (channel.slug, theme.slug))
+            response = self.client.get(
+                "/rss/sd/channel=%s&theme=%s/" % (channel.slug, theme.slug))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
             self.assertTrue("type: ['%s']" % (types.slug) in response.content)
-            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(minencodings)) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(minencodings)) in response.content)
             # Access to the page RSS (by owner)
             response = self.client.get("/rss/sd/owner=['%s']/" % user.username)
             self.assertEqual(response.status_code, 200)
             self.assertTrue(" | %s" % (pod.title) in response.content)
-            self.assertTrue("duration : %s" % (pod.duration_in_time()) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
             self.assertTrue("theme: %s" % (theme.slug) in response.content)
-            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" % (link, str(minencodings)) in response.content)
-
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(minencodings)) in response.content)
 
             print(
                 "   ---> test_PodcastSDFeed of RSSTestView : OK !")
@@ -2566,9 +2595,9 @@ class VideoPrivTestView(TestCase):
             other_type = Type.objects.get(id=1)
             media_guard_hash = get_media_guard("remi", 1)
             pod = Pod.objects.create(type=other_type, title=u'Bunny',
-                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
-                                 allow_downloading=False, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
-                                 to_encode=False)
+                                     date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
+                                     allow_downloading=False, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
+                                     to_encode=False)
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
                 id=1), encodingFile=os.path.join('videos', 'remi', media_guard_hash, '1', 'video_1_240.mp4'), encodingFormat="video/mp4")
 
@@ -2582,13 +2611,15 @@ class VideoPrivTestView(TestCase):
     def test_videopriv(self):
         if settings.USE_PRIVATE_VIDEO:
             pod = Pod.objects.get(id=1)
-            response = self.client.get("/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)))
+            response = self.client.get(
+                "/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)))
             self.assertEqual(response.status_code, 200)
             pod = Pod.objects.get(id=1)
             pod.is_restricted = True
             pod.is_draft = False
             pod.save()
-            response = self.client.get("/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)))
+            response = self.client.get(
+                "/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)))
             self.assertEqual(response.status_code, 302)
             self.assertRedirects(
                 response, reverse('account_login') + '?next=/video_priv/%s/%s/' % (pod.id, get_media_guard(pod.owner.username, pod.id)), status_code=302, target_status_code=200, msg_prefix='')
@@ -2609,5 +2640,5 @@ class VideoPrivTestView(TestCase):
                 "/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)), {u'password': [u'toto2'], u'action1': [u'Send']})
             self.assertEqual(response.status_code, 200)
 
-            print (
+            print(
                 "   ---> test_videopriv_password of VideoPrivTestView : OK !")

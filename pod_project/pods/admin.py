@@ -98,6 +98,7 @@ class DocPodsInline(admin.TabularInline):
     model = DocPods
     extra = 0
 
+
 class OverlayPodsInLine(admin.TabularInline):
     model = OverlayPods
     extra = 0

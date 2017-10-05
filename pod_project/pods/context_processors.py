@@ -26,16 +26,16 @@ from django.conf import settings
 
 
 MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
-        settings, 'MENUBAR_HIDE_INACTIVE_OWNERS', False)
+    settings, 'MENUBAR_HIDE_INACTIVE_OWNERS', False)
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
-        settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
+    settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
 
 
 def items_menu_header(request):
     owners_filter_args = {
-            'pod__is_draft': False,
-            'pod__encodingpods__gt': 0,
-        }
+        'pod__is_draft': False,
+        'pod__encodingpods__gt': 0,
+    }
     if MENUBAR_HIDE_INACTIVE_OWNERS:
         owners_filter_args['is_active'] = True
     if MENUBAR_SHOW_STAFF_OWNERS_ONLY:

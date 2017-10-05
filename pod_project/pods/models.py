@@ -345,7 +345,7 @@ class Pod(Video):
                     newid = 1
         else:
             newid = self.id
-        newid = '%04d' % newid     
+        newid = '%04d' % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
         super(Pod, self).save(*args, **kwargs)
 
@@ -468,12 +468,14 @@ def launch_encode(sender, instance, created, **kwargs):
         instance.encoding_in_progress = True
         instance.save()
         if settings.CELERY_TO_ENCODE:
-            logger.error('CELERY_TO_ENCODE setting is now deprecated in flavor of ENCODE_VIDEO')
+            logger.error(
+                'CELERY_TO_ENCODE setting is now deprecated in flavor of ENCODE_VIDEO')
 
         (getattr(
             settings,
             'ENCODE_VIDEO',
             start_encode))(instance)
+
 
 def start_encode(video):
     print "START ENCODE VIDEO ID %s" % video.id
@@ -760,6 +762,7 @@ class DocPods(models.Model):
     def icon(self):
         return self.document.name.split('.')[-1]
 
+
 @python_2_unicode_compatible
 class OverlayPods(models.Model):
     POSITION_CHOICES = (
@@ -795,7 +798,7 @@ class OverlayPods(models.Model):
         help_text=_(
             u'Position of the overlay'))
     background = models.BooleanField(_('Show background'), default=True,
-        help_text=_(u'Show the background of the overlay'))
+                                     help_text=_(u'Show the background of the overlay'))
 
     class Meta:
         verbose_name = _("Overlay")
@@ -851,7 +854,7 @@ class OverlayPods(models.Model):
             for element in list_overlay:
                 if not ((self.time_start < element.time_start and self.time_end <= element.time_start) or (self.time_start >= element.time_end and self.time_end > element.time_end)):
                     msg.append(_("There is an overlap with the overlay " + element.title +
-                        ", please change time start and/or time end values."))
+                                 ", please change time start and/or time end values."))
             if len(msg) > 0:
                 return msg
         return []
@@ -873,6 +876,7 @@ class OverlayPods(models.Model):
         self.slug = "%s-%s" % (newid, slugify(self.title))
 
         super(OverlayPods, self).save(*args, **kwargs)
+
 
 @python_2_unicode_compatible
 class EnrichPods(models.Model):

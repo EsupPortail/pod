@@ -80,7 +80,6 @@ def core_login(request):
     next = request.GET['next'] if request.GET.get('next') else request.POST['next'] if request.POST.get(
         'next') else request.META['HTTP_REFERER'] if request.META.get('HTTP_REFERER') else "/"
 
-    
     if settings.USE_CAS:
         from django_cas_gateway.views import login as login_cas
         from urllib import urlencode
@@ -89,13 +88,15 @@ def core_login(request):
             # Is Authed, fine
             pass
         else:
-            path_with_params = request.path + '?' + urlencode(request.GET.copy())
+            path_with_params = request.path + \
+                '?' + urlencode(request.GET.copy())
             if request.GET.get('ticket'):
                 # Not Authed, but have a ticket !
                 # Try to authenticate
                 response = login_cas(request, path_with_params, False, True)
                 if isinstance(response, HttpResponseRedirect):
-                    # For certain instances where a forbidden occurs, we need to pass instead of return a response.
+                    # For certain instances where a forbidden occurs, we need
+                    # to pass instead of return a response.
                     return response
             else:
                 # Not Authed, but no ticket
@@ -104,7 +105,8 @@ def core_login(request):
                     pass
                 else:
                     # Not Authed, try to authenticate
-                    response = login_cas(request, path_with_params, False, True)
+                    response = login_cas(
+                        request, path_with_params, False, True)
                     if isinstance(response, HttpResponseRedirect):
                         return response
 
@@ -219,10 +221,10 @@ def contact_us(request):
             if owner:
                 ownerInfo = User.objects.get(id=request.GET['owner'])
                 email_msg = EmailMultiAlternatives(
-                "[" + settings.TITLE_SITE + "]  %s" % contact.subject, msg_txt, contact.email, tuple(ownerInfo.email))
+                    "[" + settings.TITLE_SITE + "]  %s" % contact.subject, msg_txt, contact.email, tuple(ownerInfo.email))
             else:
                 email_msg = EmailMultiAlternatives(
-                "[" + settings.TITLE_SITE + "]  %s" % contact.subject, msg_txt, contact.email, settings.REPORT_VIDEO_MAIL_TO)
+                    "[" + settings.TITLE_SITE + "]  %s" % contact.subject, msg_txt, contact.email, settings.REPORT_VIDEO_MAIL_TO)
             email_msg.attach_alternative(msg_html, "text/html")
             email_msg.send(fail_silently=False)
 
@@ -248,16 +250,18 @@ def contact_us(request):
         if request.user.is_authenticated():
             if owner and video:
                 video = Pod.objects.get(id=video)
-                subject = '[' + settings.TITLE_SITE + '] %s %s' % (_('Password request for : '), video.title)
+                subject = '[' + settings.TITLE_SITE + \
+                    '] %s %s' % (_('Password request for : '), video.title)
                 form = ContactUsModelForm(request, initial={"name": request.user.get_full_name(
-                      ), "subject": subject, "email": request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
+                ), "subject": subject, "email": request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
             else:
                 form = ContactUsModelForm(request, initial={"name": request.user.get_full_name(
-                      ), "email": request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
+                ), "email": request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
         else:
             if owner and video:
                 video = Pod.objects.get(id=video)
-                subject = '[' + settings.TITLE_SITE + '] %s %s' % (_('Password request for : '), video.title)
+                subject = '[' + settings.TITLE_SITE + \
+                    '] %s %s' % (_('Password request for : '), video.title)
                 form = ContactUsModelForm(request, initial={"subject": subject, "url_referrer": request.META.get(
                     'HTTP_REFERER', request.build_absolute_uri("/"))})
             else:
@@ -272,7 +276,7 @@ def contact_us(request):
         form_html = render_to_string(
             'contactus/contactus.html', {'form': form}, context_instance=RequestContext(request))
         flatpage = {'title': _("Contact us"), "content": form_html}
-        
+
     return render_to_response('flatpages/default.html',
                               {'flatpage': flatpage, },
                               context_instance=RequestContext(request))

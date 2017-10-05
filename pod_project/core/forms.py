@@ -72,7 +72,7 @@ class ContactUsModelForm(ModelForm):
             del self.fields['captcha']
 
         if request.GET.get('owner'):
-                self.fields['subject'].widget.attrs['readonly'] = True
+            self.fields['subject'].widget.attrs['readonly'] = True
 
         for myField in self.fields:
             if self.fields[myField].label != None:

@@ -257,6 +257,7 @@ class DocPodsForm(ModelForm):
         model = DocPods
         fields = '__all__'
 
+
 class OverlayPodsForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -286,6 +287,7 @@ class OverlayPodsForm(ModelForm):
     class Meta:
         model = OverlayPods
         fields = '__all__'
+
 
 class ChapterPodsForm(ModelForm):
 

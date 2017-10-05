@@ -35,9 +35,9 @@ import os
 @override_settings(
     MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
     DATABASES={
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite',
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
         }
     },
     LANGUAGE_CODE='en'
@@ -59,7 +59,7 @@ class User_ProfileTestView(TestCase):
         response = self.client.get("/user/")
         self.assertEqual(response.status_code, 200)
         response = self.client.post("/user/", {u'url': [u'https://docs.djangoproject.com/fr/1.6/topics/testing/tools/'],
-         u'csrfmiddlewaretoken': [u'9fTMPin73XA1qRUtYMpT0lx3rB0i3uPq'], u'description': [u'ghd']})
+                                               u'csrfmiddlewaretoken': [u'9fTMPin73XA1qRUtYMpT0lx3rB0i3uPq'], u'description': [u'ghd']})
         self.assertEqual(response.status_code, 200)
 
 
@@ -79,7 +79,7 @@ class Contact_usTestView(TestCase):
         pod = Pod.objects.create(
             type=other_type, title="Video1", slug="tralala", owner=user)
 
-        print (" ---> Setup of Contact_usTestView : OK !")
+        print(" ---> Setup of Contact_usTestView : OK !")
 
     """
         test ContactUs from site
@@ -93,10 +93,10 @@ class Contact_usTestView(TestCase):
         response = self.client.get("/contact_us/")
         self.assertEqual(response.status_code, 200)
         response = self.client.post("/contact_us/", {u'subject': [u'zqef'], u'message': [u'zqfji'],
-           u'csrfmiddlewaretoken': [u'j8Ekh2sgFWz0BB2OLlXxSz9wl4XjzSb4']})
+                                                     u'csrfmiddlewaretoken': [u'j8Ekh2sgFWz0BB2OLlXxSz9wl4XjzSb4']})
         self.assertEqual(response.status_code, 200)
 
-        print (" ---> test_Contactus_Site of Contact_usTestView : OK !")
+        print(" ---> test_Contactus_Site of Contact_usTestView : OK !")
 
     """
         test ContactUs from video
@@ -108,12 +108,13 @@ class Contact_usTestView(TestCase):
         login = self.client.login(username='remi2', password='hello')
         video = Pod.objects.get(id=1)
         self.assertEqual(login, True)
-        response = self.client.get("/contact_us/?owner=%s&video=%s" % (video.owner.id, video.id))
+        response = self.client.get(
+            "/contact_us/?owner=%s&video=%s" % (video.owner.id, video.id))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(
             '[Pod] Mot de passe requis pour :  %s' % (str(video.title)) in response.content)
         response = self.client.post("/contact_us/?owner=%s" % video.owner.id, {u'message': [u'zqfji'],
-            u'csrfmiddlewaretoken': [u'j8Ekh2sgFWz0BB2OLlXxSz9wl4XjzSb4']})
+                                                                               u'csrfmiddlewaretoken': [u'j8Ekh2sgFWz0BB2OLlXxSz9wl4XjzSb4']})
         self.assertEqual(response.status_code, 200)
 
-        print (" ---> test_Contactus_Video of Contact_usTestView : OK !")
+        print(" ---> test_Contactus_Video of Contact_usTestView : OK !")
