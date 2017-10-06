@@ -490,9 +490,9 @@ class VideoTestCase(TestCase):
     LANGUAGE_CODE='en'
 )
 class ContributorPodsTestCase(TestCase):
-  fixtures = ['initial_data.json', ]
+    fixtures = ['initial_data.json', ]
   
-  def setUp(self):
+    def setUp(self):
         remi = User.objects.create_user("Remi")
         other_type = Type.objects.get(id=1)
         pod = Pod.objects.create(
