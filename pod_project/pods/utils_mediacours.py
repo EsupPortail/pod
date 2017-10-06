@@ -219,8 +219,8 @@ def save_video(media, video_data, video_src):
     ext = ext.lower()
     pod.video.save(
         "record_" + slugify(media.title) + ext, ContentFile(video_data), save=False)
-    
-    #on recupere le nom du fichier sur le serveur
+
+    # on recupere le nom du fichier sur le serveur
     pod.title = media.title
     pod.to_encode = True
     pod.save()

@@ -35,6 +35,14 @@ voir http://www.gnu.org/licenses/
     margin: auto;
     text-align: center;
     background-color: black;
+    width: 100%;
+    height: 480px;
+}
+#icontent {
+    display: block;
+    margin: 0 auto;
+    width: 70%;
+    height: 100%;
 }
 </style>
 {% endif %}
@@ -126,7 +134,7 @@ $(document).ready(function() {
     });
     $('#showinteractive').click();
     $("label[for=integration_size]").hide();
-    $("label[for=autoplay").hide();
+    $("label[for=autoplay]").hide();
 });
 $(document).on('click', '#button_video_original', function() {
     $('#icontent').hide();
@@ -138,7 +146,7 @@ $(document).on('click', '#button_video_original', function() {
     $('.checkbox').show();
     $('#showinteractive').click();
     $("label[for=integration_size]").show();
-    $("label[for=autoplay").show();
+    $("label[for=autoplay]").show();
 });
 $(document).on('click', '#button_video_interactive', function() {
     $('#icontent').show();
@@ -150,7 +158,7 @@ $(document).on('click', '#button_video_interactive', function() {
     $('.checkbox').hide();
     $('#showinteractive').click();
     $("label[for=integration_size]").hide();
-    $("label[for=autoplay").hide();
+    $("label[for=autoplay]").hide();
 });
 $(document).on('click', '#refresh-score', function() {
     $.ajax({
@@ -206,7 +214,6 @@ $(document).on('change', '#showinteractive', function() {
         {% endif %}
     }
     $('#txtintegration').val(str);
-
 });
 {% endif %}
 </script>
@@ -294,7 +301,7 @@ $(document).on('change', '#showinteractive', function() {
 
         {% if H5P_ENABLED and interactive.h5p %}
         <div id="h5pcontent">
-            <iframe id="icontent" src="{% url 'video' slug=video.slug %}?is_iframe=true&interactive=true" style="background:white;display:none;" height="476px" width="800px" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+            <iframe id="icontent" src="{% url 'video' slug=video.slug %}?is_iframe=true&interactive=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
         </div>
             {% if not request.GET.h5p_is_iframe %}
                 {% include 'videos/video_player.html' %}
