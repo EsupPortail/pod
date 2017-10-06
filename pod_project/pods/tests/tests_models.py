@@ -473,9 +473,221 @@ class VideoTestCase(TestCase):
         print(
             "   --->  test_delete_object of VideoTestCase : OK !")
 
+        
+"""
+    test the contributor object
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class ContributorPodsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+  
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type, title="Video1", slug="tralala", owner=remi)
+        pod2 = Pod.objects.create(
+            type=other_type, title="Video2", slug="tralalo", owner=remi)
+        ContributorPods.objects.create(video=pod, name="contributor1")
+        ContributorPods.objects.create(video=pod, name="contributor2", email_address="test@mail.com", role="actor", weblink="http://test.com")
+
+        print (" ---> SetUp of ContributorPodsTestCase : OK !")
+
+    """
+        test all attributs when a contributor have been save with the minimum of attributs
+    """
+
+    def test_Contributor_null_attribut(self):
+        contributor = ContributorPods.objects.get(id=1)
+        self.assertEqual(contributor.video.id, 1)
+        self.assertEqual(contributor.name, "contributor1")
+        self.assertEqual(contributor.email_address, "")
+        self.assertEqual(contributor.role, "author")
+        self.assertEqual(contributor.weblink, None)
+        self.assertEqual(contributor.__unicode__(), "Video:%s - Name:%s - Role:%s" % 
+                          (contributor.video, contributor.name, contributor.role))
+
+        print (
+            "   ---> test_Contributor_null_attribut of ContributorPodsTestCase : OK !")
+
+    """
+        test attributs when a contributor have many attributs
+    """
+
+    def test_Contributor_with_attributs(self):
+        contributor = ContributorPods.objects.get(id=2)
+        self.assertEqual(contributor.email_address, "test@mail.com")
+        self.assertEqual(contributor.role, "actor")
+        self.assertEqual(contributor.weblink, "http://test.com")
+
+        print (
+            "   ---> test_Contributor_with_attributs of ContributorPodsTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        ContributorPods.objects.get(id=1).delete()
+        ContributorPods.objects.get(id=2).delete()
+        self.assertEquals(ContributorPods.objects.all().count(), 0)
+
+        print (
+            "   ---> test_delete_object of ContributorPodsTestCase : OK !")
+
+"""
+    test the trackpods object
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class TrackPodsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type, title="Video1", slug="tralala", owner=remi)
+        pod2 = Pod.objects.create(
+            type=other_type, title="Video2", slug="tralalo", owner=remi)
+        TrackPods.objects.create(video=pod, lang="en")
+        TrackPods.objects.create(video=pod2, lang="fr", kind="captions")
+
+    """
+        test all attributs when a track have been save with the minimum of attributs
+    """
+
+    def test_Track_null_attribut(self):
+        track = TrackPods.objects.get(id=1)
+        self.assertEqual(track.video.id, 1)
+        self.assertEqual(track.lang, "en")
+        self.assertEqual(track.kind, "subtitles")
+        self.assertEqual(track.src, None)
+        self.assertEqual(track.__unicode__(), "%s - File: %s - Video: %s" % 
+                          (track.kind, track.src, track.video))
+
+        print (
+            "   ---> test_Track_null_attribut of TrackPodsTestCase : OK !")
+
+    """
+        test attributs when a track have many attributs
+    """
+
+    def test_Track_with_attributs(self):
+        track = TrackPods.objects.get(id=2)
+        self.assertEqual(track.lang, "fr")
+        self.assertEqual(track.kind, "captions")
+
+        print (
+            "   ---> test_Track_with_attributs of TrackPodsTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        TrackPods.objects.get(id=1).delete()
+        TrackPods.objects.get(id=2).delete()
+        self.assertEquals(TrackPods.objects.all().count(), 0)
+
+        print (
+            "   ---> test_delete_object of TrackPodsTestCase : OK !")
+
+
+"""
+    test the chapter object
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class ChapterPodsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type, title="Video1", slug="tralala", owner=remi)
+        ChapterPods.objects.create(video=pod, title="chapter1")
+        ChapterPods.objects.create(video=pod, title="chapter2", time=2)
+
+    """
+        test all attributs when a chapter have been save with the minimum of attributs
+    """
+
+    def test_Chapter_null_attribut(self):
+        chapter = ChapterPods.objects.get(id=1)
+        self.assertEqual(chapter.video.id, 1)
+        self.assertEqual(chapter.title, "chapter1")
+        self.assertEqual(chapter.time, 0)
+        self.assertFalse(chapter.slug == slugify("chapter1"))
+        self.assertEqual(chapter.__unicode__(), "Chapter : %s - video: %s" % 
+                          (chapter.title, chapter.video))
+
+        print (
+            "   ---> test_Chapter_null_attribut of ChapterPodsTestCase : OK !")
+
+    """
+        test attributs when a chapter have many attributs
+    """
+
+    def test_Chapter_with_attributs(self):
+        chapter = ChapterPods.objects.get(id=2)
+        self.assertEqual(chapter.title, "chapter2")
+        self.assertEqual(chapter.time, 2)
+
+        print (
+            "   ---> test_Chapter_with_attributs of ChapterPodsTestCase : OK !")
+
+
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        ChapterPods.objects.get(id=1).delete()
+        ChapterPods.objects.get(id=2).delete()
+        self.assertEquals(ChapterPods.objects.all().count(), 0)
+
+        print (
+            "   ---> test_delete_object of ChapterPodsTestCase : OK !")
+        
+
 """
     test the overlaypods object
 """
+
 
 
 @override_settings(
@@ -522,11 +734,7 @@ class OverlayPodsTestCase(TestCase):
 
         print(
             "   ---> test_attributs_and_str of OverlayPodsTestCase : OK !")
-
-    """
-        test delete object
-    """
-
+        
     def test_delete_object(self):
         OverlayPods.objects.get(id=1).delete()
         OverlayPods.objects.get(id=2).delete()
