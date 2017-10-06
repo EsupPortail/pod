@@ -28,7 +28,7 @@ from django.utils.safestring import mark_safe
 from itertools import chain
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods, ChapterPods, Favorites, Type, Discipline, Mediacourses, EnrichPods, Notes
+from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods, OverlayPods, ChapterPods, Favorites, Type, Discipline, Mediacourses, EnrichPods, Notes
 from modeltranslation.forms import TranslationModelForm
 from django.forms.widgets import HiddenInput
 
@@ -255,6 +255,37 @@ class DocPodsForm(ModelForm):
 
     class Meta:
         model = DocPods
+        fields = '__all__'
+
+
+class OverlayPodsForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(OverlayPodsForm, self).__init__(*args, **kwargs)
+        self.fields['video'].widget = HiddenInput()
+        self.fields['time_start'].widget.attrs['min'] = 0
+        self.fields['time_end'].widget.attrs['min'] = 1
+        try:
+            self.fields['time_start'].widget.attrs[
+                'max'] = self.instance.video.duration
+            self.fields['time_end'].widget.attrs[
+                'max'] = self.instance.video.duration
+
+        except:
+            self.fields['time_start'].widget.attrs['max'] = 36000
+            self.fields['time_end'].widget.attrs['max'] = 36000
+
+        for myField in self.fields:
+            self.fields[myField].widget.attrs[
+                'placeholder'] = self.fields[myField].label
+            if self.fields[myField].required:
+                self.fields[myField].widget.attrs['class'] = 'required'
+                label_unicode = u'%s' % self.fields[myField].label
+                self.fields[myField].label = mark_safe(
+                    "%s <span class=\"special_class\">*</span>" % label_unicode)
+
+    class Meta:
+        model = OverlayPods
         fields = '__all__'
 
 

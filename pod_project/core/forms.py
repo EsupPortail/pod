@@ -71,6 +71,9 @@ class ContactUsModelForm(ModelForm):
             self.fields['email'].widget = HiddenInput()
             del self.fields['captcha']
 
+        if request.GET.get('owner'):
+            self.fields['subject'].widget.attrs['readonly'] = True
+
         for myField in self.fields:
             if self.fields[myField].label != None:
                 self.fields[myField].widget.attrs[

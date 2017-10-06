@@ -26,7 +26,11 @@ voir http://www.gnu.org/licenses/
 <!-- <p>{% trans "One or more errors have been found in the form." %}</p> -->
 {% endif %}
 
+{% if owner %}
+<form method="post" action="{% url 'contact_us' %}?owner={{owner}}">
+{% else %}
 <form method="post" action="{% url 'contact_us' %}">
+{% endif %}
 {% csrf_token %}
 {% bootstrap_form form %}
 

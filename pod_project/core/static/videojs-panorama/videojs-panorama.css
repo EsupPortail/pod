@@ -1,6 +1,3 @@
-/**
- * Created by yanwsh on 4/3/16.
- */
 .IIV::-webkit-media-controls-play-button,
 .IIV::-webkit-media-controls-start-playback-button {
   opacity: 0;
@@ -21,34 +18,25 @@
 
 .video-js .vjs-control-bar {
   z-index: 5; }
-  .video-js .vjs-control-bar .vjs-VR-control {
-    cursor: pointer; }
-    .video-js .vjs-control-bar .vjs-VR-control::before {
-      font-family: "VideoJS-Panorama";
-      content: "\e900"; }
-    .video-js .vjs-control-bar .vjs-VR-control.enable::before {
-      content: "\e901"; }
 
 .video-js.vjs-using-native-controls .vjs-poster, .video-js.vjs-using-native-controls .vjs-big-play-button {
   display: block; }
 
-.video-js.vjs-panorama {
+.vjs-panorama {
   display: block; }
-  .video-js.vjs-panorama .vjs-video-canvas {
+  .vjs-panorama .vjs-big-play-button {
+    z-index: 5; }
+  .vjs-panorama .vjs-panorama-canvas {
     position: absolute;
     top: 0;
-    left: 50%;
-    -webkit-transform: translateX(-50%) translateZ(0);
-    -moz-transform: translateX(-50%) translateZ(0);
-    -o-transform: translateX(-50%) translateZ(0);
-    transform: translateX(-50%) translateZ(0);
+    left: 0;
     min-width: 100%;
     min-height: 100%;
     width: auto;
     height: auto;
     background: #000;
     cursor: pointer; }
-  .video-js.vjs-panorama .vjs-video-notice-label {
+  .vjs-panorama .vjs-video-notice-label {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -71,9 +59,9 @@
     -o-transition: opacity 0.3s linear;
     transition: opacity 0.3s linear;
     pointer-events: none; }
-    .video-js.vjs-panorama .vjs-video-notice-label.vjs-video-notice-fadeOut {
+    .vjs-panorama .vjs-video-notice-label.vjs-video-notice-fadeOut {
       opacity: 0; }
-  .video-js.vjs-panorama #webgl-error-message {
+  .vjs-panorama #webgl-error-message, .vjs-panorama .vjs-cross-domain-unsupport {
     position: relative;
     font-family: monospace;
     font-size: 13px;
@@ -89,25 +77,105 @@
     -ms-transition: opacity 0.3s linear;
     -o-transition: opacity 0.3s linear;
     transition: opacity 0.3s linear; }
-    .video-js.vjs-panorama #webgl-error-message.vjs-video-notice-fadeOut {
+    .vjs-panorama #webgl-error-message.vjs-video-notice-fadeOut, .vjs-panorama .vjs-cross-domain-unsupport.vjs-video-notice-fadeOut {
       opacity: 0; }
-  .video-js.vjs-panorama .vjs-loading-spinner {
+  .vjs-panorama .vjs-loading-spinner {
     z-index: 10; }
-  .video-js.vjs-panorama.vjs-panorama-mobile-inline-video.vjs-seeking .vjs-loading-spinner {
+  .vjs-panorama.vjs-panorama-mobile-inline-video.vjs-seeking .vjs-loading-spinner {
     display: none; }
-  .video-js.vjs-panorama.vjs-panorama-mobile-inline-video.vjs-waiting .vjs-loading-spinner {
+  .vjs-panorama.vjs-panorama-mobile-inline-video.vjs-waiting .vjs-loading-spinner {
     display: block !important; }
-  .video-js.vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner {
+  .vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner {
     display: block !important; }
-  .video-js.vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:before,
-  .video-js.vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:after {
+  .vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:before,
+  .vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:after {
     -webkit-animation: vjs-spinner-spin 1.1s cubic-bezier(0.6, 0.2, 0, 0.8) infinite, vjs-spinner-fade 1.1s linear infinite;
     animation: vjs-spinner-spin 1.1s cubic-bezier(0.6, 0.2, 0, 0.8) infinite, vjs-spinner-fade 1.1s linear infinite; }
-  .video-js.vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:before,
-  .video-js.vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:before {
+  .vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:before,
+  .vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:before {
     border-top-color: white; }
-  .video-js.vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:after,
-  .video-js.vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:after {
+  .vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:after,
+  .vjs-panorama.vjs-panorama-mobile-inline-video-buffering .vjs-loading-spinner:after {
     border-top-color: white;
     -webkit-animation-delay: 0.44s;
     animation-delay: 0.44s; }
+  .vjs-panorama .vjs-marker-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+    align-content: stretch;
+    pointer-events: none; }
+    .vjs-panorama .vjs-marker-container .vjs-marker-group {
+      display: none;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden; }
+      .vjs-panorama .vjs-marker-container .vjs-marker-group.vjs-marker-group--enable {
+        display: block; }
+    .vjs-panorama .vjs-marker-container.vjs-marker-container--VREnable .vjs-marker-group {
+      width: 50%; }
+    .vjs-panorama .vjs-marker-container.vjs-marker-container--VREnable .vjs-marker {
+      white-space: nowrap; }
+  .vjs-panorama .vjs-marker {
+    position: absolute;
+    display: none; }
+    .vjs-panorama .vjs-marker.vjs-marker--enable {
+      display: block !important;
+      pointer-events: auto; }
+    .vjs-panorama .vjs-marker.vjs-marker--backside {
+      display: none !important; }
+  .vjs-panorama .vjs-VR-control {
+    cursor: pointer; }
+    .vjs-panorama .vjs-VR-control::before {
+      font-family: "VideoJS-Panorama";
+      content: "\e900"; }
+    .vjs-panorama .vjs-VR-control.enable::before {
+      content: "\e901"; }
+
+.mejs__video.mejs__container-fullscreen {
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  position: fixed !important;
+  right: 0;
+  top: 0;
+  z-index: 1000; }
+
+.mejs__video .mejs__overlay-play {
+  pointer-events: none;
+  z-index: 11; }
+
+.mejs__video .mejs__controls {
+  z-index: 11; }
+
+.mejs__video .vjs-panorama-canvas {
+  z-index: 10; }
+
+.mejs__video .vjs-video-notice-label {
+  z-index: 11; }
+
+.mejs__video .vjs-VR-control {
+  float: left;
+  position: relative;
+  font-size: 10px;
+  height: 40px;
+  line-height: 10px;
+  margin: 0;
+  width: 32px;
+  background: transparent;
+  border: 0;
+  cursor: pointer; }
+  .mejs__video .vjs-VR-control[disabled^="disabled"] {
+    opacity: 0.5; }
+  .mejs__video .vjs-VR-control:before {
+    position: absolute;
+    color: #FFFFFF;
+    font-size: 2em;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); }
