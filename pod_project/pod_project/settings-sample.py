@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from django.utils.translation import ugettext_lazy as _
+
 from pod_project.ISOLanguageCodes import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod_project.cursusCodes import CURSUS_CODES
 from pod_project.ckeditor import *
-
-import os
 
 ##
 # Local settings import
