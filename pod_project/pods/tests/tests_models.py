@@ -497,9 +497,9 @@ class OverlayPodsTestCase(TestCase):
         pod = Pod.objects.create(
             type=other_type, title="Video1", slug="tralala", owner=remi)
         OverlayPods.objects.create(
-            video=pod, title="overlay1", content="tralala", time_end=5, position="top-left")
+            video=pod, title="overlay1", content="tralala")
         OverlayPods.objects.create(
-            video=pod, title="overlay2", content="tralala")
+            video=pod, title="overlay2", content="tralala", time_end=5, position="top-left")
 
         print(" ---> SetUp of OverlayPodsTestCase : OK !")
 
@@ -517,7 +517,7 @@ class OverlayPodsTestCase(TestCase):
         self.assertEqual(overlay.position, "bottom-right")
         self.assertEqual(overlay2.time_end, 5)
         self.assertEqual(overlay2.position, "top-left")
-        self.assertEqual(overlay.__unicode__(), "%s-%s" %
+        self.assertEqual(overlay.__unicode__(), "Overlay : %s - video: %s" %
                          (overlay.title, overlay.video))
 
         print(
@@ -571,8 +571,7 @@ class FavoritesTestCase(TestCase):
         favorite = Favorites.objects.get(id=1)
         self.assertEqual(favorite.user.username, "Remi")
         self.assertEqual(favorite.video.id, 1)
-        self.assertEqual()
-        self.assertEqual(favorite.__unicode__(), "Overlay : %s - video: %s" %
+        self.assertEqual(favorite.__unicode__(), "%s-%s" %
                          (favorite.user.username, favorite.video))
 
         print(
