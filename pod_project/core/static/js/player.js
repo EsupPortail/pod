@@ -154,6 +154,25 @@ function loadVideo() {
         $('div.vjs-slide').hide();
         $('div.vjs-title').hide();
 
+        // Overlay(s)
+        if ($('ul#overlays li').length > 0) {
+            var list_overlays = new Array();
+            $('ul#overlays li').each(function() {
+                list_overlays.push({
+                    content: $(this).attr('data-content'),
+                    align: $(this).attr('data-position'),
+                    showBackground: $(this).attr('data-background') === 'True',
+                    start: parseInt($(this).attr('data-timestart')),
+                    end: parseInt($(this).attr('data-timeend'))
+                });
+            });
+            myPlayer.overlay({
+                content: 'Default overlay content',
+                // debug: true,
+                overlays: list_overlays
+            });
+        }
+
         myPlayer.on('resolutionchange', function() {
             changeRes = true;
         });
@@ -162,6 +181,8 @@ function loadVideo() {
             changeDisplay(myPlayer.getCurrentDisp());
         });
 
+
+
         // LOAD Z-INDEX
         $('video').css('zIndex', videozindex + 1);
         $('.vjs-slide').css('zIndex', videozindex + 2);
@@ -169,7 +190,9 @@ function loadVideo() {
         $('.vjs-big-play-button').css('zIndex', videozindex + 5);
         $('.vjs-loading-spinner').css('zIndex', videozindex + 6);
         $('.vjs-text-track-display').css('zIndex', videozindex + 7);
-        $('.vjs-control-bar').css('zIndex', videozindex + 8);
+        $('.vjs-overlay').css('zIndex', videozindex + 8);
+        $('.vjs-control-bar').css('zIndex', videozindex + 9);
+        $('.vjs-text-track-settings').css('zIndex', videozindex + 10);
 
         var IS_MOBILE = /mobile|android/i.test (navigator.userAgent);
         var IS_IPHONE = (/iPhone/i).test(navigator.userAgent);
@@ -382,7 +405,7 @@ function changeDisplay(disp, duration) {
                 function() {
                     animation_complete = true;
                     if($('.vjs-slide article img').length) {
-                        var top = parseInt(($('.vjs-slide article').height()-$('.vjs-slide article img').height())/2);
+                        var top = parseInt(($('#player_video_html5_api').height()-$('.vjs-slide article img').height())/2);
                         $('.vjs-slide article img').attr("style","top:"+top+"px;position:relative;");
                     }
                 }
@@ -408,7 +431,7 @@ function changeDisplay(disp, duration) {
                     duration,function() {
                         animation_complete = true;
                         if($('.vjs-slide article img').length) {
-                            var top = parseInt(($('.vjs-slide article').height()-$('.vjs-slide article img').height())/2);
+                            var top = parseInt(($('#player_video_html5_api').height()-$('.vjs-slide article img').height())/2);
                             $('.vjs-slide article img').attr("style","top:"+top+"px;position:relative;");
                         }
                     }
@@ -432,7 +455,7 @@ function changeDisplay(disp, duration) {
                     function() {
                         animation_complete = true;
                         if($('.vjs-slide article img').length) {
-                            var top = parseInt(($('.vjs-slide article').height()-$('.vjs-slide article img').height())/2);
+                            var top = parseInt(($('#player_video_html5_api').height()-$('.vjs-slide article img').height())/2);
                             $('.vjs-slide article img').attr("style","top:"+top+"px;position:relative;");
                         }
                     }
@@ -646,36 +669,36 @@ function progress() {
         var howMuchIsDownloaded = myPlayer.bufferedPercent();
         var seconds = Math.round(Date.now() / 1000);
         var filesize = myPlayer.currentSrc().indexOf('video/mp4') != -1 ? videosize_mp4 : videosize_webm;
-        if (seconds != previoustime && howMuchIsDownloaded <= 1) {
+        if (seconds != previoustime && howMuchIsDownloaded < 1) {
             intcheck++;
             var lapstime = seconds - previoustime;
             if(previoustime==0) lapstime = 1;
             var downloaded = filesize * howMuchIsDownloaded;
             var laspdl = downloaded - previousuploaded;
             mediumspeed = mediumspeed + Math.round((laspdl / lapstime) / 1000);
-            if (intcheck % 4 == 0) {
+            if (intcheck % 2 == 0) {
                 mediumspeed = mediumspeed / 4;
-                if (mediumspeed > 2200 && typeof myPlayer.getGroupedSrc().res['1080'] != 'undefined') {
+                if (mediumspeed > 5000 && typeof myPlayer.getGroupedSrc().res['1080'] != 'undefined') {
                     $('div.vjs-resolution-button').find('li:contains("1080p")').trigger('click');
                     changeResBd = true;
                 } else {
-                    if (mediumspeed > 1200 && typeof myPlayer.getGroupedSrc().res['720'] != 'undefined') {
+                    if (mediumspeed > 2500 && typeof myPlayer.getGroupedSrc().res['720'] != 'undefined') {
                         $('div.vjs-resolution-button').find('li:contains("720p")').trigger('click');
                         changeResBd = true;
                     } else {
-                        if (mediumspeed > 700 && typeof myPlayer.getGroupedSrc().res['480'] != 'undefined') {
+                        if (mediumspeed > 1200 && typeof myPlayer.getGroupedSrc().res['480'] != 'undefined') {
                             $('div.vjs-resolution-button').find('li:contains("480p")').trigger('click');
                             changeResBd = true;
                         }
                     }
                 }
-            } else if (howMuchIsDownloaded == 1) {
-                $($('div.vjs-resolution-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
+            } else if (howMuchIsDownloaded > 0.9) {
+                $($('div.vjs-resolution-button li').get(1)).trigger('click');
                 changeResBd = true;
             }
             previoustime = seconds;
             previousuploaded = downloaded;
-        } else if (howMuchIsDownloaded == 1) {
+        } else if (howMuchIsDownloaded > 0.9) {
             $($('div.vjs-resolution-button li').get(1)).trigger('click'); // 0 is quality so 1 is the highest resolution
             changeResBd = true;
         }

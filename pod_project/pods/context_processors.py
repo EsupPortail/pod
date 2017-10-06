@@ -19,14 +19,27 @@ GNU General Public Licence
 avec ce programme. Si ce n'est pas le cas,
 voir http://www.gnu.org/licenses/
 """
-from pods.models import Pod, Channel, Type, Discipline, Theme
-from django.contrib.sites.models import Site
-from django.conf import settings as django_settings
+from pods.models import Channel, Type, Discipline, Theme
 from django.contrib.auth.models import User
 from django.db.models import Count, Prefetch
+from django.conf import settings
+
+
+MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
+    settings, 'MENUBAR_HIDE_INACTIVE_OWNERS', False)
+MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
+    settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
 
 
 def items_menu_header(request):
+    owners_filter_args = {
+        'pod__is_draft': False,
+        'pod__encodingpods__gt': 0,
+    }
+    if MENUBAR_HIDE_INACTIVE_OWNERS:
+        owners_filter_args['is_active'] = True
+    if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
+        owners_filter_args['is_staff'] = True
     return {
         'CHANNELS': Channel.objects.filter(
             visible=True, pod__is_draft=False, pod__encodingpods__gt=0
@@ -44,9 +57,8 @@ def items_menu_header(request):
         'DISCIPLINES': Discipline.objects.filter(
             pod__is_draft=False, pod__encodingpods__gt=0
         ).distinct().annotate(video_count=Count("pod", distinct=True)),
-        'OWNERS': User.objects.filter(
-            pod__is_draft=False, pod__encodingpods__gt=0
-        ).order_by('last_name').distinct().annotate(
-            video_count=Count("pod", distinct=True)).prefetch_related("userprofile"),
-        'H5P_ENABLED': django_settings.H5P_ENABLED
+        'OWNERS': User.objects.filter(**owners_filter_args).order_by(
+            'last_name').distinct().annotate(video_count=Count(
+                "pod", distinct=True)).prefetch_related("userprofile"),
+        'H5P_ENABLED': settings.H5P_ENABLED
     }

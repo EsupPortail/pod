@@ -33,6 +33,7 @@ from django.test.client import RequestFactory
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate
 from django.forms.models import inlineformset_factory
+from django.db.models import Max, Min
 from pods.forms import ChannelForm, ThemeForm, PodForm, ContributorPodsForm, ChapterPodsForm, EnrichPodsForm
 import threading
 from core.utils import encode_video
@@ -1541,6 +1542,220 @@ class Video_completion_TestView(TestCase):
     },
     LANGUAGE_CODE='en'
 )
+class Video_overlayTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        user = User.objects.create(
+            username='remi', password='12345', is_active=True, is_staff=True)
+        user.set_password('hello')
+        user.save()
+        user2 = User.objects.create(
+            username='remi2', password='12345', is_active=True)
+        user2.set_password('hello')
+        user2.save()
+        c = Channel.objects.create(title="ChannelTest1", visible=True,
+                                   color="Black", style="italic", description="blabla")
+        t = Theme.objects.create(
+            title="Theme1", channel=c)
+        other_type = Type.objects.get(id=1)
+        media_guard_hash = get_media_guard("remi", 1)
+        pod = Pod.objects.create(type=other_type, title=u'Bunny',
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
+                                 allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
+                                 to_encode=False)
+        EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+
+        ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
+        if ENCODE_WEBM:
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+
+        pod.channel.add(c)
+        pod.theme.add(t)
+        pod.save()
+        print(" --->  SetUp of Video_overlayTestView : OK !")
+
+    def test_insert_overlay(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        # access to the page
+        response = self.client.get('/video_completion/%s/' % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_overlay']), 0)
+        # click 'add a new overlay' button
+        response = self.client.post('/video_completion_overlay/%s/' % pod.slug, {
+                                    u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_overlay'] != "")
+        self.assertTrue('<form id="form_overlay"' in response.content)
+        # send form with 'save' button
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {
+                u'title': [u'overlay1'],
+                u'time_start': [u'0'],
+                u'time_end': [u'5'],
+                u'content': [u'blabla'],
+                u'position': [u'bottom-right'],
+                u'background': [u'on'],
+                u'overlay_id': [u'None'],
+                u'video': [u'1'],
+                u'action': [u'save']
+            })
+        list_overlay = pod.overlaypods_set.all()
+        self.assertEqual(len(list_overlay), 1)
+        self.assertEqual(list_overlay[0].title, u'overlay1')
+        self.assertEqual(list_overlay[0].time_start, 0)
+        self.assertEqual(list_overlay[0].time_end, 5)
+        self.assertEqual(list_overlay[0].video.id, 1)
+        self.assertEqual(len(response.context['list_overlay']), 1)
+        self.assertEqual(response.context['list_overlay'][
+                         0].title, u'overlay1')
+        # click 'modify' button
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {u'action': [u'modify'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_overlay'] != "")
+        self.assertTrue(
+            '<input type="hidden" id="id_overlay" name="overlay_id" value="1">' in response.content)
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {
+                u'title': [u'overlay2'],
+                u'time_start': [u'0'],
+                u'time_end': [u'5'],
+                u'content': [u'blabla'],
+                u'position': [u'bottom-right'],
+                u'background': [u'on'],
+                u'overlay_id': [u'1'],
+                u'video': [u'1'],
+                u'action': [u'save']
+            })
+        self.assertEqual(response.status_code, 200)
+        list_overlay = pod.overlaypods_set.all()
+        self.assertEqual(len(list_overlay), 1)
+        self.assertEqual(list_overlay[0].title, u'overlay2')
+        # cancel and delete overlay
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {u'action': [u'cancel']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('"Add a new overlay"' in response.content)
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {u'action': [u'delete'], u'id': [u'1']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(len(response.context['list_overlay']), 0)
+        list_overlay = pod.overlaypods_set.all()
+        self.assertEqual(len(list_overlay), 0)
+
+        print(
+            "   ---> test_insert_overlay of Video_overlayTestView : OK !")
+
+    def test_insert_overlay_with_overlap_errors(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        # access to the page
+        response = self.client.get("/video_completion/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_overlay']), 0)
+        # click 'add a new overlay' button
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_overlay'] != "")
+        # send form with 'save' button
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {
+                u'title': [u'overlay1'],
+                u'time_start': [u'0'],
+                u'time_end': [u'5'],
+                u'content': [u'blabla'],
+                u'position': [u'bottom-right'],
+                u'background': [u'on'],
+                u'overlay_id': [u'None'],
+                u'video': [u'1'],
+                u'action': [u'save']
+            })
+        # click 'add a new overlay' button
+        response = self.client.post("/video_completion_overlay/%s/" % pod.slug, {
+                                    u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # test to add new overlay with overlap
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {
+                u'title': [u'overlay2'],
+                u'time_start': [u'0'],
+                u'time_end': [u'5'],
+                u'content': [u'blabla'],
+                u'position': [u'bottom-right'],
+                u'background': [u'on'],
+                u'overlay_id': [u'None'],
+                u'video': [u'1'],
+                u'action': [u'save']
+            })
+        list_overlay = pod.overlaypods_set.all()
+        self.assertEqual(len(list_overlay), 1)
+
+        print(
+            "   ---> test_insert_overlay_with_overlap_errors of Video_overlayTestView : OK !")
+
+    def test_insert_overlay_with_title_errors(self):
+        pod = Pod.objects.get(id=1)
+        self.client = Client()
+        user = User.objects.get(username="remi")
+        user = authenticate(
+            username='remi', password='hello')
+        login = self.client.login(
+            username='remi', password='hello')
+        self.assertEqual(login, True)
+        # access to the page
+        response = self.client.get("/video_completion/%s/" % pod.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['list_overlay']), 0)
+        # click 'add a new overlay' button
+        response = self.client.post("/video_completion_overlay/%s/" % pod.slug, {
+                                    u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form_overlay'] != "")
+        # send form with 'save' button
+        response = self.client.post(
+            "/video_completion_overlay/%s/" % pod.slug, {
+                u'title': [u'o'],
+                u'time_start': [u'0'],
+                u'time_end': [u'5'],
+                u'content': [u'blabla'],
+                u'position': [u'bottom-right'],
+                u'background': [u'on'],
+                u'overlay_id': [u'None'],
+                u'video': [u'1'],
+                u'action': [u'save']
+            })
+        list_overlay = pod.overlaypods_set.all()
+        self.assertEqual(len(list_overlay), 0)
+
+        print(
+            "   ---> test_insert_overlay_with_title_errors of Video_overlayTestView : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class Video_chapterTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -2152,3 +2367,278 @@ class Video_mediacourses_notify(TestCase):
         self.assertEqual(response.content, "ok")
         print(
             "   --->  test_mediacourses_notify_good of Video_mediacourses_notify : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class RSSTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        if settings.RSS:
+            user = User.objects.create(
+                username='remi', password='12345', is_active=True, is_staff=True)
+            user.set_password('hello')
+            user.save()
+            c = Channel.objects.create(title="ChannelTest1", visible=True,
+                                       color="Black", style="italic", description="blabla")
+            t = Theme.objects.create(
+                title="Theme1", channel=c)
+            other_type = Type.objects.get(id=1)
+            media_guard_hash = get_media_guard("remi", 1)
+            pod = Pod.objects.create(type=other_type, title=u'Bunny',
+                                     date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
+                                     allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=False,
+                                     to_encode=False)
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+
+            ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
+            if ENCODE_WEBM:
+                EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+                    id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+
+            pod.channel.add(c)
+            pod.theme.add(t)
+            pod.save()
+            print(" --->  SetUp of RSSTestView : OK !")
+
+    def test_mySelectFeed(self):
+        if settings.RSS:
+            pod = Pod.objects.get(id=1)
+            channel = Channel.objects.get(id=1)
+            theme = Theme.objects.get(id=1)
+            types = Type.objects.get(id=1)
+            self.client = Client()
+            user = User.objects.get(username="remi")
+            user = authenticate(
+                username='remi', password='hello')
+            login = self.client.login(
+                username='remi', password='hello')
+            self.assertEqual(login, True)
+            # Access to the page RSS (by channel)
+            response = self.client.get("/rss/select/channel=%s/" % channel.slug)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            # Access to the page RSS (by type)
+            response = self.client.get("/rss/select/type=['%s']/" % types.slug)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            # Access to the page RSS (by theme)
+            response = self.client.get(
+                "/rss/select/channel=%s&theme=%s/" % (channel.slug, theme.slug))
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            # Access to the page RSS (by owner)
+            response = self.client.get(
+                "/rss/select/owner=['%s']/" % user.username)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+
+            print(
+                "   ---> test_mySelectFeed of RSSTestView : OK !")
+
+    def test_PodcastHDFeed(self):
+        if settings.ATOM_HD:
+            pod = Pod.objects.get(id=1)
+            channel = Channel.objects.get(id=1)
+            theme = Theme.objects.get(id=1)
+            types = Type.objects.get(id=1)
+            link = reverse('pods.views.video', args=(pod.slug,))
+            encodings = EncodingPods.objects.filter(
+                video=pod, encodingFormat="video/mp4")
+            maxencodings = encodings.aggregate(
+                Max('encodingType__output_height'))['encodingType__output_height__max']
+            self.client = Client()
+            user = User.objects.get(username="remi")
+            user = authenticate(
+                username='remi', password='hello')
+            login = self.client.login(
+                username='remi', password='hello')
+            self.assertEqual(login, True)
+            # Access to the page RSS (by channel)
+            response = self.client.get("/rss/hd/channel=%s/" % channel.slug)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(maxencodings)) in response.content)
+            # Access to the page RSS (by type)
+            response = self.client.get("/rss/hd/type=['%s']/" % types.slug)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(maxencodings)) in response.content)
+            # Access to the page RSS (by theme)
+            response = self.client.get(
+                "/rss/hd/channel=%s&theme=%s/" % (channel.slug, theme.slug))
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("type: ['%s']" % (types.slug) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(maxencodings)) in response.content)
+            # Access to the page RSS (by owner)
+            response = self.client.get("/rss/hd/owner=['%s']/" % user.username)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("theme: %s" % (theme.slug) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(maxencodings)) in response.content)
+
+            print(
+                "   ---> test_PodcastHDFeed of RSSTestView : OK !")
+
+    def test_PodcastSDFeed(self):
+        if settings.ATOM_SD:
+            pod = Pod.objects.get(id=1)
+            channel = Channel.objects.get(id=1)
+            theme = Theme.objects.get(id=1)
+            types = Type.objects.get(id=1)
+            link = reverse('pods.views.video', args=(pod.slug,))
+            encodings = EncodingPods.objects.filter(
+                video=pod, encodingFormat="video/mp4")
+            minencodings = encodings.aggregate(
+                Min('encodingType__output_height'))['encodingType__output_height__min']
+            self.client = Client()
+            user = User.objects.get(username="remi")
+            user = authenticate(
+                username='remi', password='hello')
+            login = self.client.login(
+                username='remi', password='hello')
+            self.assertEqual(login, True)
+            # Access to the page RSS (by channel)
+            response = self.client.get("/rss/sd/channel=%s/" % channel.slug)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(minencodings)) in response.content)
+            # Access to the page RSS (by type)
+            response = self.client.get("/rss/sd/type=['%s']/" % types.slug)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(minencodings)) in response.content)
+            # Access to the page RSS (by theme)
+            response = self.client.get(
+                "/rss/sd/channel=%s&theme=%s/" % (channel.slug, theme.slug))
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("type: ['%s']" % (types.slug) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(minencodings)) in response.content)
+            # Access to the page RSS (by owner)
+            response = self.client.get("/rss/sd/owner=['%s']/" % user.username)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(" | %s" % (pod.title) in response.content)
+            self.assertTrue("duration : %s" %
+                            (pod.duration_in_time()) in response.content)
+            self.assertTrue("theme: %s" % (theme.slug) in response.content)
+            self.assertTrue("http://example.com%s?action=download&amp;resolution=%s" %
+                            (link, str(minencodings)) in response.content)
+
+            print(
+                "   ---> test_PodcastSDFeed of RSSTestView : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class VideoPrivTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        if settings.USE_PRIVATE_VIDEO:
+            user = User.objects.create(
+                username='remi', password='12345', is_active=True)
+            user.set_password('hello')
+            user.save()
+            user2 = User.objects.create(
+                username='remi2', password='12345', is_active=True)
+            user2.set_password('hello')
+            user2.save()
+            other_type = Type.objects.get(id=1)
+            media_guard_hash = get_media_guard("remi", 1)
+            pod = Pod.objects.create(type=other_type, title=u'Bunny',
+                                     date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"), overview=os.path.join('videos', 'remi', media_guard_hash, '1', 'overview.jpg'),
+                                     allow_downloading=False, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
+                                     to_encode=False)
+            EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+                id=1), encodingFile=os.path.join('videos', 'remi', media_guard_hash, '1', 'video_1_240.mp4'), encodingFormat="video/mp4")
+
+            ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
+            if ENCODE_WEBM:
+                EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
+                    id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+            pod.save()
+            print(" --->  SetUp of VideoPrivTestView : OK !")
+
+    def test_videopriv(self):
+        if settings.USE_PRIVATE_VIDEO:
+            pod = Pod.objects.get(id=1)
+            response = self.client.get(
+                "/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)))
+            self.assertEqual(response.status_code, 200)
+            pod = Pod.objects.get(id=1)
+            pod.is_restricted = True
+            pod.is_draft = False
+            pod.save()
+            response = self.client.get(
+                "/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)))
+            self.assertEqual(response.status_code, 302)
+            self.assertRedirects(
+                response, reverse('account_login') + '?next=/video_priv/%s/%s/' % (pod.id, get_media_guard(pod.owner.username, pod.id)), status_code=302, target_status_code=200, msg_prefix='')
+            print(" ---> test_videopriv of VideoTestView : OK !")
+
+    def test_videopriv_password(self):
+        if settings.USE_PRIVATE_VIDEO:
+            pod = Pod.objects.get(id=1)
+            pod.is_draft = False
+            pod.password = u"toto"
+            pod.save()
+            self.client = Client()
+            response = self.client.post(
+                "/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)), {u'password': [u'toto'], u'action1': [u'Send']})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.context[u'video'], pod)
+            response = self.client.post(
+                "/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)), {u'password': [u'toto2'], u'action1': [u'Send']})
+            self.assertEqual(response.status_code, 200)
+
+            print(
+                "   ---> test_videopriv_password of VideoPrivTestView : OK !")
