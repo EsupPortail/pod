@@ -430,6 +430,13 @@ $(document).on('change', '#showinteractive', function() {
                         </a>
                     </li>
                 {% endif %}
+                {% if request.GET.is_iframe %}
+                    <li style="float:right;">
+                        <a id="dismiss">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                    </li>
+                {% endif %}
                 </ul>
                 <div class="tab-content">
                     <!-- TAB summary -->

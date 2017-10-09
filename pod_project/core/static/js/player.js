@@ -250,7 +250,10 @@ function loadVideo() {
             }
             MenuButton.registerComponent('InfoMenuButton', InfoMenuButton);
         
-        myPlayer.getChild('controlBar').addChild('InfoMenuButton', {});
+            myPlayer.getChild('controlBar').addChild('InfoMenuButton', {});
+            $('#dismiss').on('click', function() {
+                $('.vjs-info-button').click();
+            });
         }
         /*************************************************************************/
         if (isMobile()) {
