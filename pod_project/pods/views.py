@@ -910,8 +910,8 @@ def video_edit(request, slug=None):
     if H5P_ENABLED and h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
         interactive = True
         video = get_object_or_404(Pod, slug=slug)
-        if h5p_contents.objects.filter(title=video.title).count() > 0:
-                h5p = h5p_contents.objects.get(title=video.title)
+        if h5p_contents.objects.filter(slug=slugify(video.title)).count() > 0:
+                h5p = h5p_contents.objects.get(slug=slugify(video.title))
 
     if slug:
         video = get_object_or_404(Pod, slug=slug)
@@ -931,12 +931,7 @@ def video_edit(request, slug=None):
             video_form = PodForm(request)
 
     if request.POST:
-
         if video:
-            if H5P_ENABLED:
-                if h5p_contents.objects.filter(slug=slugify(video.title)) > 0:
-                    interactive = h5p_contents.objects.get(
-                        slug=slugify(video.title))
             video_form = PodForm(
                 request, request.POST, request.FILES, instance=video)
         else:
@@ -964,10 +959,11 @@ def video_edit(request, slug=None):
                     )
                 vid.to_encode = True
 
-            if H5P_ENABLED:
-                interactive.title = vid.title
-                interactive.slug = slugify(vid.title)
-                interactive.save()
+            # Optional : Update interactive
+            if H5P_ENABLED and h5p:
+                h5p.title = vid.title
+                h5p.slug = slugify(vid.title)
+                h5p.save()
 
             vid.save()
             # Without this next line the tags won't be saved.
@@ -976,11 +972,6 @@ def video_edit(request, slug=None):
                 request, messages.INFO, _(u'The changes have been saved.'))
             # Without this next line the tags does not appear in search engine
             vid.save()
-
-            # Optional : Update interactive
-            if h5p != None:
-                h5p.title = video.title
-                h5p.save()
 
             # go back
             action = request.POST.get("user_choice")
