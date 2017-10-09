@@ -224,43 +224,33 @@ function loadVideo() {
                 .height('100%')
                 .css('overflow', 'hidden');
             $('.vjs-big-play-button').css('zIndex', videozindex + 4);
-            videojs.Info = videojs.Button.extend({
-                /** @constructor */
-                init: function(player, options) {
-                    videojs.Button.call(this, player, options);
-                    this.on('click', this.onClick);
+
+            /* videojs-info plugin */
+            var MenuButton = videojs.getComponent('Button');
+            var InfoMenuButton = videojs.extend(MenuButton, {
+                constructor: function(player, options) {
+                    options.label = 'Info';
+                    // Call the parent constructor
+                    MenuButton.call(this, player, options);
+                    this.controlText('Info');
+                    // Register click handler
+                    this.on(['click', 'tap'], this.onClick);
                 }
             });
-
-            videojs.Info.prototype.onClick = function() {
+            // Handle clicks on the button items
+            InfoMenuButton.prototype.onClick = function() {
                 if ($('div#info_video').is(':visible')) {
                     $('div#info_video').hide();
                 } else {
                     $('div#info_video').show();
                 }
             };
-
-            // Note that we're not doing this in prototype.createEl() because
-            // it won't be called by Component.init (due to name obfuscation).
-            var createInfoButton = function() {
-                var props = {
-                    className: 'vjs-info-button vjs-control',
-                    innerHTML: '<div class="vjs-control-content"><span class="vjs-control-text">' + ('Info') + '</span></div>',
-                    role: 'button',
-                    'aria-live': 'polite', // let the screen reader user know that the text of the button may change
-                    tabIndex: 0
-                  };
-                return videojs.Component.prototype.createEl(null, props);
-            };
-
-            var info;
-            videojs.plugin('info', function() {
-                var options = {'el': createInfoButton()};
-                info = new videojs.Info(this, options);
-                this.controlBar.el().appendChild(info.el());
-            });
-
-            myPlayer.info({});
+            InfoMenuButton.prototype.buildCSSClass = function() {
+                return MenuButton.prototype.buildCSSClass.call( this ) + 'vjs-info-button';
+            }
+            MenuButton.registerComponent('InfoMenuButton', InfoMenuButton);
+        
+        myPlayer.getChild('controlBar').addChild('InfoMenuButton', {});
         }
         /*************************************************************************/
         if (isMobile()) {
