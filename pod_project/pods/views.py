@@ -906,14 +906,16 @@ def video_edit(request, slug=None):
         referer = request.META.get('HTTP_REFERER', '/')
 
     interactive = False
-    h5p = None    
-    if H5P_ENABLED and h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
-        interactive = True
-        video = get_object_or_404(Pod, slug=slug)
-        if h5p_contents.objects.filter(slug=slugify(video.title)).count() > 0:
+    h5p = None
+    if slug:
+        # If the edited video is interactive
+        if H5P_ENABLED and h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
+            video = get_object_or_404(Pod, slug=slug)
+            if h5p_contents.objects.filter(slug=slugify(video.title)).count() > 0:
                 h5p = h5p_contents.objects.get(slug=slugify(video.title))
 
-    if slug:
+
         video = get_object_or_404(Pod, slug=slug)
         if request.user != video.owner and not request.user.is_superuser:
             messages.add_message(
