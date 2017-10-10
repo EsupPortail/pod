@@ -49,6 +49,10 @@ logger = logging.getLogger(__name__)
 import unicodedata
 import json
 
+H5P_ENABLED = getattr(settings, 'H5P_ENABLED', False)
+if H5P_ENABLED:
+    from h5pp.models import h5p_contents
+
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 REMOVE_VIDEO_FILE_SOURCE_ON_DELETE = getattr(
     settings, 'REMOVE_VIDEO_FILE_SOURCE_ON_DELETE', True)
@@ -390,6 +394,9 @@ class Pod(Video):
 
     def is_richmedia(self):
         return True if self.enrichpods_set.exclude(type=None) else False
+
+    def is_interactive(self):
+        return True if h5p_contents.objects.filter(slug=slugify(self.title)).count() > 0 else False
 
     def get_iframe_admin_integration(self):
         iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % self.get_full_url()

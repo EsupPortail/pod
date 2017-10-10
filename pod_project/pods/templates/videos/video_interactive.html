@@ -172,7 +172,7 @@ voir http://www.gnu.org/licenses/
             {% else %}
             <li><a href="{% url 'videos' %}">{% trans 'Videos' %}</a></li>
             {% endif %}
-            <li class="active">{{ video.title }}{% if interactive.h5p %} ({% trans 'Edit' %}){% else %} ({% trans 'Creation' %}){% endif %}</li>
+            <li class="active">{{ video.title }}{% if video.is_interactive %} ({% trans 'Edit' %}){% else %} ({% trans 'Creation' %}){% endif %}</li>
         {% endblock breadcrumbs %}
         </ol>
         {% if channel %}
@@ -200,7 +200,7 @@ voir http://www.gnu.org/licenses/
         <h3 itemprop="name" >
             {{video.title}}
             <small>
-            {% if interactive.h5p %}        
+            {% if video.is_interactive %}        
                 {% if request.user == video.owner or request.user.is_superuser %}
                 <button type="submit" class="btn btn-default" id="button_delete_video" title="{% trans 'Delete the interactive part of this video' %}">
                     <span id="delete" class="glyphicon glyphicon-remove-sign"></span>
@@ -238,7 +238,7 @@ voir http://www.gnu.org/licenses/
             </button>
         </div>
     {% endif %}
-    {% if interactive.h5p %}
+    {% if video.is_interactive %}
         <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}&is_iframe=true" style="background:white;display:none;" height="990px" width="100%" frameBorder="0"></iframe>
     {% else %}
         <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}&is_iframe=true" style="background:white;display:none" height="990px" width="100%" frameBorder="0"></iframe>
