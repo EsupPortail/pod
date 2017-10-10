@@ -73,15 +73,17 @@ voir http://www.gnu.org/licenses/
                             <source
                                 src="/get_video_encoding/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
                                 type="{{ encoding.encodingFormat }}"
-                                data-res="{{ encoding.encodingType.output_height }}"
+                                label="{{ encoding.encodingType.output_height }}p"
+                                res="{{ encoding.encodingType.output_height }}"
                             >
                             {% else %}
                             	{% if USE_PRIVATE_VIDEO %}
 		                            <source
 		                                src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
 		                                type="{{ encoding.encodingFormat }}"
-		                                data-res="{{ encoding.encodingType.output_height }}"
-		                            >
+                                        label="{{ encoding.encodingType.output_height }}p"
+		                                res="{{ encoding.encodingType.output_height }}"
+		                            />
                             	{% endif %}
                             {% endif %}
                         {% endfor %}
@@ -172,6 +174,18 @@ voir http://www.gnu.org/licenses/
                 <li data-start="{{ chap.time }}"
                     data-id="{{ chap.id }}"
                     data-title="{{ chap.title }}">{{ chap.title }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if video.overlaypods_set.all %}
+        <ul id="overlays" style="display: none;">
+            {% for overlay in video.overlaypods_set.all %}
+                <li data-timestart="{{ overlay.time_start }}"
+                    data-timeend="{{ overlay.time_end }}"
+                    data-content="{{ overlay.content }}"
+                    data-position="{{ overlay.position }}"
+                    data-background="{{ overlay.background }}"
+                    data-id="{{ overlay.id }}"></li>
             {% endfor %}
         </ul>
     {% endif %}

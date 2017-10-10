@@ -31,7 +31,7 @@ import sys
 import logging
 logger = logging.getLogger(__name__)
 #FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
-#logging.basicConfig(format=FORMAT)
+# logging.basicConfig(format=FORMAT)
 #d = {'clientip': '192.168.0.1', 'user': 'fbloggs'}
 #logger = logging.getLogger(__name__)
 

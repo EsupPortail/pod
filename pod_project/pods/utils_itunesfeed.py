@@ -37,7 +37,7 @@ class MySelectFeed(Feed):
         filtres = ""
 
         # Filtres
-        if qparam:
+        if '=' in qparam:
             filtres = qparam.replace("'] ", "']&")
 
         return filtres

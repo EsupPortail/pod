@@ -70,6 +70,12 @@ voir http://www.gnu.org/licenses/
         border-top-right-radius: 3px;
         padding: 4px 15px;
     }
+    #list_overlay .panel-heading {
+        border-bottom: 1px solid transparent;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        padding: 4px 15px;
+    }
     table.scroll tbody,
     table.scroll thead { display: block; }
 
@@ -258,6 +264,8 @@ $(document).on("submit", "#page-video form", function (e) {
             deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this contributor?' %}");
         } else if (name_form == "download") {
             deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this download?' %}");
+        } else if (name_form == "overlay") {
+            deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this overlay?' %}");
         }
         if (deleteConfirm){
             var id = $(this).find('input[name=id]').val();
@@ -519,6 +527,24 @@ function verify_fields(form){
                     <input type="submit" value="{% trans 'Add a new additional resource' %}" class="new_download btn btn-info"/>
                 </form>
             </li>
+            &nbsp;
+            <li><a id="section_overlay" href="#" title="{% trans 'Display &quot; Overlay(s)&quot; section' %}" class="title" >{% trans "Overlay(s)" %}&nbsp; <span class="glyphicon glyphicon-chevron-down"></span></a></li>
+            <li class="contenuTitre">
+                <span id="form_overlay">
+                {% if form_overlay %}
+                    {%include 'videos/completion/overlay/form_overlay.html' with form_overlay=form_overlay %}
+                {% endif %}
+                </span>
+                &nbsp;
+                <span id="list_overlay">
+                    {% include 'videos/completion/overlay/list_overlay.html' %}
+                </span>
+                <form class="form_new" id="form_new_overlay" action="{% url 'video_completion_overlay' slug=video.slug %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="new">
+                    <input type="submit" value="{% trans 'Add a new overlay' %}" class="new_overlay btn btn-info"/>
+                </form>
+            </li>
             {% endif %}
         </div>
 
@@ -543,9 +569,10 @@ function verify_fields(form){
                 <p>{% trans 'Those files must be in “.vtt” format.' %}</p>
                 <p>{% trans 'For this purpose, you will need the URL of your video. This URL is a direct access to this video. Please do not communicate it outside of this site in order to avoid any misuse.' %}</p>
                 <input maxlength="250" value="//{{ request.get_host }}{{ video.get_highest_encoding_URL }}" type="text" style="padding: 2px; border: 1px solid #bbb; width: 260px;" />
+                <p>{% trans 'Overlay allows you to display text (with or without html tag) over the video at specific times.' %}</p>
             {% else %}
                 <p>
-                    {% trans 'Your current permissions do not allow you to add subtitle files or documents to download videos. Please contact us to add these rights.' %} :
+                    {% trans 'Your current permissions do not allow you to add subtitle files, overlays or documents to download videos. Please contact us to add these rights.' %} :
                     <a href="mailto:{{ HELP_MAIL }}">{{ HELP_MAIL }}</a>
                 </p>
             {% endif %}
