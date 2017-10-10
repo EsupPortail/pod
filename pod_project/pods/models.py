@@ -467,7 +467,7 @@ def launch_encode(sender, instance, created, **kwargs):
         instance.to_encode = False
         instance.encoding_in_progress = True
         instance.save()
-        if settings.CELERY_TO_ENCODE:
+        if hasattr(settings, 'CELERY_TO_ENCODE'):
             logger.error(
                 'CELERY_TO_ENCODE setting is now deprecated in flavor of ENCODE_VIDEO')
 
