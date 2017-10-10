@@ -57,9 +57,7 @@ voir http://www.gnu.org/licenses/
                                 <span title="{% trans 'This content is chaptered.' %}" class="glyphicon glyphicon-list"></span>
                             {% endif %}
                             {% if video.is_interactive %}
-                                <span title="{% trans 'This content is
-                                interactive.' %}"
-                                class="glyphicon glyphicon-blackboard"></span>
+                                <span title="{% trans 'This content is interactive.' %}" class="glyphicon glyphicon-blackboard"></span>
                             {% endif %}
                             {% with mediatype=video.get_mediatype|first %}
                                 {% if mediatype %}
