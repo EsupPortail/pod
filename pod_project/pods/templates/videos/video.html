@@ -29,7 +29,7 @@ voir http://www.gnu.org/licenses/
         {% include 'videos/extraheadplayer.html' %}
     {% endif %}
 
-{% if H5P_ENABLED and interactive.h5p %}
+{% if H5P_ENABLED and video.is_interactive %}
 <style>
 #h5pcontent {
     margin: auto;
@@ -120,7 +120,7 @@ $(document).on('click', '#button_video_favorite', function (event) {
     }
     return false;
 });
-{% if H5P_ENABLED and interactive.h5p %}
+{% if H5P_ENABLED and video.is_interactive %}
 $(document).ready(function() {
     {% if not request.GET.is_iframe %}
         $("#player").hide();
@@ -299,7 +299,7 @@ $(document).on('change', '#showinteractive', function() {
         <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
         <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" />
 
-        {% if H5P_ENABLED and interactive.h5p %}
+        {% if H5P_ENABLED and video.is_interactive %}
         <div id="h5pcontent">
             <iframe id="icontent" src="{% url 'video' slug=video.slug %}?is_iframe=true&interactive=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
         </div>
@@ -368,7 +368,7 @@ $(document).on('change', '#showinteractive', function() {
                     </button>
                     {% endif %}
                 {% endif %}
-                {% if H5P_ENABLED and interactive.h5p %}
+                {% if H5P_ENABLED and video.is_interactive %}
                     <button class="btn btn-default" id="button_video_original" title="{% trans 'View the original video' %}">
                         <span class="glyphicon glyphicon-film"></span>
                         <span class="sr-only">{% trans 'View the original video' %}</span>
@@ -413,7 +413,7 @@ $(document).on('change', '#showinteractive', function() {
                             {% trans 'Embed/Share' %}
                         </a>
                     </li>
-                    {% if request.user.is_authenticated and interactive.h5p %}
+                    {% if request.user.is_authenticated and video.is_interactive %}
                     <li id="tab-score">
                         <a href="#score" data-toggle="tab">
                             <span class="glyphicon glyphicon-star-empty"></span>
@@ -596,7 +596,7 @@ $(document).on('change', '#showinteractive', function() {
                                     <label for="autoplay">
                                         {% trans 'Autoplay' %} <input type="checkbox" id="autoplay" class="form-control" />
                                     </label>
-                                    {% if H5P_ENABLED and interactive.h5p %}
+                                    {% if H5P_ENABLED and video.is_interactive %}
                                     <label for="showinteractive">
                                         {% trans 'Interactive' %} <input type="checkbox" id="showinteractive" class="form-control" />
                                     </label>
@@ -686,7 +686,7 @@ $(document).on('change', '#showinteractive', function() {
                                     <label for="autoplay">
                                         {% trans 'Autoplay' %} <input type="checkbox" id="autoplay" class="form-control" />
                                     </label>
-                                    {% if H5P_ENABLED and interactive.h5p %}
+                                    {% if H5P_ENABLED and video.is_interactive %}
                                     <label for="showinteractive">
                                         {% trans 'Interactive' %} <input type="checkbox" id="showinteractive" class="form-control" />
                                     </label>

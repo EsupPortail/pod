@@ -384,13 +384,18 @@ def favorites_videos_list(request):
 
     videos = get_pagination(page, paginator)
 
+    interactive = None
+    if H5P_ENABLED:
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
+
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
                                   {"videos": videos},
                                   context_instance=RequestContext(request))
 
     return render_to_response("favorites/my_favorites.html",
-                              {"videos": videos},
+                              {"videos": videos, "interactive": interactive},
                               context_instance=RequestContext(request))
 
 
@@ -525,8 +530,8 @@ def video(request, slug, slug_c=None, slug_t=None):
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             score = None
             h5p = None
-            if h5p_contents.objects.filter(title=video.title).count() > 0:
-                h5p = h5p_contents.objects.get(title=video.title)
+            if video.is_interactive():
+                h5p = h5p_contents.objects.get(slug=slugify(video.title))
                 if request.GET.get('is_iframe') and request.GET.get('interactive'):
                     if request.GET['interactive'] == 'true':
                         return HttpResponseRedirect('/h5p/embed/?contentId=%d' % h5p.content_id)
@@ -657,7 +662,7 @@ def video_priv(request, id, slug, slug_c=None, slug_t=None):
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             score = None
             h5p = None
-            if h5p_contents.objects.filter(title=video.title).count() > 0:
+            if video.is_interactive():
                 h5p = h5p_contents.objects.get(title=video.title)
                 if request.GET.get('is_iframe') and request.GET.get('interactive'):
                     if request.GET['interactive'] == 'true':
@@ -912,7 +917,7 @@ def video_edit(request, slug=None):
         if H5P_ENABLED and h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             interactive = True
             video = get_object_or_404(Pod, slug=slug)
-            if h5p_contents.objects.filter(slug=slugify(video.title)).count() > 0:
+            if video.is_interactive():
                 h5p = h5p_contents.objects.get(slug=slugify(video.title))
 
 
@@ -1863,7 +1868,7 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
 
     h5p = None
     version = h5p_libraries.objects.get(machine_name='H5P.InteractiveVideo')
-    if h5p_contents.objects.filter(title=video.title).count() > 0:
+    if video.is_interactive():
         h5p = h5p_contents.objects.get(title=video.title)
     interactive = {'h5p': h5p, 'version': version}
 
