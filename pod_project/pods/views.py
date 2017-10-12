@@ -21,6 +21,7 @@ from pods.forms import PodForm
 from pods.forms import ContributorPodsForm
 from pods.forms import DocPodsForm
 from pods.forms import TrackPodsForm
+from pods.forms import OverlayPodsForm
 from pods.forms import ChapterPodsForm
 from pods.forms import VideoPasswordForm
 from pods.forms import NotesForm
@@ -99,10 +100,10 @@ def owner_channels_list(request):
     if request.is_ajax():
         some_data_to_dump = {
             'json_videols': render_to_string("channels/channels_list.html",
-                                {"channels": channels},
-                                  context_instance=RequestContext(request)),
+                                             {"channels": channels},
+                                             context_instance=RequestContext(request)),
             'json_toolbar': render_to_string("maintoolbar.html",
-                                {"channels": channels})
+                                             {"channels": channels})
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
@@ -128,10 +129,10 @@ def channels(request):
     if request.is_ajax():
         some_data_to_dump = {
             'json_videols': render_to_string("channels/channels_list.html",
-                                {"channels": channels},
-                                  context_instance=RequestContext(request)),
+                                             {"channels": channels},
+                                             context_instance=RequestContext(request)),
             'json_toolbar': render_to_string("maintoolbar.html",
-                                {"channels": channels})
+                                             {"channels": channels})
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
@@ -383,13 +384,18 @@ def favorites_videos_list(request):
 
     videos = get_pagination(page, paginator)
 
+    interactive = None
+    if H5P_ENABLED:
+        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
+
     if request.is_ajax():
         return render_to_response("videos/videos_list.html",
                                   {"videos": videos},
                                   context_instance=RequestContext(request))
 
     return render_to_response("favorites/my_favorites.html",
-                              {"videos": videos},
+                              {"videos": videos, "interactive": interactive},
                               context_instance=RequestContext(request))
 
 
@@ -472,7 +478,6 @@ def videos(request):
 
     videos = get_pagination(page, paginator)
 
-
     interactive = None
     if settings.H5P_ENABLED:
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
@@ -483,7 +488,8 @@ def videos(request):
             'json_toolbar': render_to_string('maintoolbar.html',
                                              {'videos': videos, 'param': param}),
             'json_videols': render_to_string('videos/videos_list.html',
-                                             {'videos': videos, 'types': type, 'owners': list_owner, 'disciplines': discipline, 'param': param},
+                                             {'videos': videos, 'types': type, 'owners': list_owner,
+                                                 'disciplines': discipline, 'param': param},
                                              context_instance=RequestContext(request))
         }
         data = json.dumps(some_data_to_dump)
@@ -524,11 +530,11 @@ def video(request, slug, slug_c=None, slug_t=None):
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             score = None
             h5p = None
-            if h5p_contents.objects.filter(title=video.title).count() > 0:
-                h5p = h5p_contents.objects.get(title=video.title)
+            if video.is_interactive():
+                h5p = h5p_contents.objects.get(slug=slugify(video.title))
                 if request.GET.get('is_iframe') and request.GET.get('interactive'):
                     if request.GET['interactive'] == 'true':
-                        return HttpResponseRedirect('/h5p/embed/?contentId=%d' %h5p.content_id)
+                        return HttpResponseRedirect('/h5p/embed/?contentId=%d' % h5p.content_id)
                 if request.user == video.owner or request.user.is_superuser:
                     score = getUserScore(h5p.content_id)
                 else:
@@ -656,11 +662,11 @@ def video_priv(request, id, slug, slug_c=None, slug_t=None):
         if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
             score = None
             h5p = None
-            if h5p_contents.objects.filter(title=video.title).count() > 0:
+            if video.is_interactive():
                 h5p = h5p_contents.objects.get(title=video.title)
                 if request.GET.get('is_iframe') and request.GET.get('interactive'):
                     if request.GET['interactive'] == 'true':
-                        return HttpResponseRedirect('/h5p/embed/?contentId=%d' %h5p.content_id)
+                        return HttpResponseRedirect('/h5p/embed/?contentId=%d' % h5p.content_id)
                 if request.user == video.owner or request.user.is_superuser:
                     score = getUserScore(h5p.content_id)
                 else:
@@ -668,7 +674,6 @@ def video_priv(request, id, slug, slug_c=None, slug_t=None):
                     if score != None:
                         score = score[0]
             interactive = {'h5p': h5p, 'score': score}
-
 
     hash_id = get_media_guard(video.owner.username, video.id)
     if hash_id != slug:
@@ -905,7 +910,17 @@ def video_edit(request, slug=None):
     if not request.POST:
         referer = request.META.get('HTTP_REFERER', '/')
 
+    interactive = False
+    h5p = None
     if slug:
+        # If the edited video is interactive
+        if H5P_ENABLED and h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
+            interactive = True
+            video = get_object_or_404(Pod, slug=slug)
+            if video.is_interactive():
+                h5p = h5p_contents.objects.get(slug=slugify(video.title))
+
+
         video = get_object_or_404(Pod, slug=slug)
         if request.user != video.owner and not request.user.is_superuser:
             messages.add_message(
@@ -923,7 +938,6 @@ def video_edit(request, slug=None):
             video_form = PodForm(request)
 
     if request.POST:
-
         if video:
             video_form = PodForm(
                 request, request.POST, request.FILES, instance=video)
@@ -951,6 +965,12 @@ def video_edit(request, slug=None):
                         )
                     )
                 vid.to_encode = True
+
+            # Optional : Update interactive
+            if H5P_ENABLED and h5p:
+                h5p.title = vid.title
+                h5p.slug = slugify(vid.title)
+                h5p.save()
 
             vid.save()
             # Without this next line the tags won't be saved.
@@ -993,11 +1013,6 @@ def video_edit(request, slug=None):
     video_ext_accept_text = replace(
         ', '.join(settings.VIDEO_EXT_ACCEPT), ".", "").upper()
 
-    interactive = None
-    if H5P_ENABLED:
-        if h5p_libraries.objects.filter(machine_name='H5P.InteractiveVideo').count() > 0:
-            interactive = True
-
     return render_to_response("videos/video_edit.html",
                               {'form': video_form, "referer": referer,
                                   "video_ext_accept": video_ext_accept,
@@ -1029,6 +1044,7 @@ def video_completion(request, slug):
             list_contributor = video.contributorpods_set.all()
             list_subtitle = video.trackpods_set.all()
             list_download = video.docpods_set.all()
+            list_overlay = video.overlaypods_set.all()
         else:
             list_contributor = video.contributorpods_set.all()
 
@@ -1043,6 +1059,7 @@ def video_completion(request, slug):
                                       'list_contributor': list_contributor,
                                       'list_subtitle': list_subtitle,
                                       'list_download': list_download,
+                                      'list_overlay': list_overlay,
                                       'interactive': interactive},
                                   context_instance=RequestContext(request))
     else:
@@ -1451,6 +1468,144 @@ def video_completion_download(request, slug):
 
 
 @csrf_protect
+#@staff_member_required
+def video_completion_overlay(request, slug):
+    if not request.user.is_authenticated() or not request.user.is_staff:
+        raise PermissionDenied
+    video = get_object_or_404(Pod, slug=slug)
+
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot complement this video.'))
+        raise PermissionDenied
+
+    list_contributor = video.contributorpods_set.all()
+    list_subtitle = video.trackpods_set.all()
+    list_download = video.docpods_set.all()
+    list_overlay = video.overlaypods_set.all()
+
+    if request.POST:
+        # New overlay
+        if request.POST.get("action") and request.POST['action'] == 'new':
+            form_overlay = OverlayPodsForm(initial={"video": video})
+            if request.is_ajax():
+                return render_to_response("videos/completion/overlay/form_overlay.html",
+                                          {
+                                              'form_overlay': form_overlay,
+                                              'video': video
+                                          },
+                                          context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download,
+                                              'list_overlay': list_overlay,
+                                              'form_overlay': form_overlay
+                                          },
+                                          context_instance=RequestContext(request))
+        # Save overlay
+        if request.POST.get("action") and request.POST['action'] == 'save':
+            form_overlay = None
+            if request.POST.get("overlay_id") and request.POST.get("overlay_id") != "None":
+                overlay = get_object_or_404(
+                    OverlayPods, id=request.POST.get("overlay_id"))
+                form_overlay = OverlayPodsForm(request.POST, instance=overlay)
+            else:
+                form_overlay = OverlayPodsForm(request.POST)
+
+            if form_overlay.is_valid():
+                form_overlay.save()
+                list_overlay = video.overlaypods_set.all()
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'list_data': render_to_string('videos/completion/overlay/list_overlay.html', {'list_overlay': list_overlay, 'video': video}, context_instance=RequestContext(request))
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_completion.html",
+                                              {
+                                                  'video': video,
+                                                  'list_contributor': list_contributor,
+                                                  'list_subtitle': list_subtitle,
+                                                  'list_download': list_download,
+                                                  'list_overlay': list_overlay
+                                              },
+                                              context_instance=RequestContext(request))
+            else:
+                if request.is_ajax():
+                    some_data_to_dump = {
+                        'errors': "%s" % _('Please correct errors'),
+                        'form': render_to_string('videos/completion/overlay/form_overlay.html', {'video': video, 'form_overlay': form_overlay}, context_instance=RequestContext(request))
+                    }
+                    data = json.dumps(some_data_to_dump)
+                    return HttpResponse(data, content_type='application/json')
+                else:
+                    return render_to_response("videos/video_completion.html",
+                                              {
+                                                  'video': video,
+                                                  'list_contributor': list_contributor,
+                                                  'list_subtitle': list_subtitle,
+                                                  'list_download': list_download,
+                                                  'list_overlay': list_overlay,
+                                                  'form_overlay': form_overlay
+                                              },
+                                              context_instance=RequestContext(request))
+        # Modify overlay
+        if request.POST.get("action") and request.POST['action'] == 'modify':
+            overlay = get_object_or_404(OverlayPods, id=request.POST['id'])
+            form_overlay = OverlayPodsForm(instance=overlay)
+            if request.is_ajax():
+                return render_to_response("videos/completion/overlay/form_overlay.html",
+                                          {'form_overlay': form_overlay,
+                                           'video': video},
+                                          context_instance=RequestContext(request))
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download,
+                                              'list_overlay': list_overlay,
+                                              'form_overlay': form_overlay
+                                          },
+                                          context_instance=RequestContext(request))
+
+        # Delete overlay
+        if request.POST.get("action") and request.POST['action'] == 'delete':
+            overlay = get_object_or_404(OverlayPods, id=request.POST['id'])
+            overlay_delete = overlay.delete()
+            list_overlay = video.overlaypods_set.all()
+            if request.is_ajax():
+                some_data_to_dump = {
+                    'list_data': render_to_string('videos/completion/overlay/list_overlay.html', {'list_overlay': list_overlay, 'video': video}, context_instance=RequestContext(request))
+                }
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+            else:
+                return render_to_response("videos/video_completion.html",
+                                          {
+                                              'video': video,
+                                              'list_contributor': list_contributor,
+                                              'list_subtitle': list_subtitle,
+                                              'list_download': list_download,
+                                              'list_overlay': list_overlay
+                                          },
+                                          context_instance=RequestContext(request))
+    return render_to_response("videos/video_completion.html",
+                              {'video': video,
+                               'list_contributor': list_contributor,
+                               'list_subtitle': list_subtitle,
+                               'list_download': list_download,
+                               'list_overlay': list_overlay},
+                              context_instance=RequestContext(request))
+
+
+@csrf_protect
 @login_required
 def video_chapter(request, slug):
     video = get_object_or_404(Pod, slug=slug)
@@ -1698,6 +1853,7 @@ def video_enrich(request, slug):
                                   'interactive': interactive},
                               context_instance=RequestContext(request))
 
+
 @csrf_protect
 @login_required
 def video_interactive(request, slug, slug_c=None, slug_t=None):
@@ -1712,7 +1868,7 @@ def video_interactive(request, slug, slug_c=None, slug_t=None):
 
     h5p = None
     version = h5p_libraries.objects.get(machine_name='H5P.InteractiveVideo')
-    if h5p_contents.objects.filter(title=video.title).count() > 0:
+    if video.is_interactive():
         h5p = h5p_contents.objects.get(title=video.title)
     interactive = {'h5p': h5p, 'version': version}
 
@@ -1863,24 +2019,26 @@ def search_videos(request):
     # Filter query
     filter_search = {}
     filter_query = ""
-    
+
     if len(selected_facets) > 0 or start_date or end_date:
-        filter_search = { "and" :[] }
+        filter_search = {"and": []}
         for facet in selected_facets:
             term = facet.split(":")[0]
             value = facet.split(":")[1]
             filter_search["and"].append({
                 "term": {
-                    "%s" %term: "%s" %value
+                    "%s" % term: "%s" % value
                 }
             })
         if start_date or end_date:
             filter_date_search = {}
             filter_date_search["range"] = {"date_added": {}}
             if start_date:
-                filter_date_search["range"]["date_added"]["gte"] = "%04d-%02d-%02d" % (start_date.year, start_date.month, start_date.day)
+                filter_date_search["range"]["date_added"][
+                    "gte"] = "%04d-%02d-%02d" % (start_date.year, start_date.month, start_date.day)
             if end_date:
-                filter_date_search["range"]["date_added"]["lte"] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
+                filter_date_search["range"]["date_added"][
+                    "lte"] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
 
             filter_search["and"].append(filter_date_search)
 
@@ -1981,13 +2139,14 @@ def search_videos(request):
                 if tab[0] == value:
                     value = tab[1]
 
-        url_value = u'%s'.decode('latin1') %url_value
+        url_value = u'%s'.decode('latin1') % url_value
         url_value = url_value.encode('utf-8')
         url_value = urllib2.quote(url_value)
-        link = request.get_full_path().replace("&selected_facets=%s:%s" %(term, url_value), "")
+        link = request.get_full_path().replace(
+            "&selected_facets=%s:%s" % (term, url_value), "")
         msg_title = (u'Remove selection')
-        remove_selected_facet += u'&nbsp;<a href="%s" title="%s"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>%s</a>&nbsp;' %(link, msg_title, value)
-
+        remove_selected_facet += u'&nbsp;<a href="%s" title="%s"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>%s</a>&nbsp;' % (
+            link, msg_title, value)
 
     # Pagination mayby better idea ?
     objects = []

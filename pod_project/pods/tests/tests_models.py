@@ -58,7 +58,7 @@ class ChannelTestCase(TestCase):
         Channel.objects.create(title="ChannelTest2", visible=True,
                                color="Black", style="italic", description="blabla")
 
-        print (" --->  SetUp of ChannelTestCase : OK !")
+        print(" --->  SetUp of ChannelTestCase : OK !")
     """
 		test all attributs when a channel have been save with the minimum of attributs
 	"""
@@ -76,7 +76,7 @@ class ChannelTestCase(TestCase):
         self.assertEqual(channel.video_count, 0)
         self.assertEqual(channel.get_absolute_url(), "/" + channel.slug + "/")
 
-        print (
+        print(
             "   --->  test_Channel_null_attribut of ChannelTestCase : OK !")
 
     """
@@ -96,7 +96,7 @@ class ChannelTestCase(TestCase):
         self.assertEqual(channel.video_count, 0)
         self.assertEqual(channel.get_absolute_url(), "/" + channel.slug + "/")
 
-        print (
+        print(
             "   --->  test_Channel_with_attributs of ChannelTestCase : OK !")
 
     """
@@ -108,7 +108,7 @@ class ChannelTestCase(TestCase):
         Channel.objects.get(id=2).delete()
         self.assertEquals(Channel.objects.all().count(), 0)
 
-        print (
+        print(
             "   --->  test_delete_object of ChannelTestCase : OK !")
 
 """
@@ -134,7 +134,7 @@ class ThemeTestCase(TestCase):
         Theme.objects.create(
             title="Theme1", slug="blabla", channel=Channel.objects.get(title="ChannelTest1"))
 
-        print (" --->  SetUp of ThemeTestCase : OK !")
+        print(" --->  SetUp of ThemeTestCase : OK !")
 
     """
 		test all attributs when a theme have been save with the minimum of attributs
@@ -151,7 +151,7 @@ class ThemeTestCase(TestCase):
         self.assertEqual(
             theme.get_absolute_url(), "/" + theme.channel.slug + "/" + theme.slug + "/")
 
-        print (
+        print(
             "   --->  test_Theme_null_attribut of ThemeTestCase : OK !")
     """
 		test attributs when a theme have many attributs
@@ -162,7 +162,7 @@ class ThemeTestCase(TestCase):
         theme.description = "blabla"
         self.assertEqual(theme.description, 'blabla')
 
-        print (
+        print(
             "   --->  test_Theme_with_attributs of ThemeTestCase : OK !")
 
     """
@@ -173,7 +173,7 @@ class ThemeTestCase(TestCase):
         Theme.objects.get(id=1).delete()
         self.assertEquals(Theme.objects.all().count(), 0)
 
-        print (
+        print(
             "   --->  test_delete_object of ThemeTestCase : OK !")
 
 """
@@ -196,7 +196,7 @@ class TypeTestCase(TestCase):
     def setUp(self):
         Type.objects.create(title="Type1", slug="blabla")
 
-        print (" --->  SetUp of TypeTestCase : OK !")
+        print(" --->  SetUp of TypeTestCase : OK !")
 
     """
 		test all attributs when a type have been save with the minimum of attributs
@@ -211,7 +211,7 @@ class TypeTestCase(TestCase):
         self.assertEqual(type1.video_count, 0)
         self.assertEqual(type1.description, None)
 
-        print (
+        print(
             "   --->  test_Type_null_attribut of TypeTestCase : OK !")
 
     """
@@ -223,7 +223,7 @@ class TypeTestCase(TestCase):
         type1.description = "blabla"
         self.assertEqual(type1.description, 'blabla')
 
-        print (
+        print(
             "   --->  test_Type_with_attributs of TypeTestCase : OK !")
 
     """
@@ -234,7 +234,7 @@ class TypeTestCase(TestCase):
         Type.objects.get(id=1).delete()
         self.assertEquals(Type.objects.all().count(), 0)
 
-        print (
+        print(
             "   --->  test_delete_object of TypeTestCase : OK !")
 
 
@@ -258,7 +258,7 @@ class DisciplineTestCase(TestCase):
     def setUp(self):
         Discipline.objects.create(title="Discipline1", slug="blabla")
 
-        print (" --->  SetUp of DisciplineTestCase : OK !")
+        print(" --->  SetUp of DisciplineTestCase : OK !")
 
     """
 		test all attributs when a discipline have been save with the minimum of attributs
@@ -273,7 +273,7 @@ class DisciplineTestCase(TestCase):
         self.assertEqual(discipline.video_count, 0)
         self.assertEqual(discipline.description, None)
 
-        print (
+        print(
             "   --->  test_Discipline_null_attribut of DisciplineTestCase : OK !")
 
     """
@@ -285,7 +285,7 @@ class DisciplineTestCase(TestCase):
         discipline.description = "blabla"
         self.assertEqual(discipline.description, 'blabla')
 
-        print (
+        print(
             "   --->  test_Discipline_with_attributs of DisciplineTestCase : OK !")
 
     """
@@ -296,7 +296,7 @@ class DisciplineTestCase(TestCase):
         Discipline.objects.get(id=1).delete()
         self.assertEquals(Discipline.objects.all().count(), 0)
 
-        print (
+        print(
             "   --->  test_delete_object of DisciplineTestCase : OK !")
 
 
@@ -320,7 +320,7 @@ class NextAutoIncrementTestCase(TestCase):
     def setUp(self):
         discipline = Discipline.objects.create(title="Discipline1")
 
-        print (" --->  SetUp of NextAutoIncrementTestCase : OK !")
+        print(" --->  SetUp of NextAutoIncrementTestCase : OK !")
 
     """
 		Verifie if the id is incremented
@@ -334,7 +334,7 @@ class NextAutoIncrementTestCase(TestCase):
             self.assertEqual(Discipline.objects.latest(
                 'id').id + 1, Discipline.objects.get(title="Discipline1").id + 1)
 
-            print (
+            print(
                 "   --->  testAutoIncrementId of NextAutoIncrementTestCase : OK !")
 
 """
@@ -364,7 +364,7 @@ class VideoTestCase(TestCase):
         Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
                            date_added=datetime.today(), owner=remi, date_evt=datetime.today(), video=os.path.join("media", "videos", "remi", self.media_guard_hash, "test.mp4"), allow_downloading=True, view_count=2, description="fl",
                            overview="blabla.jpg", is_draft=False, duration=3, infoVideo="videotest", to_encode=False)
-        print (" --->  SetUp of VideoTestCase : OK !")
+        print(" --->  SetUp of VideoTestCase : OK !")
 
     """
 		test all attributs when a video have been save with the minimum of attributs
@@ -395,7 +395,7 @@ class VideoTestCase(TestCase):
         self.assertEqual(pod.__unicode__(), "%s - %s" %
                          ('%04d' % pod.id, pod.title))  # pb unicode appel str
 
-        print (
+        print(
             "   --->  test_Video_null_attributs of VideoTestCase : OK !")
 
     """
@@ -419,7 +419,7 @@ class VideoTestCase(TestCase):
         self.assertEqual(pod.infoVideo, "videotest")
         self.assertEqual(pod.video.__unicode__(), pod.video.name)
 
-        print (
+        print(
             "   --->  test_Video_many_attributs of VideoTestCase : OK !")
 
     """
@@ -432,7 +432,7 @@ class VideoTestCase(TestCase):
         self.assertEqual(video1.admin_thumbnail(), "")
         self.assertEqual(video2.admin_thumbnail(), "")  # test dans la vue
 
-        print (
+        print(
             "   --->  test_admin_thumbnail of VideoTestCase : OK !")
 
     """
@@ -445,7 +445,7 @@ class VideoTestCase(TestCase):
         self.assertEqual(video1.filename(), "")
         self.assertEqual(video2.filename(), u'test.mp4')
 
-        print (
+        print(
             "   --->  test_filename of VideoTestCase : OK !")
 
     """
@@ -458,7 +458,7 @@ class VideoTestCase(TestCase):
         self.assertEqual(video1.duration_in_time(), "00:00:00")
         self.assertEqual(video2.duration_in_time(), "00:00:03")
 
-        print (
+        print(
             "   --->  test_duration_in_time of VideoTestCase : OK !")
 
     """
@@ -470,8 +470,279 @@ class VideoTestCase(TestCase):
         Pod.objects.get(id=2).delete()
         self.assertEquals(Pod.objects.all().count(), 0)
 
-        print (
+        print(
             "   --->  test_delete_object of VideoTestCase : OK !")
+
+        
+"""
+    test the contributor object
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class ContributorPodsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+  
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type, title="Video1", slug="tralala", owner=remi)
+        pod2 = Pod.objects.create(
+            type=other_type, title="Video2", slug="tralalo", owner=remi)
+        ContributorPods.objects.create(video=pod, name="contributor1")
+        ContributorPods.objects.create(video=pod, name="contributor2", email_address="test@mail.com", role="actor", weblink="http://test.com")
+
+        print (" ---> SetUp of ContributorPodsTestCase : OK !")
+
+    """
+        test all attributs when a contributor have been save with the minimum of attributs
+    """
+
+    def test_Contributor_null_attribut(self):
+        contributor = ContributorPods.objects.get(id=1)
+        self.assertEqual(contributor.video.id, 1)
+        self.assertEqual(contributor.name, "contributor1")
+        self.assertEqual(contributor.email_address, "")
+        self.assertEqual(contributor.role, "author")
+        self.assertEqual(contributor.weblink, None)
+        self.assertEqual(contributor.__unicode__(), "Video:%s - Name:%s - Role:%s" % 
+                          (contributor.video, contributor.name, contributor.role))
+
+        print (
+            "   ---> test_Contributor_null_attribut of ContributorPodsTestCase : OK !")
+
+    """
+        test attributs when a contributor have many attributs
+    """
+
+    def test_Contributor_with_attributs(self):
+        contributor = ContributorPods.objects.get(id=2)
+        self.assertEqual(contributor.email_address, "test@mail.com")
+        self.assertEqual(contributor.role, "actor")
+        self.assertEqual(contributor.weblink, "http://test.com")
+
+        print (
+            "   ---> test_Contributor_with_attributs of ContributorPodsTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        ContributorPods.objects.get(id=1).delete()
+        ContributorPods.objects.get(id=2).delete()
+        self.assertEquals(ContributorPods.objects.all().count(), 0)
+
+        print (
+            "   ---> test_delete_object of ContributorPodsTestCase : OK !")
+
+"""
+    test the trackpods object
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class TrackPodsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type, title="Video1", slug="tralala", owner=remi)
+        pod2 = Pod.objects.create(
+            type=other_type, title="Video2", slug="tralalo", owner=remi)
+        TrackPods.objects.create(video=pod, lang="en")
+        TrackPods.objects.create(video=pod2, lang="fr", kind="captions")
+
+    """
+        test all attributs when a track have been save with the minimum of attributs
+    """
+
+    def test_Track_null_attribut(self):
+        track = TrackPods.objects.get(id=1)
+        self.assertEqual(track.video.id, 1)
+        self.assertEqual(track.lang, "en")
+        self.assertEqual(track.kind, "subtitles")
+        self.assertEqual(track.src, None)
+        self.assertEqual(track.__unicode__(), "%s - File: %s - Video: %s" % 
+                          (track.kind, track.src, track.video))
+
+        print (
+            "   ---> test_Track_null_attribut of TrackPodsTestCase : OK !")
+
+    """
+        test attributs when a track have many attributs
+    """
+
+    def test_Track_with_attributs(self):
+        track = TrackPods.objects.get(id=2)
+        self.assertEqual(track.lang, "fr")
+        self.assertEqual(track.kind, "captions")
+
+        print (
+            "   ---> test_Track_with_attributs of TrackPodsTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        TrackPods.objects.get(id=1).delete()
+        TrackPods.objects.get(id=2).delete()
+        self.assertEquals(TrackPods.objects.all().count(), 0)
+
+        print (
+            "   ---> test_delete_object of TrackPodsTestCase : OK !")
+
+
+"""
+    test the chapter object
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class ChapterPodsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type, title="Video1", slug="tralala", owner=remi)
+        ChapterPods.objects.create(video=pod, title="chapter1")
+        ChapterPods.objects.create(video=pod, title="chapter2", time=2)
+
+    """
+        test all attributs when a chapter have been save with the minimum of attributs
+    """
+
+    def test_Chapter_null_attribut(self):
+        chapter = ChapterPods.objects.get(id=1)
+        self.assertEqual(chapter.video.id, 1)
+        self.assertEqual(chapter.title, "chapter1")
+        self.assertEqual(chapter.time, 0)
+        self.assertFalse(chapter.slug == slugify("chapter1"))
+        self.assertEqual(chapter.__unicode__(), "Chapter : %s - video: %s" % 
+                          (chapter.title, chapter.video))
+
+        print (
+            "   ---> test_Chapter_null_attribut of ChapterPodsTestCase : OK !")
+
+    """
+        test attributs when a chapter have many attributs
+    """
+
+    def test_Chapter_with_attributs(self):
+        chapter = ChapterPods.objects.get(id=2)
+        self.assertEqual(chapter.title, "chapter2")
+        self.assertEqual(chapter.time, 2)
+
+        print (
+            "   ---> test_Chapter_with_attributs of ChapterPodsTestCase : OK !")
+
+
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        ChapterPods.objects.get(id=1).delete()
+        ChapterPods.objects.get(id=2).delete()
+        self.assertEquals(ChapterPods.objects.all().count(), 0)
+
+        print (
+            "   ---> test_delete_object of ChapterPodsTestCase : OK !")
+        
+
+"""
+    test the overlaypods object
+"""
+
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class OverlayPodsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type, title="Video1", slug="tralala", owner=remi)
+        OverlayPods.objects.create(
+            video=pod, title="overlay1", content="tralala")
+        OverlayPods.objects.create(
+            video=pod, title="overlay2", content="tralala", time_end=5, position="top-left")
+
+        print(" ---> SetUp of OverlayPodsTestCase : OK !")
+
+    """
+        test atributs and str function
+    """
+
+    def test_attributs_and_str(self):
+        overlay = OverlayPods.objects.get(id=1)
+        overlay2 = OverlayPods.objects.get(id=2)
+        self.assertEqual(overlay.video.id, 1)
+        self.assertEqual(overlay.content, "tralala")
+        self.assertEqual(overlay.time_start, 0)
+        self.assertEqual(overlay.time_end, 1)
+        self.assertEqual(overlay.position, "bottom-right")
+        self.assertEqual(overlay2.time_end, 5)
+        self.assertEqual(overlay2.position, "top-left")
+        self.assertEqual(overlay.__unicode__(), "Overlay : %s - video: %s" %
+                         (overlay.title, overlay.video))
+
+        print(
+            "   ---> test_attributs_and_str of OverlayPodsTestCase : OK !")
+        
+    def test_delete_object(self):
+        OverlayPods.objects.get(id=1).delete()
+        OverlayPods.objects.get(id=2).delete()
+        self.assertEquals(OverlayPods.objects.all().count(), 0)
+
+        print(
+            "   ---> test_delete_object of OverlayPodsTestCase : OK !")
+
 
 """
 	test the favorites object
@@ -498,7 +769,7 @@ class FavoritesTestCase(TestCase):
             type=other_type,  title="Video1", slug="tralala", owner=remi)
         Favorites.objects.create(user=remi, video=pod)
 
-        print (" --->  SetUp of FavoritesTestCase : OK !")
+        print(" --->  SetUp of FavoritesTestCase : OK !")
 
     """
 		test attributs and str function
@@ -511,7 +782,7 @@ class FavoritesTestCase(TestCase):
         self.assertEqual(favorite.__unicode__(), "%s-%s" %
                          (favorite.user.username, favorite.video))
 
-        print (
+        print(
             "   --->  test_attributs_and_str of FavoritesTestCase : OK !")
     """
         test delete object
@@ -521,7 +792,7 @@ class FavoritesTestCase(TestCase):
         Favorites.objects.get(id=1).delete()
         self.assertEquals(Favorites.objects.all().count(), 0)
 
-        print (
+        print(
             "   --->  test_delete_object of FavoritesTestCase : OK !")
 
 
@@ -553,7 +824,7 @@ class NotesTestCase(TestCase):
         Notes.objects.create(user=remi, video=pod, note="tata")
         Notes.objects.create(user=remi, video=pod2)
 
-        print (" --->  SetUp of NotesTestCase : OK !")
+        print(" --->  SetUp of NotesTestCase : OK !")
 
     """
 		test attributs and str function
@@ -569,7 +840,7 @@ class NotesTestCase(TestCase):
         self.assertEqual(note.__unicode__(), "%s-%s" %
                          (note.user.username, note.video))
 
-        print (
+        print(
             "   --->  test_attributs_and_str of NotesTestCase : OK !")
 
     """
@@ -581,7 +852,7 @@ class NotesTestCase(TestCase):
         Notes.objects.get(id=2).delete()
         self.assertEquals(Notes.objects.all().count(), 0)
 
-        print (
+        print(
             "   --->  test_delete_object of NotesTestCase : OK !")
 
 """
@@ -609,7 +880,7 @@ class MediaCoursesTestCase(TestCase):
         ), mediapath="blabla", started=True, error="error1")
         #Mediacourses.objects.get_or_create(user=remi2, title="media2")
         Mediacourses.objects.create(user=remi2, title="media2", started=True)
-        print (" --->  SetUp of MediaCoursesTestCase : OK !")
+        print(" --->  SetUp of MediaCoursesTestCase : OK !")
 
     """
 		test attributs
@@ -635,7 +906,7 @@ class MediaCoursesTestCase(TestCase):
         self.assertEqual(media2.started, True)
         self.assertEqual(media2.error, None)
 
-        print (
+        print(
             "   --->  test_attributs of MediaCoursesTestCase : OK !")
 
     """
@@ -646,7 +917,7 @@ class MediaCoursesTestCase(TestCase):
         Mediacourses.objects.filter(title="media1").delete()
         self.assertEquals(Mediacourses.objects.all().count(), 1)
 
-        print (
+        print(
             "   --->  test_delete_object of MediaCoursesTestCase : OK !")
 
 
@@ -670,7 +941,7 @@ class BuildingTestCase(TestCase):
     def setUp(self):
         building = Building.objects.create(name="bulding1")
 
-        print (" --->  SetUp of BuildingTestCase : OK !")
+        print(" --->  SetUp of BuildingTestCase : OK !")
 
     """
 		test attributs
@@ -680,7 +951,7 @@ class BuildingTestCase(TestCase):
         building = Building.objects.get(id=1)
         self.assertEqual(building.name, u"bulding1")
 
-        print (
+        print(
             "   --->  test_attributs of BuildingTestCase : OK !")
 
     """
@@ -691,7 +962,7 @@ class BuildingTestCase(TestCase):
         Building.objects.get(id=1).delete()
         self.assertEquals(Building.objects.all().count(), 0)
 
-        print (
+        print(
             "   --->  test_delete_object of BuildingTestCase : OK !")
 
 """
@@ -720,7 +991,7 @@ class RecoderTestCase(TestCase):
         Recorder.objects.create(name="recorder1", image=image, adress_ip="201.10.20.10",
                                 status=True, slide=False, gmapurl="b", is_restricted=True, building=building)
 
-        print (" --->  SetUp of RecoderTestCase : OK !")
+        print(" --->  SetUp of RecoderTestCase : OK !")
 
     """
 		test attributs
@@ -740,7 +1011,7 @@ class RecoderTestCase(TestCase):
                          (record.name, record.adress_ip))
         self.assertEqual(record.ipunder(), "201_10_20_10")
 
-        print (
+        print(
             "   --->  test_attributs of RecoderTestCase : OK !")
 
     """
@@ -751,7 +1022,7 @@ class RecoderTestCase(TestCase):
         Recorder.objects.get(id=1).delete()
         self.assertEquals(Recorder.objects.all().count(), 0)
 
-        print (
+        print(
             "   --->  test_delete_object of RecoderTestCase : OK !")
 
 """
@@ -784,7 +1055,7 @@ class ReportVideoTestCase(TestCase):
         ReportVideo.objects.create(
             video=pod, user=nicolas, comment="violation des droits", answer="accepte")
 
-        print (" --->  SetUp of ReportVideoTestCase : OK !")
+        print(" --->  SetUp of ReportVideoTestCase : OK !")
 
     """
         test_attributs_with_not_comment
@@ -806,7 +1077,7 @@ class ReportVideoTestCase(TestCase):
         reportVideo.date = yesterday
         self.assertFalse(reportVideo.date_added.day == yesterday.day)
 
-        print (
+        print(
             "   --->  test_attributs_with_not_comment of ReportVideoTestCase : OK !")
 
     """
@@ -828,9 +1099,105 @@ class ReportVideoTestCase(TestCase):
         self.assertEqual(reportVideo.get_iframe_url_to_video(),
                          reportVideo.video.get_iframe_admin_integration())
 
-        print (
+        print(
             "   --->  test_attributs_with_comment of ReportVideoTestCase : OK !")
 
     """
         test delete object
     """
+
+    def test_delete_object(self):
+        ReportVideo.objects.get(id=1).delete()
+        ReportVideo.objects.get(id=2).delete()
+        self.assertEquals(ReportVideo.objects.all().count(), 0)
+
+        print(
+            "   ---> test_delete_object of ReportVideoTestCase : OK !")
+
+
+"""
+    test the rss
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
+class RSSTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        if settings.RSS:
+            user = User.objects.create(
+                username='remi', password='12345', is_active=True, is_staff=True)
+            other_type = Type.objects.get(id=1)
+            Rssfeed.objects.create(title='test1', description="blabla",
+                                   link_rss='http://test.com', owner=user, fil_type_pod=other_type)
+            Rssfeed.objects.create(title='test2', description="blabla",
+                                   link_rss='http://test.com', owner=user, fil_type_pod=other_type, type_rss='V', year=2018, is_up=False)
+
+            print(" ---> SetUp of RSSTestCase : OK !")
+
+    """
+        test all attributs when a rssfeed have been save with the minimum of attributs
+    """
+
+    def test_Rssfeed_null_attribut(self):
+        if settings.RSS:
+            date = datetime.today()
+            user = User.objects.get(username='remi')
+            rssfeed = Rssfeed.objects.get(id=1)
+            self.assertEqual(rssfeed.title, 'test1')
+            self.assertEqual(rssfeed.year, 2017)
+            self.assertEqual(rssfeed.type_rss, 'A')
+            self.assertEqual(rssfeed.is_up, True)
+            self.assertEqual(rssfeed.limit, 0)
+            self.assertEqual(rssfeed.date_update.year, date.year)
+            self.assertEqual(rssfeed.date_update.month, date.month)
+            self.assertEqual(rssfeed.date_update.day, date.day)
+            self.assertEqual(rssfeed.owner, user)
+            self.assertEqual(rssfeed.__unicode__(), rssfeed.title)
+
+            print(
+                "   ---> test_Rssfeed_null_attribut of RSSTestCase : OK !")
+
+    """
+        test attributs when a rssfeed have many attributs
+    """
+
+    def test_Rssfeed_with_attributs(self):
+        if settings.RSS:
+            date = datetime.today()
+            user = User.objects.get(username='remi')
+            rssfeed = Rssfeed.objects.get(id=2)
+            self.assertEqual(rssfeed.year, 2018)
+            self.assertEqual(rssfeed.type_rss, 'V')
+            self.assertEqual(rssfeed.is_up, False)
+            self.assertEqual(rssfeed.limit, 0)
+            self.assertEqual(rssfeed.date_update.year, date.year)
+            self.assertEqual(rssfeed.date_update.month, date.month)
+            self.assertEqual(rssfeed.date_update.day, date.day)
+            self.assertEqual(rssfeed.owner, user)
+            self.assertEqual(rssfeed.__unicode__(), rssfeed.title)
+
+            print(
+                "   ---> test_Rssfeed_with_attributs of RSSTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        if settings.RSS:
+            Rssfeed.objects.get(id=1).delete()
+            Rssfeed.objects.get(id=2).delete()
+            self.assertEquals(Rssfeed.objects.all().count(), 0)
+
+            print(
+                "   ---> test_delete_object of RSSTestCase : OK !")

@@ -1,0 +1,46 @@
+{% comment %}
+Copyright (C) 2015 Nicolas Can - Remi Kroll
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure.
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load bootstrap3 %}
+{% load i18n %}
+<form id="form_overlay" action="{% url 'video_completion_overlay' slug=video.slug %}" method="post" >
+	{% csrf_token %}
+	<div id="formcontent" class="form-container">
+		{% if form_overlay.errors or form_overlay.non_field_errors %}
+			{% trans "Your form contains errors:" %}<br/>
+			{% for error in form_overlay.non_field_errors %}
+				- {{error}} <br/>
+			{% endfor %}
+		{% endif %}
+
+		{% for field_hidden in form_overlay.hidden_fields %}
+		{{ field_hidden }}
+		{% endfor %}
+		{% for field in form_overlay.visible_fields %}
+			{% bootstrap_field field %}
+		{% endfor %}
+		{% if form_overlay.instance %}
+		<input type="hidden" id="id_overlay" name="overlay_id" value="{{form_overlay.instance.id}}">
+		{% endif %}
+		<input type="hidden" name="action" value="save">
+		<input type="submit" id="save_overlay" value="{% trans "save" %}" class="btn btn-info" />
+		<input type="reset" action="cancel" id="cancel_overlay" value="{% trans "cancel" %}" class="btn btn-danger" />
+	</div>
+</form>
