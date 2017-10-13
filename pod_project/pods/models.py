@@ -49,6 +49,10 @@ logger = logging.getLogger(__name__)
 import unicodedata
 import json
 
+H5P_ENABLED = getattr(settings, 'H5P_ENABLED', False)
+if H5P_ENABLED:
+    from h5pp.models import h5p_contents
+
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 REMOVE_VIDEO_FILE_SOURCE_ON_DELETE = getattr(
     settings, 'REMOVE_VIDEO_FILE_SOURCE_ON_DELETE', True)
@@ -382,6 +386,11 @@ class Pod(Video):
             video=self, encodingType__output_height=1080, encodingFormat="video/mp4")
         return encoding_1080.encodingFile.url
 
+    def get_highest_encoding_URL(self):
+        encoding_highest = EncodingPods.objects.filter(video=self)\
+            .order_by('-encodingType__output_height', '-encodingType__mediatype').first()
+        return encoding_highest.encodingFile.url if encoding_highest else ''
+
     def get_mediatype(self):
         # print "get_mediatype : %s - %s" %(self.id,
         # self.encodingpods_set.values_list("encodingType__mediatype",
@@ -390,6 +399,9 @@ class Pod(Video):
 
     def is_richmedia(self):
         return True if self.enrichpods_set.exclude(type=None) else False
+
+    def is_interactive(self):
+        return True if H5P_ENABLED and h5p_contents.objects.filter(slug=slugify(self.title)).count() > 0 else False
 
     def get_iframe_admin_integration(self):
         iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % self.get_full_url()
@@ -467,7 +479,7 @@ def launch_encode(sender, instance, created, **kwargs):
         instance.to_encode = False
         instance.encoding_in_progress = True
         instance.save()
-        if settings.CELERY_TO_ENCODE:
+        if hasattr(settings, 'CELERY_TO_ENCODE'):
             logger.error(
                 'CELERY_TO_ENCODE setting is now deprecated in flavor of ENCODE_VIDEO')
 
