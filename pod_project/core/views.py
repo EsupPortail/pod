@@ -80,7 +80,7 @@ def core_login(request):
     next = request.GET['next'] if request.GET.get('next') else request.POST['next'] if request.POST.get(
         'next') else request.META['HTTP_REFERER'] if request.META.get('HTTP_REFERER') else "/"
 
-    if settings.USE_CAS:
+    if settings.USE_CAS and not request.POST:
         from django_cas_gateway.views import login as login_cas
         from urllib import urlencode
 
