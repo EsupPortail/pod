@@ -46,7 +46,7 @@ voir http://www.gnu.org/licenses/
                         id="player_video"
                         class="video-js vjs-default-skin"
                         controls
-                        preload="none"
+                        preload="auto"
                         width="100%"
                         height="400"
                         {% if video.thumbnail %}
@@ -94,9 +94,8 @@ voir http://www.gnu.org/licenses/
                         id="player_video"
                         class="video-js vjs-default-skin"
                         controls
-                        preload="none"
-                        width="100%"
-                        height="300"
+                        preload="auto"
+                        style="width:100%;height:300px;"
                         {% if video.thumbnail %}
                             poster="{{ video.thumbnail.url }}"
                             data-setup='{"poster":"{{ video.thumbnail.url }}","playbackRates":[0.5, 1, 1.5, 2]}'
