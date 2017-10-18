@@ -144,6 +144,9 @@
         // Only add those sources which we can (maybe) play
         src = src.filter( function(source) {
           try {
+            if ( source.type == 'application/x-mpegURL' ) {
+              return true;
+            }
             return ( player.canPlayType( source.type ) !== '' );
           } catch (e) {
             // If a Tech doesn't yet have canPlayType just add it

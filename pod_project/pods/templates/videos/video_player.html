@@ -87,6 +87,15 @@ voir http://www.gnu.org/licenses/
                             	{% endif %}
                             {% endif %}
                         {% endfor %}
+                        {% if ENCODE_M3U8 %}
+                            <source
+                                src="/get_video_m3u8/{{ video.slug }}/{{ csrf_token }}"
+                                type="application/x-mpegURL"
+                                withCredentials=true
+                                label="auto"
+                                res="auto"
+                            />
+                        {% endif %}
                     </video>
                 {% endif %}
                 {% if mediatype == 'audio' %}

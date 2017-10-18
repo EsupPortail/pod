@@ -288,6 +288,14 @@ MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
 #
 ENCODE_WEBM = True
 
+##
+# HLS activation:
+#
+#   True: Enable HTTP Live Streaming (HLS). Add m3u8 support,
+#   False: Disable HTTP Live Streaming (HLS). Only mp4 format.
+#
+ENCODE_M3U8 = True
+
 
 ##
 # WAV audio encoding activation:
