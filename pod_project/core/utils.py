@@ -868,13 +868,15 @@ def create_main_m3u8(video_id, list_encod_video):
         videodirname = os.path.join(settings.MEDIA_URL, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id)
         videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                                                  "video_%s_%s.mp4" % (video.id, encoding_type.output_height))
-        com = "%s -v error -select_streams v:0 -show_entries stream=bit_rate -of default=noprint_wrappers=1:nokey=1 %s" % (FFPROBE, videofilename)
-        ffmproberesult = commands.getoutput(com)
-        master.write('#EXT-X-STREAM-INF:BANDWIDTH=%s,CODECS="avc1.42c00d,mp4a.40.2"\n%s/video_%s_%s.m3u8\n' %
-            (ffmproberesult, videodirname, video.id, encoding_type.output_height))
+
+        if os.path.isfile(videofilename):
+            com = "%s -v error -select_streams v:0 -show_entries stream=bit_rate -of default=noprint_wrappers=1:nokey=1 %s" % (FFPROBE, videofilename)
+            ffmproberesult = commands.getoutput(com)
+            master.write('#EXT-X-STREAM-INF:BANDWIDTH=%s,CODECS="avc1.42c00d,mp4a.40.2"\n%s/video_%s_%s.m3u8\n' %
+                (ffmproberesult, videodirname, video.id, encoding_type.output_height))
+
     master.close()
 
-        
     if DEBUG:
         print "%s" % com
     video = None
