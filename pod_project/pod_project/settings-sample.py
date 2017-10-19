@@ -9,6 +9,11 @@ from pod_project.ckeditor import *
 #
 from settings_local import *
 
+##
+# Version of the application
+#
+VERSION = '1.7.1'
+
 
 ##
 # Installed applications list
