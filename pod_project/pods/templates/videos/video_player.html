@@ -69,7 +69,7 @@ voir http://www.gnu.org/licenses/
                         {% endfor %}
 
                         {% for encoding in video.encodingpods_set.all %}
-                            {% if not video.is_draft %}
+                            {% if not video.is_draft and not encoding.encodingFormat == 'application/x-mpegURL' %}
                             <source
                                 src="/get_video_encoding/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
                                 type="{{ encoding.encodingFormat }}"
@@ -77,7 +77,7 @@ voir http://www.gnu.org/licenses/
                                 res="{{ encoding.encodingType.output_height }}"
                             >
                             {% else %}
-                            	{% if USE_PRIVATE_VIDEO %}
+                            	{% if USE_PRIVATE_VIDEO and not encoding.encodingFormat == 'application/x-mpegURL' %}
 		                            <source
 		                                src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
 		                                type="{{ encoding.encodingFormat }}"

@@ -41,13 +41,14 @@ from elasticsearch import Elasticsearch
 # django-taggit
 from taggit.managers import TaggableManager, _TaggableManager, TaggableRel
 from django.core.exceptions import ValidationError
-from core.models import Video, get_storage_path, EncodingType
+from core.models import Video, get_storage_path, EncodingType, get_media_guard
 import base64
 import logging
 from django.forms.formsets import ORDERING_FIELD_NAME
 logger = logging.getLogger(__name__)
 import unicodedata
 import json
+import os
 
 H5P_ENABLED = getattr(settings, 'H5P_ENABLED', False)
 if H5P_ENABLED:
@@ -56,6 +57,7 @@ if H5P_ENABLED:
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 REMOVE_VIDEO_FILE_SOURCE_ON_DELETE = getattr(
     settings, 'REMOVE_VIDEO_FILE_SOURCE_ON_DELETE', True)
+ENCODE_M3U8 = getattr(settings, 'ENCODE_M3U8', False)
 
 
 # gloabl function to remove accent, use in tags
@@ -403,6 +405,9 @@ class Pod(Video):
     def is_interactive(self):
         return True if H5P_ENABLED and h5p_contents.objects.filter(slug=slugify(self.title)).count() > 0 else False
 
+    def is_hls_supported(self):
+        return True if ENCODE_M3U8 and EncodingPods.objects.filter(video=self, encodingFormat="application/x-mpegURL").count() > 0 else False
+
     def get_iframe_admin_integration(self):
         iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % self.get_full_url()
         return iframe_url
@@ -532,6 +537,16 @@ def pod_files_removal(sender, instance, using, **kwargs):
     if REMOVE_VIDEO_FILE_SOURCE_ON_DELETE:
         # Original file removal
         instance.video.delete()
+
+    if ENCODE_M3U8:
+        # M3U8 and TS files removal
+        media_guard_hash = get_media_guard(instance.owner.username, instance.id)
+        path = os.path.join(settings.MEDIA_ROOT, 'videos', instance.owner.username, media_guard_hash, "%s" % instance.id)
+        list_files = os.listdir(path)
+        for file in list_files:
+            if file.endswith('.ts') or file.endswith('.m3u8'):
+                os.remove(os.path.join(path, file))
+
 
 
 @receiver(post_delete)  # instead of @receiver(post_save, sender=Rebel)

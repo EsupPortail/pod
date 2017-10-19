@@ -827,7 +827,15 @@ def encode_m3u8(video_id, videofilename, encod_video, bufsize):
             log.error(msg)
             addInfoVideo(video, msg)
             send_email(msg, video)
-        # There does not seem to be errors, follow the rest of the procedures
+        else:
+            # There does not seem to be errors, follow the rest of the procedures
+            video = None
+            video = Pod.objects.get(id=video_id)
+            ep, created = EncodingPods.objects.get_or_create(
+                video=video, encodingType=encod_video, encodingFormat="application/x-mpegURL")
+            ep.encodingFile = m3u8url
+            ep.save()
+            video.save()
 
     f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
                             video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'a+b')
