@@ -177,6 +177,20 @@ function loadVideo() {
             });
         }
 
+        // Playlist
+        if ($('div.panel-playlist').length > 0) {
+            myPlayer.on('ended', function() {
+                var pos = $('#current_video').index();
+                var cell = $('#table_playlists')[0].rows[0].cells[pos+1];
+                if (cell != undefined) {
+                    var link = $('#table_playlists')[0].rows[0].cells[pos+1].children[0].href;
+                } else {
+                    var link = $('#table_playlists')[0].rows[0].cells[0].children[0].href;
+                }
+                window.location = link;
+            });
+        };
+
         myPlayer.on('resolutionchange', function() {
             changeRes = true;
         });

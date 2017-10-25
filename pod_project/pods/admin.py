@@ -113,6 +113,10 @@ class EnrichPodsInline(admin.TabularInline):
     model = EnrichPods
     extra = 0
 
+class PlaylistPodsInline(admin.TabularInline):
+    model = Playlist
+    exra = 0
+
 
 class PodAdmin(admin.ModelAdmin):
 
@@ -179,6 +183,7 @@ admin.site.register(OverlayPods)
 admin.site.register(ChapterPods)
 admin.site.register(EnrichPods)
 admin.site.register(Notes)
+admin.site.register(Playlist)
 
 # recorder
 

@@ -108,6 +108,41 @@ class Channel(models.Model):
     def get_absolute_url(self):
         return reverse('channel', kwargs={'slug_c': self.slug})
 
+@python_2_unicode_compatible
+class Playlist(models.Model):
+    title = models.CharField(_('Title'), max_length=100, unique=True)
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
+    description = RichTextField(
+        _('Description'), config_name='complete', blank=True)
+    visible = models.BooleanField(
+        verbose_name=_('Visible'),
+        help_text=_(
+            u'If checked, the playlist page becomes accessible from the user\'s card'),
+        default=False)
+    owner = models.ForeignKey(User, related_name='owners_playlists', verbose_name=_('Owner'),
+        blank=True)
+    
+    class Meta:
+        ordering = ['title']
+        verbose_name = _('Playlist')
+        verbose_name_plural = _('Playlists')
+
+    def __unicode__(self):
+        return self.title
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Playlist, self).save(*args, **kwargs)
+
+    def get_videos(self):
+        return Pod.objects.filter(playlist=self)
+
 
 @python_2_unicode_compatible
 class Theme(models.Model):
@@ -292,6 +327,8 @@ class Pod(Video):
         Channel, verbose_name=_('Channels'), blank=True)
     theme = models.ManyToManyField(
         Theme, verbose_name=_('Themes'), blank=True)
+    playlist = models.ManyToManyField(
+        Playlist, verbose_name=_('Playlists'), blank=True)
 
     #tags = TaggableManager(help_text=_(u'Séparez les tags par des espaces, mettez les tags constituées de plusieurs mots entre guillemets.'), verbose_name=_('Tags'), blank=True)
 

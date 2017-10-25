@@ -95,6 +95,12 @@ voir http://www.gnu.org/licenses/
                                     </li>
                                 {% endif %}
                                 <li>
+                                    <a href="{% url 'pods.views.playlists_videos_list' %}">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                        {% trans 'My playlists' %}
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="{% url 'pods.views.favorites_videos_list' %}">
                                         <span class="glyphicon glyphicon-star"></span>
                                         {% trans 'My Favorites' %}

@@ -28,7 +28,7 @@ from django.utils.safestring import mark_safe
 from itertools import chain
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods, OverlayPods, ChapterPods, Favorites, Type, Discipline, Mediacourses, EnrichPods, Notes
+from pods.models import Channel, Theme, Pod, ContributorPods, TrackPods, DocPods, OverlayPods, ChapterPods, Favorites, Type, Discipline, Mediacourses, EnrichPods, Notes, Playlist
 from modeltranslation.forms import TranslationModelForm
 from django.forms.widgets import HiddenInput
 
@@ -113,6 +113,22 @@ class NotesForm(ModelForm):
         widgets = {
             'note': forms.Textarea(attrs={'rows': 5, 'cols': 15, 'class': "form-control"}),
         }
+
+class PlaylistForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(PlaylistForm, self).__init__(*args, **kwargs)
+        self.fields['owner'].widget = HiddenInput()
+        for myField in self.fields:
+            self.fields[myField].widget.attrs[
+                'placeholder'] = self.fields[myField].label
+            if self.fields[myField].required:
+                self.fields[myField].widget.attrs['class'] = 'required'
+                label_unicode = u'%s' % self.fields[myField].label
+
+    class Meta:
+        model = Playlist
+        fields = ['title', 'description', 'visible', 'owner']
 
 
 class ExtFileField(FileField):

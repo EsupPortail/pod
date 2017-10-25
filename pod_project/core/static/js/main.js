@@ -286,6 +286,33 @@ $(document).on('click', 'button#button_video_report', function(event) {
     return false;
 });
 
+$(document).on('click', 'button#button_video_playlist', function(event) {
+    event.preventDefault();
+    if($(this).parent('form').length==0) {
+        alert($(this).children('span.sr-only').text());
+    } else {
+        if(expiration_date_second > 5) {
+            //show modal box with playlist selection and save/cancel buttons
+            $("#modal_playlist_form").modal({
+                show: true,
+            });
+            $('#playlist_name.list-group-item.disabled').off('click');
+        } else {
+            alert(expiredsession);
+            location.reload();
+        }
+    }
+    return false;
+});
+
+$(document).on('click', '#playlist_name', function (event) {
+    if($(this).attr('class') == 'list-group-item') {
+        $(this).attr('class', 'list-group-item active');
+    }else if($(this).attr('class') != 'list-group-item disabled') {
+        $(this).attr('class', 'list-group-item');
+    }
+});
+
 
 /*
 

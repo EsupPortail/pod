@@ -28,6 +28,7 @@ from pods.forms import NotesForm
 from pods.forms import MediacoursesForm
 from pods.forms import EnrichPodsForm
 from pods.forms import SearchForm
+from pods.forms import PlaylistForm
 from pods.models import *
 from pods.utils_rssfeed import MySelectFeed
 from django.contrib import messages
@@ -241,6 +242,7 @@ def channel_edit(request, slug_c):
                               {'form': channel_form, 'formset': formset,
                                   "referer": referer},
                               context_instance=RequestContext(request))
+
 
 
 def types(request):
@@ -516,6 +518,7 @@ def video(request, slug, slug_c=None, slug_t=None):
     show_report = getattr(settings, 'SHOW_REPORT', False)
     param = None
     channel = None
+    playlists = None
     if slug_c:
         channel = get_object_or_404(Channel, slug=slug_c)
         param = "slug_c=%s" % (str(slug_c),)
@@ -618,16 +621,22 @@ def video(request, slug, slug_c=None, slug_t=None):
                 )
 
     if request.user.is_authenticated():
+        playlists = Playlist.objects.filter(owner=request.user)
+        playlist = None
         note, created = Notes.objects.get_or_create(
             video=video, user=request.user)
         notes_form = NotesForm(instance=note)
+
+        if request.GET.get('playlist'):
+            playlist = Playlist.objects.get(slug=request.GET['playlist'])
+
         if request.GET.get('action') and request.GET.get('action') == "download":
             return download_video(video, request.GET)
         else:
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
-                    'notes_form': notes_form, 'show_report': show_report, 'hash_id': hash_id},
+                    'notes_form': notes_form, 'show_report': show_report, 'hash_id': hash_id, 'playlists': playlists, 'playlist': playlist},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
@@ -870,6 +879,111 @@ def video_add_report(request, slug):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot acces this page.'))
         raise PermissionDenied
+
+
+@login_required
+@csrf_protect
+def video_add_playlist(request, slug):
+    video = get_object_or_404(Pod, slug=slug)
+    if request.POST and request.POST.get('playlist'):
+        playlist = get_object_or_404(Playlist, slug=slugify(request.POST['playlist']))
+        if not request.POST.get('remove'):
+            if video.password:
+                messages.add_message(
+                    request, messages.ERROR, _(u'You can not add a video with a password.'))
+                raise PermissionDenied
+
+            msg = _(u'The video has been added to your playlist.')
+            video.playlist.add(playlist)
+            video.save()
+            if request.is_ajax():
+                some_data_to_dump = {'msg': "%s" % msg}
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+        else:
+            msg = _(u'The video has been deleted from your playlist.')
+            video.playlist.remove(playlist)
+            video.save()
+            if request.is_ajax():
+                some_data_to_dump = {'msg': "%s" % msg}
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+
+        messages.add_message(request, messages.INFO, msg)
+        return HttpResponseRedirect(reverse('pods.views.playlists_videos_list'))
+    else:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot access this page.'))
+        raise PermissionDenied
+
+@login_required
+@csrf_protect
+def playlists_videos_list(request):
+    if request.POST:
+        playlists = Playlist.objects.filter(owner=request.user)
+        # new
+        if request.POST.get('action') and request.POST['action'] == 'new':
+            playlist_form = PlaylistForm(request.POST)
+            return render_to_response("playlists/my_playlists.html",
+                                        {'playlist_form': playlist_form,
+                                            'playlists': playlists},
+                                        context_instance=RequestContext(request))
+
+        if request.POST.get('action') and request.POST['action'] == 'save':
+            playlist_form = None
+            if request.POST.get('playlist_id') and request.POST.get('playlist_id') != "None":
+                playlist = get_object_or_404(
+                    Playlist, id=request.POST.get('playlist_id'))
+                playlist_form = PlaylistForm(request.POST, instance=playlist)
+            else:
+                playlist_form = PlaylistForm(request.POST)
+
+            if playlist_form.is_valid():
+                playlist_form.save()
+                playlist_form = PlaylistForm(initial={"owner": request.user})
+                return render_to_response("playlists/my_playlists.html",
+                                          {'playlist_form': playlist_form,
+                                            'playlists': playlists},
+                                          context_instance=RequestContext(request))
+            else:
+                playlist_form = PlaylistForm(initial={"owner": request.user})
+                return render_to_response("playlists/my_playlists.html",
+                                          {'playlist_form': playlist_form,
+                                            'playlists': playlists},
+                                          context_instance=RequestContext(request))
+                
+        if request.POST.get('action') and request.POST['action'] == 'modify':
+            playlist = get_object_or_404(Playlist, id=request.POST['id'])
+            playlist_form = PlaylistForm(instance=playlist)
+            return render_to_response("playlists/my_playlists.html",
+                                        {'playlist_form': playlist_form,
+                                            'playlists': playlists},
+                                        context_instance=RequestContext(request))
+
+        if request.POST.get('action') and request.POST['action'] == 'delete':
+            playlist = get_object_or_404(Playlist, id=request.POST['id'])
+            playlist_delete = playlist.delete()
+            playlist_form = PlaylistForm(initial={"owner": request.user})
+            return render_to_response("playlists/my_playlists.html",
+                                      {'playlist_form': playlist_form,
+                                        'playlists': playlists},
+                                      context_instance=RequestContext(request))
+
+    if request.GET.get('owner'):
+        user = User.objects.get(username=request.GET['owner'])
+        playlists = Playlist.objects.filter(owner=user)
+        return render_to_response("playlists/my_playlists.html",
+                                  {'playlists': playlists,
+                                  'owner': user},
+                                  context_instance=RequestContext(request))
+
+    playlist_form = PlaylistForm(initial={"owner": request.user})
+    playlists = Playlist.objects.filter(owner=request.user)
+    return render_to_response("playlists/my_playlists.html",
+                              {'playlist_form': playlist_form,
+                                'playlists': playlists},
+                              context_instance=RequestContext(request))
+
 
 
 @login_required
