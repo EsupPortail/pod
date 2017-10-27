@@ -90,15 +90,28 @@ $(window).load(function(){
     });
     modify_order.on('click', function(event) {
     	var parent = $(this).closest('table');
-    	console.log(parent);
     	var playsize = $(parent).find('td#video-position').length;
     	var html = '';
     	var select = $(parent).find('td#video-position').children('select');
    		var number = 0;
    		var playlist_order = {};
+   		var bad_order = false;
 
    		// Exit edit position mode
     	if($(select).length != 0) {
+    		// Check if numbers are not equal
+    		var selected_order = [];
+    		$(select).each(function(index, object) {
+    			if(!selected_order.includes($(object).val())) {
+    				selected_order.push($(object).val());
+    			}else{
+    				show_messages('Order numbers must be different.', 'danger');
+    				bad_order = true;
+    			}
+    		});
+    		if (bad_order) { return false; }
+
+    		// Collect the new order
     		$(parent).find('td#video-position').each(function(index, object) {
     			$(object).html($(object).children('select').val());
     			var id = $(parent).find('td#video-id')[index].innerHTML;
@@ -106,6 +119,8 @@ $(window).load(function(){
     			playlist_order[id] = order;
     		});
     		var playlist = ($(parent).parent().find('h3').text()).match(/[^-]*/i)
+
+    		// Post new order
     		$.ajax({
     			type: "POST",
     			url: "{% url 'playlists_videos_list' %}",

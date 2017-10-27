@@ -289,7 +289,10 @@ $(document).on('change', '#showinteractive', function() {
     {% if playlist %}
         <div class="panel panel-primary panel-playlist" style="margin:10px;">
             <div class="panel-heading">
-                <h3 class="panel-title">{{ playlist.info.title }}&nbsp; - {{ playlist.videos.count }} video(s)</h3>
+                <h3 class="panel-title">
+                    {{ playlist.info.title }}&nbsp; - {{ playlist.videos.count }} video(s)
+                    <span class="pull-right">{% trans 'Owner' %} : {{ playlist.info.owner.username }}</span>
+                </h3>
             </div>
             <table class="table table-striped table-condensed scroll" id="table_playlists">
                 <tbody>
@@ -611,7 +614,7 @@ $(document).on('change', '#showinteractive', function() {
                                     {% for element in playlists.video %}
                                         {% if element.playlist.visible %}
                                         <a href="{{ element.video.get_full_url }}?playlist={{ element.playlist.slug }}&autoplay=true">
-                                            <strong><li>{{ element.playlist.title }}</li></strong>
+                                            <li><strong>{{ element.playlist.title }}</strong> ({{element.playlist.owner.username }})</li>
                                         </a>
                                         {% endif %}
                                     {% endfor %}
