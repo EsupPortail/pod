@@ -34,9 +34,12 @@ class Migration(migrations.Migration):
             name='PlaylistVideo',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('position', models.PositiveSmallIntegerField(default=1, help_text='Position of the video in a playlist.', verbose_name='Position')),
+                ('position', models.PositiveSmallIntegerField(default=0, help_text='Position of the video in a playlist.', verbose_name='Position')),
                 ('playlist', models.ForeignKey(verbose_name='playlist', to='pods.Playlist')),
                 ('video', models.ForeignKey(verbose_name='video', to='pods.Pod')),
             ],
+            options={
+                'ordering': ['position'],
+            },
         ),
     ]

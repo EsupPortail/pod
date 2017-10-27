@@ -296,7 +296,7 @@ voir http://www.gnu.org/licenses/
                             <div class="form-group">
                                 <label for="playlist">{% trans 'Select one of your playlists:' %}</label><br/>
                                 <div class="list-group" id="playlist">
-                                {% for playlist in playlists %}
+                                {% for playlist in playlists.owner %}
                                     {% if video.id in playlist.get_videos_list %}
                                     <a href="#" class="list-group-item disabled" id="playlist_name">{{ playlist.title }} - {% trans 'Already in this playlist' %}
                                         <span class="badge">{{ playlist.get_videos.count }}</span>

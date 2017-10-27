@@ -289,26 +289,26 @@ $(document).on('change', '#showinteractive', function() {
     {% if playlist %}
         <div class="panel panel-primary panel-playlist" style="margin:10px;">
             <div class="panel-heading">
-                <h3 class="panel-title">{{ playlist.title }}&nbsp; - {{ playlist.get_videos.count }} video(s)</h3>
+                <h3 class="panel-title">{{ playlist.info.title }}&nbsp; - {{ playlist.videos.count }} video(s)</h3>
             </div>
             <table class="table table-striped table-condensed scroll" id="table_playlists">
                 <tbody>
                     <tr>
-                        {% for video_p in playlist.get_videos %}
-                        {% if video_p.slug == video.slug %}
+                        {% for p_video in playlist.videos %}
+                        {% if p_video.video.slug == video.slug %}
                         <td id="current_video">
                         {% else %}
                         <td>
                         {% endif %}
-                            <a href="{{ video_p.get_full_url }}?playlist={{ playlist.slug }}&autoplay=true">
-                                <img src="{{ video_p.get_thumbnail_url }}" class="playlist_img img-responsive img-thumbnail" alt="{% trans 'Thumbnail' %}">
+                            <a href="{{ p_video.video.get_full_url }}?playlist={{ playlist.info.slug }}&autoplay=true">
+                                <img src="{{ p_video.video.get_thumbnail_url }}" class="playlist_img img-responsive img-thumbnail" alt="{% trans 'Thumbnail' %}">
                             </a>
                         </td>
                         {% endfor %}
                     </tr>
                     <tr>
-                        {% for video_p in playlist.get_videos %}
-                        <td>{{ video_p.title }}</td>
+                        {% for p_video in playlist.videos %}
+                        <td>{{ p_video.video.title }}</td>
                         {% endfor %}
                     </tr>
                 </tbody>
@@ -603,6 +603,20 @@ $(document).on('change', '#showinteractive', function() {
                                 {% endif %}
                             <br />
                             {% endfor %}
+                        {% endif %}
+                        {% if playlists.video %}
+                            <li class="list-group-item">
+                                {% trans 'Playlists' %} :
+                                    <ul>
+                                    {% for element in playlists.video %}
+                                        {% if element.playlist.visible %}
+                                        <a href="{{ element.video.get_full_url }}?playlist={{ element.playlist.slug }}&autoplay=true">
+                                            <strong><li>{{ element.playlist.title }}</li></strong>
+                                        </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </ul>
+                            </li>
                         {% endif %}
                         </ul>
                     </div>

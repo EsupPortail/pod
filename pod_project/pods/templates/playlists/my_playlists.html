@@ -50,12 +50,7 @@ $(window).load(function(){
     var accordion_body = $('#accordeon li.contenuTitre');
     var form_new = $('#add_playlist');
     var form_cancel = $('#cancel_playlist');
-    var modify_order = $('#modify-order');
-
-    //On attribut la classe "active" au premier .titre de la liste et on ouvre par effet de slide .contenuTitre qui suit .active :
-    accordion_head.first().addClass('active').parent().next().slideDown('normal');
-    accordion_head.first().children().removeClass('glyphicon glyphicon-chevron-down');
-    accordion_head.first().children().addClass('glyphicon glyphicon-chevron-up');
+    var modify_order = $('a#modify-order');
 
     // when click on .titre
     accordion_head.on('click', function(event) {
@@ -94,29 +89,32 @@ $(window).load(function(){
     	$('#add_playlist').css('display', 'inline-block');
     });
     modify_order.on('click', function(event) {
-    	var playsize = $('td#video-position').length;
+    	var parent = $(this).closest('table');
+    	console.log(parent);
+    	var playsize = $(parent).find('td#video-position').length;
     	var html = '';
-    	var select = $('td#video-position').children('select');
+    	var select = $(parent).find('td#video-position').children('select');
    		var number = 0;
    		var playlist_order = {};
 
    		// Exit edit position mode
     	if($(select).length != 0) {
-    		$('td#video-position').each(function(index, object) {
+    		$(parent).find('td#video-position').each(function(index, object) {
     			$(object).html($(object).children('select').val());
-    			var title = $(object).next().html();
+    			var id = $(parent).find('td#video-id')[index].innerHTML;
     			var order = $(object).html();
-    			playlist_order[title] = order;
+    			playlist_order[id] = order;
     		});
+    		var playlist = ($(parent).parent().find('h3').text()).match(/[^-]*/i)
     		$.ajax({
     			type: "POST",
     			url: "{% url 'playlists_videos_list' %}",
-    			data: { order: JSON.stringify(playlist_order)}
+    			data: { order: JSON.stringify(playlist_order), playlist: JSON.stringify(playlist)}
     		});
     		return false;
     	}
     	// Edit position mode
-    	$('td#video-position').each(function(index, td) {
+    	$(parent).find('td#video-position').each(function(index, td) {
     		html = '<select class="form-control" id="select_position">'
     		number = $(td).html();
     		for (i = 1; i < playsize + 1; i++){
@@ -156,7 +154,7 @@ $(window).load(function(){
 			<span class="playlist_videos">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h3 class="panel-title">{{ playlist.title }}&nbsp;- {{playlist.get_videos.count}} video(s)<span class="pull-right">{% if playlist.visible %}{% trans 'Visible' %}{% endif %}</span></h3>
+						<h3 class="panel-title">{{ playlist.title }}- {{playlist.get_videos.count}} video(s)<span class="pull-right">{% if playlist.visible %}{% trans 'Visible' %}{% endif %}</span></h3>
 					</div>
 					<table class="table table-striped table-condensed scroll" id="table_playlists">
 						<thead>
@@ -186,6 +184,7 @@ $(window).load(function(){
 										<input type="submit" title="{% trans 'Delete from playlist' %}" value="{% trans 'delete' %}" class="bn btn-danger btn-sm" />
 									</form>
 								</td>
+								<td id="video-id" style="display:none;">{{ element.video.id }}</td>
 								{% endif %}
 							</tr>
 							{% endfor %}

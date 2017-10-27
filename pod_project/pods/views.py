@@ -621,15 +621,23 @@ def video(request, slug, slug_c=None, slug_t=None):
                 )
 
     if request.user.is_authenticated():
-        playlists = Playlist.objects.filter(owner=request.user)
+        playlists = {
+            'owner': Playlist.objects.filter(owner=request.user),
+            'video': PlaylistVideo.objects.filter(video=video)
+        }
         playlist = None
         note, created = Notes.objects.get_or_create(
             video=video, user=request.user)
         notes_form = NotesForm(instance=note)
 
         if request.GET.get('playlist'):
-            playlist = Playlist.objects.get(slug=request.GET['playlist'])
-            if not request.user == playlist.owner:
+            info = Playlist.objects.get(slug=request.GET['playlist'])
+            videos = PlaylistVideo.objects.filter(playlist=info)
+            playlist = {
+                'info': info,
+                'videos': videos
+            }
+            if not request.user == playlist['info'].owner and not playlist['info'].visible:
                 messages.add_message(
                     request, messages.ERROR, _(u'You don\'t have access to this playlist.'))
                 return render_to_response(
@@ -983,9 +991,14 @@ def playlists_videos_list(request):
         # position
         if request.POST.get('order') and request.is_ajax():
             msg = _(u'The order of the playlist has changed.')
-            result = json.loads(request.POST['order'])
-            for title, number in result.iteritems():
-                PlaylistVideo.objects.get(playlist=playlist).update(position=number)
+            new_order = json.loads(request.POST['order'])
+            playlist_title = json.loads(request.POST['playlist'])[0]
+            playlist = Playlist.objects.get(title=playlist_title)
+            for video_id, order_num in new_order.iteritems():
+                video_info = Pod.objects.get(id=video_id)
+                video_update = PlaylistVideo.objects.get(playlist=playlist, video=video_info)
+                video_update.position = order_num
+                video_update.save()
 
             some_data_to_dump = {'msg': "%s" % msg}
             data = json.dumps(some_data_to_dump)

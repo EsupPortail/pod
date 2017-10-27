@@ -1363,8 +1363,11 @@ class PlaylistVideo(models.Model):
     playlist = models.ForeignKey(Playlist, verbose_name=_('playlist'))
     video = models.ForeignKey(Pod, verbose_name=_('video'))
     position = models.PositiveSmallIntegerField(
-        _('Position'), default=1,
+        _('Position'), default=0,
         help_text=_(u'Position of the video in a playlist.'))
+
+    class Meta:
+        ordering = ['position']
 
     def __unicode__(self):
         return u"Video:%s - Playlist:%s - Position:%s" % (self.video.title, self.playlist.title, self.position)
