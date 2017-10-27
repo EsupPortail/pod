@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('slug', models.SlugField(help_text='Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.', unique=True, max_length=100, verbose_name='Slug')),
                 ('description', ckeditor.fields.RichTextField(verbose_name='Description', blank=True)),
                 ('visible', models.BooleanField(default=False, help_text="If checked, the playlist page becomes accessible from the user's card", verbose_name='Visible')),
-                ('owner', models.ForeignKey(related_name='owners_playlists', verbose_name='Owner', blank=True, to=settings.AUTH_USER_MODEL)),
+                ('owner', models.ForeignKey(related_name='playlist_owner', verbose_name='Owner', blank=True, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['title'],
@@ -30,9 +30,13 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Playlists',
             },
         ),
-        migrations.AddField(
-            model_name='pod',
-            name='playlist',
-            field=models.ManyToManyField(to='pods.Playlist', verbose_name='Playlists', blank=True),
+        migrations.CreateModel(
+            name='PlaylistVideo',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('position', models.PositiveSmallIntegerField(default=1, help_text='Position of the video in a playlist.', verbose_name='Position')),
+                ('playlist', models.ForeignKey(verbose_name='playlist', to='pods.Playlist')),
+                ('video', models.ForeignKey(verbose_name='video', to='pods.Pod')),
+            ],
         ),
     ]

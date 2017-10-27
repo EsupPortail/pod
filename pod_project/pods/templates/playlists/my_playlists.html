@@ -50,6 +50,7 @@ $(window).load(function(){
     var accordion_body = $('#accordeon li.contenuTitre');
     var form_new = $('#add_playlist');
     var form_cancel = $('#cancel_playlist');
+    var modify_order = $('#modify-order');
 
     //On attribut la classe "active" au premier .titre de la liste et on ouvre par effet de slide .contenuTitre qui suit .active :
     accordion_head.first().addClass('active').parent().next().slideDown('normal');
@@ -92,6 +93,41 @@ $(window).load(function(){
     	$('#form_playlist').find('.panel-title').html("{% trans 'New playlist' %}");
     	$('#add_playlist').css('display', 'inline-block');
     });
+    modify_order.on('click', function(event) {
+    	var playsize = $('td#video-position').length;
+    	var html = '';
+    	var select = $('td#video-position').children('select');
+   		var number = 0;
+   		var playlist_order = {};
+
+   		// Exit edit position mode
+    	if($(select).length != 0) {
+    		$('td#video-position').each(function(index, object) {
+    			$(object).html($(object).children('select').val());
+    			var title = $(object).next().html();
+    			var order = $(object).html();
+    			playlist_order[title] = order;
+    		});
+    		$.ajax({
+    			type: "POST",
+    			url: "{% url 'playlists_videos_list' %}",
+    			data: { order: JSON.stringify(playlist_order)}
+    		});
+    		return false;
+    	}
+    	// Edit position mode
+    	$('td#video-position').each(function(index, td) {
+    		html = '<select class="form-control" id="select_position">'
+    		number = $(td).html();
+    		for (i = 1; i < playsize + 1; i++){
+    			html = html.concat('<option>'+i+'</option>');
+    		}
+    		html = html.concat('</select>');
+    		$(td).html(html);
+    		$(td).children('select').val(number);
+    		html = '';
+    	});
+    });
 
 });
 </script>
@@ -125,7 +161,7 @@ $(window).load(function(){
 					<table class="table table-striped table-condensed scroll" id="table_playlists">
 						<thead>
 							<tr>
-								<th>{% trans 'Position' %}</th>
+								<th><a href="#" id="modify-order"><span class="glyphicon glyphicon-pencil"></span></a>{% trans 'Position' %}</th>
 								<th>{% trans 'Title' %}</th>
 								<th>{% trans 'Owner' %}</th>
 								<th>{% trans 'Thumbnail' %}</th>
@@ -134,16 +170,16 @@ $(window).load(function(){
 							</tr>
 						</thead>
 						<tbody>
-							{% for video in playlist.get_videos %}
+							{% for element in playlist.get_videos %}
 							<tr>
-								<td>{{ forloop.counter }}</td>
-								<td>{{ video.title }}</td>
-								<td>{{ video.owner.username }}</td>
-								<td><img src="{{ video.get_thumbnail_url }}" class="playlist_img img-responsive img-thumbnail" alt="{% trans 'Thumbnail' %}"></td>
-								<td><a href="{{ video.get_full_url }}">{% trans 'Go to the video' %}</a></td>
+								<td id="video-position">{{ element.position }}</td>
+								<td>{{ element.video.title }}</td>
+								<td>{{ element.video.owner.username }}</td>
+								<td><img src="{{ element.video.get_thumbnail_url }}" class="playlist_img img-responsive img-thumbnail" alt="{% trans 'Thumbnail' %}"></td>
+								<td><a href="{{ element.video.get_full_url }}">{% trans 'Go to the video' %}</a></td>
 								{% if playlist.owner == request.user %}
 								<td>
-									<form class="remove_video" action="{% url 'video_add_playlist' slug=video.slug %}" method="post">
+									<form class="remove_video" action="{% url 'video_add_playlist' slug=element.video.slug %}" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="remove" value="remove">
 										<input type="hidden" name="playlist" value="{{playlist.slug}}">
@@ -178,7 +214,7 @@ $(window).load(function(){
 							{% endif %}
 							{% if playlist.get_videos.count != 0 %}
 							<tr>
-								<form class="form_launch" action="{% url 'video' slug=playlist.get_videos.0.slug %}" method="get">
+								<form class="form_launch" action="{% url 'video' slug=playlist.get_videos.0.video.slug %}" method="get">
 									<input type="hidden" name="playlist" value="{{playlist.slug}}">
 									<input type="hidden" name="autoplay" value="true">
 									<input type="submit" title="{% trans 'Launch the playlist' %}" value="{% trans 'Launch the playlist' %}" id="launch_playlist" class="btn btn-info btn-sm">

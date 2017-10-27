@@ -108,41 +108,6 @@ class Channel(models.Model):
     def get_absolute_url(self):
         return reverse('channel', kwargs={'slug_c': self.slug})
 
-@python_2_unicode_compatible
-class Playlist(models.Model):
-    title = models.CharField(_('Title'), max_length=100, unique=True)
-    slug = models.SlugField(
-        _('Slug'), unique=True, max_length=100,
-        help_text=_(
-            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
-    description = RichTextField(
-        _('Description'), config_name='complete', blank=True)
-    visible = models.BooleanField(
-        verbose_name=_('Visible'),
-        help_text=_(
-            u'If checked, the playlist page becomes accessible from the user\'s card'),
-        default=False)
-    owner = models.ForeignKey(User, related_name='owners_playlists', verbose_name=_('Owner'),
-        blank=True)
-    
-    class Meta:
-        ordering = ['title']
-        verbose_name = _('Playlist')
-        verbose_name_plural = _('Playlists')
-
-    def __unicode__(self):
-        return self.title
-
-    def __str__(self):
-        return "%s" % (self.title)
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super(Playlist, self).save(*args, **kwargs)
-
-    def get_videos(self):
-        return Pod.objects.filter(playlist=self)
-
 
 @python_2_unicode_compatible
 class Theme(models.Model):
@@ -327,8 +292,6 @@ class Pod(Video):
         Channel, verbose_name=_('Channels'), blank=True)
     theme = models.ManyToManyField(
         Theme, verbose_name=_('Themes'), blank=True)
-    playlist = models.ManyToManyField(
-        Playlist, verbose_name=_('Playlists'), blank=True)
 
     #tags = TaggableManager(help_text=_(u'Séparez les tags par des espaces, mettez les tags constituées de plusieurs mots entre guillemets.'), verbose_name=_('Tags'), blank=True)
 
@@ -1352,3 +1315,62 @@ class Rssfeed(models.Model):
 
     def __str__(self):
         return self.title
+
+##################################### PLAYLIST ###########################
+
+@python_2_unicode_compatible
+class Playlist(models.Model):
+    title = models.CharField(_('Title'), max_length=100, unique=True)
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
+    description = RichTextField(
+        _('Description'), config_name='complete', blank=True)
+    visible = models.BooleanField(
+        verbose_name=_('Visible'),
+        help_text=_(
+            u'If checked, the playlist page becomes accessible from the user\'s card'),
+        default=False)
+    owner = models.ForeignKey(User, related_name='playlist_owner', verbose_name=_('Owner'),
+        blank=True)
+
+    
+    class Meta:
+        ordering = ['title']
+        verbose_name = _('Playlist')
+        verbose_name_plural = _('Playlists')
+
+    def __unicode__(self):
+        return self.title
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Playlist, self).save(*args, **kwargs)
+
+    def get_videos(self):
+        return PlaylistVideo.objects.filter(playlist=self)
+
+    def get_videos_list(self):
+        return PlaylistVideo.objects.filter(playlist=self).values_list('video', flat=True)
+
+
+@python_2_unicode_compatible
+class PlaylistVideo(models.Model):
+    playlist = models.ForeignKey(Playlist, verbose_name=_('playlist'))
+    video = models.ForeignKey(Pod, verbose_name=_('video'))
+    position = models.PositiveSmallIntegerField(
+        _('Position'), default=1,
+        help_text=_(u'Position of the video in a playlist.'))
+
+    def __unicode__(self):
+        return u"Video:%s - Playlist:%s - Position:%s" % (self.video.title, self.playlist.title, self.position)
+
+    def __str__(self):
+        return "%s - %s - %s" % (self.video.title, self.playlist.title, self.position)
+
+    def get_position(self, playlist):
+        return PlaylistVideo.objects.filter(playlist=playlist).latest('position').position

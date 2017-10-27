@@ -629,6 +629,15 @@ def video(request, slug, slug_c=None, slug_t=None):
 
         if request.GET.get('playlist'):
             playlist = Playlist.objects.get(slug=request.GET['playlist'])
+            if not request.user == playlist.owner:
+                messages.add_message(
+                    request, messages.ERROR, _(u'You don\'t have access to this playlist.'))
+                return render_to_response(
+                    'videos/video.html',
+                    {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
+                        'notes_form': notes_form, 'show_report': show_report, 'hash_id': hash_id, 'playlists': playlists},
+                    context_instance=RequestContext(request)
+                )
 
         if request.GET.get('action') and request.GET.get('action') == "download":
             return download_video(video, request.GET)
@@ -894,16 +903,16 @@ def video_add_playlist(request, slug):
                 raise PermissionDenied
 
             msg = _(u'The video has been added to your playlist.')
-            video.playlist.add(playlist)
-            video.save()
+            new = PlaylistVideo.objects.create(playlist=playlist, video=video)
+            new.position = new.get_position(playlist) + 1
+            new.save()
             if request.is_ajax():
                 some_data_to_dump = {'msg': "%s" % msg}
                 data = json.dumps(some_data_to_dump)
                 return HttpResponse(data, content_type='application/json')
         else:
             msg = _(u'The video has been deleted from your playlist.')
-            video.playlist.remove(playlist)
-            video.save()
+            PlaylistVideo.objects.get(playlist=playlist, video=video).delete()
             if request.is_ajax():
                 some_data_to_dump = {'msg': "%s" % msg}
                 data = json.dumps(some_data_to_dump)
@@ -929,6 +938,7 @@ def playlists_videos_list(request):
                                             'playlists': playlists},
                                         context_instance=RequestContext(request))
 
+        # save
         if request.POST.get('action') and request.POST['action'] == 'save':
             playlist_form = None
             if request.POST.get('playlist_id') and request.POST.get('playlist_id') != "None":
@@ -951,7 +961,7 @@ def playlists_videos_list(request):
                                           {'playlist_form': playlist_form,
                                             'playlists': playlists},
                                           context_instance=RequestContext(request))
-                
+        # modify
         if request.POST.get('action') and request.POST['action'] == 'modify':
             playlist = get_object_or_404(Playlist, id=request.POST['id'])
             playlist_form = PlaylistForm(instance=playlist)
@@ -959,15 +969,27 @@ def playlists_videos_list(request):
                                         {'playlist_form': playlist_form,
                                             'playlists': playlists},
                                         context_instance=RequestContext(request))
-
+        # delete
         if request.POST.get('action') and request.POST['action'] == 'delete':
             playlist = get_object_or_404(Playlist, id=request.POST['id'])
             playlist_delete = playlist.delete()
+            playlistVideo = PlaylistVideo.objects.filter(playlist=playlist_delete).delete()
             playlist_form = PlaylistForm(initial={"owner": request.user})
             return render_to_response("playlists/my_playlists.html",
                                       {'playlist_form': playlist_form,
                                         'playlists': playlists},
                                       context_instance=RequestContext(request))
+
+        # position
+        if request.POST.get('order') and request.is_ajax():
+            msg = _(u'The order of the playlist has changed.')
+            result = json.loads(request.POST['order'])
+            for title, number in result.iteritems():
+                PlaylistVideo.objects.get(playlist=playlist).update(position=number)
+
+            some_data_to_dump = {'msg': "%s" % msg}
+            data = json.dumps(some_data_to_dump)
+            return HttpResponse(data, content_type='application/json')
 
     if request.GET.get('owner'):
         user = User.objects.get(username=request.GET['owner'])
