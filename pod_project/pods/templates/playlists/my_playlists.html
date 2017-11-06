@@ -124,7 +124,11 @@ $(window).load(function(){
     		$.ajax({
     			type: "POST",
     			url: "{% url 'playlists_videos_list' %}",
-    			data: { order: JSON.stringify(playlist_order), playlist: JSON.stringify(playlist)}
+    			data: { order: JSON.stringify(playlist_order), playlist: JSON.stringify(playlist)},
+    			success: function (data) {
+    				show_messages(data.msg);
+    				location.reload();
+    			}
     		});
     		return false;
     	}

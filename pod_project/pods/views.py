@@ -820,7 +820,7 @@ def video_add_favorite(request, slug):
         return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot acces this page.'))
+            request, messages.ERROR, _(u'You cannot access this page.'))
         raise PermissionDenied
 
 
@@ -894,7 +894,7 @@ def video_add_report(request, slug):
         return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot acces this page.'))
+            request, messages.ERROR, _(u'You cannot access this page.'))
         raise PermissionDenied
 
 
@@ -1039,7 +1039,7 @@ def video_notes(request, slug):
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot acces this page.'))
+            request, messages.ERROR, _(u'You cannot access this page.'))
         raise PermissionDenied
 
 
