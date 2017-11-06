@@ -167,6 +167,16 @@ if settings.ATOM_SD:
             PodcastSdFeed(), name='podcast_sd'),
     ]
 
+##
+# OEMBED feature patterns
+#
+if settings.OEMBED:
+    # OEMBED href
+    urlpatterns += [
+        url(r'^oembed/$',
+            'pods.views.video_oembed', name='video_oembed'),
+    ]
+
 #
 #       End of optional feature patterns
 #
