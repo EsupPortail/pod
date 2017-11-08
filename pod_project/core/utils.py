@@ -61,7 +61,7 @@ ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -cod
 ENCODE_WEBM_CMD = getattr(settings, 'ENCODE_WEBM_CMD',
                           "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s")
 ENCODE_M3U8_CMD = getattr(settings, 'ENCODE_M3U8_CMD',
-                          "%(ffmpeg)s -i %(src)s -profile:v baseline -level 3.0 -start_number 0 -hls_time 10 -hls_list_size 0 -f hls %(out)s")
+                          "%(ffmpeg)s -i %(src)s -profile:v baseline -level 3.0 -start_number 0 -hls_time 10 -hls_list_size 0 -hls_base_url %(url)s -f hls %(out)s")
 ENCODE_MP3_CMD = getattr(settings, 'ENCODE_MP3_CMD',
                          "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s")
 ENCODE_WAV_CMD = getattr(settings, 'ENCODE_WAV_CMD',
@@ -796,10 +796,12 @@ def encode_m3u8(video_id, videofilename, encod_video, bufsize):
                                 "video_%s_%s.m3u8" % (video.id, encod_video.output_height))
     m3u8url = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                            "video_%s_%s.m3u8" % (video.id, encod_video.output_height))
+    videodirname = os.path.join(settings.MEDIA_URL, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id) + '/'
 
     com = ENCODE_M3U8_CMD % {
         'ffmpeg': FFMPEG,
         'src': videofilename,
+        'url': videodirname,
         'out': m3u8filename
     }
     if DEBUG:
@@ -876,6 +878,10 @@ def create_main_m3u8(video_id, list_encod_video):
                 (ffmproberesult, videodirname, video.id, encoding_type.output_height))
 
     master.close()
+
+    for encodingMP4 in video.encodingpods_set.all():
+        if encodingMP4.encodingFile and encodingMP4.encodingFormat == 'video/mp4':
+            encodingMP4.delete()
 
     if DEBUG:
         print "%s" % com

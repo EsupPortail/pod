@@ -69,7 +69,7 @@ voir http://www.gnu.org/licenses/
                         {% endfor %}
 
                         {% for encoding in video.encodingpods_set.all %}
-                            {% if not video.is_draft and not encoding.encodingFormat == 'application/x-mpegURL' %}
+                            {% if not video.is_draft %}
                             <source
                                 src="/get_video_encoding/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
                                 type="{{ encoding.encodingFormat }}"
