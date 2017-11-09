@@ -50,7 +50,10 @@ def _verify_cas2(ticket, service):
         response = page.read()
         tree = ElementTree.fromstring(response)
         if tree[0].tag.endswith('authenticationSuccess'):
-            return tree[0][0].text, None
+	    for element in tree[0][0]:
+               	if element.tag.endswith('user'):
+                	user = element.text
+            return user, None
         else:
             return None, None
     finally:
