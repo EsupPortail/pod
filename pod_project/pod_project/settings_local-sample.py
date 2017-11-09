@@ -460,19 +460,18 @@ ATOM_SD = False
 
 # Encode with Celery
 #--------------------
+#from pod_project.tasks import task_start_encode
+#def encode_video(video):
+#   task_start_encode.delay(video)
 
-# from pod_project.tasks import task_start_encode
-# def encode_video(video):
-#     task_start_encode.delay(video)
-#
-# ENCODE_VIDEO = encode_video
-# CELERY_NAME = "pod_project"
-# CELERY_BACKEND = "amqp"
-# CELERY_BROKER = "amqp://guest@localhost//"
-# ENCODE_VIDEO = encode_video
+#ENCODE_VIDEO = encode_video
+CELERY_NAME = "pod_project"
+CELERY_BACKEND = "amqp"         
+CELERY_BROKER = "amqp://guest@localhost//"
 
 # Encode with an external command
 #--------------------------------
+# ENCODE_VIDEO = encode_video
 
 # def external_command(command):
 #     (status,out) = commands.getstatusoutput(command)
@@ -484,7 +483,6 @@ ATOM_SD = False
 # def encode_video(video):
 #     external_command( 'ssh hpc process %s' % video.id )
 #
-# ENCODE_VIDEO = encode_video
 
 
 ##
