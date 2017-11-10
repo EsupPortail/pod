@@ -460,20 +460,17 @@ ATOM_SD = False
 
 # Encode with Celery
 #--------------------
+#from pod_project.tasks import task_start_encode
+#def encode_video(video):
+#   task_start_encode.delay(video)
 
-# from pod_project.tasks import task_start_encode
-# def encode_video(video):
-#     task_start_encode.delay(video)
-#
-# ENCODE_VIDEO = encode_video
-# CELERY_NAME = "pod_project"
-# CELERY_BACKEND = "amqp"
-# CELERY_BROKER = "amqp://guest@localhost//"
-# ENCODE_VIDEO = encode_video
+#ENCODE_VIDEO = encode_video
+CELERY_NAME = "pod_project"
+CELERY_BACKEND = "amqp"         
+CELERY_BROKER = "amqp://guest@localhost//"
 
 # Encode with an external command
 #--------------------------------
-
 # def external_command(command):
 #     (status,out) = commands.getstatusoutput(command)
 #     logging.getLogger(__name__).info(
@@ -485,7 +482,6 @@ ATOM_SD = False
 #     external_command( 'ssh hpc process %s' % video.id )
 #
 # ENCODE_VIDEO = encode_video
-
 
 ##
 # Video in draft mode can be shared
@@ -505,3 +501,11 @@ H5P_SAVE = 30                                           # How often current cont
 H5P_EXPORT = '/exports/'                                # Location of exports (packages .h5p)
 H5P_LANGUAGE = 'fr'                                     # Language of the module H5P.
 BASE_URL = 'http://localhost:8000'                      # Hostname of your django ap
+
+##
+# Enable OEMBED
+#   if True
+#   - add in video pages a link tag with type application/json+oembed and href to json representation of the URL video. https://oembed.com/#section4
+#   - add url oembed and buid the json representation of the URL video
+#
+OEMBED=False
