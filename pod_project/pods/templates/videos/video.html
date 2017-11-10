@@ -244,6 +244,18 @@ $(document).on('change', '#showinteractive', function() {
     <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
+{% block link_alternate %}
+	{% if OEMBED %}
+		{% if not video.is_draft %}
+		<link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}" />
+		{%else%}
+			{% if USE_PRIVATE_VIDEO %}
+			<link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}" />
+			{% endif %}
+		{% endif %}
+	{% endif %}
+{% endblock %}
+
 {% block mainToolbar %}{% endblock mainToolbar %}
 
 {% block bootstrap3_content %}

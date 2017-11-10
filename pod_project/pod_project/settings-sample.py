@@ -288,5 +288,6 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'USE_PRIVATE_VIDEO',
     'RSS',
     'ATOM_HD',
-    'ATOM_SD'
+    'ATOM_SD',
+    'OEMBED'
 )
