@@ -471,8 +471,6 @@ CELERY_BROKER = "amqp://guest@localhost//"
 
 # Encode with an external command
 #--------------------------------
-# ENCODE_VIDEO = encode_video
-
 # def external_command(command):
 #     (status,out) = commands.getstatusoutput(command)
 #     logging.getLogger(__name__).info(
@@ -483,7 +481,7 @@ CELERY_BROKER = "amqp://guest@localhost//"
 # def encode_video(video):
 #     external_command( 'ssh hpc process %s' % video.id )
 #
-
+# ENCODE_VIDEO = encode_video
 
 ##
 # Video in draft mode can be shared
