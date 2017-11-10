@@ -104,6 +104,9 @@ urlpatterns = [
     url(r'^get_video_encoding/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
         'pods.views.get_video_encoding',
         name='get_video_encoding'),
+    url(r'^get_video_m3u8/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/$',
+        'pods.views.get_video_m3u8',
+        name='get_video_m3u8'),
 ]
 
 
@@ -125,6 +128,9 @@ if settings.USE_PRIVATE_VIDEO:
             name='get_video_encoding_private'),
         url(r'^video_priv/(?P<id>[\-\d]+)/(?P<slug>[\-\d\w]+)/$',
             'pods.views.video_priv', name='video_priv'),
+        url(r'^get_video_m3u8_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/$',
+            'pods.views.get_video_m3u8_private',
+            name='get_video_m3u8_private'),
     ]
 
 ##
