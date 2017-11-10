@@ -76,18 +76,7 @@ voir http://www.gnu.org/licenses/
                                 label="{{ encoding.encodingType.output_height }}p"
                                 res="{{ encoding.encodingType.output_height }}"
                             >
-                            {% else %}
-                            	{% if USE_PRIVATE_VIDEO and not encoding.encodingFormat == 'application/x-mpegURL' %}
-		                            <source
-		                                src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
-		                                type="{{ encoding.encodingFormat }}"
-                                        label="{{ encoding.encodingType.output_height }}p"
-		                                res="{{ encoding.encodingType.output_height }}"
-		                            />
-                            	{% endif %}
-                            {% endif %}
-                        {% endfor %}
-                        {% if ENCODE_M3U8 %}
+                            {% if ENCODE_M3U8 %}
                             <source
                                 src="/get_video_m3u8/{{ video.slug }}/{{ csrf_token }}"
                                 type="application/x-mpegURL"
@@ -95,7 +84,27 @@ voir http://www.gnu.org/licenses/
                                 label="auto"
                                 res="auto"
                             />
-                        {% endif %}
+                            {% endif %}
+                            {% else %}
+                            	{% if USE_PRIVATE_VIDEO %}
+		                            <source
+		                                src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
+		                                type="{{ encoding.encodingFormat }}"
+                                        label="{{ encoding.encodingType.output_height }}p"
+		                                res="{{ encoding.encodingType.output_height }}"
+		                            />
+                                    {% if ENCODE_M3U8 %}
+                                    <source
+                                        src="/get_video_m3u8_private/{{ video.slug }}/{{ csrf_token }}"
+                                        type="application/x-mpegURL"
+                                        withCredentials=true
+                                        label="auto"
+                                        res="auto"
+                                    />
+                                    {% endif %}
+                            	{% endif %}
+                            {% endif %}
+                        {% endfor %}
                     </video>
                 {% endif %}
                 {% if mediatype == 'audio' %}
