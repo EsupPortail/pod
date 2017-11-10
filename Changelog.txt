@@ -1,5 +1,10 @@
 Changelog
 
+1.7.2
+---------------------
+- Bugfix : Fix celery
+
+
 1.7.1
 ---------------------
 - Bugfix : Fix player size when MP3
