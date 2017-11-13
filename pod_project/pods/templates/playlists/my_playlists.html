@@ -76,10 +76,13 @@ $(window).load(function(){
         }
     });
 
+    // Display the new/modify playlist form
     form_new.on('click', function(event) {
     	$('#form_playlist').css('display', 'inline-block');
     	$(this).css('display', 'none');
     });
+
+    // Reset and exit the new/modify playlist form
     form_cancel.on('click', function(event) {
     	$('#form_playlist').css('display', 'none');
     	$('form#form_playlist')[0].reset();
@@ -146,6 +149,11 @@ $(window).load(function(){
     	});
     });
 
+    // Display new playlist form if user don't have any playlists
+    if($('#table_playlists').length === 0) {
+    	$('#add_playlist').click();
+    }
+
 });
 </script>
 {% endblock bootstrap3_extra_head %}
@@ -182,7 +190,6 @@ $(window).load(function(){
 								<th>{% trans 'Title' %}</th>
 								<th>{% trans 'Owner' %}</th>
 								<th>{% trans 'Thumbnail' %}</th>
-								<th>{% trans 'Link' %}</th>
 								{% if playlist.owner == request.user %}<th>{% trans 'Delete' %}</th>{% endif %}
 							</tr>
 						</thead>
@@ -190,10 +197,9 @@ $(window).load(function(){
 							{% for element in playlist.get_videos %}
 							<tr>
 								<td id="video-position">{{ element.position }}</td>
-								<td>{{ element.video.title }}</td>
+								<td><a href="{{ element.video.get_full_url }}">{{ element.video.title }}</a></td>
 								<td>{{ element.video.owner.username }}</td>
 								<td><img src="{{ element.video.get_thumbnail_url }}" class="playlist_img img-responsive img-thumbnail" alt="{% trans 'Thumbnail' %}"></td>
-								<td><a href="{{ element.video.get_full_url }}">{% trans 'Go to the video' %}</a></td>
 								{% if playlist.owner == request.user %}
 								<td>
 									<form class="remove_video" action="{% url 'video_add_playlist' slug=element.video.slug %}" method="post">
@@ -263,4 +269,4 @@ $(window).load(function(){
 	{% endif %}
 </div>
 {% endblock article %}
-{% block box %} {% endblock box %}
+{% block box %}{% endblock %}		

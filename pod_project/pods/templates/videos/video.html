@@ -622,15 +622,13 @@ $(document).on('change', '#showinteractive', function() {
                         {% if playlists.video %}
                             <li class="list-group-item">
                                 {% trans 'Playlists' %} :
-                                    <ul>
-                                    {% for element in playlists.video %}
-                                        {% if element.playlist.visible %}
-                                        <a href="{{ element.video.get_full_url }}?playlist={{ element.playlist.slug }}&autoplay=true">
-                                            <li><strong>{{ element.playlist.title }}</strong> ({{element.playlist.owner.username }})</li>
-                                        </a>
-                                        {% endif %}
-                                    {% endfor %}
-                                    </ul>
+                                <ul>
+                                {% for element in playlists.video %}
+                                    <a href="{{ element.video.get_full_url }}?playlist={{ element.playlist.slug }}&autoplay=true">
+                                        <li><strong>{{ element.playlist.title }}</strong> ({{element.playlist.owner.username }})</li>
+                                    </a>
+                                {% endfor %}
+                                </ul>
                             </li>
                         {% endif %}
                         </ul>

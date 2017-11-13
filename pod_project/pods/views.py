@@ -623,7 +623,7 @@ def video(request, slug, slug_c=None, slug_t=None):
     if request.user.is_authenticated():
         playlists = {
             'owner': Playlist.objects.filter(owner=request.user),
-            'video': PlaylistVideo.objects.filter(video=video)
+            'video': PlaylistVideo.objects.filter(video=video, playlist__visible=True)
         }
         playlist = None
         note, created = Notes.objects.get_or_create(
