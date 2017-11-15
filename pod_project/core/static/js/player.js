@@ -100,7 +100,10 @@ function loadVideo() {
         myPlayer.on('loadedmetadata', loadedmetadata);
         myPlayer.on('error', error); // error log for dev
         myPlayer.on('durationchange', loadChapBar);
-        myPlayer.on('progress', progress);
+
+        //if hls is activated, old auto-switch function is obsolete.
+        if(typeof myPlayer.tech_.hls == 'undefined') { myPlayer.on('progress', progress); }
+        
         myPlayer.on('timeupdate', timeupdate);
         myPlayer.on('firstplay', function(){
             $.post(
@@ -659,6 +662,7 @@ function loadChapBar() {
 
 /**
  * Calcule de manière automatique la résolution la plus optimisée pour le débit de la connexion de l'utilisateur
+ * OBSOLETE si HLS est activé
  */
 function progress() {
     if (typeof myPlayer.getGroupedSrc() != 'undefined' && myPlayer.getGroupedSrc().res && changeResBd == false) {
