@@ -61,11 +61,15 @@ ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -cod
 ENCODE_WEBM_CMD = getattr(settings, 'ENCODE_WEBM_CMD',
                           "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s")
 ENCODE_M3U8_CMD = getattr(settings, 'ENCODE_M3U8_CMD',
-                          "%(ffmpeg)s -i %(src)s -profile:v baseline -level 3.0 -start_number 0 -hls_list_size 0 -hls_flags single_file -hls_base_url %(url)s -f hls %(out)s")
+                          "%(ffmpeg)s -i %(src)s -profile:v baseline -level 3.0 -start_number 0 -hls_playlist_type vod -hls_list_size 0 -hls_flags single_file -hls_base_url %(url)s -f hls %(out)s")
 ENCODE_MP3_CMD = getattr(settings, 'ENCODE_MP3_CMD',
                          "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s")
 ENCODE_WAV_CMD = getattr(settings, 'ENCODE_WAV_CMD',
                          "%(ffmpeg)s -i %(src)s -ar %(ar)s -ab %(ab)s -f wav -threads 0 -y %(out)s")
+# TEST
+ENCODE_LIVE_CMD = getattr(settings, 'ENCODE_LIVE_CMD',
+                          "%(ffmpeg)s -i ")
+
 
 log = logging.getLogger(__name__)
 
