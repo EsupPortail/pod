@@ -47,10 +47,6 @@
                     <span class="glyphicon glyphicon-repeat"></span>
                     <span class="sr-only">{% trans 'Loop playlist' %}</span>
                 </button>
-                <button class="btn btn-link playlist_save" title="{% trans 'Save playlist' %}">
-                    <span class="glyphicon glyphicon-floppy-saved"></span>
-                    <span class="sr-only">{% trans 'Save playlist' %}</span>
-                </button>
             <tr>
                 {% for p_video in playlist.videos %}
                 {% if p_video.video.slug == video.slug %}

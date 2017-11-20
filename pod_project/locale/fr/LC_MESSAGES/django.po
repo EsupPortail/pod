@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-06 11:59+0100\n"
+"POT-Creation-Date: 2017-11-20 16:28+0100\n"
 "PO-Revision-Date: 2017-11-06 13:30+0200\n"
 "Last-Translator: Obled Joël <obled.joel@univ-lille1.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
@@ -50,7 +50,7 @@ msgstr ""
 "avec vos vidéos."
 
 #: core/models.py:93 core/models.py:188 pods/models.py:75 pods/models.py:1329
-#: pods/templates/playlists/my_playlists.html:239
+#: pods/templates/playlists/my_playlists.html:249
 #: pods/templates/videos/video_edit.html:511
 msgid "Description"
 msgstr "Description"
@@ -98,7 +98,7 @@ msgid "video 360"
 msgstr "video 360"
 
 #: core/models.py:170 pods/models.py:69 pods/models.py:114 pods/models.py:149
-#: pods/models.py:1323 pods/templates/playlists/my_playlists.html:178
+#: pods/models.py:1323 pods/templates/playlists/my_playlists.html:190
 #: pods/templates/videos/chapter/list_chapter.html:34
 #: pods/templates/videos/completion/overlay/list_overlay.html:33
 #: pods/templates/videos/enrich/list_enrich.html:34
@@ -125,11 +125,11 @@ msgstr ""
 #: core/models.py:175
 #: core/templates/admin/filer/folder/directory_table.html:14
 #: core/templates/admin/filer/folder/directory_table.html:33
-#: core/templates/admin/filer/folder/directory_table.html:81 pods/admin.py:133
-#: pods/admin.py:234 pods/models.py:1335
-#: pods/templates/playlists/my_playlists.html:179
+#: core/templates/admin/filer/folder/directory_table.html:81 pods/admin.py:123
+#: pods/admin.py:147 pods/admin.py:246 pods/models.py:1335
+#: pods/templates/playlists/my_playlists.html:191
+#: pods/templates/playlists/playlist_body.html:40
 #: pods/templates/search/search_video.html:172
-#: pods/templates/videos/video.html:294
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -164,9 +164,9 @@ msgid "Encoding status"
 msgstr "Statut d'encodage"
 
 #: core/models.py:199 core/models.py:234
-#: pods/templates/playlists/my_playlists.html:180
-#: pods/templates/playlists/my_playlists.html:191
-#: pods/templates/videos/video.html:307
+#: pods/templates/playlists/my_playlists.html:192
+#: pods/templates/playlists/my_playlists.html:202
+#: pods/templates/playlists/playlist_body.html:60
 msgid "Thumbnail"
 msgstr "Vignette"
 
@@ -174,7 +174,7 @@ msgstr "Vignette"
 msgid "Overview"
 msgstr "Vue d'ensemble"
 
-#: core/models.py:207 core/models.py:240 pods/templates/videos/video.html:562
+#: core/models.py:207 core/models.py:240 pods/templates/videos/video.html:534
 msgid "Duration"
 msgstr "Durée"
 
@@ -246,12 +246,13 @@ msgstr "Impossible de vous authentifier"
 msgid "Acces denied"
 msgstr "Accès refusé"
 
-#: core/templates/403.html:50
+#: core/templates/403.html:50 pods/views.py:2454 pods/views.py:2478
+#: pods/views.py:2481
 msgid "You are not authorized to view this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 
 #: core/templates/403.html:51 core/templates/404.html:51
-#: core/templates/admin/base.html:47 core/templates/base.html:98
+#: core/templates/admin/base.html:47 core/templates/base.html:99
 #: core/templates/contactus/contactus.html:47 core/templates/navbar.html:41
 #: core/templates/registration/login.html:99
 #: core/templates/userProfile.html:71
@@ -263,7 +264,7 @@ msgstr "Accueil"
 msgid "Page not found."
 msgstr "La ressource demandée (généralement une page web) n’existe pas."
 
-#: core/templates/404.html:50
+#: core/templates/404.html:50 pods/views.py:2458
 msgid "The requested address was not found on this server."
 msgstr "La ressource demandée n'a pas été trouvée sur le serveur."
 
@@ -365,7 +366,7 @@ msgid "Delete '%(item_label)s'"
 msgstr "Supprimer '%(item_label)s'"
 
 #: core/templates/admin/filer/folder/directory_table.html:86
-#: pods/templates/playlists/my_playlists.html:182
+#: pods/templates/playlists/my_playlists.html:193
 #: pods/templates/videos/chapter/list_chapter.html:59
 #: pods/templates/videos/enrich/list_enrich.html:63
 #: pods/templates/videos/ownertools.html:56
@@ -472,11 +473,11 @@ msgstr "Attention, votre session va expirer bientôt."
 msgid "Your session has expired."
 msgstr "Votre session a expiré."
 
-#: core/templates/base.html:145
+#: core/templates/base.html:146
 msgid "Share"
 msgstr "Partager"
 
-#: core/templates/base.html:159 core/templates/base.html.py:166
+#: core/templates/base.html:160 core/templates/base.html.py:167
 #: pods/models.py:201 pods/models.py:290 pods/models.py:1297
 #: pods/templates/disciplines/disciplines.html:24
 #: pods/templates/disciplines/disciplines.html:31
@@ -488,37 +489,37 @@ msgstr "Partager"
 msgid "Disciplines"
 msgstr "Disciplines"
 
-#: core/templates/base.html:160
+#: core/templates/base.html:161
 msgid "See all"
 msgstr "Afficher tout"
 
-#: core/templates/base.html:179 pods/models.py:287
+#: core/templates/base.html:180 pods/models.py:287
 #: pods/templates/search/search_video.html:196
 #: pods/templates/tags/tags.html:25 pods/templates/tags/tags.html.py:86
 #: pods/templates/tags/tags.html:96 pods/templates/tags/tags.html.py:104
-#: pods/templates/videos/video.html:536 pods/templates/videos/videos.html:132
+#: pods/templates/videos/video.html:508 pods/templates/videos/videos.html:132
 msgid "Tags"
 msgstr "Mots clés"
 
-#: core/templates/base.html:180
+#: core/templates/base.html:181
 msgid "See the cloud"
 msgstr "Voir le nuage"
 
-#: core/templates/base.html:199 pods/models.py:1151
+#: core/templates/base.html:200 pods/models.py:1151
 msgid "Notes"
 msgstr "Notes"
 
-#: core/templates/base.html:207 pods/templates/channels/channel_edit.html:161
+#: core/templates/base.html:208 pods/templates/channels/channel_edit.html:161
 #: pods/templates/channels/channel_edit.html:162
 #: pods/templates/pagination.html:41
 #: pods/templates/videos/chapter/form_chapter.html:42
 #: pods/templates/videos/enrich/form_enrich.html:42
-#: pods/templates/videos/video.html:833 pods/templates/videos/video.html:834
+#: pods/templates/videos/video.html:803 pods/templates/videos/video.html:804
 #: pods/templates/videos/video_edit.html:354
 msgid "Save"
 msgstr "Enregistrer"
 
-#: core/templates/base.html:217 core/templates/registration/login.html:116
+#: core/templates/base.html:218 core/templates/registration/login.html:116
 #: core/templates/userProfile.html:92
 #: pods/templates/channels/my_channels.html:76
 #: pods/templates/videos/my_videos.html:64
@@ -528,15 +529,15 @@ msgstr "Enregistrer"
 msgid "Information"
 msgstr "Information"
 
-#: core/templates/base.html:244
+#: core/templates/base.html:245
 msgid "My files"
 msgstr "Mes fichiers"
 
-#: core/templates/base.html:245
+#: core/templates/base.html:246
 msgid "You will find here all your folders and files."
 msgstr "Vous trouverez ici tous vos dossiers et fichiers."
 
-#: core/templates/base.html:250
+#: core/templates/base.html:251
 msgid ""
 "\"upload\" allows you to import one or more files from your computer.<br/> "
 "The \"Clipboard\" is a temporary space that welcomes new files and files to "
@@ -554,26 +555,26 @@ msgstr ""
 "gauche d'un fichier pour sélectionner un fichier. N'hésitez pas à regarder "
 "la vidéo d'aide pour l'utilisation du gestionnaire de fichier."
 
-#: core/templates/base.html:253 core/templates/base.html.py:277
-#: core/templates/base.html:314
+#: core/templates/base.html:254 core/templates/base.html.py:278
+#: core/templates/base.html:315
 msgid "Close"
 msgstr "Fermer"
 
-#: core/templates/base.html:266
+#: core/templates/base.html:267
 msgid "Report this video"
 msgstr "Signaler cette vidéo"
 
-#: core/templates/base.html:272
+#: core/templates/base.html:273
 msgid "Please, specify the problem:"
 msgstr "Veuillez expliquer le problème :"
 
-#: core/templates/base.html:278 core/templates/base.html.py:315
+#: core/templates/base.html:279 core/templates/base.html.py:316
 #: core/templates/contactus/contactus.html:39 core/templates/header.html:50
 #: core/templates/userProfile.html:63
 #: pods/templates/mediacourses/mediacourses_add.html:62
-#: pods/templates/videos/video.html:359 pods/templates/videos/video.html:360
-#: pods/templates/videos/video.html:406 pods/templates/videos/video.html:424
-#: pods/templates/videos/video.html:442
+#: pods/templates/videos/video.html:331 pods/templates/videos/video.html:332
+#: pods/templates/videos/video.html:378 pods/templates/videos/video.html:396
+#: pods/templates/videos/video.html:414
 msgid "Send"
 msgstr "Envoyer"
 
@@ -581,13 +582,21 @@ msgstr "Envoyer"
 msgid "Add video to your playlist"
 msgstr "Ajouter la vidéo à votre playlist"
 
-#: core/templates/base.html:297
+#: core/templates/base.html:298
 msgid "Select one of your playlists:"
 msgstr "Sélectionnez une de vos playlists:"
 
-#: core/templates/base.html:301
+#: core/templates/base.html:302
 msgid "Already in this playlist"
 msgstr "Déjà présente dans cette playlist"
+
+#: core/templates/base.html:321
+msgid "You don't have playlists yet"
+msgstr "Vous n'avez pas encore de playlists."
+
+#: core/templates/base.html:325 pods/templates/playlists/my_playlists.html:259
+msgid "Add a new playlist"
+msgstr "Ajouter une nouvelle playlist"
 
 #: core/templates/contactus/contactus.html:26
 #: core/templates/userProfile.html:54 core/views.py:193
@@ -642,8 +651,8 @@ msgid "My channels"
 msgstr "Mes chaînes"
 
 #: core/templates/header.html:100 pods/templates/playlists/my_playlists.html:4
-#: pods/templates/playlists/my_playlists.html:151
-#: pods/templates/playlists/my_playlists.html:157
+#: pods/templates/playlists/my_playlists.html:163
+#: pods/templates/playlists/my_playlists.html:169
 msgid "My playlists"
 msgstr "Mes playlists"
 
@@ -666,7 +675,7 @@ msgstr "Connexion"
 #: pods/templates/channels/channels.html:31
 #: pods/templates/channels/channels.html:39
 #: pods/templates/channels/channels.html:41
-#: pods/templates/videos/video.html:326
+#: pods/templates/videos/video.html:298
 #: pods/templates/videos/video_edit.html:572
 #: pods/templates/videos/video_interactive.html:170
 msgid "Channels"
@@ -686,7 +695,7 @@ msgstr "Utilisateurs"
 msgid "Types"
 msgstr "Types"
 
-#: core/templates/navbar.html:115 pods/templates/videos/video.html:329
+#: core/templates/navbar.html:115 pods/templates/videos/video.html:301
 #: pods/templates/videos/video_interactive.html:173
 #: pods/templates/videos/videos.html:26 pods/templates/videos/videos.html:30
 #: pods/templates/videos/videos.html:32
@@ -803,7 +812,7 @@ msgstr "votre liste de contenus"
 msgid "Login"
 msgstr "Identifiant"
 
-#: core/views.py:122 pods/admin.py:160 pods/forms.py:365
+#: core/views.py:122 pods/admin.py:174 pods/forms.py:365
 #: pods/templates/videos/video_edit.html:637
 msgid "Password"
 msgstr "Mot de passe"
@@ -1507,7 +1516,7 @@ msgstr "Autre"
 msgid "Owners"
 msgstr "Propriétaires"
 
-#: pods/admin.py:169
+#: pods/admin.py:183
 msgid "Encode selected"
 msgstr "(Ré)encoder la sélection"
 
@@ -1539,7 +1548,7 @@ msgid "Extra style"
 msgstr "Style supplémentaire"
 
 #: pods/models.py:88 pods/models.py:1304 pods/models.py:1331
-#: pods/templates/playlists/my_playlists.html:172
+#: pods/templates/playlists/my_playlists.html:184
 msgid "Visible"
 msgstr "Visible"
 
@@ -1570,7 +1579,7 @@ msgstr "Thèmes"
 #: pods/models.py:170 pods/models.py:288 pods/models.py:920
 #: pods/models.py:1295 pods/templates/search/search_video.html:184
 #: pods/templates/videos/enrich/list_enrich.html:35
-#: pods/templates/videos/video.html:568
+#: pods/templates/videos/video.html:540
 #: pods/templates/videos/video_edit.html:538
 msgid "Type"
 msgstr "Type"
@@ -1586,7 +1595,7 @@ msgid "slug"
 msgstr "titre court"
 
 #: pods/models.py:200 pods/templates/search/search_video.html:208
-#: pods/templates/videos/video.html:575
+#: pods/templates/videos/video.html:547
 msgid "Discipline"
 msgstr "Discipline"
 
@@ -1856,7 +1865,7 @@ msgid "Content of the overlay"
 msgstr "Contenu de la superposition"
 
 #: pods/models.py:809 pods/models.py:1366
-#: pods/templates/playlists/my_playlists.html:177
+#: pods/templates/playlists/my_playlists.html:189
 #: pods/templates/videos/completion/overlay/list_overlay.html:36
 msgid "Position"
 msgstr "Position"
@@ -2090,7 +2099,7 @@ msgstr "Enregistreur"
 msgid "Recorders"
 msgstr "Enregistreurs"
 
-#: pods/models.py:1250 pods/templates/videos/video.html:733
+#: pods/models.py:1250 pods/templates/videos/video.html:703
 msgid "User"
 msgstr "Utilisateur"
 
@@ -2127,13 +2136,15 @@ msgstr ""
 
 #: pods/models.py:1333
 msgid "If checked, the playlist page becomes accessible from the user's card"
-msgstr "Si cette case est cochée, la page des playlists sera accessible par la fiche d'information de l'utilisateur"
+msgstr ""
+"Si cette case est cochée, la page des playlists sera accessible par la fiche "
+"d'information de l'utilisateur"
 
-#: pods/models.py:1341 pods/templates/playlists/my_playlists.html:153
+#: pods/models.py:1341 pods/templates/playlists/my_playlists.html:165
 msgid "Playlist"
 msgstr "Playlist"
 
-#: pods/models.py:1342 pods/templates/videos/video.html:612
+#: pods/models.py:1342 pods/templates/videos/video.html:584
 msgid "Playlists"
 msgstr "Playlists"
 
@@ -2338,24 +2349,16 @@ msgstr "Cacher"
 msgid "Display"
 msgstr "Afficher"
 
-#: pods/templates/playlists/my_playlists.html:88
-#: pods/templates/playlists/my_playlists.html:254
+#: pods/templates/playlists/my_playlists.html:91
+#: pods/templates/playlists/my_playlists.html:264
 msgid "New playlist"
 msgstr "Nouvelle playlist"
 
-#: pods/templates/playlists/my_playlists.html:181
-msgid "Link"
-msgstr "Lien"
-
-#: pods/templates/playlists/my_playlists.html:192
-msgid "Go to the video"
-msgstr "Accéder à la vidéo"
-
-#: pods/templates/playlists/my_playlists.html:199
+#: pods/templates/playlists/my_playlists.html:209
 msgid "Delete from playlist"
 msgstr "Supprimer de la playlist"
 
-#: pods/templates/playlists/my_playlists.html:199
+#: pods/templates/playlists/my_playlists.html:209
 #: pods/templates/videos/completion/contributor/list_contributor.html:61
 #: pods/templates/videos/completion/download/list_download.html:54
 #: pods/templates/videos/completion/overlay/list_overlay.html:61
@@ -2363,25 +2366,26 @@ msgstr "Supprimer de la playlist"
 msgid "delete"
 msgstr "supprimer"
 
-#: pods/templates/playlists/my_playlists.html:208
+#: pods/templates/playlists/my_playlists.html:218
 msgid "This playlist is empty"
 msgstr "Cette playlist est vide"
 
-#: pods/templates/playlists/my_playlists.html:217
+#: pods/templates/playlists/my_playlists.html:227
 msgid "Edit the playlist"
 msgstr "Modifier la playlist"
 
-#: pods/templates/playlists/my_playlists.html:225
+#: pods/templates/playlists/my_playlists.html:235
 msgid "Delete the playlist"
 msgstr "Supprimer la playlist"
 
-#: pods/templates/playlists/my_playlists.html:234
+#: pods/templates/playlists/my_playlists.html:244
 msgid "Launch the playlist"
 msgstr "Lancer la playlist"
 
-#: pods/templates/playlists/my_playlists.html:249
-msgid "Add a new playlist"
-msgstr "Ajouter une nouvelle playlist"
+#: pods/templates/playlists/playlist_body.html:46
+#: pods/templates/playlists/playlist_body.html:48
+msgid "Loop playlist"
+msgstr "Boucler la playlist"
 
 #: pods/templates/playlists/playlist_form.html:7
 #: pods/templates/videos/completion/contributor/form_contributor.html:27
@@ -2662,8 +2666,8 @@ msgstr "Interactivité"
 msgid "Delete the video."
 msgstr "Supprimer la vidéo."
 
-#: pods/templates/videos/video.html:74 pods/templates/videos/video.html:103
-#: pods/templates/videos/video.html:133
+#: pods/templates/videos/video.html:63 pods/templates/videos/video.html:92
+#: pods/templates/videos/video.html:122
 #: pods/templates/videos/video_chapter.html:174
 #: pods/templates/videos/video_chapter.html:200
 #: pods/templates/videos/video_chapter.html:239
@@ -2673,176 +2677,176 @@ msgstr "Supprimer la vidéo."
 msgid "You are no longer authenticated. Please log in again."
 msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnecter."
 
-#: pods/templates/videos/video.html:79 pods/templates/videos/video.html:108
-#: pods/templates/videos/video.html:152
+#: pods/templates/videos/video.html:68 pods/templates/videos/video.html:97
+#: pods/templates/videos/video.html:141
 msgid "Error sending information."
 msgstr "Erreur lors de l'envoi des informations."
 
-#: pods/templates/videos/video.html:79 pods/templates/videos/video.html:108
-#: pods/templates/videos/video.html:152
+#: pods/templates/videos/video.html:68 pods/templates/videos/video.html:97
+#: pods/templates/videos/video.html:141
 msgid "No data could be given."
 msgstr "Aucune données récupérées."
 
-#: pods/templates/videos/video.html:211 pods/templates/videos/video.html:754
+#: pods/templates/videos/video.html:200 pods/templates/videos/video.html:724
 msgid "You got the following score on this video"
 msgstr "Vous avez obtenu le score suivant"
 
-#: pods/templates/videos/video.html:221 pods/templates/videos/video.html:746
+#: pods/templates/videos/video.html:210 pods/templates/videos/video.html:716
 msgid "No score available"
 msgstr "Score non disponible"
 
-#: pods/templates/videos/video.html:352
+#: pods/templates/videos/video.html:324
 msgid "This video is protected by password, please fill in and click send."
 msgstr ""
 "Cette vidéo est protégée par mot de passe, merci de le renseigner et de "
 "cliquer sur « Envoyer »."
 
-#: pods/templates/videos/video.html:356
+#: pods/templates/videos/video.html:328
 msgid "Password required"
 msgstr "Mot de passe requis"
 
-#: pods/templates/videos/video.html:365
+#: pods/templates/videos/video.html:337
 msgid "If you do not have the password for this content, please"
 msgstr ""
 "Si vous n'avez pas le mot de passe ou si vous avez des problèmes de connexion"
 
-#: pods/templates/videos/video.html:365
+#: pods/templates/videos/video.html:337
 msgid "contact its owner"
 msgstr "Contacter le propriétaire"
 
-#: pods/templates/videos/video.html:395 pods/templates/videos/video.html:397
+#: pods/templates/videos/video.html:367 pods/templates/videos/video.html:369
 msgid "favorite"
 msgstr "favoris"
 
-#: pods/templates/videos/video.html:400 pods/templates/videos/video.html:402
+#: pods/templates/videos/video.html:372 pods/templates/videos/video.html:374
 msgid "Add to your favorites videos."
 msgstr "ajouter à vos vidéos favorites."
 
-#: pods/templates/videos/video.html:411 pods/templates/videos/video.html:413
+#: pods/templates/videos/video.html:383 pods/templates/videos/video.html:385
 msgid "You have already reported this video."
 msgstr "Vous avez déjà signalé cette vidéo."
 
-#: pods/templates/videos/video.html:418 pods/templates/videos/video.html:420
+#: pods/templates/videos/video.html:390 pods/templates/videos/video.html:392
 msgid "Report this video."
 msgstr "Signaler cette vidéo."
 
-#: pods/templates/videos/video.html:432
+#: pods/templates/videos/video.html:404
 msgid "Add this video to one of your playlists."
 msgstr "Ajouter cette vidéo à l'une de vos playlists."
 
-#: pods/templates/videos/video.html:434
+#: pods/templates/videos/video.html:406
 msgid "Add to your playlist."
 msgstr "Ajouter à votre playlist."
 
-#: pods/templates/videos/video.html:449
+#: pods/templates/videos/video.html:421
 msgid "You must be logged in to add this video to your favorites."
 msgstr "Vous devez être connecté pour ajouter cette vidéo à vos favoris."
 
-#: pods/templates/videos/video.html:454
+#: pods/templates/videos/video.html:426
 msgid "You must be logged in to report inappropriate content."
 msgstr "Vous devez être connecté pour signaler cette vidéo."
 
-#: pods/templates/videos/video.html:459 pods/templates/videos/video.html:461
+#: pods/templates/videos/video.html:431 pods/templates/videos/video.html:433
 msgid "View the original video"
 msgstr "Voir la vidéo originale"
 
-#: pods/templates/videos/video.html:463 pods/templates/videos/video.html:465
+#: pods/templates/videos/video.html:435 pods/templates/videos/video.html:437
 msgid "View the interactive video"
 msgstr "Voir la vidéo interactive"
 
-#: pods/templates/videos/video.html:479
+#: pods/templates/videos/video.html:451
 msgid "Summary"
 msgstr "Résumé"
 
-#: pods/templates/videos/video.html:485
+#: pods/templates/videos/video.html:457
 msgid "Infos"
 msgstr "Informations"
 
-#: pods/templates/videos/video.html:492
+#: pods/templates/videos/video.html:464
 msgid "Downloads"
 msgstr "Télécharger"
 
-#: pods/templates/videos/video.html:500
+#: pods/templates/videos/video.html:472
 msgid "Embed/Share"
 msgstr "Intégrer / Partager"
 
-#: pods/templates/videos/video.html:507
+#: pods/templates/videos/video.html:479
 msgid "Score"
 msgstr "Table des scores"
 
-#: pods/templates/videos/video.html:516
+#: pods/templates/videos/video.html:488
 msgid "Embed/Share (Private Mode)"
 msgstr "intégrer/partager (mode privé)"
 
-#: pods/templates/videos/video.html:555 pods/templates/videos/videos.html:69
+#: pods/templates/videos/video.html:527 pods/templates/videos/videos.html:69
 msgid "File missing"
 msgstr "Fichier manquant"
 
-#: pods/templates/videos/video.html:565
+#: pods/templates/videos/video.html:537
 msgid "Number of view(s)"
 msgstr "Nombre de vues"
 
-#: pods/templates/videos/video.html:585
+#: pods/templates/videos/video.html:557
 msgid "Updated on"
 msgstr "Mise en ligne le"
 
-#: pods/templates/videos/video.html:590
+#: pods/templates/videos/video.html:562
 msgid "Contributor(s): writers, directors, editors, designers…"
 msgstr "Contributeur(s) : scénaristes, réalisateurs, éditeurs, concepteurs…"
 
-#: pods/templates/videos/video.html:595
+#: pods/templates/videos/video.html:567
 msgid "send an email"
 msgstr "envoyer un courriel"
 
-#: pods/templates/videos/video.html:603
+#: pods/templates/videos/video.html:575
 msgid "go to his web link"
 msgstr "se rendre à cette adresse web"
 
-#: pods/templates/videos/video.html:631
+#: pods/templates/videos/video.html:601
 msgid "Download the video"
 msgstr "Télécharger la vidéo"
 
-#: pods/templates/videos/video.html:669
+#: pods/templates/videos/video.html:639
 msgid "Social Networks"
 msgstr "Réseaux Sociaux"
 
-#: pods/templates/videos/video.html:681 pods/templates/videos/video.html:771
+#: pods/templates/videos/video.html:651 pods/templates/videos/video.html:741
 msgid "Copy the content of this text box and paste it in the page"
 msgstr "Copiez le contenu de cette zone de texte et collez-le dans la page"
 
-#: pods/templates/videos/video.html:687 pods/templates/videos/video.html:777
+#: pods/templates/videos/video.html:657 pods/templates/videos/video.html:747
 msgid "Video size"
 msgstr "Taille"
 
-#: pods/templates/videos/video.html:698 pods/templates/videos/video.html:788
+#: pods/templates/videos/video.html:668 pods/templates/videos/video.html:758
 msgid "Autoplay"
 msgstr "Lecture automatique"
 
-#: pods/templates/videos/video.html:702 pods/templates/videos/video.html:792
+#: pods/templates/videos/video.html:672 pods/templates/videos/video.html:762
 msgid "Interactive"
 msgstr "Interactive"
 
-#: pods/templates/videos/video.html:710
+#: pods/templates/videos/video.html:680
 msgid "Use this link to share the video"
 msgstr "Utilisez ce lien pour partager la vidéo"
 
-#: pods/templates/videos/video.html:716 pods/templates/videos/video.html:806
+#: pods/templates/videos/video.html:686 pods/templates/videos/video.html:776
 msgid "Start video"
 msgstr "Début de la vidéo"
 
-#: pods/templates/videos/video.html:719 pods/templates/videos/video.html:809
+#: pods/templates/videos/video.html:689 pods/templates/videos/video.html:779
 msgid "Check the box to indicate the beginning of playing desired."
 msgstr "Cochez la case pour indiquer le début de lecture souhaité."
 
-#: pods/templates/videos/video.html:725
+#: pods/templates/videos/video.html:695
 msgid "Scoreboard"
 msgstr "Table des scores"
 
-#: pods/templates/videos/video.html:726
+#: pods/templates/videos/video.html:696
 msgid "Click below to refresh the information."
 msgstr "Cliquez ci-dessous pour actualiser les informations."
 
-#: pods/templates/videos/video.html:729
+#: pods/templates/videos/video.html:699
 msgid ""
 "The scoreboard displays the users who viewed your interactive video and "
 "their results."
@@ -2850,19 +2854,19 @@ msgstr ""
 "La table des scores affiche les utilisateurs ayant vues votre vidéo "
 "interactive et leurs résultats."
 
-#: pods/templates/videos/video.html:758
+#: pods/templates/videos/video.html:728
 msgid "This is the first time you watch this video."
 msgstr "C'est la première fois que vous regardez cette vidéo."
 
-#: pods/templates/videos/video.html:800
+#: pods/templates/videos/video.html:770
 msgid "Use this link to share the video in private mode"
 msgstr "Utilisez ce lien pour partager la vidéo en mode privé"
 
-#: pods/templates/videos/video.html:839
+#: pods/templates/videos/video.html:809
 msgid "You must be logged in to take notes."
 msgstr "Vous devez être connecté pour prendre des notes."
 
-#: pods/templates/videos/video.html:848
+#: pods/templates/videos/video.html:818
 #: pods/templates/videos/video_chapter.html:369
 #: pods/templates/videos/video_completion.html:556
 #: pods/templates/videos/video_enrich.html:483
@@ -3259,7 +3263,7 @@ msgstr "La page sera actualisée lorsque le téléversement sera terminé."
 
 #: pods/templates/videos/video_edit.html:399
 msgid "Important"
-msgstr ""
+msgstr "Important"
 
 #: pods/templates/videos/video_edit.html:405
 msgid "Uploading"
@@ -3684,6 +3688,10 @@ msgstr "La vidéo a été ajoutée à vos vidéos favorites."
 msgid "The video has been removed from your favorites."
 msgstr "La vidéo a été supprimée de vos vidéos favorites."
 
+#: pods/views.py:823 pods/views.py:897 pods/views.py:933 pods/views.py:1042
+msgid "You cannot access this page."
+msgstr "Vous ne pouvez pas accéder à cette page."
+
 #: pods/views.py:835
 msgid "Video report confirmation"
 msgstr "Confirmation de signalement de vidéo"
@@ -3783,10 +3791,6 @@ msgstr "La vidéo a été ajoutée à votre playlist."
 msgid "The video has been deleted from your playlist."
 msgstr "La vidéo a été supprimée de votre playlist."
 
-#: pods/views.py:933 pods/views.py:823 pods/views.py:897 pods/views.py:1042
-msgid "You cannot access this page."
-msgstr "Vous ne pouvez pas accéder à cette page."
-
 #: pods/views.py:993
 msgid "The order of the playlist has changed."
 msgstr "L'ordre de la playlist a été changé."
@@ -3882,3 +3886,9 @@ msgstr ""
 #: pods/views.py:2419
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
+
+#~ msgid "Link"
+#~ msgstr "Lien"
+
+#~ msgid "Go to the video"
+#~ msgstr "Accéder à la vidéo"
