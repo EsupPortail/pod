@@ -1,0 +1,259 @@
+Changelog
+
+1.7.2 - (10/11/2017)
+---------------------
+- Bugfix : Fix celery
+
+
+1.7.1 - (17/10/2017)
+---------------------
+- Bugfix : Fix player size when MP3
+
+1.7.0 - (13/10/2017)
+---------------------
+- Update videojs to version 6.2.7 (and all its plugins used by Pod)
+- Update gateway part of CAS authentication
+- Update configuration for Celery (external command for encoding can be used)
+- Update auto-switch quality for video
+- Add new feature : Text overlay on video (completion page)
+- Add new feature : For videos requiring a password, now the user can send a email directly to the owner of this video instead of the Pod administrator by a form.
+- Add a configuration panel for the subtitles / legends on the video player
+- Add settings options to apply a filter on the users list in the main navigation bar
+- Add a new icon "Interactive video" on video thumbnailer when the video contains interactive parts
+- Add a button to close the info window for video(s) in iframe
+- url in the video completion page now use the highest available encoding
+- fix logger on populatedCASbackend
+- fix interactive video issue when the name of the original video is changed
+- fix interactive video height
+- fix RSS issue when empty parameter in url
+- fix elasticsearch issues for video(s) in draft mode
+- fix import in settings file
+- fix quality label when video in draft mode
+- fix slide(s) alignment with the video
+- add missings unit-test and add new ones
+
+1.6.4 - (29/06/2017)
+---------------------
+- add and fix translations
+- add score management for interactive video
+- add embed for interactive video
+- fix orderby and perpage filter
+- fix paginator and videos filter
+- update H5PP to 0.1.8 (https://github.com/DrClockwork/H5PP/releases/tag/0.1.8)
+- improve score table for interactive video
+
+1.6.3 - (14/06/2017)
+---------------------
+- update to django 1.8.18 (https://docs.djangoproject.com/en/1.11/releases/1.8.18/)
+- admin video deletion also deletes files
+- content order on same day
+- fix bug with datetime, use timezone instead
+- fix elasticsearch query when search by date
+- improve search filters
+- improve hash_id for private video
+- update h5pp to 0.1.6 (https://github.com/DrClockwork/H5PP/releases/tag/0.1.6)
+
+1.6.2 - (01/06/2017)
+---------------------
+- add private videos
+- add filter to dublincore rest
+- add proxy support for CAS authentification
+- email to user can be sent at the end of encoding
+- homepage content settings
+- remove before unload custom message
+- reordering migrations
+- fix urls file
+- fix thumbnailer settings
+- fix and improvements for rss, homepage settings and interactive video
+- improve video 360
+- general code review and pep8 format
+
+1.6.1 - (15/05/2017)
+---------------------
+- add RSS for channels
+- fix for ffmpeg overview in settings
+- fix url for h5pp
+- six version now required is 1.6.0
+- update h5pp to 0.1.55 (https://github.com/DrClockwork/H5PP/releases/tag/0.1.55)
+
+1.6.0 - (27/04/2017)
+---------------------
+- Add interactive videos (H5PP plugin)
+- Add video 360
+- Add celery
+- Update of videojs (4.12.15)
+- Add videojs panorama (0.1.1)
+- fix subtitles validation
+- fix elasticsearch when delete video
+- fix bug with search filters and count annotations
+- fix language selections
+- fix unit tests for subtitles completions
+- improve js for video completion
+- remove 'traduction' dir. Now translation are in locale dir
+- improve database request for videos research
+
+1.5.2 - (19/12/2016)
+---------------------
+- PEP8 Improvement
+- Improving headband video
+- Add FILE_UPLOAD_TEMP_DIR in settings
+- addfilter for owner on api rest
+- correct help comment
+- bugfix calendar today link
+- use owner tools in video list
+- fix icons in search results
+- clear javascript
+- tags are case and accent insensitive
+- external list of videos though iframe
+- border in video thumbs
+- layout more compact
+- new form not invalidated on creation
+- contact us sends to report adress
+
+1.5.1 - (10/11/2016)
+---------------------
+- Fix bug with start video
+- add unit test for contact us view
+- split settings in two files
+- improve management of urls
+- rename LILLE1 theme in default theme
+- add missing classes
+- fix unit test
+- add salt to protect media files
+
+1.5.0 - (26/09/2016)
+---------------------
+- fix icon/logo
+- speaker role added, list ordered according to french
+- improve french translation
+- create API rest to add user, video, chapter etc. with django-rest-framework, auth by token
+- create rest link to download all video not draft in dublin core RDF/Xml format
+- Improve channel management (many owners, add suer etc.)
+- Update django to v1.8.13
+- Update library (bootstrap, filer, formset, font awsome, etc.)
+- fix get_storage_path
+- move encoding parameter
+
+1.4.3 - (01/06/2016)
+---------------------
+- Hotfix bug with Elasticsearch
+- Fix upload limit message singular form
+- Fix unit test
+
+1.4.2 - (21/05/2016)
+---------------------
+  bugfix : 
+- video template for Elasticsearch 2.X
+- acces to channel edit for channel owner
+- non working “back to previous page“ button in video add/edit. 
+  feature : 
+- limit daily uploads per user
+- correct singular/plural in admin filer folder title
+- allow template overriding in theme
+- alert box relies more on bootstrap native behaviors 
+- add upload progress bar when adding new video file
+- video protected / authentified access separate icons 
+
+1.4.1 - (17/12/2015)
+---------------------
+- fix bug in navigation.js but the function is to improve
+
+1.4.0 - (11/12/2015)
+---------------------
+- Encodage des vidéos dont la hauteur est inférieure à 240px
+- Amélioration de l'encodage des vidéos en mode portrait
+- Amélioration du moteur de recherche
+- Amélioration d'ajout d'utilisateur en ligne de commande
+- Ajout des champs langue et cursus pour une vidéo
+- Contrôle du poids des fichiers vidéos envoyés
+- Ergonomie:
+    - retrait des acces à une vidéo en mode brouillon
+    - retrait de l'onglet partage en mode brouillon
+- Enregistreurs:
+    - ajout d'une description
+    - ajout d'un icone
+    - amélioration de l'interface d'administration
+- Résolution d'un bug de nommage des vignettes (PR #60) ;
+- Finalisation des métadonnées Dublin Core dans la page de visualisation d’un contenu (PR #63) ;
+- La liste des derniers contenus ne montre plus ceux protégés par mot de passe ni ceux faisant partie de chaînes cachées (PR #69) ;
+- Un nouveau template permettant d’intégrer ou non la liste des derniers contenus dans les « flat-pages » (PR #84).
+
+1.3.6 - (27/10/2015)
+---------------------
+- hotfix in views.py : search size has to be integer
+- change default logo in player to university of Lille
+- change link to pod logo in readme
+- change thumbnail name to fix size under limit
+- bugfix with mediatype, set to video by default
+
+1.3.5 - (24/07/2015)
+---------------------
+- hotfix in chapter template : replace enrich view by chapter
+- add star for type field in enrich model
+- add width for start and end in list enrich
+
+1.3.4 - (24/07/2015)
+---------------------
+- Singular / plural forms on the video search results page, and small improvements on some texts (same one previously proposed to dev branch).
+- Fix bug in video template (meta)
+- manage bad request in video url
+
+1.3.3 - (23/07/2015)
+---------------------
+- fix bug in test for Elasticsearch url and encoding video
+- add django formset in requirement and settings (used in channel edit)
+
+1.3.2 - (23/07/2015)
+---------------------
+- fix bug in pod video admin page.
+
+1.3.1 - (22/07/2015)
+---------------------
+fix bug in video template :
+- remove share_url and build video url in template
+- fix iframe display
+
+1.3.0 - (21/07/2015)
+---------------------
+- correction several translation
+- new page contact_us with form and captcha
+- new search videos engine with template and body search
+- write up completion feature
+
+1.2 - (24/06/2015)
+---------------------
+- Add report video (in collaboration with University Le Mans)
+- Add Dublin Core tags in video template (Nice)
+- Write up enrich template
+- Write up chapter template
+- Fix bug in share video with autoplay
+- Fix bug with favicon (Nice)
+- Fix bug with contributors (Nice)
+- Massive reorganization of the theme (Nice)
+- Add import user from csv file
+
+1.1 - (02/06/2015)
+---------------------
+fusion pour version 1.0
+
+1.0.4 - (18/05/2015)
+---------------------
+- Add user root folder in session if not exist to improve folder file's listing
+- fix bug with enrichPods when saving
+- fix bug to bandwith detection function
+
+1.0.3 - (13/04/2015)
+---------------------
+- fix tags accent
+- fix live template
+- fix not auth cas
+- add new feature : mutli resolution video download
+
+1.0.2 - (23/03/2015)
+---------------------
+improve video encoding, settings and add more information in readme
+
+1.0.1 - (21/03/2015)
+---------------------
+First version on Github
+
