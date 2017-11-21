@@ -1115,6 +1115,9 @@ def video_edit(request, slug=None):
                     )
                 vid.to_encode = True
 
+            if PlaylistVideo.objects.filter(video=vid).exists():
+                vid.password = ''
+
             # Optional : Update interactive
             if H5P_ENABLED and h5p:
                 h5p.title = vid.title

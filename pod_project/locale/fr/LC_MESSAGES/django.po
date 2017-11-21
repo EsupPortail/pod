@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-20 16:28+0100\n"
+"POT-Creation-Date: 2017-11-21 11:44+0100\n"
 "PO-Revision-Date: 2017-11-06 13:30+0200\n"
 "Last-Translator: Obled Joël <obled.joel@univ-lille1.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
@@ -246,8 +246,8 @@ msgstr "Impossible de vous authentifier"
 msgid "Acces denied"
 msgstr "Accès refusé"
 
-#: core/templates/403.html:50 pods/views.py:2454 pods/views.py:2478
-#: pods/views.py:2481
+#: core/templates/403.html:50 pods/views.py:2457 pods/views.py:2481
+#: pods/views.py:2484
 msgid "You are not authorized to view this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 
@@ -264,7 +264,7 @@ msgstr "Accueil"
 msgid "Page not found."
 msgstr "La ressource demandée (généralement une page web) n’existe pas."
 
-#: core/templates/404.html:50 pods/views.py:2458
+#: core/templates/404.html:50 pods/views.py:2461
 msgid "The requested address was not found on this server."
 msgstr "La ressource demandée n'a pas été trouvée sur le serveur."
 
@@ -605,8 +605,8 @@ msgstr "Ajouter une nouvelle playlist"
 #: pods/templates/videos/video_chapter.html:248
 #: pods/templates/videos/video_edit.html:321
 #: pods/templates/videos/video_enrich.html:255 pods/views.py:238
-#: pods/views.py:615 pods/views.py:758 pods/views.py:1155 pods/views.py:1159
-#: pods/views.py:2353
+#: pods/views.py:615 pods/views.py:758 pods/views.py:1158 pods/views.py:1162
+#: pods/views.py:2356
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 
@@ -742,8 +742,8 @@ msgstr "N'hésitez pas à nous contacter pour toute assistance :"
 
 #: core/templates/registration/login.html:118
 #: core/templates/registration/login.html:119
-#: core/theme/DEFAULT/templates/footer.html:27
-#: core/theme/DEFAULT/templates/footer.html:28 core/views.py:278
+#: core/theme/DEFAULT/templates/footer.html:29
+#: core/theme/DEFAULT/templates/footer.html:30 core/views.py:278
 msgid "Contact us"
 msgstr "Contactez nous"
 
@@ -771,8 +771,8 @@ msgstr ""
 "Vos permissions actuelles ne vous permettent pas d’ajouter une photo à votre "
 "profil. Veuillez nous contacter pour vous ajouter ces droits."
 
-#: core/theme/DEFAULT/templates/footer.html:30
-#: core/theme/DEFAULT/templates/footer.html:31
+#: core/theme/DEFAULT/templates/footer.html:32
+#: core/theme/DEFAULT/templates/footer.html:33
 msgid "FAQ"
 msgstr "Foire aux questions"
 
@@ -2922,7 +2922,7 @@ msgstr "Aucune donnée n'a pu être enregistrée."
 #: pods/templates/videos/video_chapter.html:264
 #: pods/templates/videos/video_enrich.html:275 pods/views.py:228
 #: pods/views.py:577 pods/views.py:720 pods/views.py:1036 pods/views.py:1038
-#: pods/views.py:1128
+#: pods/views.py:1131
 msgid "The changes have been saved."
 msgstr "Les modifications ont été enregistrées."
 
@@ -3489,11 +3489,19 @@ msgstr ""
 "vous pouvez ajouter un mot de passe qui sera demandé à toute personne "
 "souhaitant visionner votre contenu."
 
-#: pods/templates/videos/video_edit.html:651
+#: pods/templates/videos/video_edit.html:644
+msgid ""
+"If your video is in a playlist the password of your video will be removed "
+"automatically."
+msgstr ""
+"Si votre vidéo est dans une playlist le mot de passe de votre vidéo sera "
+"automatiquement supprimé."
+
+#: pods/templates/videos/video_edit.html:652
 msgid "Keywords"
 msgstr "Mots-clés"
 
-#: pods/templates/videos/video_edit.html:656
+#: pods/templates/videos/video_edit.html:657
 msgid ""
 "Please try to add only relevant keywords that can be useful to other users."
 msgstr ""
@@ -3668,7 +3676,7 @@ msgstr "-- désolé, aucune traduction disponible --"
 msgid "You cannot edit this channel."
 msgstr "Vous ne pouvez pas modifier cette chaîne."
 
-#: pods/views.py:562 pods/views.py:2079
+#: pods/views.py:562 pods/views.py:2082
 msgid "You cannot watch this video."
 msgstr "Vous ne pouvez pas regarder cette vidéo."
 
@@ -3795,55 +3803,55 @@ msgstr "La vidéo a été supprimée de votre playlist."
 msgid "The order of the playlist has changed."
 msgstr "L'ordre de la playlist a été changé."
 
-#: pods/views.py:1076 pods/views.py:2031
+#: pods/views.py:1076 pods/views.py:2034
 msgid "You cannot edit this video."
 msgstr "Vous ne pouvez pas éditer cette vidéo."
 
-#: pods/views.py:1189 pods/views.py:1232 pods/views.py:1366 pods/views.py:1497
-#: pods/views.py:1628
+#: pods/views.py:1192 pods/views.py:1235 pods/views.py:1369 pods/views.py:1500
+#: pods/views.py:1631
 msgid "You cannot complement this video."
 msgstr "Vous ne pouvez pas compléter cette vidéo."
 
-#: pods/views.py:1290 pods/views.py:1423 pods/views.py:1556 pods/views.py:1690
+#: pods/views.py:1293 pods/views.py:1426 pods/views.py:1559 pods/views.py:1693
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs."
 
-#: pods/views.py:1770
+#: pods/views.py:1773
 msgid "You cannot chapter this video."
 msgstr "Vous ne pouvez pas chapitrer cette vidéo."
 
-#: pods/views.py:1822 pods/views.py:1947
+#: pods/views.py:1825 pods/views.py:1950
 msgid "Please correct errors."
 msgstr "Veuillez corriger les erreurs."
 
-#: pods/views.py:1894
+#: pods/views.py:1897
 msgid "You cannot enrich this video."
 msgstr "Vous ne pouvez pas enrichir cette vidéo."
 
-#: pods/views.py:2041
+#: pods/views.py:2044
 msgid "You cannot delete this video."
 msgstr "Vous ne pouvez pas supprimer cette vidéo."
 
-#: pods/views.py:2057
+#: pods/views.py:2060
 msgid "The video has been deleted."
 msgstr "La vidéo a été supprimée."
 
-#: pods/views.py:2325
+#: pods/views.py:2328
 msgid "Mediapath should be indicated."
 msgstr "MediaPath doit être indiqué."
 
-#: pods/views.py:2349
+#: pods/views.py:2352
 msgid ""
 "Your publication is saved. Adding it to your videos will be in a few minutes."
 msgstr ""
 "Votre publication est enregistrée. Son ajout à vos vidéos se fera dans "
 "quelques minutes."
 
-#: pods/views.py:2406
+#: pods/views.py:2409
 msgid "Recording"
 msgstr "En cours d'enregistrement"
 
-#: pods/views.py:2408
+#: pods/views.py:2411
 #, python-format
 msgid ""
 "Hello, \n"
@@ -3869,7 +3877,7 @@ msgstr ""
 "\n"
 "Cordialement"
 
-#: pods/views.py:2412
+#: pods/views.py:2415
 #, python-format
 msgid ""
 "Hello, <p>a new mediacourse has just be added on %(title_site)s from the "
@@ -3883,7 +3891,7 @@ msgstr ""
 "%(link_url)s</a><br/><i>Si le lien n'est pas actif, il faut le copier-coller "
 "dans la barre d'adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
-#: pods/views.py:2419
+#: pods/views.py:2422
 msgid "New mediacourse added."
 msgstr "Nouveaux médiacours ajoutés."
 
