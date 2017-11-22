@@ -2058,6 +2058,11 @@ def video_delete(request, slug):
         print obj
     """
     if request.method == "POST":
+        videoplaylist = PlaylistVideo.objects.filter(video=video)
+        if videoplaylist.count() > 0:
+            for vid in videoplaylist:
+                if not vid.is_last(vid.playlist):
+                    vid.reordering(vid.playlist)
         video.delete()
         messages.add_message(
             request, messages.INFO, _(u'The video has been deleted.'))
