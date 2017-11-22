@@ -1377,3 +1377,12 @@ class PlaylistVideo(models.Model):
 
     def get_position(self, playlist):
         return PlaylistVideo.objects.filter(playlist=playlist).latest('position').position
+
+    def is_last(self, playlist):
+        return self == PlaylistVideo.objects.filter(playlist=playlist).order_by('-position')[0]
+
+    def reordering(self, playlist):
+        next_list = PlaylistVideo.objects.filter(playlist=playlist, position__gte=self.position)
+        for nextvideo in next_list:
+            nextvideo.position = nextvideo.position -1
+            nextvideo.save()

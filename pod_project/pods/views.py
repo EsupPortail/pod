@@ -920,7 +920,10 @@ def video_add_playlist(request, slug):
                 return HttpResponse(data, content_type='application/json')
         else:
             msg = _(u'The video has been deleted from your playlist.')
-            PlaylistVideo.objects.get(playlist=playlist, video=video).delete()
+            deleted = PlaylistVideo.objects.get(playlist=playlist, video=video)
+            if not deleted.is_last(playlist):
+                deleted.reordering(playlist)
+            deleted.delete()
             if request.is_ajax():
                 some_data_to_dump = {'msg': "%s" % msg}
                 data = json.dumps(some_data_to_dump)
