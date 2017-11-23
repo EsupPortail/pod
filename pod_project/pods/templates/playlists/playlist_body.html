@@ -56,7 +56,7 @@
                 {% endif %}
                 <div class="media">
                     <div class="media-left">
-                        <a href="{{ p_video.video.get_full_url }}?playlist={{ playlist.info.slug }}">
+                        <a href="{% url 'video' slug=p_video.video.slug %}?playlist={{ playlist.info.slug }}">
                             <img src="{{ p_video.video.get_thumbnail_url }}" class="playlist_img img-responsive img-thumbnail media-object" alt="{% trans 'Thumbnail' %}">
                         </a>
                     </div>
