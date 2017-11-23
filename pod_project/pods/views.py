@@ -1009,7 +1009,12 @@ def playlists_videos_list(request):
 
     if request.GET.get('owner'):
         user = User.objects.get(username=request.GET['owner'])
-        playlists = Playlist.objects.filter(owner=user)
+        playlists = Playlist.objects.filter(owner=user, visible=True)
+        if playlists.count() == 0:
+            messages.add_message(
+                request, messages.ERROR, _(u'No playlists available for this user : %s') % request.GET['owner'])
+            raise PermissionDenied
+
         return render_to_response("playlists/my_playlists.html",
                                   {'playlists': playlists,
                                   'owner': user},

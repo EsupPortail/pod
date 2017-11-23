@@ -17,9 +17,9 @@
 			{% bootstrap_field field %}
 		{% endfor %}
 		{% if playlist_form.instance %}
-		<input type="hidden" id="id_playlist" name="playlist_id" value="{{playlist_form.instance.id}}">
+		<input type="hidden" id="id_playlist" name="playlist_id" value="{{playlist_form.instance.id}}" />
 		{% endif %}
-		<input type="hidden" name="action" value="save">
+		<input type="hidden" name="action" value="save" />
 		<input type="submit" id="save_playlist" value="{% trans "save" %}" class="btn btn-info" />
 		<input type="reset" action="cancel" id="cancel_playlist" value="{% trans "cancel" %}" class="btn btn-danger" />
 	</div>

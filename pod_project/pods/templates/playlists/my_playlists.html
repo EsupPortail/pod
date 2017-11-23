@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% load i18n  %}
 
-{% block bootstrap3_title %}{% trans "My playlists" %}{% endblock %}
+{% block bootstrap3_title %}
+	{% if playlist_form %}
+		{% trans "My playlists" %}
+	{% else %}
+		{% trans "Playlists" %} : {{owner}}
+	{% endif %}
+{% endblock %}
 
 {% block bootstrap3_extra_head %}
 <style>
@@ -29,6 +35,11 @@
 	}
 	#form_playlist.panel.panel-primary {
 		padding: 10px;
+	}
+	#playlist_share {
+		padding: 2px;
+		border: 1px solid #bbb;
+		width: 260px;
 	}
 	.playlist_img {
 		width: 80px;
@@ -166,107 +177,116 @@ $(window).load(function(){
 	{% endif %}
 {% endblock %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="active">{% trans "My playlists" %}</li>{% endblock %}
-
 {% block mainToolbar %}{% endblock mainToolbar %}
 {% block article %}
-<div class="row">
-	<div id="accordeon" class="col-sm-9">
+<div id="accordeon">
 	{% for playlist in playlists %}
-		{% if playlist.visible or playlist.owner == request.user %}
-		<li style="margin-bottom:10px;">
-			<a id="playlist_title"  class="title" href="#" title="{{ playlist.title }}">{{ playlist.title }}<span class="glyphicon glyphicon-chevron-down"></span></a>
-		</li>
-		<li class="contenuTitre" >
-			<span class="playlist_videos">
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<h3 class="panel-title">{{ playlist.title }}- {{playlist.get_videos.count}} video(s)<span class="pull-right">{% if playlist.visible %}{% trans 'Visible' %}{% endif %}</span></h3>
-					</div>
-					<table class="table table-striped table-condensed scroll" id="table_playlists">
-						<thead>
-							<tr>
-								<th><a href="#" id="modify-order"><span class="glyphicon glyphicon-pencil"></span></a>{% trans 'Position' %}</th>
-								<th>{% trans 'Title' %}</th>
-								<th>{% trans 'Owner' %}</th>
-								<th>{% trans 'Thumbnail' %}</th>
-								{% if playlist.owner == request.user %}<th>{% trans 'Delete' %}</th>{% endif %}
-							</tr>
-						</thead>
-						<tbody>
-							{% for element in playlist.get_videos %}
-							<tr>
-								<td id="video-position">{{ element.position }}</td>
-								<td><a href="{{ element.video.get_full_url }}">{{ element.video.title }}</a></td>
-								<td>{{ element.video.owner.username }}</td>
-								<td><img src="{{ element.video.get_thumbnail_url }}" class="playlist_img img-responsive img-thumbnail" alt="{% trans 'Thumbnail' %}"></td>
-								{% if playlist.owner == request.user %}
-								<td>
-									<form class="remove_video" action="{% url 'video_add_playlist' slug=element.video.slug %}" method="post">
-										{% csrf_token %}
-										<input type="hidden" name="remove" value="remove">
-										<input type="hidden" name="playlist" value="{{playlist.slug}}">
-										<input type="submit" title="{% trans 'Delete from playlist' %}" value="{% trans 'delete' %}" class="bn btn-danger btn-sm" />
-									</form>
-								</td>
-								<td id="video-id" style="display:none;">{{ element.video.id }}</td>
-								{% endif %}
-							</tr>
-							{% endfor %}
-							{% if playlist.get_videos.count == 0 %}
-							<tr>
-								<td>{% trans 'This playlist is empty' %}</td>
-							</tr>
-							{% endif %}
+	{% if playlist.visible or playlist.owner == request.user %}
+	<li style="margin-bottom:10px;">
+		<a id="playlist_title"  class="title" href="#" title="{{ playlist.title }}">{{ playlist.title }}<span class="glyphicon glyphicon-chevron-down"></span></a>
+	</li>
+	<li class="contenuTitre" >
+		<span class="playlist_videos">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">{{ playlist.title }}- {{playlist.get_videos.count}} video(s)<span class="pull-right">{% if playlist.visible %}{% trans 'Visible' %}{% endif %}</span></h3>
+				</div>
+				<table class="table table-striped table-condensed scroll" id="table_playlists">
+					<thead>
+						<tr>
+							<th><a href="#" id="modify-order"><span class="glyphicon glyphicon-pencil"></span></a>{% trans 'Position' %}</th>
+							<th>{% trans 'Title' %}</th>
+							<th>{% trans 'Owner' %}</th>
+							<th>{% trans 'Thumbnail' %}</th>
+							{% if playlist.owner == request.user %}<th>{% trans 'Delete' %}</th>{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for element in playlist.get_videos %}
+						<tr>
+							<td id="video-position">{{ element.position }}</td>
+							<td><a href="{{ element.video.get_full_url }}">{{ element.video.title }}</a></td>
+							<td>{{ element.video.owner.username }}</td>
+							<td><img src="{{ element.video.get_thumbnail_url }}" class="playlist_img img-responsive img-thumbnail" alt="{% trans 'Thumbnail' %}"></td>
 							{% if playlist.owner == request.user %}
-								<tr>
-									<form class="form_edit" action="{% url 'playlists_videos_list' %}" method="post">
-										{% csrf_token %}
-										<input type="hidden" name="action" value="modify">
-										<input type="hidden" name="id" value="{{playlist.id}}">
-										<input type="submit" title="{% trans 'Edit the playlist' %}" value="{% trans 'Edit the playlist' %}" id="edit_playlist" class="btn btn-info btn-sm">
-									</form>
-								</tr>
-								<tr>
-									<form class="form_delete" action="{% url 'playlists_videos_list' %}" method="post">
-										{% csrf_token %}
-										<input type="hidden" name="action" value="delete">
-										<input type="hidden" name="id" value="{{playlist.id}}">
-										<input type="submit" title="{% trans 'Delete the playlist' %}" value="{% trans 'Delete the playlist' %}" id="delete_playlist" class="btn btn-danger btn-sm">
-									</form>
-								</tr>
-							{% endif %}
-							{% if playlist.get_videos.count != 0 %}
-							<tr>
-								<form class="form_launch" action="{% url 'video' slug=playlist.get_videos.0.video.slug %}" method="get">
+							<td>
+								<form class="remove_video" action="{% url 'video_add_playlist' slug=element.video.slug %}" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="remove" value="remove">
 									<input type="hidden" name="playlist" value="{{playlist.slug}}">
-									<input type="hidden" name="autoplay" value="true">
-									<input type="submit" title="{% trans 'Launch the playlist' %}" value="{% trans 'Launch the playlist' %}" id="launch_playlist" class="btn btn-info btn-sm">
+									<input type="submit" title="{% trans 'Delete from playlist' %}" value="{% trans 'delete' %}" class="bn btn-danger btn-sm" />
+								</form>
+							</td>
+							<td id="video-id" style="display:none;">{{ element.video.id }}</td>
+							{% endif %}
+						</tr>
+						{% endfor %}
+						{% if playlist.get_videos.count == 0 %}
+						<tr>
+							<td>{% trans 'This playlist is empty' %}</td>
+						</tr>
+						{% endif %}
+						{% if playlist.owner == request.user %}
+							<tr>
+								<form class="form_edit" action="{% url 'playlists_videos_list' %}" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="action" value="modify">
+									<input type="hidden" name="id" value="{{playlist.id}}">
+									<input type="submit" title="{% trans 'Edit the playlist' %}" value="{% trans 'Edit the playlist' %}" id="edit_playlist" class="btn btn-info btn-sm">
 								</form>
 							</tr>
-							{% endif %}
 							<tr>
-								<div class="well">{% trans 'Description' %} : {{ playlist.description }}</div>
+								<form class="form_delete" action="{% url 'playlists_videos_list' %}" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="action" value="delete">
+									<input type="hidden" name="id" value="{{playlist.id}}">
+									<input type="submit" title="{% trans 'Delete the playlist' %}" value="{% trans 'Delete the playlist' %}" id="delete_playlist" class="btn btn-danger btn-sm">
+								</form>
 							</tr>
-						</tbody>
-					</table>
-				</div>
-			</span>
-		</li>
-		{% endif %}
+						{% endif %}
+						{% if playlist.get_videos.count != 0 %}
+						<tr>
+							<form class="form_launch" action="{% url 'video' slug=playlist.get_videos.0.video.slug %}" method="get">
+								<input type="hidden" name="playlist" value="{{playlist.slug}}">
+								<input type="hidden" name="autoplay" value="true">
+								<input type="submit" title="{% trans 'Launch the playlist' %}" value="{% trans 'Launch the playlist' %}" id="launch_playlist" class="btn btn-info btn-sm">
+							</form>
+						</tr>
+						{% endif %}
+						<tr>
+							<div class="well">{% trans 'Description' %} : {{ playlist.description }}</div>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</span>
+	</li>
+	{% endif %}
 	{% endfor %}
 	{% if playlist_form %}
-	<input id="add_playlist" class="btn btn-default" value="{% trans 'Add a new playlist' %}" title="{% trans 'Add a new playlist' %}">
-	</div>
-	<div class="col-sm-9">
-		<div class="panel panel-primary" id="form_playlist">
-			<div class="panel-heading">
-				<h3 class="panel-title">{% trans 'New playlist' %}</h3>
-			</div>
-				{% include 'playlists/playlist_form.html' %}
+	<input id="add_playlist" class="btn btn-default" value="{% trans 'Add a new playlist' %}" title="{% trans 'Add a new playlist' %}" />
+	<div class="panel panel-primary" id="form_playlist">
+		<div class="panel-heading">
+			<h3 class="panel-title">{% trans 'New playlist' %}</h3>
 		</div>
+			{% include 'playlists/playlist_form.html' %}
 	</div>
 	{% endif %}
-</div>
+</div></div>
+<aside class="col-sm-3 panel panel-info">
+	<div class="widget">
+		<h4>
+			<span class="glyphicon glyphicon-info-sign"></span>
+			{% trans 'Information' %}
+		</h4>
+		{% if request.user == playlists.first.owner %}
+		<p>{% trans 'Your playlists can be shared to users who are at least authenticated on the site.' %}</p>
+		<p>{% trans 'Users will only be able to see your playlists listed as "visible".' %}</p>
+		<input maxlength="250" value="{{request.get_host}}:/{% url 'playlists_videos_list' %}?owner={{playlists.first.owner.username}}" type="text" id="playlist_share" />
+		{% else %}
+		<p>{% trans "You are currently on another user's playlists page. Only his playlists that he indicated as 'visible' are displayed here." %}</p>
+		{% endif %}
+	</div>
+</aside>
 {% endblock article %}
 {% block box %}{% endblock %}		
