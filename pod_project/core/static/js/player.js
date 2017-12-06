@@ -95,15 +95,14 @@ function loadVideo() {
             });
         }
         //end if video 360
+        if ( /Trident/i.test(navigator.userAgent) ) {
+            myPlayer.on('progress', progress);
+        }
 
         myPlayer.on('loadstart', loadstart);
         myPlayer.on('loadedmetadata', loadedmetadata);
         myPlayer.on('error', error); // error log for dev
         myPlayer.on('durationchange', loadChapBar);
-
-        //if hls is activated, old auto-switch function is obsolete.
-        if(typeof myPlayer.tech_.hls == 'undefined') { myPlayer.on('progress', progress); }
-        
         myPlayer.on('timeupdate', timeupdate);
         myPlayer.on('firstplay', function(){
             $.post(
@@ -200,7 +199,7 @@ function loadVideo() {
         $('.vjs-control-bar').css('zIndex', videozindex + 9);
         $('.vjs-text-track-settings').css('zIndex', videozindex + 10);
 
-        var IS_MOBILE = /mobile|android/i.test (navigator.userAgent);
+        var IS_MOBILE = /mobile|android/i.test(navigator.userAgent);
         var IS_IPHONE = (/iPhone/i).test(navigator.userAgent);
         var IS_IPAD = (/iPad/i).test(navigator.userAgent);
         var IS_IPOD = (/iPod/i).test(navigator.userAgent);

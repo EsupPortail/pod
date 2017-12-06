@@ -145,6 +145,9 @@
         src = src.filter( function(source) {
           try {
             if ( source.type == 'application/x-mpegURL' ) {
+              if ( source.label == 'auto' && /Trident/i.test(navigator.userAgent) ) {
+                return false;
+              }
               return true;
             }
             return ( player.canPlayType( source.type ) !== '' );

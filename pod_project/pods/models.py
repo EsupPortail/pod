@@ -576,7 +576,8 @@ class EncodingPods(models.Model):
         ("video/mp4", 'video/mp4'),
         ("video/webm", 'video/webm'),
         ("audio/mp3", "audio/mp3"),
-        ("audio/wav", "audio/wav")
+        ("audio/wav", "audio/wav"),
+        ("application/x-mpegURL", "application/x-mpegURL"),
     )
     encodingFormat = models.CharField(
         _('Format'), max_length=12, choices=FORMAT_CHOICES, default="video/mp4")

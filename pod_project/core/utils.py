@@ -883,10 +883,6 @@ def create_main_m3u8(video_id, list_encod_video):
 
     master.close()
 
-    for encodingMP4 in video.encodingpods_set.all():
-        if encodingMP4.encodingFile and encodingMP4.encodingFormat == 'video/mp4':
-            encodingMP4.delete()
-
     if DEBUG:
         print "%s" % com
     video = None
