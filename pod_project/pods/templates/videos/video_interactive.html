@@ -54,6 +54,7 @@ voir http://www.gnu.org/licenses/
             $('#ieditor').contents().find('.h5p-editor-iframe').contents().find('.h5p-add-file').length > 0 && editorReady == false)
         {
             editor();
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-chooser.h5p-quality.h5p-show li').first().click()
             $('#load-message').hide();
             $('.loader').hide();
             $("#ieditor").fadeIn('slow');

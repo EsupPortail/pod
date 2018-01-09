@@ -15,6 +15,7 @@ from django.http import HttpResponseForbidden
 from django.http import HttpResponse
 from django.http import StreamingHttpResponse
 from django.template import RequestContext
+from django.template.defaultfilters import slugify
 from pods.forms import ChannelForm
 from pods.forms import ThemeForm
 from pods.forms import PodForm
@@ -531,7 +532,7 @@ def video(request, slug, slug_c=None, slug_t=None):
             score = None
             h5p = None
             if video.is_interactive():
-                h5p = h5p_contents.objects.get(slug=slugify(video.title))
+                h5p = h5p_contents.objects.get(slug=slug[find(slug, "-")+1:])
                 if request.GET.get('is_iframe') and request.GET.get('interactive'):
                     if request.GET['interactive'] == 'true':
                         return HttpResponseRedirect('/h5p/embed/?contentId=%d' % h5p.content_id)
@@ -918,7 +919,7 @@ def video_edit(request, slug=None):
             interactive = True
             video = get_object_or_404(Pod, slug=slug)
             if video.is_interactive():
-                h5p = h5p_contents.objects.get(slug=slugify(video.title))
+                h5p = h5p_contents.objects.get(slug=slug[find(slug, "-")+1:])
 
 
         video = get_object_or_404(Pod, slug=slug)
