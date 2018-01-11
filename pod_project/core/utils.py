@@ -61,7 +61,7 @@ ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -cod
 ENCODE_WEBM_CMD = getattr(settings, 'ENCODE_WEBM_CMD',
                           "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s")
 ENCODE_M3U8_CMD = getattr(settings, 'ENCODE_M3U8_CMD',
-                          "%(ffmpeg)s -i %(src)s -profile:v baseline -level 3.0 -start_number 0 -hls_playlist_type vod -hls_list_size 0 -hls_flags single_file -hls_base_url %(url)s -f hls %(out)s")
+                          "%(ffmpeg)s -i %(src)s -profile:v baseline -level 3.0 -start_number 0 -hls_playlist_type vod -hls_time 10 -hls_list_size 0 -hls_segment_type fmp4 -hls_flags single_file -f hls %(out)s")
 ENCODE_MP3_CMD = getattr(settings, 'ENCODE_MP3_CMD',
                          "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s")
 ENCODE_WAV_CMD = getattr(settings, 'ENCODE_WAV_CMD',
@@ -802,15 +802,16 @@ def encode_m3u8(video_id, videofilename, encod_video, bufsize):
                            "video_%s_%s.m3u8" % (video.id, encod_video.output_height))
     videodirname = os.path.join(settings.MEDIA_URL, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id) + '/'
 
+    # Create fragmented mp4
     com = ENCODE_M3U8_CMD % {
         'ffmpeg': FFMPEG,
         'src': videofilename,
-        'url': videodirname,
         'out': m3u8filename
     }
     if DEBUG:
         print "%s" % com
     ffmpegresult = commands.getoutput(com)
+
     video = None
     video = Pod.objects.get(id=video_id)
     addInfoVideo(video, "\nEND ENCOD_VIDEO M3U8 %s %s" %
@@ -862,6 +863,7 @@ def create_main_m3u8(video_id, list_encod_video):
     m3u8url = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
         "video_%s_master.m3u8" % video.id)
 
+    # Create master playlist and replace path
     master = open(m3u8filename, 'w+')
     master.write("#EXTM3U\n\n")
     for encoding_type in list_encod_video:
@@ -874,7 +876,18 @@ def create_main_m3u8(video_id, list_encod_video):
         videodirname = os.path.join(settings.MEDIA_URL, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id)
         videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                                                  "video_%s_%s.mp4" % (video.id, encoding_type.output_height))
+        videom3u8 = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                "video_%s_%s.m3u8" % (video.id, encoding_type.output_height))
 
+        # Replace path in individual m3u8 files
+        if os.path.isfile(videom3u8):
+            with open(videom3u8) as main:
+                datatoReplace = main.read()
+                datatoReplace = datatoReplace.replace('/var/pod', '')
+                with open(videom3u8, 'w+') as newmain:
+                    newmain.write(datatoReplace)
+
+        # Append individual m3u8 files in master playlist
         if os.path.isfile(videofilename):
             com = "%s -v error -select_streams v:0 -show_entries stream=bit_rate -of default=noprint_wrappers=1:nokey=1 %s" % (FFPROBE, videofilename)
             ffmproberesult = commands.getoutput(com)
