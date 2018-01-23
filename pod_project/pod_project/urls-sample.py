@@ -40,6 +40,8 @@ urlpatterns = [
         name='owner_videos_list'),
     url(r'^favorites_videos_list/', 'pods.views.favorites_videos_list',
         name='favorites_videos_list'),
+    url(r'^playlists_videos_list/', 'pods.views.playlists_videos_list',
+        name='playlists_videos_list'),
 
     # TEXT EDITOR
     url(r'^ckeditor/', include('ckeditor.urls')),
@@ -81,6 +83,8 @@ urlpatterns = [
         'pods.views.video_add_favorite', name='video_add_favorite'),
     url(r'^video_add_report/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_add_report', name='video_add_report'),
+    url(r'^video_add_playlist/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video_add_playlist', name='video_add_playlist'),
     url(r'^video_completion/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_completion', name='video_completion'),
     url(r'^video_completion_contributor/(?P<slug>[\-\d\w]+)/$',
