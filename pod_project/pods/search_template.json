@@ -5,54 +5,35 @@
   "settings": {
     "number_of_shards": 2,
     "number_of_replicas": 0,
-   "analysis": {
-      "filter": {
-        "french_elision": {
-          "type":         "elision",
-          "articles_case": true,
-          "articles": [
-              "l", "m", "t", "qu", "n", "s",
-              "j", "d", "c", "jusqu", "quoiqu",
-              "lorsqu", "puisqu"
+     "analysis": {
+        "filter": {
+          "french_elision": {
+            "type":         "elision",
+            "articles_case": true,
+            "articles": [
+                "l", "m", "t", "qu", "n", "s",
+                "j", "d", "c", "jusqu", "quoiqu",
+                "lorsqu", "puisqu"
+              ]
+          },
+          "french_stemmer": {
+            "type":       "stemmer",
+            "language":   "light_french"
+          }
+        },
+        "analyzer": {
+          "icu_french": {
+            "tokenizer": "icu_tokenizer",
+            "filter": [
+              "french_elision",
+              "icu_folding",
+              "lowercase",
+              "french_stemmer",
+              "asciifolding"
             ]
-        },
-        "french_stop": {
-          "type":       "stop",
-          "stopwords":  "_french_" 
-        },
-        "french_keywords": {
-          "type":       "keyword_marker",
-          "keywords":   ["Exemple"] 
-        },
-        "french_stemmer": {
-          "type":       "stemmer",
-          "language":   "light_french"
-        }
-      },
-      "tokenizer": {
-        "my_tokenizer": {
-          "type": "ngram",
-          "min_gram": 3,
-          "max_gram": 3,
-          "token_chars": [
-            "letter"
-          ]
-        }
-      },
-      "analyzer": {
-        "french": {
-          "type"     :    "custom",
-          "tokenizer": "my_tokenizer",
-          "filter": [
-            "french_elision",
-            "lowercase",
-            "french_stop",
-            "french_keywords",
-            "french_stemmer"
-          ]
+          }
         }
       }
-    }
   },
   "mappings": {
     "pod": {
@@ -62,16 +43,18 @@
         },
         "title": {
           "type":"text",
-          "analyzer" : "french",
-          "term_vector": "with_positions_offsets"
+          "analyzer" : "icu_french",
+          "term_vector": "with_positions_offsets",
+          "search_analyzer": "icu_french"
         },
         "owner": {
           "type":"keyword"
         },
         "owner_full_name": {
           "type":"text",
-          "analyzer" : "french",
-          "term_vector": "with_positions_offsets"
+          "analyzer" : "icu_french",
+          "term_vector": "with_positions_offsets",
+          "search_analyzer": "icu_french"
         },
         "date_added": {
           "type":"date"
@@ -81,8 +64,9 @@
         },
         "description": {
           "type":"text",
-          "analyzer" : "french",
-          "term_vector": "with_positions_offsets"
+          "analyzer" : "icu_french",
+          "term_vector": "with_positions_offsets",
+          "search_analyzer": "icu_french"
         },
         "thumbnail": {
           "type":"keyword",
@@ -95,8 +79,9 @@
           "properties": {
             "name": {
               "type":"text",
-              "analyzer" : "french",
+              "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
                   "type": "keyword",
@@ -113,8 +98,9 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "french",
+              "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
                   "type": "keyword",
@@ -131,8 +117,9 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "french",
+              "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
                   "type": "keyword",
@@ -149,8 +136,9 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "french",
+              "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
                   "type": "keyword",
@@ -167,8 +155,9 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "french",
+              "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
                   "type": "keyword",
@@ -185,8 +174,9 @@
           "properties": {
             "name": {
               "type":"text",
-              "analyzer" : "french",
+              "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
                   "type": "keyword",
@@ -203,8 +193,9 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "french",
+              "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
                   "type": "keyword",
@@ -221,8 +212,9 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "french",
+              "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
                   "type": "keyword",
@@ -239,8 +231,9 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "french",
+              "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
                   "type": "keyword",
@@ -279,6 +272,6 @@
           "type":"keyword"
         }
       }
-    } 
+    }
   }
 }
