@@ -363,20 +363,15 @@ class Pod(Video):
             'encodingType__output_height', flat=True).distinct()
         return all_encoding_type
 
-    def get_encoding_240(self):
-        encoding_240 = self.encodingpods_set.filter(
-            encodingType__output_height=240)
-        return encoding_240
+    def get_encoding_360(self):
+        encoding_360 = self.encodingpods_set.filter(
+            encodingType__output_height=360)
+        return encoding_360
 
-    def get_MP4_240_URL(self):
-        encoding_240 = EncodingPods.objects.get(
-            video=self, encodingType__output_height=240, encodingFormat="video/mp4")
-        return encoding_240.encodingFile.url
-
-    def get_MP4_480_URL(self):
-        encoding_480 = EncodingPods.objects.get(
-            video=self, encodingType__output_height=480, encodingFormat="video/mp4")
-        return encoding_480.encodingFile.url
+    def get_MP4_360_URL(self):
+        encoding_360 = EncodingPods.objects.get(
+            video=self, encodingType__output_height=360, encodingFormat="video/mp4")
+        return encoding_360.encodingFile.url
 
     def get_MP4_720_URL(self):
         encoding_720 = EncodingPods.objects.get(
@@ -409,7 +404,7 @@ class Pod(Video):
         return True if ENCODE_M3U8 and EncodingPods.objects.filter(video=self, encodingFormat="application/x-mpegURL").count() > 0 else False
 
     def get_iframe_admin_integration(self):
-        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % self.get_full_url()
+        iframe_url = '<iframe src="%s?is_iframe=true&size=360" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % self.get_full_url()
         return iframe_url
 
     def get_dublin_core(self):

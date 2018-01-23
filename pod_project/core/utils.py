@@ -61,14 +61,11 @@ ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -cod
 ENCODE_WEBM_CMD = getattr(settings, 'ENCODE_WEBM_CMD',
                           "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s")
 ENCODE_M3U8_CMD = getattr(settings, 'ENCODE_M3U8_CMD',
-                          "%(ffmpeg)s -i %(src)s -profile:v baseline -level 3.0 -start_number 0 -hls_playlist_type vod -hls_time 10 -hls_list_size 0 -hls_segment_type fmp4 -hls_flags single_file -f hls %(out)s")
+                          "%(ffmpeg)s -i %(src)s -codec: copy -start_number 0 -hls_time 10 -hls_list_size 0 -hls_segment_type fmp4 -hls_flags single_file -f hls %(out)s")
 ENCODE_MP3_CMD = getattr(settings, 'ENCODE_MP3_CMD',
                          "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s")
 ENCODE_WAV_CMD = getattr(settings, 'ENCODE_WAV_CMD',
                          "%(ffmpeg)s -i %(src)s -ar %(ar)s -ab %(ab)s -f wav -threads 0 -y %(out)s")
-# TEST
-ENCODE_LIVE_CMD = getattr(settings, 'ENCODE_LIVE_CMD',
-                          "%(ffmpeg)s -i ")
 
 
 log = logging.getLogger(__name__)
@@ -265,7 +262,7 @@ def encode_video(video_to_encode):
                 add_overview(VIDEO_ID, in_width, in_height, nb_frames)
 
             list_encod_video = EncodingType.objects.filter(mediatype='video').order_by(
-                'output_height')  # .exclude(output_height=1080).exclude(output_height=720).exclude(output_height=480)
+                'output_height')  # .exclude(output_height=1080).exclude(output_height=720)
             for encod_video in list_encod_video:
                 bufsize = encod_video.bitrate_video
                 try:
@@ -867,17 +864,14 @@ def create_main_m3u8(video_id, list_encod_video):
     master = open(m3u8filename, 'w+')
     master.write("#EXTM3U\n\n")
     for encoding_type in list_encod_video:
-        resolution = {
-            '240': '320x240',
-            '480': '640x480',
-            '720': '1280x720',
-            '1080': '1920x1080'
-        }
+
         videodirname = os.path.join(settings.MEDIA_URL, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id)
         videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                                 "video_%s_%s.mp4" % (video.id, encoding_type.output_height))
+                                                "video_%s_%s.mp4" % (video.id, encoding_type.output_height))
         videom3u8 = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                                                 "video_%s_%s.m3u8" % (video.id, encoding_type.output_height))
+        videom4s = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                "video_%s_%s.m4s" % (video.id, encoding_type.output_height))
 
         # Replace path in individual m3u8 files
         if os.path.isfile(videom3u8):
@@ -888,11 +882,15 @@ def create_main_m3u8(video_id, list_encod_video):
                     newmain.write(datatoReplace)
 
         # Append individual m3u8 files in master playlist
-        if os.path.isfile(videofilename):
+        if os.path.isfile(videom3u8):
             com = "%s -v error -select_streams v:0 -show_entries stream=bit_rate -of default=noprint_wrappers=1:nokey=1 %s" % (FFPROBE, videofilename)
             ffmproberesult = commands.getoutput(com)
             master.write('#EXT-X-STREAM-INF:BANDWIDTH=%s,CODECS="avc1.42c00d,mp4a.40.2"\n%s/video_%s_%s.m3u8\n' %
                 (ffmproberesult, videodirname, video.id, encoding_type.output_height))
+
+        # Keep only 360p video in mp4 non-fragmented
+        if os.path.isfile(videofilename) and encoding_type.output_height != 360:
+            os.remove(videofilename)
 
     master.close()
 

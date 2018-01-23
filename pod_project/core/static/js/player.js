@@ -48,6 +48,19 @@ var intcheck = 0;
 var changeResBd = false;
 /******* DOC READY ********/
 $(document).ready(function() {
+    if ('MediaSource' in window) {
+        $('video').each(function() {
+            $(this).children('source').remove();
+            var player = videojs(this);
+            var source = $(this).data('m3u8');
+            player.ready(function() {
+                player.src({
+                    src: source,
+                    type: 'application/x-mpegURL',
+                });
+            });
+        });
+    }
     loadVideo();
     // Remove right click on video
     $('#player_video').bind('contextmenu', function() { return false; });
