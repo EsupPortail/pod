@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-21 11:44+0100\n"
-"PO-Revision-Date: 2017-11-06 13:30+0200\n"
+"POT-Creation-Date: 2018-01-11 13:44+0100\n"
+"PO-Revision-Date: 2017-09-20 16:27+0200\n"
 "Last-Translator: Obled Joël <obled.joel@univ-lille1.fr>\n"
 "Language-Team: ESUP POD <nicolas.can@univ-lille1.fr>\n"
 "Language: fr\n"
@@ -246,8 +246,8 @@ msgstr "Impossible de vous authentifier"
 msgid "Acces denied"
 msgstr "Accès refusé"
 
-#: core/templates/403.html:50 pods/views.py:2457 pods/views.py:2481
-#: pods/views.py:2484
+#: core/templates/403.html:50 pods/views.py:2476 pods/views.py:2480
+#: pods/views.py:2332
 msgid "You are not authorized to view this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 
@@ -264,7 +264,7 @@ msgstr "Accueil"
 msgid "Page not found."
 msgstr "La ressource demandée (généralement une page web) n’existe pas."
 
-#: core/templates/404.html:50 pods/views.py:2461
+#: core/templates/404.html:50 pods/views.py:2480
 msgid "The requested address was not found on this server."
 msgstr "La ressource demandée n'a pas été trouvée sur le serveur."
 
@@ -743,7 +743,7 @@ msgstr "N'hésitez pas à nous contacter pour toute assistance :"
 #: core/templates/registration/login.html:118
 #: core/templates/registration/login.html:119
 #: core/theme/DEFAULT/templates/footer.html:29
-#: core/theme/DEFAULT/templates/footer.html:30 core/views.py:278
+#: core/theme/DEFAULT/templates/footer.html:30 core/views.py:283
 msgid "Contact us"
 msgstr "Contactez nous"
 
@@ -890,11 +890,15 @@ msgstr "Votre message intitulé"
 msgid "Your message has been sent."
 msgstr "Votre message a bien été envoyé"
 
-#: core/views.py:254 core/views.py:264
+#: core/views.py:254 core/views.py:270
 msgid "Password request for : "
 msgstr "Mot de passe requis pour : "
 
-#: core/views.py:274
+#: core/views.py:266
+msgid "The video id is not valid. Redirect to Contact Us form."
+msgstr "L'ID de la vidéo n'est pas valide. Redirection sur le formulaire Contactez-nous."
+
+#: core/views.py:280
 msgid "Contact the owner"
 msgstr "Contacter le propriétaire"
 

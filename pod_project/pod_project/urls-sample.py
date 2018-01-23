@@ -138,6 +138,8 @@ if settings.H5P_ENABLED:
     urlpatterns += [
         url(r'^video_interactive/(?P<slug>[\-\d\w]+)/$',
             'pods.views.video_interactive', name='video_interactive'),
+        url(r'^h5p/login/', 'core.views.core_login', name='account_login'),
+        url(r'^h5p/logout/', 'core.views.core_logout', name='account_logout'),
         url(r'^h5p/', include('h5pp.urls')),
     ]
 
