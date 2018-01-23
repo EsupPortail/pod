@@ -19,20 +19,19 @@ GNU General Public Licence
 avec ce programme. Si ce n'est pas le cas,
 voir http://www.gnu.org/licenses/
 """
-
-from django.contrib import admin
-from django.contrib.flatpages.admin import FlatpageForm, FlatPageAdmin
-from django.contrib.flatpages.models import FlatPage
 from ckeditor.widgets import CKEditorWidget
+from core.models import UserProfile, PagesMenuBas, EncodingType, ContactUs
+from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from django.contrib.flatpages.admin import FlatpageForm, FlatPageAdmin
+from django.contrib.flatpages.models import FlatPage
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import format_html
-from core.models import UserProfile, PagesMenuBas, EncodingType, ContactUs
+from modeltranslation.admin import TranslationAdmin
 
 
 class PageForm(FlatpageForm):
-
     class Meta:
         model = FlatPage
         fields = '__all__'
@@ -41,24 +40,23 @@ class PageForm(FlatpageForm):
             'content_en': CKEditorWidget(config_name='complete'),
         }
 
-from modeltranslation.admin import TranslationAdmin
 
-
+# CustomFlatPage admin panel
 class CustomFlatPageAdmin(TranslationAdmin):
     list_display = ('title', 'url', )
     form = PageForm
 
-# unregister the default FlatPage admin and register CustomFlatPageAdmin.
+# Unregister the default FlatPage admin and register CustomFlatPageAdmin.
 admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, CustomFlatPageAdmin)
 
 
+# Basic admin panel
 admin.site.register(PagesMenuBas)
 
 
 # Define an inline admin descriptor for Employee model
 # which acts a bit like a singleton
-
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
@@ -66,9 +64,7 @@ class UserProfileInline(admin.StackedInline):
 
 
 # Define a new User admin
-
 class UserAdmin(UserAdmin):
-
     def clickable_email(self, obj):
         email = obj.email
         return format_html('<a href="mailto:{}">{}</a>', email, email)
@@ -86,6 +82,7 @@ class UserAdmin(UserAdmin):
         'is_staff',
         'is_superuser'
     )
+    ordering = ('-is_superuser', 'username', )
     inlines = (UserProfileInline, )
 
 
@@ -94,12 +91,14 @@ admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
 
+# EncodingType admin panel
 class EncodingTypeAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'bitrate_audio', 'bitrate_video', 'output_height', 'mediatype')
 admin.site.register(EncodingType, EncodingTypeAdmin)
 
 
+# ContactUs admin panel
 class ContactUsAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'email', 'subject', 'message')
 admin.site.register(ContactUs, ContactUsAdmin)
