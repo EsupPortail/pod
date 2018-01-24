@@ -2256,6 +2256,8 @@ def search_videos(request):
         "query": {},
         "aggs": {},
         "highlight": {
+            "pre_tags": ["<mark>"],
+            "post_tags": ["</mark>"],
             "fields": {"title": {"force_source":"true"}}
         }
     }
