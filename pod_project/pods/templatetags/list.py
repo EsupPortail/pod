@@ -33,7 +33,7 @@ import random
 import datetime
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Count, Case, When, IntegerField, Prefetch
-from pods.models import Pod
+from pods.models import Pod, Playlist
 
 register = Library()
 
@@ -197,6 +197,11 @@ def get_last_videos():
         'DEFAULT_IMG': settings.DEFAULT_IMG
     }
 
+@register.inclusion_tag("playlists/playlist_list.html")
+def get_last_playlists():
+    return {
+        'playlists': Playlist.objects.filter(visible=True).order_by('-id').distinct()[:HOMEPAGE_NBR_CONTENTS_SHOWN],
+    }
 
 @register.simple_tag()
 def is_new(video):
@@ -205,6 +210,12 @@ def is_new(video):
         return '<span class="label label-danger">%s !</span>' % _('New')
     return ""
 
+@register.simple_tag()
+def is_new_id(playlist):
+    new = Playlist.objects.all()[:3]
+    if playlist in new:
+        return '<span class="label label-danger">%s !</span>' % _('New')
+    return ""
 
 @register.simple_tag()
 def is_new_date(date_added):

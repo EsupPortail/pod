@@ -132,6 +132,7 @@ voir http://www.gnu.org/licenses/
                         {% block article %}
                             {% block article_content %}{% endblock article_content %}
                             {% block video_list %}{% endblock video_list %}
+                            {% block playlist_list %}{% endblock playlist_list %}
                             {% block pagination %}{% endblock pagination %}
                         {% endblock article %}
                         <p>&nbsp;</p>
@@ -260,18 +261,55 @@ voir http://www.gnu.org/licenses/
         {% endif %}
         {% if show_report %}
         <div class="modal fade" id="modal_report_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
-                        <div class="modal-header">
-                            <h3>{% trans 'Report this video' %}</h3>
+                    <div class="modal-header">
+                        <h3>{% trans 'Report this video' %}</h3>
+                    </div>
+                    <form method="post" action="{% url 'video_add_report' slug=video.slug %}" id="video_report_form" >
+                        {% csrf_token %}
+                        <div class="modal-body" >
+                            <div class="form-group">
+                                <label for="commentreport">{% trans 'Please, specify the problem:' %}</label><br/>
+                                <textarea rows="5" name="comment" id="commentreport" class="form-control" placeholder="message"></textarea>
+                            </div>
                         </div>
-                        <form method="post" action="{% url 'video_add_report' slug=video.slug %}" id="video_report_form" >
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" class="btn btn-default" >{% trans 'Send' %}</button>
+                        </div>
+                    </form>
+                </div><!-- /.modal-content -->
+            </div>
+        </div>
+        {%endif%}
+        {% if video %}
+        <div class="modal fade" id="modal_playlist_form" tabindex="-1" role="dialog" aria-labelldby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>{% trans 'Add video to your playlist' %}</h3>
+                    </div>
+                    {% if playlists.owner %}
+                        <form method="post" action="{% url 'video_add_playlist' slug=video.slug %}" id="video_playlist_form" >
                             {% csrf_token %}
-                            <div class="modal-body" >
+                            <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="commentreport">{% trans 'Please, specify the problem:' %}</label><br/>
-                                    <textarea rows="5" name="comment" id="commentreport" class="form-control" placeholder="message"></textarea>
+                                    <label for="playlist">{% trans 'Select one of your playlists:' %}</label><br/>
+                                    <div class="list-group" id="playlist">
+                                    {% for playlist in playlists.owner %}
+                                        {% if video.id in playlist.get_videos_list %}
+                                        <a href="#" class="list-group-item disabled" id="playlist_name">{{ playlist.title }} - {% trans 'Already in this playlist' %}
+                                            <span class="badge">{{ playlist.get_videos.count }}</span>
+                                        </a>
+                                        {% else %}
+                                        <a href="#" class="list-group-item" id="playlist_name">{{ playlist.title }}
+                                            <span class="badge">{{ playlist.get_videos.count }}</span>
+                                        </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -279,10 +317,21 @@ voir http://www.gnu.org/licenses/
                                 <button type="submit" class="btn btn-default" >{% trans 'Send' %}</button>
                             </div>
                         </form>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
+                    {% else %}
+                        <div class="modal-body">
+                            <p>{% trans "You don't have playlists yet" %}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="{% url 'playlists_videos_list' %}">
+                                {% trans 'Add a new playlist' %}
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        {%endif%}
+        {% endif %}
 
         <div id="show_messages"></div>
 

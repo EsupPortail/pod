@@ -773,6 +773,218 @@ class Video_add_reportTestView(TestCase):
     },
     LANGUAGE_CODE='en'
 )
+class Videos_add_playlistTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        user = User.objects.create(
+            username='testuser', password='12345', is_active=True, is_staff=False)
+        user.set_password('hello')
+        user.save()
+        user2 = User.objects.create(
+            username='testuser2', password='12345', is_active=True, is_staff=False)
+        user2.set_password('hello')
+        user2.save()
+        other_type = Type.objects.get(id=1)
+        media_guard_hash = get_media_guard("remi", 1)
+        pod = Pod.objects.create(type=other_type, title="Video1", encoding_status="b", encoding_in_progress=True,
+                                 date_added=datetime.today().date(), owner=user2, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
+                                 allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
+                                 duration=3, infoVideo="videotest", to_encode=False)
+        pod.save()
+        pod2 = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
+                                 date_added=datetime.today().date(), owner=user2, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
+                                 allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
+                                 duration=3, infoVideo="videotest", to_encode=False, password="1234")
+        pod2.save()
+        playlist1 = Playlist.objects.create(title="Playlist1", owner=user)
+        playlist2 = Playlist.objects.create(title="Playlist2", owner=user2)
+        playlist1.save()
+        playlist2.save()
+        print(" --->  SetUp of Video_add_playlistTestView : OK !")
+
+    def test_add_video(self):
+        pod = Pod.objects.get(id=1)
+        playlist1 = Playlist.objects.get(id=1)
+        playlist2 = Playlist.objects.get(id=2)
+        self.client = Client()
+        self.user = User.objects.get(username="testuser")
+        self.user = authenticate(username='testuser', password='hello')
+        login = self.client.login(username='testuser', password='hello')
+        self.assertEqual(login, True)
+        response = self.client.post(
+            "/video_add_playlist/%s/" % pod.slug, {'playlist': [playlist1.title]}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            "/video_add_playlist/%s/" % pod.slug, {'playlist': [playlist2.title]}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(PlaylistVideo.objects.filter(playlist=playlist1).count() == 1)
+        self.assertTrue(PlaylistVideo.objects.filter(playlist=playlist2).count() == 1)
+        print(
+            "   --->  test_add_video of Videos_add_playlistTestView : OK !")
+
+    def test_add_video_with_password(self):
+        pod2 = Pod.objects.get(id=2)
+        playlist1 = Playlist.objects.get(id=1)
+        self.client = Client()
+        self.user = User.objects.get(username="testuser")
+        self.user = authenticate(username='testuser', password='hello')
+        login = self.client.login(username='testuser', password='hello')
+        self.assertEqual(login, True)
+        response = self.client.post(
+            "/video_add_playlist/%s/" % pod2.slug, {'playlist': [playlist1.title]}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(PlaylistVideo.objects.filter(playlist=playlist1).count() == 0)
+        print(
+            "   --->  test_add_video_with_password of Videos_add_playlistTestView : OK !")
+
+    def test_remove_video(self):
+        pod = Pod.objects.get(id=1)
+        playlist1 = Playlist.objects.get(id=1)
+        self.client = Client()
+        self.user = User.objects.get(username="testuser")
+        self.user = authenticate(username='testuser', password='hello')
+        login = self.client.login(username='testuser', password='hello')
+        self.assertEqual(login, True)
+        response = self.client.post(
+            "/video_add_playlist/%s/" % pod.slug, {'playlist': [playlist1.title]}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            "/video_add_playlist/%s/" % pod.slug, {'playlist': [playlist1], 'remove': ['remove']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(PlaylistVideo.objects.filter(playlist=playlist1).count() == 0)
+        print(
+            "   --->  test_remove_video of Videos_add_playlistTestView : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class Playlists_videosTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        user = User.objects.create(
+            username='testuser', password='12345', is_active=True, is_staff=False)
+        user.set_password('hello')
+        user.save()
+        other_type = Type.objects.get(id=1)
+        media_guard_hash = get_media_guard("remi", 1)
+        pod = Pod.objects.create(type=other_type, title="Video1", encoding_status="b", encoding_in_progress=True,
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
+                                 allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
+                                 duration=3, infoVideo="videotest", to_encode=False)
+        pod.save()
+        pod2 = Pod.objects.create(type=other_type, title="Video2", encoding_status="b", encoding_in_progress=True,
+                                 date_added=datetime.today().date(), owner=user, date_evt=datetime.today().date(), video=os.path.join("videos", "remi", media_guard_hash, "test.mp4"),
+                                 allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
+                                 duration=3, infoVideo="videotest", to_encode=False)
+        pod2.save()
+        print(" --->  SetUp of Playlists_videosTestView : OK !")
+
+    def test_new_playlist(self):
+        self.client = Client()
+        self.user = User.objects.get(username="testuser")
+        self.user = authenticate(username='testuser', password='hello')
+        login = self.client.login(username='testuser', password='hello')
+        self.assertEqual(login, True)
+        response = self.client.post(
+            "/playlists_videos_list/", {u'action': [u'new']}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['playlist_form'] != "")
+        self.assertTrue('<form id="form_playlist"' in response.content)
+        print(
+            "   --->  test_new_playlist of Playlists_videosTestView : OK !")
+
+    def test_save_playlist(self):
+        self.client = Client()
+        self.user = User.objects.get(username="testuser")
+        self.user = authenticate(username='testuser', password='hello')
+        login = self.client.login(username='testuser', password='hello')
+        self.assertEqual(login, True)
+        # Create playlist
+        response = self.client.post(
+            "/playlists_videos_list/", {u'owner': [self.user.id], u'title': [u'test'], u'description': [u'test'], u'visible': [u'on'], u'playlist_id': [u'None'], u'action': [u'save']})
+        self.assertEqual(response.status_code, 200)
+        playlist = Playlist.objects.all()
+        self.assertEqual(playlist[0].id, 1)
+        self.assertEqual(playlist[0].title, u'test')
+        self.assertEqual(playlist[0].owner, self.user)
+        self.assertEqual(playlist[0].description, u'test')
+        self.assertEqual(playlist[0].visible, True)
+        # Modify playlist
+        response = self.client.post(
+            "/playlists_videos_list/", {u'id': [u'1'], u'action': [u'modify']})
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['playlist_form'] != "")
+        self.assertTrue('<form id="form_playlist"' in response.content)
+        response = self.client.post(
+            "/playlists_videos_list/", {u'owner': [self.user.id], u'title': [u'test2'], u'description': [u'test2'], u'playlist_id': [u'1'], u'action': [u'save']})
+        self.assertEqual(response.status_code, 200)
+        playlist = Playlist.objects.all()
+        self.assertEqual(playlist[0].id, 1)
+        self.assertEqual(playlist[0].title, u'test2')
+        self.assertEqual(playlist[0].owner, self.user)
+        self.assertEqual(playlist[0].description, u'test2')
+        self.assertEqual(playlist[0].visible, False)
+        print(
+            "   ---> test_save_playlist of Playlists_videosTestView : OK !")
+
+    def test_delete_playlist(self):
+        self.client = Client()
+        self.user = User.objects.get(username="testuser")
+        self.user = authenticate(username='testuser', password='hello')
+        login = self.client.login(username='testuser', password='hello')
+        playlist = Playlist.objects.create(owner=self.user, title='test')
+        self.assertEqual(login, True)
+        response = self.client.post(
+            "/playlists_videos_list/", {u'id': [u'1'], u'action': [u'delete']})
+        self.assertEqual(response.status_code, 200)
+        playlist = Playlist.objects.all()
+        self.assertTrue(playlist.count() == 0)
+        print(
+            "   ----> test_delete_playlist of Playlists_videosTestView : OK !")
+
+    def test_position_playlist(self):
+        pod = Pod.objects.get(id=1)
+        pod2 = Pod.objects.get(id=2)
+        self.client = Client()
+        self.user = User.objects.get(username="testuser")
+        self.user = authenticate(username='testuser', password='hello')
+        login = self.client.login(username='testuser', password='hello')
+        playlist = Playlist.objects.create(owner=self.user, title='test')
+        self.assertEqual(login, True)
+        response = self.client.post(
+            "/video_add_playlist/%s/" % pod.slug, {'playlist': [playlist.title]}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            "/video_add_playlist/%s/" % pod2.slug, {'playlist': [playlist.title]}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        pod_pos = PlaylistVideo.objects.get(video=pod, playlist=playlist)
+        pod2_pos = PlaylistVideo.objects.get(video=pod2, playlist=playlist)
+        self.assertEqual(pod_pos.position, 1)
+        self.assertEqual(pod2_pos.position, 2)
+        print(
+            "   ---> test_position_playlist of Playlists_videosTestView : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class Favorites_videos_listTestView(TestCase):
     fixtures = ['initial_data.json', ]
 

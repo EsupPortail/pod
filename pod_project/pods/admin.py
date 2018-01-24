@@ -102,6 +102,28 @@ class EnrichPodsInline(admin.TabularInline):
     model = EnrichPods
     extra = 0
 
+class PlaylistAdmin(admin.ModelAdmin):
+    def get_owner_by_name(self, obj):
+        owner = obj.owner
+        url = url_to_edit_object(owner)
+        return u'%s %s (%s)' % (owner.first_name, owner.last_name, url)
+
+    get_owner_by_name.allow_tags = True
+    get_owner_by_name.short_description = _('Owner')
+
+    list_display = ('id', 'title', 'owner', 'visible')
+    list_display_links = ('title',)
+    list_editable = ('visible',)
+    search_fields = ['id', 'title', 'owner__username', 'owner__first_name', 'owner__last_name']
+
+admin.site.register(Playlist, PlaylistAdmin)
+
+class PlaylistVideoAdmin(admin.ModelAdmin):
+    list_display = ('video', 'playlist', 'position')
+    list_display_links = ('video',)
+
+admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
+
 
 # Pod admin panel
 # Main

@@ -1,0 +1,26 @@
+{% load bootstrap3 %}
+{% load i18n %}
+<form id="form_playlist" action="{% url 'playlists_videos_list' %}" method="post">
+	{% csrf_token %}
+	<div id="formcontent" class="form-container">
+		{% if playlist_form.errors or playlist_form.non_field_errors %}
+			{% trans "Your form contains errors:" %}<br/>
+			{% for error in playlist_form.non_field_errors %}
+				- {{error}} <br/>
+			{% endfor %}
+		{% endif %}
+
+		{% for field_hidden in playlist_form.hidden_fields %}
+		{{ field_hidden }}
+		{% endfor %}
+		{% for field in playlist_form.visible_fields %}
+			{% bootstrap_field field %}
+		{% endfor %}
+		{% if playlist_form.instance %}
+		<input type="hidden" id="id_playlist" name="playlist_id" value="{{playlist_form.instance.id}}" />
+		{% endif %}
+		<input type="hidden" name="action" value="save" />
+		<input type="submit" id="save_playlist" value="{% trans "save" %}" class="btn btn-info" />
+		<input type="reset" action="cancel" id="cancel_playlist" value="{% trans "cancel" %}" class="btn btn-danger" />
+	</div>
+</form>

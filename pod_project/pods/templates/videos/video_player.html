@@ -56,7 +56,7 @@ voir http://www.gnu.org/licenses/
                             poster="{% static DEFAULT_IMG %}"
                             data-setup='{"poster":"{% static DEFAULT_IMG %}","playbackRates":[0.5, 1, 1.5, 2]}'
                         {% endif %}
-                        {% if request.GET.autoplay %}autoplay{% endif %}
+                        {% if request.GET.autoplay or request.GET.playlist %}autoplay{% endif %}
                     >
                         {% for track in video.trackpods_set.all %}
                             <track

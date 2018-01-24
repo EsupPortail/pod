@@ -177,6 +177,27 @@ function loadVideo() {
             });
         }
 
+        // Playlist
+        if ($('div.panel-playlist').length > 0) {
+            myPlayer.on('ended', function() {
+                var loop = $('.playlist_loop.active').length > 0;
+                var pos = parseInt($('.current_video').attr('id').replace(/[^\/\d]/g, ''));
+                pos = pos + 1;
+                var cell = $('#table_playlists').find('#pos_' + pos + ' a')[0];
+                if (cell != undefined) {
+                    var link = cell.href;
+                    if (loop) {
+                        window.location = link + '&loop=true';
+                    }else{
+                        window.location = link;
+                    }
+                } else if (loop) {
+                    var link = $('#table_playlists').find('#pos_1 a')[0].href
+                    window.location = link + '&loop=true';
+                }
+            });
+        };
+
         myPlayer.on('resolutionchange', function() {
             changeRes = true;
         });
