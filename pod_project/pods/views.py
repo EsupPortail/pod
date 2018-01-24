@@ -659,13 +659,36 @@ def video(request, slug, slug_c=None, slug_t=None):
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
         return download_video(video, request.GET)
-    else:
+
+    if request.GET.get('playlist'):
+        info = Playlist.objects.get(slug=request.GET['playlist'])
+        videos = PlaylistVideo.objects.filter(playlist=info)
+        playlist = {
+            'info': info,
+            'videos': videos
+        }
+        if not playlist['info'].visible:
+            messages.add_message(
+                request, messages.ERROR, _(u'You don\'t have access to this playlist.'))
+            return render_to_response(
+                'videos/video.html',
+                {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
+                    'show_report': show_report},
+                context_instance=RequestContext(request)
+            )
         return render_to_response(
             'videos/video.html',
-            {'video': video, 'channel': channel, 'param': param,
-                'theme': theme, 'interactive': interactive, 'show_report': show_report},
+            {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
+                'show_report': show_report, 'playlist': playlist},
             context_instance=RequestContext(request)
-        )
+            )
+
+    return render_to_response(
+        'videos/video.html',
+        {'video': video, 'channel': channel, 'param': param,
+            'theme': theme, 'interactive': interactive, 'show_report': show_report},
+        context_instance=RequestContext(request)
+    )
 
 
 @csrf_protect
