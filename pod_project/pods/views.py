@@ -2216,11 +2216,11 @@ def search_videos(request):
     filter_query = ""
 
     if len(selected_facets) > 0 or start_date or end_date:
-        filter_search = {"and": []}
+        filter_search = []
         for facet in selected_facets:
             term = facet.split(":")[0]
             value = facet.split(":")[1]
-            filter_search["and"].append({
+            filter_search.append({
                 "term": {
                     "%s" % term: "%s" % value
                 }
@@ -2235,7 +2235,7 @@ def search_videos(request):
                 filter_date_search["range"]["date_added"][
                     "lte"] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
 
-            filter_search["and"].append(filter_date_search)
+            filter_search.append(filter_date_search)
 
     # Query
     query = {"match_all": {}}
@@ -2256,8 +2256,6 @@ def search_videos(request):
         "query": {},
         "aggs": {},
         "highlight": {
-            "pre_tags": ["<strong>"],
-            "post_tags": ["</strong>"],
             "fields": {"title": {}}
         }
     }
@@ -2280,11 +2278,11 @@ def search_videos(request):
     }
 
     if filter_search != {}:
-        bodysearch["query"]["function_score"]["query"] = {"filtered": {}}
+        bodysearch["query"]["function_score"]["query"] = {"bool": {}}
         bodysearch["query"]["function_score"][
-            "query"]["filtered"]["query"] = query
+            "query"]["bool"]["must"] = query
         bodysearch["query"]["function_score"]["query"][
-            "filtered"]["filter"] = filter_search
+            "bool"]["filter"] = filter_search
     else:
         bodysearch["query"]["function_score"]["query"] = query
 
