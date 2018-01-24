@@ -2256,7 +2256,7 @@ def search_videos(request):
         "query": {},
         "aggs": {},
         "highlight": {
-            "fields": {"title": {}}
+            "fields": {"title": {"force_source":"true"}}
         }
     }
 
