@@ -59,6 +59,12 @@ voir http://www.gnu.org/licenses/
             {% get_last_videos %}
         </div>
     {% endblock video_list %}
+    {% block playlist_list %}
+        <h3>{% trans 'Here are the latest playlists' %}</h3>
+        <div id="objects_list_flatpage">
+            {% get_last_playlists %}
+        </div>
+    {% endblock playlist_list %}
 {% endblock article %}
 
 

@@ -1,0 +1,73 @@
+{% load i18n list staticfiles %}
+{% load bootstrap3 %}
+
+{% block bootstrap3_extra_head %}
+<style>
+.playlist_loop {
+    color: blue;
+}
+.playlist_loop.active {
+    color: red;
+}
+.playlist_img {
+    width: 120px;
+    height: 80px;
+}
+.current_video img {
+    border: 3px solid blue;
+}
+</style>
+<script>
+    $(document).ready(function() {
+        if($.urlParam('loop')) {
+            $('.playlist_loop').click();
+        }
+    });
+    $(document).on('click', '.playlist_loop', function(event) {
+        if(! $(this).hasClass('active') ) {
+            $(this).addClass('active');
+        }else{
+            $(this).removeClass('active');
+        }
+    });
+</script>
+{% endblock bootstrap3_extra_head %}
+
+<div class="panel panel-primary panel-playlist" style="margin:10px;">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {{ playlist.info.title }}&nbsp; - {{ playlist.videos.count }} video(s)
+            <span class="pull-right">{% trans 'Owner' %} : {{ playlist.info.owner.username }}</span>
+        </h3>
+    </div>
+    <table class="table table-striped table-condensed scroll" id="table_playlists">
+        <tbody>
+            <tr>
+                <button class="btn btn-link playlist_loop" title="{% trans 'Loop playlist' %}">
+                    <span class="glyphicon glyphicon-repeat"></span>
+                    <span class="sr-only">{% trans 'Loop playlist' %}</span>
+                </button>
+            <tr>
+                {% for p_video in playlist.videos %}
+                {% if p_video.video.slug == video.slug %}
+                <td class="current_video" id="pos_{{p_video.position}}">
+                {% else %}
+                <td id="pos_{{ p_video.position }}">
+                {% endif %}
+                <div class="media">
+                    <div class="media-left">
+                        <a href="{% url 'video' slug=p_video.video.slug %}?playlist={{ playlist.info.slug }}">
+                            <img src="{{ p_video.video.get_thumbnail_url }}" class="playlist_img img-responsive img-thumbnail media-object" alt="{% trans 'Thumbnail' %}">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">{{ p_video.video.title }}</h4>
+                        <p>{{ p_video.video.owner.username }}</p>
+                    </div>
+                </div>
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
