@@ -176,7 +176,7 @@ if settings.ATOM_SD:
 ##
 # OEMBED feature patterns
 #
-if settings.OEMBED:
+if getattr(settings, 'OEMBED', False):
     # OEMBED href
     urlpatterns += [
         url(r'^oembed/$',

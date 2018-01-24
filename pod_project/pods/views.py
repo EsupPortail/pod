@@ -66,6 +66,7 @@ if H5P_ENABLED:
 USE_PRIVATE_VIDEO = getattr(settings, 'USE_PRIVATE_VIDEO', False)
 if USE_PRIVATE_VIDEO:
     from core.models import get_media_guard
+EMAIL_ON_ENCODING_COMPLETION = getattr(settings, 'EMAIL_ON_ENCODING_COMPLETION', False)
 
 DEFAULT_PER_PAGE = 12
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
@@ -1140,7 +1141,7 @@ def video_edit(request, slug=None):
                 vid.owner = request.user
 
             if request.FILES:
-                if settings.EMAIL_ON_ENCODING_COMPLETION and request.user.email:
+                if EMAIL_ON_ENCODING_COMPLETION and request.user.email:
                     from django.utils.translation import get_language
                     vid.set_encoding_user_email_data(
                         request.user.email,
