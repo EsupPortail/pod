@@ -27,7 +27,7 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_extra_head %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css" />
     <style>
-        .highlighted, h5>em {
+        .highlighted {
             font-style:italic;
             font-weight:bold;
         }
@@ -134,7 +134,7 @@ voir http://www.gnu.org/licenses/
                                 <img src="{% static DEFAULT_IMG %}" class="preview" alt="{{ video.title }}" />
                             {% endif %}
                         </span>
-                        <h5>{% if highlight %}{{highlight.title.0|safe|truncatechars:40}}{%else%}{{video.title|truncatechars:34}}{%endif%}<!--{{score}} - {{result.hits.max_score}}-->{% is_new_date video.date_added %}</h5>
+                        <h5>{% if highlight %}{{highlight.title.0|safe|lower|truncatechars_html:36}}{%else%}{{video.title|lower|truncatechars_html:34}}{%endif%}<!--{{score}} - {{result.hits.max_score}}-->{% is_new_date video.date_added %}</h5>
                     </a>
                 </div>
                 {% endwith %}
