@@ -935,9 +935,9 @@ def video_add_playlist(request, slug):
     if request.POST and request.POST.get('playlist'):
         playlist = get_object_or_404(Playlist, slug=slugify(request.POST['playlist']))
         if not request.POST.get('remove'):
-            if video.password:
+            if video.password or video.is_draft:
                 messages.add_message(
-                    request, messages.ERROR, _(u'You can not add a video with a password.'))
+                    request, messages.ERROR, _(u'You can not add a video with a password or in draft mode.'))
                 raise PermissionDenied
 
             msg = _(u'The video has been added to your playlist.')
@@ -1153,8 +1153,12 @@ def video_edit(request, slug=None):
                     )
                 vid.to_encode = True
 
-            if PlaylistVideo.objects.filter(video=vid).exists():
-                vid.password = ''
+            if PlaylistVideo.objects.filter(video=vid).exists() and (video_form.cleaned_data['is_draft'] or video_form.cleaned_data['password']):
+                videoplaylist = PlaylistVideo.objects.filter(video=vid)
+                for videoplay in videoplaylist:
+                    if not videoplay.is_last(videoplay.playlist):
+                        videoplay.reordering(videoplay.playlist)
+                videoplaylist.delete();
 
             # Optional : Update interactive
             if H5P_ENABLED and h5p:
