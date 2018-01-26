@@ -2220,11 +2220,11 @@ def search_videos(request):
     filter_query = ""
 
     if len(selected_facets) > 0 or start_date or end_date:
-        filter_search = {"and": []}
+        filter_search = []
         for facet in selected_facets:
             term = facet.split(":")[0]
             value = facet.split(":")[1]
-            filter_search["and"].append({
+            filter_search.append({
                 "term": {
                     "%s" % term: "%s" % value
                 }
@@ -2239,7 +2239,7 @@ def search_videos(request):
                 filter_date_search["range"]["date_added"][
                     "lte"] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
 
-            filter_search["and"].append(filter_date_search)
+            filter_search.append(filter_date_search)
 
     # Query
     query = {"match_all": {}}
@@ -2247,6 +2247,7 @@ def search_videos(request):
         query = {
             "multi_match": {
                 "query":    "%s" % search_word,
+                "operator": "and",
                 "fields": ["_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1",
                            "contributors^0.6", "chapters.title^0.5", "enrichments.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6"
                            ]
@@ -2260,9 +2261,9 @@ def search_videos(request):
         "query": {},
         "aggs": {},
         "highlight": {
-            "pre_tags": ["<strong>"],
-            "post_tags": ["</strong>"],
-            "fields": {"title": {}}
+            "pre_tags": ["<mark>"],
+            "post_tags": ["</mark>"],
+            "fields": {"title": {"force_source":"true"}}
         }
     }
 
@@ -2284,11 +2285,11 @@ def search_videos(request):
     }
 
     if filter_search != {}:
-        bodysearch["query"]["function_score"]["query"] = {"filtered": {}}
+        bodysearch["query"]["function_score"]["query"] = {"bool": {}}
         bodysearch["query"]["function_score"][
-            "query"]["filtered"]["query"] = query
+            "query"]["bool"]["must"] = query
         bodysearch["query"]["function_score"]["query"][
-            "filtered"]["filter"] = filter_search
+            "bool"]["filter"] = filter_search
     else:
         bodysearch["query"]["function_score"]["query"] = query
 
@@ -2296,13 +2297,13 @@ def search_videos(request):
 
     for attr in aggsAttrs:
         bodysearch["aggs"][attr.replace(".", "_")] = {
-            "terms": {"field": attr + ".raw", "size": 5, "order": {"_count": "asc"}}}
+            "terms": {"field": attr + ".raw", "size": 5, "order": {"_count": "desc"}}}
 
     # add cursus and main_lang 'cursus', 'main_lang',
     bodysearch["aggs"]['cursus'] = {
-        "terms": {"field": "cursus", "size": 5, "order": {"_count": "asc"}}}
+        "terms": {"field": "cursus", "size": 5, "order": {"_count": "desc"}}}
     bodysearch["aggs"]['main_lang'] = {
-        "terms": {"field": "main_lang", "size": 5, "order": {"_count": "asc"}}}
+        "terms": {"field": "main_lang", "size": 5, "order": {"_count": "desc"}}}
 
     if settings.DEBUG:
         print json.dumps(bodysearch, indent=4)

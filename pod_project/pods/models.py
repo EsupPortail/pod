@@ -446,7 +446,7 @@ class Pod(Video):
             "disciplines": list(self.discipline.all().values('title', 'slug')),
             "channels": list(self.channel.all().values('title', 'slug')),
             "themes": list(self.theme.all().values('title', 'slug')),
-            "contributors": list(self.contributorpods_set.values_list('name', 'role')),
+            "contributors": list(self.contributorpods_set.values('name', 'role')),
             "chapters": list(self.chapterpods_set.values('title', 'slug')),
             "enrichments": list(self.enrichpods_set.values('title', 'slug')),
             "overlays": list(self.overlaypods_set.values('title', 'slug')),

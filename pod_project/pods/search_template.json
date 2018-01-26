@@ -5,243 +5,271 @@
   "settings": {
     "number_of_shards": 2,
     "number_of_replicas": 0,
-    "analysis": {
-      "filter": {
-        "snowball": {
-          "type":     "snowball",
-          "language": "French"
+     "analysis": {
+        "filter": {
+          "french_elision": {
+            "type":         "elision",
+            "articles_case": true,
+            "articles": [
+                "l", "m", "t", "qu", "n", "s",
+                "j", "d", "c", "jusqu", "quoiqu",
+                "lorsqu", "puisqu"
+              ]
           },
-        "elision": {
-          "type": "elision",
-          "articles": ["l", "m", "t", "qu", "n", "s",
-                    "j", "d", "c", "jusqu", "quoiqu",
-                    "lorsqu", "puisqu"]
+          "french_stemmer": {
+            "type":       "stemmer",
+            "language":   "light_french"
+          }
         },
-        "stopwords": {
-          "type": "stop",
-          "stopwords":  "_french_" ,
-          "ignore_case" : true
-        },
-        "worddelimiter" : {
-          "type": "word_delimiter"
-        }
-      },
-      "analyzer": {
-        "custom_analyzer" : {
-          "type"     :    "custom",
-          "tokenizer":    "nGram",
-          "filter"   :    ["stopwords", "asciifolding", "lowercase", "snowball", "elision", "worddelimiter"]
-        },
-        "custom_search_analyzer" : {
-          "type"     :    "custom",
-          "tokenizer":    "standard",
-          "filter"   :    ["stopwords", "asciifolding" ,"lowercase", "snowball", "elision", "worddelimiter"]
-        }
-      },
-      "tokenizer": {
-        "nGram": {
-          "type": "nGram",
-          "min_gram": 3,
-          "max_gram": 20
+        "analyzer": {
+          "icu_french": {
+            "tokenizer": "icu_tokenizer",
+            "filter": [
+              "french_elision",
+              "icu_folding",
+              "lowercase",
+              "french_stemmer",
+              "asciifolding"
+            ]
+          }
         }
       }
-    }
   },
   "mappings": {
     "pod": {
       "properties": {
-        "title": {
-          "type":"string",
-          "analyzer" : "custom_analyzer",
-          "search_analyzer" : "custom_search_analyzer",
-          "term_vector": "yes"
+        "id": {
+          "type":"long"
         },
-        "description": {
-          "type":"string",
-          "analyzer" : "custom_analyzer",
-          "search_analyzer" : "custom_search_analyzer"
+        "title": {
+          "type":"text",
+          "analyzer" : "icu_french",
+          "term_vector": "with_positions_offsets",
+          "search_analyzer": "icu_french"
         },
         "owner": {
-          "type":"string",
-          "index" : "not_analyzed"
-        },
-        "cursus": {
-          "type":"string",
-          "index" : "not_analyzed"
-        },
-        "main_lang": {
-          "type":"string",
-          "index" : "not_analyzed"
+          "type":"keyword"
         },
         "owner_full_name": {
-          "type":"string",
-          "analyzer" : "custom_analyzer",
-          "search_analyzer" : "custom_search_analyzer",
-          "fields": {
-            "raw" : {
-              "type": "string",
-              "index": "not_analyzed"
-            }
-          }
+          "type":"text",
+          "analyzer" : "icu_french",
+          "term_vector": "with_positions_offsets",
+          "search_analyzer": "icu_french"
         },
-        "date_added" : {
-          "type": "date"
+        "date_added": {
+          "type":"date"
         },
         "date_evt" : {
           "type": "date"
         },
+        "description": {
+          "type":"text",
+          "analyzer" : "icu_french",
+          "term_vector": "with_positions_offsets",
+          "search_analyzer": "icu_french"
+        },
         "thumbnail": {
-          "type":"string",
-          "index" : "not_analyzed"
+          "type":"keyword",
+          "index" : false
         },
-        "full_url": {
-          "type":"string",
-          "index" : "not_analyzed"
+        "duration": {
+          "type":"integer"
         },
-        "duration" : {
-          "type": "integer"
-        },
-        "type": {
-          "properties" : {
-            "title": {
-              "type" : "string",
-              "analyzer" : "custom_analyzer",
-              "search_analyzer" : "custom_search_analyzer",
+        "tags": {
+          "properties": {
+            "name": {
+              "type":"text",
+              "analyzer" : "icu_french",
+              "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword",
+                  "index": false
                 }
               }
             },
             "slug": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type":"keyword"
+            }
+          }
+        },
+        "type": {
+          "properties": {
+            "title": {
+              "type":"text",
+              "analyzer" : "icu_french",
+              "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
+              "fields": {
+                "raw" : {
+                  "type": "keyword",
+                  "index": false
+                }
+              }
+            },
+            "slug": {
+              "type":"keyword"
             }
           }
         },
         "disciplines": {
-          "properties" : {
+          "properties": {
             "title": {
-              "type" : "string",
-              "analyzer" : "custom_analyzer",
-              "search_analyzer" : "custom_search_analyzer",
+              "type":"text",
+              "analyzer" : "icu_french",
+              "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword",
+                  "index": false
                 }
               }
             },
             "slug": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type":"keyword"
             }
           }
         },
         "channels": {
-          "properties" : {
+          "properties": {
             "title": {
-              "type" : "string",
-              "analyzer" : "custom_analyzer",
-              "search_analyzer" : "custom_search_analyzer",
+              "type":"text",
+              "analyzer" : "icu_french",
+              "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword",
+                  "index": false
                 }
               }
             },
             "slug": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type":"keyword"
             }
           }
         },
         "themes": {
-          "properties" : {
+          "properties": {
             "title": {
-              "type" : "string",
-              "analyzer" : "custom_analyzer",
-              "search_analyzer" : "custom_search_analyzer",
+              "type":"text",
+              "analyzer" : "icu_french",
+              "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword",
+                  "index": false
                 }
               }
             },
             "slug": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type":"keyword"
             }
           }
         },
         "contributors": {
-          "type":"string",
-          "analyzer" : "custom_analyzer",
-          "search_analyzer" : "custom_search_analyzer"
-        },
-        "chapters": {
-          "properties" : {
-            "title": {
-              "type" : "string",
-              "analyzer" : "custom_analyzer",
-              "search_analyzer" : "custom_search_analyzer",
+          "properties": {
+            "name": {
+              "type":"text",
+              "analyzer" : "icu_french",
+              "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword",
+                  "index": false
+                }
+              }
+            },
+            "role": {
+              "type":"keyword"
+            }
+          }
+        },
+        "chapters": {
+          "properties": {
+            "title": {
+              "type":"text",
+              "analyzer" : "icu_french",
+              "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
+              "fields": {
+                "raw" : {
+                  "type": "keyword",
+                  "index": false
                 }
               }
             },
             "slug": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type":"keyword"
             }
           }
         },
         "enrichments": {
-          "properties" : {
+          "properties": {
             "title": {
-              "type" : "string",
-              "analyzer" : "custom_analyzer",
-              "search_analyzer" : "custom_search_analyzer",
+              "type":"text",
+              "analyzer" : "icu_french",
+              "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword",
+                  "index": false
                 }
               }
             },
             "slug": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type":"keyword"
             }
           }
         },
-        "tags" : {
-          "properties" : {
-            "name": {
-              "type" : "string",
-              "analyzer" : "custom_analyzer",
-              "search_analyzer" : "custom_search_analyzer",
+        "overlays": {
+          "properties": {
+            "title": {
+              "type":"text",
+              "analyzer" : "icu_french",
+              "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
               "fields": {
                 "raw" : {
-                  "type": "string",
-                  "index": "not_analyzed",
-                  "term_vector": "yes"
+                  "type": "keyword",
+                  "index": false
                 }
               }
             },
             "slug": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type":"keyword"
             }
           }
         },
-        "id" : {
-          "type" : "long"
+        "full_url": {
+          "type":"keyword",
+          "index" : false
+        },
+        "is_restricted": {
+          "type":"boolean"
+        },
+        "password": {
+          "type":"boolean"
+        },
+        "duration_in_time": {
+          "type":"text"
+        },
+        "mediatype": {
+          "type":"keyword"
+        },
+        "is_richmedia": {
+          "type":"boolean"
+        },
+        "cursus": {
+          "type":"keyword"
+        },
+        "main_lang": {
+          "type":"keyword"
         }
       }
     }
