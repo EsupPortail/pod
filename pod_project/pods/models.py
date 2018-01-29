@@ -446,7 +446,7 @@ class Pod(Video):
             "disciplines": list(self.discipline.all().values('title', 'slug')),
             "channels": list(self.channel.all().values('title', 'slug')),
             "themes": list(self.theme.all().values('title', 'slug')),
-            "contributors": list(self.contributorpods_set.values_list('name', 'role')),
+            "contributors": list(self.contributorpods_set.values('name', 'role')),
             "chapters": list(self.chapterpods_set.values('title', 'slug')),
             "enrichments": list(self.enrichpods_set.values('title', 'slug')),
             "overlays": list(self.overlaypods_set.values('title', 'slug')),
@@ -1326,3 +1326,74 @@ class Rssfeed(models.Model):
 
     def __str__(self):
         return self.title
+
+##################################### PLAYLIST ###########################
+
+@python_2_unicode_compatible
+class Playlist(models.Model):
+    title = models.CharField(_('Title'), max_length=100, unique=True)
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
+    description = RichTextField(
+        _('Description'), config_name='complete', blank=True)
+    visible = models.BooleanField(
+        verbose_name=_('Visible'),
+        help_text=_(
+            u'If checked, the playlist page becomes accessible from the user\'s card'),
+        default=False)
+    owner = models.ForeignKey(User, related_name='playlist_owner', verbose_name=_('Owner'),
+        blank=True)
+
+    
+    class Meta:
+        ordering = ['title']
+        verbose_name = _('Playlist')
+        verbose_name_plural = _('Playlists')
+
+    def __unicode__(self):
+        return self.title
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Playlist, self).save(*args, **kwargs)
+
+    def get_videos(self):
+        return PlaylistVideo.objects.filter(playlist=self)
+
+    def get_videos_list(self):
+        return PlaylistVideo.objects.filter(playlist=self).values_list('video', flat=True)
+
+
+@python_2_unicode_compatible
+class PlaylistVideo(models.Model):
+    playlist = models.ForeignKey(Playlist, verbose_name=_('playlist'))
+    video = models.ForeignKey(Pod, verbose_name=_('video'))
+    position = models.PositiveSmallIntegerField(
+        _('Position'), default=0,
+        help_text=_(u'Position of the video in a playlist.'))
+
+    class Meta:
+        ordering = ['position']
+
+    def __unicode__(self):
+        return u"Video:%s - Playlist:%s - Position:%s" % (self.video.title, self.playlist.title, self.position)
+
+    def __str__(self):
+        return "%s - %s - %s" % (self.video.title, self.playlist.title, self.position)
+
+    def get_position(self, playlist):
+        return PlaylistVideo.objects.filter(playlist=playlist).latest('position').position
+
+    def is_last(self, playlist):
+        return self == PlaylistVideo.objects.filter(playlist=playlist).order_by('-position')[0]
+
+    def reordering(self, playlist):
+        next_list = PlaylistVideo.objects.filter(playlist=playlist, position__gte=self.position)
+        for nextvideo in next_list:
+            nextvideo.position = nextvideo.position -1
+            nextvideo.save()

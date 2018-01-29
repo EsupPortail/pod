@@ -9,6 +9,11 @@ from pod_project.ckeditor import *
 #
 from settings_local import *
 
+##
+# Version of the application
+#
+VERSION = '1.7.2'
+
 
 ##
 # Installed applications list
@@ -262,7 +267,6 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'DC_COVERAGE',
     'DC_RIGHTS',
     'DEFAULT_IMG',
-    'EMAIL_ON_ENCODING_COMPLETION',
     'FILTER_USER_MENU',
     'FMS_LIVE_URL',
     'HELP_MAIL',
@@ -284,5 +288,14 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'RSS',
     'ATOM_HD',
     'ATOM_SD',
-    'OEMBED'
 )
+
+##
+# Optional template settings
+#
+TEMPLATE_VISIBLE_SETTINGS = list(TEMPLATE_VISIBLE_SETTINGS)
+if 'EMAIL_ON_ENCODING_COMPLETION' in globals():
+    TEMPLATE_VISIBLE_SETTINGS.append('EMAIL_ON_ENCODING_COMPLETION')
+if 'OEMBED' in globals():
+    TEMPLATE_VISIBLE_SETTINGS.append('OEMBED')
+TEMPLATE_VISIBLE_SETTINGS = tuple(TEMPLATE_VISIBLE_SETTINGS)

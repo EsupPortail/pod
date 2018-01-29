@@ -249,7 +249,7 @@ def contact_us(request):
     else:
         if request.user.is_authenticated():
             if owner and video:
-                video = Pod.objects.get(id=video)
+                video = get_object_or_404(Pod, id=video)
                 subject = '[' + settings.TITLE_SITE + \
                     '] %s %s' % (_('Password request for : '), video.title)
                 form = ContactUsModelForm(request, initial={"name": request.user.get_full_name(
@@ -259,7 +259,12 @@ def contact_us(request):
                 ), "email": request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
         else:
             if owner and video:
-                video = Pod.objects.get(id=video)
+                try:
+                    video = Pod.objects.get(id=video)
+                except:
+                    messages.add_message(
+                        request, messages.ERROR, _(u'The video id is not valid. Redirect to Contact Us form.'))
+                    return HttpResponseRedirect(reverse('contact_us'))
                 subject = '[' + settings.TITLE_SITE + \
                     '] %s %s' % (_('Password request for : '), video.title)
                 form = ContactUsModelForm(request, initial={"subject": subject, "url_referrer": request.META.get(

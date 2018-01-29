@@ -31,6 +31,10 @@ voir http://www.gnu.org/licenses/
             font-style:italic;
             font-weight:bold;
         }
+        h5>em, h5>mark {
+            background-color:yellow;
+            color: black;
+        }
     </style>
 
     <script type="text/javascript">
@@ -95,7 +99,7 @@ voir http://www.gnu.org/licenses/
         {% if result.hits.total > 0 %}
             <div id="videoList" class="row">
             {% for hit in result.hits.hits %}
-                {% with video=hit|get:"_source" score=hit|get:"_score"  %}
+                {% with highlight=hit|get:"highlight" video=hit|get:"_source" score=hit|get:"_score"  %}
                 <div class="video-thumb col-xs-6 col-md-4">
                     <a href="{{ video.full_url }}" class="video-holder" title="{{ video.title }}">
                         <span class="poster">
@@ -130,7 +134,7 @@ voir http://www.gnu.org/licenses/
                                 <img src="{% static DEFAULT_IMG %}" class="preview" alt="{{ video.title }}" />
                             {% endif %}
                         </span>
-                        <h5>{{ video.title|truncatechars:36 }} <!-- {{score}} - {{result.hits.max_score}} -->  {% is_new_date video.date_added %}</h5>
+                        <h5>{% if highlight %}{{highlight.title.0|safe|lower|truncatechars_html:36}}{%else%}{{video.title|lower|truncatechars_html:34}}{%endif%}<!--{{score}} - {{result.hits.max_score}}-->{% is_new_date video.date_added %}</h5>
                     </a>
                 </div>
                 {% endwith %}

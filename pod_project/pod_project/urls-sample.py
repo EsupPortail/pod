@@ -40,6 +40,8 @@ urlpatterns = [
         name='owner_videos_list'),
     url(r'^favorites_videos_list/', 'pods.views.favorites_videos_list',
         name='favorites_videos_list'),
+    url(r'^playlists_videos_list/', 'pods.views.playlists_videos_list',
+        name='playlists_videos_list'),
 
     # TEXT EDITOR
     url(r'^ckeditor/', include('ckeditor.urls')),
@@ -81,6 +83,8 @@ urlpatterns = [
         'pods.views.video_add_favorite', name='video_add_favorite'),
     url(r'^video_add_report/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_add_report', name='video_add_report'),
+    url(r'^video_add_playlist/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video_add_playlist', name='video_add_playlist'),
     url(r'^video_completion/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_completion', name='video_completion'),
     url(r'^video_completion_contributor/(?P<slug>[\-\d\w]+)/$',
@@ -140,6 +144,8 @@ if settings.H5P_ENABLED:
     urlpatterns += [
         url(r'^video_interactive/(?P<slug>[\-\d\w]+)/$',
             'pods.views.video_interactive', name='video_interactive'),
+        url(r'^h5p/login/', 'core.views.core_login', name='account_login'),
+        url(r'^h5p/logout/', 'core.views.core_logout', name='account_logout'),
         url(r'^h5p/', include('h5pp.urls')),
     ]
 
@@ -176,7 +182,7 @@ if settings.ATOM_SD:
 ##
 # OEMBED feature patterns
 #
-if settings.OEMBED:
+if getattr(settings, 'OEMBED', False):
     # OEMBED href
     urlpatterns += [
         url(r'^oembed/$',
