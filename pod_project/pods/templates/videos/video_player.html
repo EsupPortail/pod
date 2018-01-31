@@ -169,6 +169,10 @@ voir http://www.gnu.org/licenses/
         </ul>
     {% endif %}
     {% if video.chapterpods_set.all %}
+        <div class="chapters-list inactive" role="menu">
+            <p>Chapters</p>
+            <ol id="chapters-list"></ol>
+        </div>
         <ul id="chapters">
             {% for chap in video.chapterpods_set.all %}
                 <li data-start="{{ chap.time }}"

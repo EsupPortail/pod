@@ -57,11 +57,11 @@ ADD_THUMBNAILS_CMD = getattr(settings, 'ADD_THUMBNAILS_CMD',
                              "%(ffmpeg)s -i \"%(src)s\" -vf fps=\"fps=1/%(thumbnail)s,scale=%(scale)s\" -an -vsync 0 -threads 0 -f image2 -y %(out)s_%(num)s.png")
 ADD_OVERVIEW_CMD = getattr(settings, 'ADD_OVERVIEW_CMD',
                            "%(ffmpeg)s -i \"%(src)s\" -vf \"thumbnail=%(thumbnail)s,scale=%(scale)s,tile=100x1:nb_frames=100:padding=0:margin=0\" -an -vsync 0 -threads 0 -y %(out)s")
-ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ar %(ar)s -ac 2 -b:a %(ba)s -movflags faststart -y %(out)s")
+ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ac 2 -b:a %(ba)s %(out)s")
 ENCODE_WEBM_CMD = getattr(settings, 'ENCODE_WEBM_CMD',
                           "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s")
 ENCODE_M3U8_CMD = getattr(settings, 'ENCODE_M3U8_CMD',
-                          "%(ffmpeg)s -i %(src)s -codec: copy -start_number 0 -hls_time 10 -hls_list_size 0 -hls_segment_type fmp4 -hls_flags single_file -f hls %(out)s")
+                          "%(ffmpeg)s -i %(src)s -hls_time 9 -hls_base_url %(path)s -hls_flags single_file -hls_segment_filename %(filename)s -hls_playlist_type vod %(out)s")
 ENCODE_MP3_CMD = getattr(settings, 'ENCODE_MP3_CMD',
                          "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s")
 ENCODE_WAV_CMD = getattr(settings, 'ENCODE_WAV_CMD',
@@ -798,11 +798,14 @@ def encode_m3u8(video_id, videofilename, encod_video, bufsize):
     m3u8url = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
                            "video_%s_%s.m3u8" % (video.id, encod_video.output_height))
     videodirname = os.path.join(settings.MEDIA_URL, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id) + '/'
+    videorootname = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id)
 
     # Create fragmented mp4
     com = ENCODE_M3U8_CMD % {
         'ffmpeg': FFMPEG,
         'src': videofilename,
+        'path': videodirname,
+        'filename': "%s/segment_%s.mp4" % (videorootname, encod_video.output_height),
         'out': m3u8filename
     }
     if DEBUG:
