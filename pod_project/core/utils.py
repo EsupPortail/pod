@@ -891,9 +891,10 @@ def create_main_m3u8(video_id, list_encod_video):
             master.write('#EXT-X-STREAM-INF:BANDWIDTH=%s,CODECS="avc1.42c00d,mp4a.40.2"\n%s/video_%s_%s.m3u8\n' %
                 (ffmproberesult, videodirname, video.id, encoding_type.output_height))
 
-        # Keep only 360p video in mp4 non-fragmented
+        # Keep only 360p video in mp4 non-fragmented.
         if os.path.isfile(videofilename) and encoding_type.output_height != 360:
             os.remove(videofilename)
+            EncodingPods.objects.get(video=video, encodingType=encoding_type, encodingFormat='video/mp4').delete()
 
     master.close()
 

@@ -196,7 +196,7 @@ class EncodingFileTestView(TestCase):
         encode_video(pod)
         print "\n ---> Fin Encodage"
         self.assertTrue(
-            u'video_1_240.mp4' in pod.get_encoding_240()[0].encodingFile.url)
+            u'video_1_360.mp4' in pod.get_min_encoding().encodingFile.url)
 
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:

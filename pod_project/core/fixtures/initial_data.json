@@ -1,7 +1,7 @@
 [
   {
     "model": "core.encodingtype",
-    "pk": 2,
+    "pk": 1,
     "fields": {
       "bitrate_audio": "128k",
       "output_height": 360,
@@ -12,7 +12,7 @@
   },
   {
     "model": "core.encodingtype",
-    "pk": 3,
+    "pk": 2,
     "fields": {
       "bitrate_audio": "196k",
       "output_height": 720,
@@ -23,7 +23,7 @@
   },
   {
     "model": "core.encodingtype",
-    "pk": 4,
+    "pk": 3,
     "fields": {
       "bitrate_audio": "196k",
       "output_height": 1080,
@@ -34,7 +34,7 @@
   },
   {
     "model": "core.encodingtype",
-    "pk": 5,
+    "pk": 4,
     "fields": {
       "bitrate_audio": "128k",
       "output_height": 360,

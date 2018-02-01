@@ -68,6 +68,7 @@ voir http://www.gnu.org/licenses/
 </style>
 <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-quality-levels@2.0.3/dist/videojs-contrib-quality-levels.min.js"></script>
 <script src="{% static 'videojs-quality-levels/videojs-quality-levels.js' %}"></script>
+<script src="{% static 'videojs-quality-levels/videojs-resolution-switcher.js' %}"></script>
 <script src="{% static 'videojs-display-selector/videojs-display-selector.js' %}"></script>
 <script src="{% static 'videojs-chapters/videojs-chapters.js' %}"></script>
 <script src="{% static 'videojs-overlay/videojs-overlay.js' %}"></script>
@@ -114,14 +115,12 @@ voir http://www.gnu.org/licenses/
             defaultDisp = '0/100';
         {% endif %}
         {% if mediatype == 'video' %}
-            {% for encoding in video.get_encoding_240 %}
-                {% if encoding.encodingFormat == 'video/mp4' %}
-                    videosize_mp4 = {{ encoding.encodingFile.size }} * 8; //videosize in bytes
-                {% endif %}
-                {% if encoding.encodingFormat == 'video/webm' %}
-                    videosize_webm = {{ encoding.encodingFile.size }} * 8; //videosize in bytes
-                {% endif %}
-            {% endfor %}
+            {% if video.get_min_encoding.encodingFormat == 'video/mp4' %}
+                videosize_mp4 = {{ video.get_min_encoding.encodingFile.size }} * 8; //videosize in bytes
+            {% endif %}
+            {% if video.get_min_encoding.encodingFormat == 'video/webm' %}
+                videosize_webm = {{ video.get_min_encoding.encodingFile.size }} * 8; //videosize in bytes
+            {% endif %}
         {% endif %}
     {% endwith %}
 </script>

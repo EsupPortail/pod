@@ -363,10 +363,9 @@ class Pod(Video):
             'encodingType__output_height', flat=True).distinct()
         return all_encoding_type
 
-    def get_encoding_360(self):
-        encoding_360 = self.encodingpods_set.filter(
-            encodingType__output_height=360)
-        return encoding_360
+    def get_min_encoding(self):
+        encoding_min = EncodingPods.objects.filter(video=self).first()
+        return encoding_min
 
     def get_MP4_360_URL(self):
         encoding_360 = EncodingPods.objects.get(

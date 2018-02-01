@@ -44,20 +44,26 @@ var previousuploaded = 0;
 var mediumspeed = 0;
 var intcheck = 0;
 var changeResBd = false;
+var oldFormat = false; // Deprecated
+
 /******* DOC READY ********/
 $(document).ready(function() {
     if ('MediaSource' in window) {
         $('video').each(function() {
-            $(this).children('source').remove();
-            var player = videojs(this);
-            var source = $(this).data('m3u8');
-            player.ready(function() {
-                player.src({
-                    src: source,
-                    type: 'application/x-mpegURL',
-                    withCredentials: true
+            oldFormat = $(this).children('source').length > 1;
+            console.log(oldFormat);
+            if (!oldFormat) {
+                $(this).children('source').remove();
+                var player = videojs(this);
+                var source = $(this).data('m3u8');
+                player.ready(function() {
+                    player.src({
+                        src: source,
+                        type: 'application/x-mpegURL',
+                        withCredentials: true
+                    });
                 });
-            });
+            }
         });
     }
     loadVideo();
@@ -141,7 +147,12 @@ function loadVideo() {
 
         // Load plugin
         // Resolution(s)
-        myPlayer.videoJsQualityLevelPlayer();
+        if (!oldFormat) {
+            myPlayer.videoJsQualityLevelPlayer();
+        } else {
+            myPlayer.videoJsResolutionSwitcher();
+            myPlayer.on('progress', progress);
+        }
 
         // Display format
         if ($('ul#slides li[data-type!="None"]').length > 0) {

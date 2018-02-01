@@ -254,7 +254,9 @@ class EncodingType(models.Model):
         _('bitrate_video'), max_length=250, help_text="Please use the only format k. i.e.: <em>300k</em> or <em>600k</em> or <em>1000k</em>.", blank=True)
     HEIGHT_CHOICES = (
         (0, '0'),
+        (240, '240'),
         (360, '360'),
+        (480, '480'),
         (720, '720'),
         (1080, '1080'),
     )
