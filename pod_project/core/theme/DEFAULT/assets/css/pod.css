@@ -570,6 +570,16 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
 .video-js {
   font-size: 10px !important;
 }
+.video-js button {
+  height: 100%;
+}
+.video-js button:focus {
+  outline: none;
+}
+.vjs-chap-menu-title,
+.vjs-disp-menu-title {
+  border-bottom: 1px solid;
+}
 .video-js .vjs-title {
   position: absolute;
   top: 0;

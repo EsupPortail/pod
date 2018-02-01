@@ -598,28 +598,29 @@ $(document).on('change', '#showinteractive', function() {
                     <div id="downloads" class="tab-pane fade container-fluid">
                         <div class="list-group">
                         {% if video.allow_downloading %}
-                            {% trans 'Download the video'%} :
-
                             {% with mediatype=video.get_mediatype|first %}
                                 {% if mediatype == 'video' %}
+                                    <label>{% trans 'Video file(s)' %} : </label>
                                     {% for encoding in video.encodingpods_set.all %}
                                         {% if encoding.encodingFormat == "video/mp4" %}
-                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}" title="{{ video.slug }}" class="list-group-item" >
-                                {{ video.slug }}_{{ encoding.encodingType.output_height }}.mp4
+                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}&type=video" title="{{ video.slug }}" class="list-group-item" >
+                                {{ video.slug }}_{{ encoding.encodingType.output_height }}
+                                <span class="label label-info">{{ encoding.encodingFormat }}</span>
                                 <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
                             </a>
                                         {%endif%}
                                     {% endfor %}
-                                {%else%}
+                                {%endif%}
+                                    <label>{% trans 'Audio file(s)' %} : </label>
                                     {% for encoding in video.encodingpods_set.all %}
                                         {% if encoding.encodingFormat == "audio/mp3" %}
-                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}" title="{{ video.slug }}" class="list-group-item" >
-                                {{ video.slug }}.mp3
+                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}&type=audio" title="{{ video.slug }}" class="list-group-item" >
+                                {{ video.slug }}
+                                <span class="label label-info">{{ encoding.encodingFormat }}</span>
                                 <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
                             </a>
                                         {%endif%}
                                     {%endfor%}
-                                {%endif%}
                             {%endwith%}
 
                         {% endif %}

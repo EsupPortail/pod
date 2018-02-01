@@ -813,7 +813,7 @@ def video_priv(request, id, slug, slug_c=None, slug_t=None):
 
 
 def download_video(video, get_request):
-    format = "video/mp4" if "video" in video.get_mediatype() else "audio/mp3"
+    format = "video/mp4" if "video" in get_request.get('type') else "audio/mp3"
     resolution = get_request.get(
         'resolution') if get_request.get('resolution') else 240
 

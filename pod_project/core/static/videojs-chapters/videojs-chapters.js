@@ -48,6 +48,7 @@
 				},500, function(){
 					$('.chapters-list.inactive').attr('class', 'chapters-list active');
 				});
+				$('.vjs-chapters-button button').css('text-shadow', '0 0 1em #fff');
 			} else {
 				$('.chapters-list.active').attr('class', 'chapters-list inactive');
 				if($('.vjs-slide').children().length > 0) {
@@ -67,6 +68,7 @@
 						width: '100%'
 					},500);
 				}
+				$('.vjs-chapters-button button').css('text-shadow', '');
 			}
 		};
 		MenuButton.registerComponent('ChapterMenuButton', ChapterMenuButton);

@@ -289,21 +289,21 @@ def encode_video(video_to_encode):
                                     encod_video, bufsize)
             if ENCODE_M3U8:
                 create_main_m3u8(VIDEO_ID, list_encod_video)
-        else:
-            list_encod_audio = EncodingType.objects.filter(mediatype='audio')
-            for encod_audio in list_encod_audio:
-                video = Pod.objects.get(id=VIDEO_ID)
-                media_guard_hash = get_media_guard(
-                    video.owner.username, video.id)
-                audiofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                             "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
-                audiourl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                        "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
-                encode_mp3(
-                    VIDEO_ID, audiofilename, audiourl, encod_audio, in_audio_rate)
-                if ENCODE_WAV and os.access(audiofilename, os.F_OK):
-                    encode_wav(VIDEO_ID, audiofilename,
-                               in_audio_rate, encod_audio)
+        # FOR AUDIO
+        list_encod_audio = EncodingType.objects.filter(mediatype='audio')
+        for encod_audio in list_encod_audio:
+            video = Pod.objects.get(id=VIDEO_ID)
+            media_guard_hash = get_media_guard(
+                video.owner.username, video.id)
+            audiofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                         "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
+            audiourl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                    "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
+            encode_mp3(
+                VIDEO_ID, audiofilename, audiourl, encod_audio, in_audio_rate)
+            if ENCODE_WAV and os.access(audiofilename, os.F_OK):
+                encode_wav(VIDEO_ID, audiofilename,
+                           in_audio_rate, encod_audio)
         video = None
         video = Pod.objects.get(id=VIDEO_ID)
         video.encoding_status = "DONE at %s" % time.ctime()
