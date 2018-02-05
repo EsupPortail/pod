@@ -289,7 +289,6 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'ATOM_HD',
     'ATOM_SD',
 )
-
 ##
 # Optional template settings
 #
@@ -299,3 +298,9 @@ if 'EMAIL_ON_ENCODING_COMPLETION' in globals():
 if 'OEMBED' in globals():
     TEMPLATE_VISIBLE_SETTINGS.append('OEMBED')
 TEMPLATE_VISIBLE_SETTINGS = tuple(TEMPLATE_VISIBLE_SETTINGS)
+
+if LTI_ENABLED:
+    AUTHENTICATION_BACKENDS.append('lti_provider.auth.LTIBackend')
+
+
+

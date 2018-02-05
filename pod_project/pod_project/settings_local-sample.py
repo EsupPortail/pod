@@ -509,3 +509,12 @@ BASE_URL = 'http://localhost:8000'                      # Hostname of your djang
 #   - add url oembed and buid the json representation of the URL video
 #
 OEMBED=False
+
+###
+# Enable LTI Provider
+# https://github.com/ccnmtl/django-lti-provider
+#   if True
+
+
+LTI_ENABLED=False
+
