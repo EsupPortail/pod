@@ -364,7 +364,7 @@ class Pod(Video):
         return all_encoding_type
 
     def get_min_encoding(self):
-        encoding_min = EncodingPods.objects.filter(video=self).first()
+        encoding_min = EncodingPods.objects.filter(video=self, encodingFormat="video/mp4").first()
         return encoding_min
 
     def get_MP4_360_URL(self):
