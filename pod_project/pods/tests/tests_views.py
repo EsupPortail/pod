@@ -2795,7 +2795,7 @@ class VideoPrivTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        if settings.USE_PRIVATE_VIDEO:
+        if settings.USE_PRIVATE_VIDEO and settings.MEDIA_GUARD:
             user = User.objects.create(
                 username='remi', password='12345', is_active=True)
             user.set_password('hello')
@@ -2821,7 +2821,7 @@ class VideoPrivTestView(TestCase):
             print(" --->  SetUp of VideoPrivTestView : OK !")
 
     def test_videopriv(self):
-        if settings.USE_PRIVATE_VIDEO:
+        if settings.USE_PRIVATE_VIDEO and settings.MEDIA_GUARD:
             pod = Pod.objects.get(id=1)
             response = self.client.get(
                 "/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)))
@@ -2838,7 +2838,7 @@ class VideoPrivTestView(TestCase):
             print(" ---> test_videopriv of VideoTestView : OK !")
 
     def test_videopriv_password(self):
-        if settings.USE_PRIVATE_VIDEO:
+        if settings.USE_PRIVATE_VIDEO and settings.MEDIA_GUARD:
             pod = Pod.objects.get(id=1)
             pod.is_draft = False
             pod.password = u"toto"

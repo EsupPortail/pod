@@ -270,6 +270,13 @@ HOMEPAGE_NBR_CONTENTS_SHOWN = 9
 HOMEPAGE_SHOWS_PASSWORDED = False
 HOMEPAGE_SHOWS_RESTRICTED = True
 
+##
+# Enable OEMBED
+#   if True
+#   - add in video pages a link tag with type application/json+oembed and href to json representation of the URL video. https://oembed.com/#section4
+#   - add url oembed and buid the json representation of the URL video
+#
+OEMBED=False
 
 ##
 # Main menu settings:
@@ -287,6 +294,14 @@ MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
 #   False: video files will only be available in mp4 format.
 #
 ENCODE_WEBM = True
+
+##
+# HLS activation:
+#
+#   True: Enable HTTP Live Streaming (HLS). Add m3u8 support,
+#   False: Disable HTTP Live Streaming (HLS). Only mp4 format.
+#
+ENCODE_M3U8 = True
 
 
 ##
@@ -402,6 +417,10 @@ REPORT_VIDEO_MAIL_TO = ['alert@univ.fr']
 MEDIA_GUARD = False
 MEDIA_GUARD_SALT = 'a.string.used.as.salt'
 
+##
+# Video in draft mode can be shared
+# MEDIA_GUARD MUST be activated
+USE_PRIVATE_VIDEO = False
 
 ##
 # Encoding tools path:
@@ -425,6 +444,7 @@ ADD_OVERVIEW_CMD = "rm %(out)s;for i in $(seq 0 99); do nice -19 ffmpegthumbnail
 # ENCODE_WEBM_CMD = "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s"
 # ENCODE_MP3_CMD = "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s"
 # ENCODE_WAV_CMD = "%(ffmpeg)s -i %(src)s -ar %(ar)s -ab %(ab)s -f wav -threads 0 -y %(out)s"
+# ENCODE_M3U8_CMD = "%(ffmpeg)s -i %(src)s -profile:v baseline -level 3.0 -start_number 0 -hls_list_size 0 -hls_base_url %(url)s -hls_flags single_file -f hls %(out)s"
 
 
 ##
@@ -484,12 +504,6 @@ CELERY_BROKER = "amqp://guest@localhost//"
 # ENCODE_VIDEO = encode_video
 
 ##
-# Video in draft mode can be shared
-#
-USE_PRIVATE_VIDEO = False
-
-
-##
 # H5P relative parameters
 #
 H5P_ENABLED = False                                     # Active the module or not
@@ -501,11 +515,3 @@ H5P_SAVE = 30                                           # How often current cont
 H5P_EXPORT = '/exports/'                                # Location of exports (packages .h5p)
 H5P_LANGUAGE = 'fr'                                     # Language of the module H5P.
 BASE_URL = 'http://localhost:8000'                      # Hostname of your django ap
-
-##
-# Enable OEMBED
-#   if True
-#   - add in video pages a link tag with type application/json+oembed and href to json representation of the URL video. https://oembed.com/#section4
-#   - add url oembed and buid the json representation of the URL video
-#
-OEMBED=False
