@@ -40,6 +40,12 @@ from core.utils import encode_video
 import os
 from filer.models.foldermodels import Folder
 from filer.models.imagemodels import Image
+
+RSS = getattr(settings, 'RSS', False)
+ATOM_HD = getattr(settings, 'ATOM_HD', False)
+ATOM_SD = getattr(settings, 'ATOM_SD', False)
+USE_PRIVATE_VIDEO = getattr(settings, 'USE_PRIVATE_VIDEO', False)
+
 """
     test view
 """
@@ -685,7 +691,8 @@ class Video_add_favoriteTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get('/video_add_favorite/%s/' % pod.slug)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue("You cannot acces this page." in response.content)
+        print(response.content)
+        self.assertTrue("You cannot access this page." in response.content)
 
     def test_delete_favorite(self):
         pod = Pod.objects.get(id=1)
@@ -2595,7 +2602,7 @@ class RSSTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        if settings.RSS:
+        if RSS:
             user = User.objects.create(
                 username='remi', password='12345', is_active=True, is_staff=True)
             user.set_password('hello')
@@ -2624,7 +2631,7 @@ class RSSTestView(TestCase):
             print(" --->  SetUp of RSSTestView : OK !")
 
     def test_mySelectFeed(self):
-        if settings.RSS:
+        if RSS:
             pod = Pod.objects.get(id=1)
             channel = Channel.objects.get(id=1)
             theme = Theme.objects.get(id=1)
@@ -2667,7 +2674,7 @@ class RSSTestView(TestCase):
                 "   ---> test_mySelectFeed of RSSTestView : OK !")
 
     def test_PodcastHDFeed(self):
-        if settings.ATOM_HD:
+        if ATOM_HD:
             pod = Pod.objects.get(id=1)
             channel = Channel.objects.get(id=1)
             theme = Theme.objects.get(id=1)
@@ -2724,7 +2731,7 @@ class RSSTestView(TestCase):
                 "   ---> test_PodcastHDFeed of RSSTestView : OK !")
 
     def test_PodcastSDFeed(self):
-        if settings.ATOM_SD:
+        if ATOM_SD:
             pod = Pod.objects.get(id=1)
             channel = Channel.objects.get(id=1)
             theme = Theme.objects.get(id=1)
@@ -2795,7 +2802,7 @@ class VideoPrivTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        if settings.USE_PRIVATE_VIDEO and settings.MEDIA_GUARD:
+        if USE_PRIVATE_VIDEO and settings.MEDIA_GUARD:
             user = User.objects.create(
                 username='remi', password='12345', is_active=True)
             user.set_password('hello')
@@ -2821,7 +2828,7 @@ class VideoPrivTestView(TestCase):
             print(" --->  SetUp of VideoPrivTestView : OK !")
 
     def test_videopriv(self):
-        if settings.USE_PRIVATE_VIDEO and settings.MEDIA_GUARD:
+        if USE_PRIVATE_VIDEO and settings.MEDIA_GUARD:
             pod = Pod.objects.get(id=1)
             response = self.client.get(
                 "/video_priv/%s/%s/" % (pod.id, get_media_guard(pod.owner.username, pod.id)))
@@ -2838,7 +2845,7 @@ class VideoPrivTestView(TestCase):
             print(" ---> test_videopriv of VideoTestView : OK !")
 
     def test_videopriv_password(self):
-        if settings.USE_PRIVATE_VIDEO and settings.MEDIA_GUARD:
+        if USE_PRIVATE_VIDEO and settings.MEDIA_GUARD:
             pod = Pod.objects.get(id=1)
             pod.is_draft = False
             pod.password = u"toto"
