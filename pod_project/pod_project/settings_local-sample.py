@@ -270,6 +270,13 @@ HOMEPAGE_NBR_CONTENTS_SHOWN = 9
 HOMEPAGE_SHOWS_PASSWORDED = False
 HOMEPAGE_SHOWS_RESTRICTED = True
 
+##
+# Enable OEMBED
+#   if True
+#   - add in video pages a link tag with type application/json+oembed and href to json representation of the URL video. https://oembed.com/#section4
+#   - add url oembed and buid the json representation of the URL video
+#
+OEMBED=False
 
 ##
 # Main menu settings:
@@ -287,7 +294,6 @@ MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
 #   False: video files will only be available in mp4 format.
 #
 ENCODE_WEBM = True
-
 
 ##
 # WAV audio encoding activation:
@@ -402,6 +408,10 @@ REPORT_VIDEO_MAIL_TO = ['alert@univ.fr']
 MEDIA_GUARD = False
 MEDIA_GUARD_SALT = 'a.string.used.as.salt'
 
+##
+# Video in draft mode can be shared
+# MEDIA_GUARD MUST be activated
+USE_PRIVATE_VIDEO = False
 
 ##
 # Encoding tools path:
@@ -484,12 +494,6 @@ CELERY_BROKER = "amqp://guest@localhost//"
 # ENCODE_VIDEO = encode_video
 
 ##
-# Video in draft mode can be shared
-#
-USE_PRIVATE_VIDEO = False
-
-
-##
 # H5P relative parameters
 #
 H5P_ENABLED = False                                     # Active the module or not
@@ -501,11 +505,3 @@ H5P_SAVE = 30                                           # How often current cont
 H5P_EXPORT = '/exports/'                                # Location of exports (packages .h5p)
 H5P_LANGUAGE = 'fr'                                     # Language of the module H5P.
 BASE_URL = 'http://localhost:8000'                      # Hostname of your django ap
-
-##
-# Enable OEMBED
-#   if True
-#   - add in video pages a link tag with type application/json+oembed and href to json representation of the URL video. https://oembed.com/#section4
-#   - add url oembed and buid the json representation of the URL video
-#
-OEMBED=False

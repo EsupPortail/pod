@@ -35,6 +35,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import date, timedelta
 import os
 from django.db.models import Count
+
+RSS = getattr(settings, 'RSS', False)
+
 # Create your tests here.
 """
     test the channel
@@ -1249,7 +1252,7 @@ class RSSTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        if settings.RSS:
+        if RSS:
             user = User.objects.create(
                 username='remi', password='12345', is_active=True, is_staff=True)
             other_type = Type.objects.get(id=1)
@@ -1265,7 +1268,7 @@ class RSSTestCase(TestCase):
     """
 
     def test_Rssfeed_null_attribut(self):
-        if settings.RSS:
+        if RSS:
             date = datetime.today()
             user = User.objects.get(username='remi')
             rssfeed = Rssfeed.objects.get(id=1)
@@ -1288,7 +1291,7 @@ class RSSTestCase(TestCase):
     """
 
     def test_Rssfeed_with_attributs(self):
-        if settings.RSS:
+        if RSS:
             date = datetime.today()
             user = User.objects.get(username='remi')
             rssfeed = Rssfeed.objects.get(id=2)
@@ -1310,7 +1313,7 @@ class RSSTestCase(TestCase):
     """
 
     def test_delete_object(self):
-        if settings.RSS:
+        if RSS:
             Rssfeed.objects.get(id=1).delete()
             Rssfeed.objects.get(id=2).delete()
             self.assertEquals(Rssfeed.objects.all().count(), 0)
