@@ -2222,8 +2222,11 @@ def search_videos(request):
     if len(selected_facets) > 0 or start_date or end_date:
         filter_search = []
         for facet in selected_facets:
-            term = facet.split(":")[0]
-            value = facet.split(":")[1]
+            try:
+                term = facet.split(":")[0]
+                value = facet.split(":")[1]
+            except:
+                continue
             filter_search.append({
                 "term": {
                     "%s" % term: "%s" % value
@@ -2315,8 +2318,11 @@ def search_videos(request):
 
     remove_selected_facet = ""
     for facet in selected_facets:
-        term = facet.split(":")[0]
-        value = facet.split(":")[1]
+        try:
+            term = facet.split(":")[0]
+            value = facet.split(":")[1]
+        except:
+            continue
         agg_term = term.replace(".raw", "")
         if result["aggregations"].get(agg_term):
             del result["aggregations"][agg_term]
