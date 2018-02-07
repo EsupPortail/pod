@@ -504,7 +504,6 @@ H5P_URL = '/h5p/'                                       # All H5PP pages begin w
 H5P_SAVE = 30                                           # How often current content state should be saved
 H5P_EXPORT = '/exports/'                                # Location of exports (packages .h5p)
 H5P_LANGUAGE = 'fr'                                     # Language of the module H5P.
-<<<<<<< HEAD
 BASE_URL = 'http://localhost:8000'                      # Hostname of your django ap
 
 ##
@@ -519,10 +518,5 @@ OEMBED=False
 # Enable LTI Provider
 # https://github.com/ccnmtl/django-lti-provider
 #   if True
-
-
 LTI_ENABLED=False
 
-=======
-BASE_URL = 'http://localhost:8000'                      # Hostname of your django ap
->>>>>>> 4ae52e1f336674a2c9c8651c4b443116a500ca5b

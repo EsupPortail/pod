@@ -147,6 +147,11 @@ AUTHENTICATION_BACKENDS = (
     'core.populatedCASbackend.PopulatedCASBackend'
 )
 
+##
+# Authentication backend : add lti backend if use
+#
+if 'LTI_ENABLED' in globals() and LTI_ENABLED:
+    AUTHENTICATION_BACKENDS.append('lti_provider.auth.LTIBackend')
 
 ##
 # Settings for all template engines to be used
@@ -289,6 +294,7 @@ TEMPLATE_VISIBLE_SETTINGS = (
     'ATOM_HD',
     'ATOM_SD',
 )
+
 ##
 # Optional template settings
 #
@@ -297,15 +303,6 @@ if 'EMAIL_ON_ENCODING_COMPLETION' in globals():
     TEMPLATE_VISIBLE_SETTINGS.append('EMAIL_ON_ENCODING_COMPLETION')
 if 'OEMBED' in globals():
     TEMPLATE_VISIBLE_SETTINGS.append('OEMBED')
-<<<<<<< HEAD
-TEMPLATE_VISIBLE_SETTINGS = tuple(TEMPLATE_VISIBLE_SETTINGS)
-
-if LTI_ENABLED:
-    AUTHENTICATION_BACKENDS.append('lti_provider.auth.LTIBackend')
-
-
-
-=======
 if 'USE_PRIVATE_VIDEO' in globals() and MEDIA_GUARD:
     TEMPLATE_VISIBLE_SETTINGS.append('USE_PRIVATE_VIDEO')
 if 'RSS' in globals():
@@ -315,4 +312,3 @@ if 'ATOM_HD' in globals():
 if 'ATOM_SD' in globals():
     TEMPLATE_VISIBLE_SETTINGS.append('ATOM_SD')
 TEMPLATE_VISIBLE_SETTINGS = tuple(TEMPLATE_VISIBLE_SETTINGS)
->>>>>>> 4ae52e1f336674a2c9c8651c4b443116a500ca5b
