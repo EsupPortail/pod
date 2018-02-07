@@ -119,22 +119,34 @@ urlpatterns = [
 #
 #
 
+# All optional control variables should be inserted below. Default value to False.
+H5P_ENABLED = getattr(settings, 'H5P_ENABLED', False)
+OEMBED = getattr(settings, 'OEMBED', False)
+USE_PRIVATE_VIDEO = getattr(settings, 'USE_PRIVATE_VIDEO', False)
+RSS = getattr(settings, 'RSS', False)
+ATOM_HD = getattr(settings, 'ATOM_HD', False)
+ATOM_SD = getattr(settings, 'ATOM_SD', False)
+
+
 ##
 # Private video feature pattern
 #
-if settings.USE_PRIVATE_VIDEO:
+if USE_PRIVATE_VIDEO:
     urlpatterns += [
         url(r'^get_video_encoding_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
             'pods.views.get_video_encoding_private',
             name='get_video_encoding_private'),
         url(r'^video_priv/(?P<id>[\-\d]+)/(?P<slug>[\-\d\w]+)/$',
             'pods.views.video_priv', name='video_priv'),
+        #url(r'^get_video_m3u8_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/$',
+        #    'pods.views.get_video_m3u8_private',
+        #    name='get_video_m3u8_private'),
     ]
 
 ##
 # H5P feature patterns
 #
-if settings.H5P_ENABLED:
+if H5P_ENABLED:
     urlpatterns += [
         url(r'^video_interactive/(?P<slug>[\-\d\w]+)/$',
             'pods.views.video_interactive', name='video_interactive'),
@@ -146,7 +158,7 @@ if settings.H5P_ENABLED:
 ##
 # RSS /ATOM feature patterns
 #
-if settings.RSS:
+if RSS:
     # RSS Feed
     urlpatterns += [
         url(r'^rss/select/(?P<qparam>[^\/]+)/$',
@@ -160,13 +172,13 @@ if settings.ATOM_AUDIO:
             AudiocastFeed(), name = 'audiocast'),
     ]
 """
-if settings.ATOM_HD:
+if ATOM_HD:
     # ATOM HD Feed
     urlpatterns += [
         url(r'^rss/hd/(?P<qparam>[^\/]+)/$',
             PodcastHdFeed(), name='podcast_hd'),
     ]
-if settings.ATOM_SD:
+if ATOM_SD:
     # ATOM SD Feed
     urlpatterns += [
         url(r'^rss/sd/(?P<qparam>[^\/]+)/$',
@@ -176,7 +188,7 @@ if settings.ATOM_SD:
 ##
 # OEMBED feature patterns
 #
-if getattr(settings, 'OEMBED', False):
+if OEMBED:
     # OEMBED href
     urlpatterns += [
         url(r'^oembed/$',
