@@ -778,14 +778,14 @@ class DocPods(models.Model):
 @python_2_unicode_compatible
 class OverlayPods(models.Model):
     POSITION_CHOICES = (
-        ('top-left', _('top-left')),
-        ('top', _('top')),
-        ('top-right', _('top-right')),
-        ('right', _('right')),
-        ('bottom-right', _('bottom-right')),
-        ('bottom', _('bottom')),
-        ('bottom-left', _('bottom-left')),
-        ('left', _('left')),
+        ('top-left', _(u'top-left')),
+        ('top', _(u'top')),
+        ('top-right', _(u'top-right')),
+        ('right', _(u'right')),
+        ('bottom-right', _(u'bottom-right')),
+        ('bottom', _(u'bottom')),
+        ('bottom-left', _(u'bottom-left')),
+        ('left', _(u'left')),
     )
 
     video = models.ForeignKey(Pod, verbose_name=_('video'))

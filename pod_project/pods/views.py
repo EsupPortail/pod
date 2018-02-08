@@ -1738,6 +1738,8 @@ def video_completion_overlay(request, slug):
                     data = json.dumps(some_data_to_dump)
                     return HttpResponse(data, content_type='application/json')
                 else:
+                    messages.add_message(
+                        request, messages.ERROR, _(u'One or more errors have been found in the form.'))
                     return render_to_response("videos/video_completion.html",
                                               {
                                                   'video': video,
