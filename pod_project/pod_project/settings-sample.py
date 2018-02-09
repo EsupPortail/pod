@@ -127,7 +127,10 @@ USE_TZ = True
 ##
 # URL where requests are redirected for login
 #
-LOGIN_URL = '/accounts/login/'
+if USE_CAS:
+    LOGIN_URL = '/accounts/cas/login/'
+else:
+    LOGIN_URL = '/accounts/login/'
 
 
 ##
