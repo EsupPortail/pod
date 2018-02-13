@@ -42,6 +42,10 @@ from django.template.loader import render_to_string
 from django.utils.http import urlquote
 from django.utils.html import strip_tags
 
+from django.views.generic.base import TemplateView
+from lti_provider.mixins import LTIAuthMixin
+from auth_mixins import LoginRequiredMixin
+
 from pods.models import Pod
 
 from django.conf import settings
@@ -290,3 +294,16 @@ def contact_us(request):
 def status(request):
     """ simple status page who returns a code 200 """
     return HttpResponse(status=200)
+
+
+class LTIAssignmentView(LTIAuthMixin, LoginRequiredMixin, TemplateView):
+
+    template_name = 'lti_provider/assignment.html'
+
+    def get_context_data(self, **kwargs):
+        return {
+            'is_student': self.lti.lis_result_sourcedid(self.request),
+            'course_title': self.lti.course_title(self.request),
+            'number': 1
+        }
+

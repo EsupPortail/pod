@@ -1,0 +1,24 @@
+% extends 'base.html' %
+% block content %
+<div class="text-center well">
+    <h1>Assignment Landing Page</h1>
+    <h3>Logged In</h3>
+    <p>Username: {{request.user.username}}</p>
+    <p>{{request.user.first_name}} {{request.user.last_name}}</p>
+    <p>{{course_title}}</p>
+    <p>Assignment #{{number}}</p>
+
+    <hr />
+
+    {% if not is_student %}
+        <p>Instructors cannot submit an assignment</p>
+    {% else %}
+        <form action="{% url 'lti-post-grade' %}" method="post">
+            <input type="input" name="score" value=".55" />
+            <input type="hidden" name="next" value="% url 'assignment-success' %" />
+            <input type="submit" value="submit" />
+        </form>
+    {% endif %}
+</div>
+% endblock %
+
