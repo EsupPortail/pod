@@ -295,15 +295,28 @@ def status(request):
     """ simple status page who returns a code 200 """
     return HttpResponse(status=200)
 
-
 class LTIAssignmentView(LTIAuthMixin, LoginRequiredMixin, TemplateView):
 
     template_name = 'lti_provider/assignment.html'
 
+
     def get_context_data(self, **kwargs):
+        activity = kwargs.get("activity")
+        url = ""
+        if activity == 'addvideo':
+            url = url = "http://localhost:8000/video_edit/?is_iframe=true"
+        if activity == 'getvideo':
+            if self.request.session.get("custom_video"):
+                try:
+                    video = Pod.objects.get(id=self.request.session.get("custom_video"))
+                    url = "http:"+video.get_full_url()+"?is_iframe=true"
+                except Exception as e:
+                    print e
+                    messages.add_message(
+                    request, messages.ERROR, _(u'The video id is not valid.'))
         return {
+            'iframe_url': url,
             'is_student': self.lti.lis_result_sourcedid(self.request),
             'course_title': self.lti.course_title(self.request),
             'number': 1
         }
-
