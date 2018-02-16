@@ -195,6 +195,17 @@ if OEMBED:
             'pods.views.video_oembed', name='video_oembed'),
     ]
 
+##
+# LTI feature patterns
+#
+if getattr(settings, 'LTI_ENABLED', False):
+    # LTI href
+    urlpatterns += [
+        url(r'^lti/', include('lti_provider.urls')),
+        url(r'^assignment/(?P<activity>[\-\d\w]+)/', LTIAssignmentView.as_view()),
+    ]
+
+
 #
 #       End of optional feature patterns
 #
