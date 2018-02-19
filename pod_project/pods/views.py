@@ -67,6 +67,10 @@ USE_PRIVATE_VIDEO = getattr(settings, 'USE_PRIVATE_VIDEO', False)
 if USE_PRIVATE_VIDEO:
     from core.models import get_media_guard
 EMAIL_ON_ENCODING_COMPLETION = getattr(settings, 'EMAIL_ON_ENCODING_COMPLETION', False)
+RSS = getattr(settings, 'RSS', False)
+ATOM_HD = getattr(settings, 'ATOM_HD', False)
+ATOM_SD = getattr(settings, 'ATOM_SD', False)
+
 
 DEFAULT_PER_PAGE = 12
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
@@ -490,7 +494,7 @@ def videos(request):
     if request.is_ajax():
         some_data_to_dump = {
             'json_toolbar': render_to_string('maintoolbar.html',
-                                             {'videos': videos, 'param': param}),
+                                             {'videos': videos, 'param': param, 'RSS': RSS, 'ATOM_HD': ATOM_HD, 'ATOM_SD': ATOM_SD}),
             'json_videols': render_to_string('videos/videos_list.html',
                                              {'videos': videos, 'types': type, 'owners': list_owner,
                                                  'disciplines': discipline, 'param': param},
