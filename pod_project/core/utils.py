@@ -264,29 +264,30 @@ def encode_video(video_to_encode):
             list_encod_video = EncodingType.objects.filter(mediatype='video').order_by(
                 'output_height')  # .exclude(output_height=1080).exclude(output_height=720)
             for encod_video in list_encod_video:
-                bufsize = encod_video.bitrate_video
-                try:
-                    int_bufsize = int(
-                        re.search("(\d+)k", bufsize, re.I).groups()[0])
-                    bufsize = "%sk" % (int_bufsize * 2)
-                except:
-                    pass
-                if in_height >= encod_video.output_height or encod_video == list_encod_video.first():
-                    video = Pod.objects.get(id=VIDEO_ID)
-                    media_guard_hash = get_media_guard(
-                        video.owner.username, video.id)
-                    videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                                 "video_%s_%s.mp4" % (video.id, encod_video.output_height))
-                    videourl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                            "video_%s_%s.mp4" % (video.id, encod_video.output_height))
-                    encode_mp4(VIDEO_ID, in_width, in_height, bufsize,
-                               in_audio_rate, encod_video, videofilename, videourl)
-                    if ENCODE_WEBM and os.access(videofilename, os.F_OK):
-                        encode_webm(VIDEO_ID, videofilename,
-                                    encod_video, bufsize)
-                    if ENCODE_M3U8 and os.access(videofilename, os.F_OK):
-                        encode_m3u8(VIDEO_ID, videofilename,
-                                    encod_video, bufsize)
+                if not encod_video.output_height in [240, 480]:
+                    bufsize = encod_video.bitrate_video
+                    try:
+                        int_bufsize = int(
+                            re.search("(\d+)k", bufsize, re.I).groups()[0])
+                        bufsize = "%sk" % (int_bufsize * 2)
+                    except:
+                        pass
+                    if in_height >= encod_video.output_height or encod_video == list_encod_video.first():
+                        video = Pod.objects.get(id=VIDEO_ID)
+                        media_guard_hash = get_media_guard(
+                            video.owner.username, video.id)
+                        videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                     "video_%s_%s.mp4" % (video.id, encod_video.output_height))
+                        videourl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                "video_%s_%s.mp4" % (video.id, encod_video.output_height))
+                        encode_mp4(VIDEO_ID, in_width, in_height, bufsize,
+                                   in_audio_rate, encod_video, videofilename, videourl)
+                        if ENCODE_WEBM and os.access(videofilename, os.F_OK):
+                            encode_webm(VIDEO_ID, videofilename,
+                                        encod_video, bufsize)
+                        if ENCODE_M3U8 and os.access(videofilename, os.F_OK): 
+                            encode_m3u8(VIDEO_ID, videofilename,
+                                        encod_video, bufsize)
             if ENCODE_M3U8:
                 create_main_m3u8(VIDEO_ID, list_encod_video)
         # FOR AUDIO
@@ -867,34 +868,35 @@ def create_main_m3u8(video_id, list_encod_video):
     master = open(m3u8filename, 'w+')
     master.write("#EXTM3U\n\n")
     for encoding_type in list_encod_video:
+        if not encoding_type.output_height in [240, 480]:
 
-        videodirname = os.path.join(settings.MEDIA_URL, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id)
-        videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                                "video_%s_%s.mp4" % (video.id, encoding_type.output_height))
-        videom3u8 = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                                "video_%s_%s.m3u8" % (video.id, encoding_type.output_height))
-        videom4s = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                                "video_%s_%s.m4s" % (video.id, encoding_type.output_height))
+            videodirname = os.path.join(settings.MEDIA_URL, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id)
+            videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                    "video_%s_%s.mp4" % (video.id, encoding_type.output_height))
+            videom3u8 = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                    "video_%s_%s.m3u8" % (video.id, encoding_type.output_height))
+            videom4s = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                    "video_%s_%s.m4s" % (video.id, encoding_type.output_height))
 
-        # Replace path in individual m3u8 files
-        if os.path.isfile(videom3u8):
-            with open(videom3u8) as main:
-                datatoReplace = main.read()
-                datatoReplace = datatoReplace.replace('/var/pod', '')
-                with open(videom3u8, 'w+') as newmain:
-                    newmain.write(datatoReplace)
+            # Replace path in individual m3u8 files
+            if os.path.isfile(videom3u8):
+                with open(videom3u8) as main:
+                    datatoReplace = main.read()
+                    datatoReplace = datatoReplace.replace('/var/pod', '')
+                    with open(videom3u8, 'w+') as newmain:
+                        newmain.write(datatoReplace)
 
-        # Append individual m3u8 files in master playlist
-        if os.path.isfile(videom3u8):
-            com = "%s -v error -select_streams v:0 -show_entries stream=bit_rate -of default=noprint_wrappers=1:nokey=1 %s" % (FFPROBE, videofilename)
-            ffmproberesult = commands.getoutput(com)
-            master.write('#EXT-X-STREAM-INF:BANDWIDTH=%s,CODECS="avc1.42c00d,mp4a.40.2"\n%s/video_%s_%s.m3u8\n' %
-                (ffmproberesult, videodirname, video.id, encoding_type.output_height))
+            # Append individual m3u8 files in master playlist
+            if os.path.isfile(videom3u8):
+                com = "%s -v error -select_streams v:0 -show_entries stream=bit_rate -of default=noprint_wrappers=1:nokey=1 %s" % (FFPROBE, videofilename)
+                ffmproberesult = commands.getoutput(com)
+                master.write('#EXT-X-STREAM-INF:BANDWIDTH=%s,CODECS="avc1.42c00d,mp4a.40.2"\n%s/video_%s_%s.m3u8\n' %
+                    (ffmproberesult, videodirname, video.id, encoding_type.output_height))
 
-        # Keep only 360p video in mp4 non-fragmented.
-        if os.path.isfile(videofilename) and encoding_type.output_height != 360:
-            os.remove(videofilename)
-            EncodingPods.objects.get(video=video, encodingType=encoding_type, encodingFormat='video/mp4').delete()
+            # Keep only 360p video in mp4 non-fragmented.
+            if os.path.isfile(videofilename) and encoding_type.output_height != 360:
+                os.remove(videofilename)
+                EncodingPods.objects.get(video=video, encodingType=encoding_type, encodingFormat='video/mp4').delete()
 
     master.close()
 

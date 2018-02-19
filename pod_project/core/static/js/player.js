@@ -44,14 +44,13 @@ var previousuploaded = 0;
 var mediumspeed = 0;
 var intcheck = 0;
 var changeResBd = false;
-var oldFormat = false; // Deprecated
+var oldFormat = null; // DEPRECATED
 
 /******* DOC READY ********/
 $(document).ready(function() {
     if ('MediaSource' in window) {
         $('video').each(function() {
             oldFormat = $(this).children('source').length > 1;
-            console.log(oldFormat);
             if (!oldFormat) {
                 $(this).children('source').remove();
                 var player = videojs(this);
