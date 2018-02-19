@@ -721,3 +721,38 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
   background-color: #f8af19;
   border-color: #f8af19;
 }
+/*******************************************************************************
+
+        Playlist
+*/
+#playlist_videos .panel-heading {
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 4px 15px;
+}
+#table_playlists tr,
+#table_playlists th {
+  text-align: center;
+}
+#edit_playlist,
+#delete_playlist,
+#launch_playlist {
+  margin: 10px;
+}
+#add_playlist,
+#form_playlist .panel-heading {
+  margin-bottom: 10px;
+}
+#form_playlist.panel.panel-primary {
+  padding: 10px;
+}
+#playlist_share {
+  padding: 2px;
+  border: 1px solid #bbb;
+  width: 260px;
+}
+.playlist_img {
+  width: 80px;
+  height: 40px;
+}

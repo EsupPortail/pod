@@ -27,7 +27,7 @@ voir http://www.gnu.org/licenses/
 			<div class="playlist-thumb video-thumb col-xs-6 col-md-4">
 	            <a
 	                title="{{ playlist.title }}"
-	                href="{% url 'video' slug=playlist.get_videos.0.video.slug %}?playlist={{playlist.slug}}&autoplay=true"
+	                href="{% url 'video' slug=playlist.get_videos.0.video.slug %}?playlist={{playlist.slug}}&autoplay=true&interactive=false"
 	            >
 	            	<div class="media-body">
 	            		<h5 class="media-heading">{{ playlist.title|truncatechars:36 }}</h5>
