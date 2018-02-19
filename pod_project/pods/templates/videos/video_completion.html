@@ -437,6 +437,13 @@ function verify_fields(form){
                 return msg;
             }
         });
+    }else if(form == "form_overlay"){
+        var tags = /<script.+?>|<iframe.+?>/;
+        if(tags.exec(document.getElementById("id_content").value) != null){
+            $("textarea#id_content")
+                .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Iframe and Script tags are not allowed.' %} </span>")
+                .parents('div.form-group').addClass('has-error');
+        }
     }
     return msg;
 }

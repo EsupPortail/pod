@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'rest_framework',
     'rest_framework.authtoken',
+    'lti_provider',
     # Applications locales
     'pods',
     'core',
@@ -127,7 +128,10 @@ USE_TZ = True
 ##
 # URL where requests are redirected for login
 #
-LOGIN_URL = '/accounts/login/'
+if USE_CAS:
+    LOGIN_URL = '/accounts/cas/login/'
+else:
+    LOGIN_URL = '/accounts/login/'
 
 
 ##
@@ -146,6 +150,14 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'core.populatedCASbackend.PopulatedCASBackend'
 )
+
+##
+# Authentication backend : add lti backend if use
+#
+if 'LTI_ENABLED' in globals() and LTI_ENABLED:
+    AUTHENTICATION_BACKENDS = list(AUTHENTICATION_BACKENDS)
+    AUTHENTICATION_BACKENDS.append('lti_provider.auth.LTIBackend')
+    AUTHENTICATION_BACKENDS = tuple(AUTHENTICATION_BACKENDS)
 
 
 ##
@@ -298,4 +310,12 @@ if 'EMAIL_ON_ENCODING_COMPLETION' in globals():
     TEMPLATE_VISIBLE_SETTINGS.append('EMAIL_ON_ENCODING_COMPLETION')
 if 'OEMBED' in globals():
     TEMPLATE_VISIBLE_SETTINGS.append('OEMBED')
+if 'USE_PRIVATE_VIDEO' in globals() and MEDIA_GUARD:
+    TEMPLATE_VISIBLE_SETTINGS.append('USE_PRIVATE_VIDEO')
+if 'RSS' in globals():
+    TEMPLATE_VISIBLE_SETTINGS.append('RSS')
+if 'ATOM_HD' in globals():
+    TEMPLATE_VISIBLE_SETTINGS.append('ATOM_HD')
+if 'ATOM_SD' in globals():
+    TEMPLATE_VISIBLE_SETTINGS.append('ATOM_SD')
 TEMPLATE_VISIBLE_SETTINGS = tuple(TEMPLATE_VISIBLE_SETTINGS)

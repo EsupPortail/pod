@@ -539,7 +539,7 @@ def video(request, slug, slug_c=None, slug_t=None):
                 h5p = h5p_contents.objects.get(slug=slug[find(slug, "-")+1:])
                 if request.GET.get('is_iframe') and request.GET.get('interactive'):
                     if request.GET['interactive'] == 'true':
-                        return HttpResponseRedirect('/h5p/embed/?contentId=%d' % h5p.content_id)
+                        return HttpResponseRedirect('/h5p/content/?contentId=%d&is_iframe=true' % h5p.content_id)
                 if request.user == video.owner or request.user.is_superuser:
                     score = getUserScore(h5p.content_id)
                 else:
@@ -1738,6 +1738,8 @@ def video_completion_overlay(request, slug):
                     data = json.dumps(some_data_to_dump)
                     return HttpResponse(data, content_type='application/json')
                 else:
+                    messages.add_message(
+                        request, messages.ERROR, _(u'One or more errors have been found in the form.'))
                     return render_to_response("videos/video_completion.html",
                                               {
                                                   'video': video,
@@ -2251,8 +2253,11 @@ def search_videos(request):
     if len(selected_facets) > 0 or start_date or end_date:
         filter_search = []
         for facet in selected_facets:
-            term = facet.split(":")[0]
-            value = facet.split(":")[1]
+            try:
+                term = facet.split(":")[0]
+                value = facet.split(":")[1]
+            except:
+                continue
             filter_search.append({
                 "term": {
                     "%s" % term: "%s" % value
@@ -2344,8 +2349,11 @@ def search_videos(request):
 
     remove_selected_facet = ""
     for facet in selected_facets:
-        term = facet.split(":")[0]
-        value = facet.split(":")[1]
+        try:
+            term = facet.split(":")[0]
+            value = facet.split(":")[1]
+        except:
+            continue
         agg_term = term.replace(".raw", "")
         if result["aggregations"].get(agg_term):
             del result["aggregations"][agg_term]

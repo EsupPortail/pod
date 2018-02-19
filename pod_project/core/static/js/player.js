@@ -33,6 +33,13 @@ var list_disp = {
 };
 var defaultDisp = '50/50';
 var slide_height = 90; //96 en fullscreen
+var slide_color = {
+    'document': 'yellow',
+    'image': 'purple',
+    'richtext': 'blue',
+    'weblink': 'red',
+    'embed': 'green'
+};
 var videozindex = 1000;
 var isPlaying = false;
 var increase_view_count = false;
@@ -681,10 +688,12 @@ function loadChapBar() {
                 var chapbar_left = (parseInt($(this).data('start')) / duration_vid) * 100;
                 var chapbar_width = ((parseInt($(this).data('end')) / duration_vid) * 100) - chapbar_left;
                 var data_id = $(this).data('id');
+                var data_type = $(this).data('type');
+                // Determine color
                 $('.vjs-chapbar-holder').append(
                     '<div ' +
                         'class="vjs-chapbar-chap" ' +
-                        'style="left:' + chapbar_left + '%;width:' + chapbar_width + '%;" ' +
+                        'style="left:' + chapbar_left + '%;width:' + chapbar_width + '%;background-color:' + slide_color[data_type] + ';" ' +
                         'data-id="' + data_id + '"' +
                     '></div>'
                 );

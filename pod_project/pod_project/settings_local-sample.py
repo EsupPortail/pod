@@ -270,6 +270,13 @@ HOMEPAGE_NBR_CONTENTS_SHOWN = 9
 HOMEPAGE_SHOWS_PASSWORDED = False
 HOMEPAGE_SHOWS_RESTRICTED = True
 
+##
+# Enable OEMBED
+#   if True
+#   - add in video pages a link tag with type application/json+oembed and href to json representation of the URL video. https://oembed.com/#section4
+#   - add url oembed and buid the json representation of the URL video
+#
+OEMBED=False
 
 ##
 # Main menu settings:
@@ -287,6 +294,7 @@ MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
 #   False: video files will only be available in mp4 format.
 #
 ENCODE_WEBM = True
+
 
 ##
 # HLS activation:
@@ -410,6 +418,10 @@ REPORT_VIDEO_MAIL_TO = ['alert@univ.fr']
 MEDIA_GUARD = False
 MEDIA_GUARD_SALT = 'a.string.used.as.salt'
 
+##
+# Video in draft mode can be shared
+# MEDIA_GUARD MUST be activated
+USE_PRIVATE_VIDEO = False
 
 ##
 # Encoding tools path:
@@ -493,12 +505,6 @@ CELERY_BROKER = "amqp://guest@localhost//"
 # ENCODE_VIDEO = encode_video
 
 ##
-# Video in draft mode can be shared
-#
-USE_PRIVATE_VIDEO = False
-
-
-##
 # H5P relative parameters
 #
 H5P_ENABLED = False                                     # Active the module or not
@@ -518,3 +524,46 @@ BASE_URL = 'http://localhost:8000'                      # Hostname of your djang
 #   - add url oembed and buid the json representation of the URL video
 #
 OEMBED=False
+
+###
+# Enable LTI Provider
+# https://github.com/ccnmtl/django-lti-provider
+#   if True
+LTI_ENABLED=True
+
+LTI_TOOL_CONFIGURATION = {
+    'title': 'LTI Pod',
+    'description': 'Pod description',
+    'launch_url': 'lti/',
+    'embed_url': '',
+    'embed_icon_url': '',
+    'embed_tool_id': '',
+    'landing_url': '/',
+    'course_aware': False,
+    'course_navigation': True,
+    'new_tab': True,
+    'frame_width': 640,
+    'frame_height': 360,
+    'assignments': {
+        'addvideo': '/assignment/addvideo/',
+        'getvideo': '/assignment/getvideo/'
+
+    }
+}
+
+PYLTI_CONFIG = {
+    'consumers': {
+        'azerty': {
+            'secret': 'azerty'
+        }
+    }
+}
+LTI_PROPERTY_LIST_EX = [
+    'custom_canvas_user_login_id',
+    'ext_user_username',
+    'context_title',
+    'lis_course_offering_sourcedid',
+    'custom_canvas_api_domain',
+    'custom_video'
+]
+LTI_PROPERTY_USER_USERNAME = 'ext_user_username'

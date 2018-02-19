@@ -555,12 +555,6 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
   right: 0;
   position: absolute;
   background-color: #ffe800;
-  background: -moz-linear-gradient(top, #ffe800 0%, #a69700 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffe800), color-stop(100%, #a69700));
-  background: -webkit-linear-gradient(top, #ffe800 0%, #a69700 100%);
-  background: -o-linear-gradient(top, #ffe800 0%, #a69700 100%);
-  background: -ms-linear-gradient(top, #ffe800 0%, #a69700 100%);
-  background: linear-gradient(to bottom, #ffe800 0%, #a69700 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffe800',endColorstr='#a69700',GradientType=0);
   opacity: .8;
 }
