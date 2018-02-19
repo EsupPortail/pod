@@ -13,38 +13,6 @@
 <style>
 	#accordeon li,
 	#accordeon div { list-style: none; }
-
-	#playlist_videos .panel-heading {
-		border-bottom: 1px solid transparent;
-		border-top-left-radius: 3px;
-		border-top-right-radius: 3px;
-		padding: 4px 15px;
-	}
-	#table_playlists tr,
-	#table_playlists th {
-		text-align: center;
-	}
-	#edit_playlist,
-	#delete_playlist,
-	#launch_playlist {
-		margin: 10px;
-	}
-	#add_playlist,
-	#form_playlist .panel-heading {
-		margin-bottom: 10px;
-	}
-	#form_playlist.panel.panel-primary {
-		padding: 10px;
-	}
-	#playlist_share {
-		padding: 2px;
-		border: 1px solid #bbb;
-		width: 260px;
-	}
-	.playlist_img {
-		width: 80px;
-		height: 40px;
-	}
 </style>
 <script>
 $(window).load(function(){
@@ -246,9 +214,10 @@ $(window).load(function(){
 						{% endif %}
 						{% if playlist.get_videos.count != 0 %}
 						<tr>
-							<form class="form_launch" action="{% url 'video' slug=playlist.get_videos.0.video.slug %}" method="get">
+							<form class="form_launch" action="{% url 'video' slug=playlist.get_videos.0.video.slug %}?" method="get">
 								<input type="hidden" name="playlist" value="{{playlist.slug}}">
 								<input type="hidden" name="autoplay" value="true">
+								<input type="hidden" name="interactive" value="false">
 								<input type="submit" title="{% trans 'Launch the playlist' %}" value="{% trans 'Launch the playlist' %}" id="launch_playlist" class="btn btn-info btn-sm">
 							</form>
 						</tr>
