@@ -26,8 +26,6 @@ var changeRes = false;
 var animation_complete = true;
 var list_disp = {
     '50/50': '50/50',
-    '30/70': '30/70',
-    '70/30': '70/30',
     '100/20': 'Pip media',
     '20/100': 'Pip video',
     '100/0': 'only video',
@@ -53,8 +51,27 @@ var previousuploaded = 0;
 var mediumspeed = 0;
 var intcheck = 0;
 var changeResBd = false;
+var oldFormat = null; // DEPRECATED
+
 /******* DOC READY ********/
 $(document).ready(function() {
+    if ('MediaSource' in window) {
+        $('video').each(function() {
+            oldFormat = $(this).children('source').length > 1;
+            if (!oldFormat) {
+                $(this).children('source').remove();
+                var player = videojs(this);
+                var source = $(this).data('m3u8');
+                player.ready(function() {
+                    player.src({
+                        src: source,
+                        type: 'application/x-mpegURL',
+                        withCredentials: true
+                    });
+                });
+            }
+        });
+    }
     loadVideo();
     // Remove right click on video
     $('#player_video').bind('contextmenu', function() { return false; });
@@ -75,7 +92,6 @@ function loadVideo() {
     videojs('player_video').ready(function() {
         // PLAYER READY
         myPlayer = this;
-        myPlayer.preload("auto");
         
         //if video 360
         if(is_360) {
@@ -108,7 +124,6 @@ function loadVideo() {
         myPlayer.on('loadedmetadata', loadedmetadata);
         myPlayer.on('error', error); // error log for dev
         myPlayer.on('durationchange', loadChapBar);
-        myPlayer.on('progress', progress);
         myPlayer.on('timeupdate', timeupdate);
         myPlayer.on('firstplay', function(){
             $.post(
@@ -138,7 +153,12 @@ function loadVideo() {
 
         // Load plugin
         // Resolution(s)
-        myPlayer.videoJsResolutionSwitcher();
+        if (!oldFormat) {
+            myPlayer.videoJsQualityLevelPlayer();
+        } else {
+            myPlayer.videoJsResolutionSwitcher();
+            myPlayer.on('progress', progress);
+        }
 
         // Display format
         if ($('ul#slides li[data-type!="None"]').length > 0) {
@@ -151,16 +171,7 @@ function loadVideo() {
         $('ul#slides').hide();
 
         // Chapter(s)
-        if ($('ul#chapters li').length > 0) {
-            var list_chap = {};
-            $('ul#chapters li').each(function () {
-                list_chap[$(this).attr('data-start')] = $(this).attr('data-title');
-            });
-            myPlayer.videojsChapterSelector({
-                list_chap : list_chap
-            });
-            $('ul#chapters').hide();
-        }
+        myPlayer.videoJsChapters();
 
         $('div.vjs-slide').hide();
         $('div.vjs-title').hide();
@@ -223,10 +234,11 @@ function loadVideo() {
         $('.vjs-loading-spinner').css('zIndex', videozindex + 6);
         $('.vjs-text-track-display').css('zIndex', videozindex + 7);
         $('.vjs-overlay').css('zIndex', videozindex + 8);
-        $('.vjs-control-bar').css('zIndex', videozindex + 9);
-        $('.vjs-text-track-settings').css('zIndex', videozindex + 10);
+        $('.chapters-list').css('zIndex', videozindex + 9);
+        $('.vjs-control-bar').css('zIndex', videozindex + 10);
+        $('.vjs-text-track-settings').css('zIndex', videozindex + 11);
 
-        var IS_MOBILE = /mobile|android/i.test (navigator.userAgent);
+        var IS_MOBILE = /mobile|android/i.test(navigator.userAgent);
         var IS_IPHONE = (/iPhone/i).test(navigator.userAgent);
         var IS_IPAD = (/iPad/i).test(navigator.userAgent);
         var IS_IPOD = (/iPod/i).test(navigator.userAgent);
@@ -530,6 +542,7 @@ $(document).on(
 
 function timeupdate(event) {
     var t = myPlayer.currentTime();
+    var chapters = myPlayer.getGroupedChapters() || 0;
     var all = timestamps.length;
     var slide = false;
     var change_slide = false;
@@ -579,6 +592,21 @@ function timeupdate(event) {
             }
         } else {
             timestamps[i].elm.removeClass('current');
+        }
+    }
+
+    // Track current chapter
+    if (chapters != 0) {    
+        i = 0;
+        for (i; i < chapters.id.length; i++) {
+          if (t >= chapters.start[i]) {
+            $('#'+chapters.id[i]).attr('class', 'current');
+            if (i != chapters.id.length) {
+              $('#'+chapters.id[i-1]).removeClass('current');
+            }
+          } else {
+            $('#'+chapters.id[i]).removeClass('current');
+          }
         }
     }
 
@@ -690,6 +718,7 @@ function loadChapBar() {
 
 /**
  * Calcule de manière automatique la résolution la plus optimisée pour le débit de la connexion de l'utilisateur
+ * OBSOLETE si HLS est activé
  */
 function progress() {
     if (typeof myPlayer.getGroupedSrc() != 'undefined' && myPlayer.getGroupedSrc().res && changeResBd == false) {
@@ -731,7 +760,6 @@ function progress() {
         }
     }
 }
-
 function error(err) {
     // prints the name of the error
     // alert(err.name);

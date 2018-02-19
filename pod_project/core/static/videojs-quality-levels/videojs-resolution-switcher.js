@@ -1,3 +1,4 @@
+
 /*! videojs-resolution-switcher - 2015-7-26
  * Copyright (c) 2016 Kasper Moskwiak
  * Modified by Pierre Kraft and Derk-Jan Hartman

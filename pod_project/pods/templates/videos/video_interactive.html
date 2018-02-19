@@ -131,11 +131,8 @@ voir http://www.gnu.org/licenses/
         $('#ieditor').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
         {% if not interactive.h5p %}
             {% for encoding in video.get_all_encoding_height %}
-                {% if encoding == 240 %}
-            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_240_URL }}');
-            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
-                {% elif encoding == 480 %}
-            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_480_URL }}');
+                {% if encoding == 360 %}
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_360_URL }}');
             $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
                 {% elif encoding == 720 %}
             $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_720_URL }}');

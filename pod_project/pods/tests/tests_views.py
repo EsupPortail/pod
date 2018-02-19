@@ -393,11 +393,11 @@ class TypesTestView(TestCase):
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
         pod.save()
         Type.objects.create(title="Type2")
         print(" --->  SetUp of TypesTestView : OK !")
@@ -443,11 +443,11 @@ class OwnersTestView(TestCase):
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
         pod.save()
         print(" --->  SetUp of OwnersTestView : OK !")
 
@@ -511,9 +511,9 @@ class DisciplinesTestView(TestCase):
                                  allow_downloading=True, view_count=2, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
                                  duration=3, infoVideo="videotest", to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
         pod.discipline.add(d1)
         pod.save()
         print(" --->  SetUp of DisciplinesTestView : OK !")
@@ -1080,11 +1080,11 @@ class VideosTestView(TestCase):
                                      allow_downloading=True, view_count=0, description="fl", overview=os.path.join("videos", "remi", media_guard_hash, "1", "overview.jpg"), is_draft=False,
                                      duration=3, infoVideo="videotest", to_encode=False)
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("media", "videos", "remi", media_guard_hash, "1", "video_1_240.mp4"))
+                id=1), encodingFile=os.path.join("media", "videos", "remi", media_guard_hash, "1", "video_1_360.mp4"))
             ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
             if ENCODE_WEBM:
                 EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                    id=1), encodingFile=os.path.join("media", "videos", "remi", media_guard_hash, "1", "video_1_240.webm"))
+                    id=1), encodingFile=os.path.join("media", "videos", "remi", media_guard_hash, "1", "video_1_360.webm"))
             pod.tags.add("videotests")
             if i % 2:
                 pod.discipline.add(d1)
@@ -1160,12 +1160,12 @@ class VideoTestView(TestCase):
                                  to_encode=False)
 
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join('videos', 'remi', media_guard_hash, '1', 'video_1_240.mp4'), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join('videos', 'remi', media_guard_hash, '1', 'video_1_360.mp4'), encodingFormat="video/mp4")
 
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
@@ -1277,11 +1277,11 @@ class Video_edit_testCase(TestCase):
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()
@@ -1379,11 +1379,11 @@ class Video_notesTestView(TestCase):
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
@@ -1455,11 +1455,11 @@ class Video_completion_TestView(TestCase):
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
@@ -1784,12 +1784,12 @@ class Video_overlayTestView(TestCase):
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
 
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
@@ -1998,12 +1998,12 @@ class Video_chapterTestView(TestCase):
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
 
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
@@ -2169,12 +2169,12 @@ class Video_search_videos(TestCase):
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="bugs", is_draft=False,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
 
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
         pod.save()
 
         pod2 = Pod.objects.create(type=other_type, title=u'NoIndex',
@@ -2182,10 +2182,10 @@ class Video_search_videos(TestCase):
                                   allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="no index", is_draft=True,
                                   to_encode=False)
         EncodingPods.objects.create(video=pod2, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod2, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
         pod2.save()
 
         print(" --->  SetUp of Video_enrichTestView : OK !")
@@ -2275,12 +2275,12 @@ class Video_enrichTestView(TestCase):
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
 
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
 
         pod.channel.add(c)
         pod.theme.add(t)
@@ -2618,12 +2618,12 @@ class RSSTestView(TestCase):
                                      allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=False,
                                      to_encode=False)
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
 
             ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
             if ENCODE_WEBM:
                 EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                    id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                    id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
 
             pod.channel.add(c)
             pod.theme.add(t)
@@ -2818,12 +2818,12 @@ class VideoPrivTestView(TestCase):
                                      allow_downloading=False, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                      to_encode=False)
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join('videos', 'remi', media_guard_hash, '1', 'video_1_240.mp4'), encodingFormat="video/mp4")
+                id=1), encodingFile=os.path.join('videos', 'remi', media_guard_hash, '1', 'video_1_360.mp4'), encodingFormat="video/mp4")
 
             ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
             if ENCODE_WEBM:
                 EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                    id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                    id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
             pod.save()
             print(" --->  SetUp of VideoPrivTestView : OK !")
 

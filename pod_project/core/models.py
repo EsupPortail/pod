@@ -255,13 +255,13 @@ class EncodingType(models.Model):
     HEIGHT_CHOICES = (
         (0, '0'),
         (240, '240'),
+        (360, '360'),
         (480, '480'),
-        (640, '640'),
         (720, '720'),
         (1080, '1080'),
     )
     output_height = models.IntegerField(
-        _('output_height'), choices=HEIGHT_CHOICES, default=240)
+        _('output_height'), choices=HEIGHT_CHOICES, default=360)
     TYPE_CHOICES = (
         ("audio", 'Audio'),
         ("video", 'Video'),

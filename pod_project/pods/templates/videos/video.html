@@ -339,7 +339,7 @@ $(document).on('change', '#showinteractive', function() {
         <meta itemprop="duration" content="{{ video.duration }}" />
         <meta itemprop="thumbnailUrl" content="{{ video.thumbnail.url }}" />
         <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
-        <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" />
+        <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=360" />
 
         {% if H5P_ENABLED and video.is_interactive %}
         <div id="h5pcontent">
@@ -598,28 +598,29 @@ $(document).on('change', '#showinteractive', function() {
                     <div id="downloads" class="tab-pane fade container-fluid">
                         <div class="list-group">
                         {% if video.allow_downloading %}
-                            {% trans 'Download the video'%} :
-
                             {% with mediatype=video.get_mediatype|first %}
                                 {% if mediatype == 'video' %}
+                                    <label>{% trans 'Video file(s)' %} : </label>
                                     {% for encoding in video.encodingpods_set.all %}
                                         {% if encoding.encodingFormat == "video/mp4" %}
-                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}" title="{{ video.slug }}" class="list-group-item" >
-                                {{ video.slug }}_{{ encoding.encodingType.output_height }}.mp4
+                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}&type=video" title="{{ video.slug }}" class="list-group-item" >
+                                {{ video.slug }}_{{ encoding.encodingType.output_height }}
+                                <span class="label label-info">{{ encoding.encodingFormat }}</span>
                                 <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
                             </a>
                                         {%endif%}
                                     {% endfor %}
-                                {%else%}
+                                {%endif%}
+                                    <label>{% trans 'Audio file(s)' %} : </label>
                                     {% for encoding in video.encodingpods_set.all %}
                                         {% if encoding.encodingFormat == "audio/mp3" %}
-                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}" title="{{ video.slug }}" class="list-group-item" >
-                                {{ video.slug }}.mp3
+                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}&type=audio" title="{{ video.slug }}" class="list-group-item" >
+                                {{ video.slug }}
+                                <span class="label label-info">{{ encoding.encodingFormat }}</span>
                                 <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
                             </a>
                                         {%endif%}
                                     {%endfor%}
-                                {%endif%}
                             {%endwith%}
 
                         {% endif %}
@@ -657,9 +658,9 @@ $(document).on('change', '#showinteractive', function() {
                                         {% trans 'Video size' %}
                                         <select id="integration_size" class="form-control">
                                         {% for enc in video.get_all_encoding_height %}
-                                            {% if enc == 240 %}<option value="240" data-width="640" data-height="360">240p</option>{% endif %}
-                                            {% if enc == 480 %}<option value="480" data-width="854" data-height="480">480p</option>{% endif %}
+                                            {% if enc == 360 %}<option value="360" data-width="640" data-height="360">360p</option>{% endif %}
                                             {% if enc == 720 %}<option value="720" data-width="1280" data-height="720">720p</option>{% endif %}
+                                            {% if enc == 1080 %}<option value="1080" data-width="2560" data-height="1080">1080p</option>{% endif %}
                                         {% endfor %}
                                         </select>
                                     </label>
@@ -739,7 +740,7 @@ $(document).on('change', '#showinteractive', function() {
                                 <div class="form-group col-sm-8">
                                     <label for="txtintegration">
                                         {% trans 'Copy the content of this text box and paste it in the page' %}
-                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}/video_priv/{{ video.id }}/{{ hash_id }}/?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}/video_priv/{{ video.id }}/{{ hash_id }}/?is_iframe=true&amp;size=360" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
                                     </label>
                                 </div>
                                 <div class="form-group col-sm-4">
@@ -747,9 +748,9 @@ $(document).on('change', '#showinteractive', function() {
                                         {% trans 'Video size' %}
                                         <select id="integration_size" class="form-control">
                                         {% for enc in video.get_all_encoding_height %}
-                                            {% if enc == 240 %}<option value="240" data-width="640" data-height="360">240p</option>{% endif %}
-                                            {% if enc == 480 %}<option value="480" data-width="854" data-height="480">480p</option>{% endif %}
+                                            {% if enc == 360 %}<option value="360" data-width="640" data-height="360">360p</option>{% endif %}
                                             {% if enc == 720 %}<option value="720" data-width="1280" data-height="720">720p</option>{% endif %}
+                                            {% if enc == 1080 %}<option value="1080" data-width="2560" data-height="1080">1080p</option>{% endif %}
                                         {% endfor %}
                                         </select>
                                     </label>

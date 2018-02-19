@@ -74,11 +74,11 @@ class Video_deleteTestView(TestCase):
                                  allow_downloading=True, duration=33, encoding_in_progress=False, view_count=0, description="fl", is_draft=True,
                                  to_encode=False)
         EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.mp4"), encodingFormat="video/mp4")
+            id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.mp4"), encodingFormat="video/mp4")
         ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
         if ENCODE_WEBM:
             EncodingPods.objects.create(video=pod, encodingType=EncodingType.objects.get(
-                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_240.webm"), encodingFormat="video/webm")
+                id=1), encodingFile=os.path.join("videos", "remi", media_guard_hash, "1", "video_1_360.webm"), encodingFormat="video/webm")
         pod.channel.add(c)
         pod.theme.add(t)
         pod.save()

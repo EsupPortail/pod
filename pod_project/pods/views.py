@@ -813,7 +813,7 @@ def video_priv(request, id, slug, slug_c=None, slug_t=None):
 
 
 def download_video(video, get_request):
-    format = "video/mp4" if "video" in video.get_mediatype() else "audio/mp3"
+    format = "video/mp4" if "video" in get_request.get('type') else "audio/mp3"
     resolution = get_request.get(
         'resolution') if get_request.get('resolution') else 240
 
@@ -2175,6 +2175,35 @@ def get_video_encoding_private(request, slug, csrftoken, size, type, ext):
                                      encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
     return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
 
+def get_video_m3u8(request, slug, csrftoken):
+    video = get_object_or_404(Pod, slug=slug)
+    if video.is_draft:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+        else:
+            if request.user == video.owner or request.is_superuser:
+                pass
+            else:
+                messages.add_message(
+                    request, messages.ERROR, _(u'You cannot watch this video.'))
+                raise PermissionDenied
+    if video.is_restricted:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
+    m3u8filename = os.path.join(settings.MEDIA_URL, 'videos' , video.owner.username, media_guard_hash, "%s" % video.id,
+        "video_%s_master.m3u8" % video.id)
+    return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, m3u8filename))
+
+def get_video_m3u8_private(request, slug, csrftoken):
+    video = get_object_or_404(Pod, slug=slug)
+    if video.is_restricted:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
+    m3u8filename = os.path.join(settings.MEDIA_URL, 'videos' , video.owner.username, media_guard_hash, "%s" % video.id,
+        "video_%s_master.m3u8" % video.id)
+    return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, m3u8filename))
 
 def autocomplete(request):
     suggestions = [entry.object.title for entry in res]
