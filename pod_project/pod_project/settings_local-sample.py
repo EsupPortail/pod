@@ -505,3 +505,54 @@ H5P_SAVE = 30                                           # How often current cont
 H5P_EXPORT = '/exports/'                                # Location of exports (packages .h5p)
 H5P_LANGUAGE = 'fr'                                     # Language of the module H5P.
 BASE_URL = 'http://localhost:8000'                      # Hostname of your django ap
+
+##
+# Enable OEMBED
+#   if True
+#   - add in video pages a link tag with type application/json+oembed and href to json representation of the URL video. https://oembed.com/#section4
+#   - add url oembed and buid the json representation of the URL video
+#
+OEMBED=False
+
+###
+# Enable LTI Provider
+# https://github.com/ccnmtl/django-lti-provider
+#   if True
+LTI_ENABLED=True
+
+LTI_TOOL_CONFIGURATION = {
+    'title': 'LTI Pod',
+    'description': 'Pod description',
+    'launch_url': 'lti/',
+    'embed_url': '',
+    'embed_icon_url': '',
+    'embed_tool_id': '',
+    'landing_url': '/',
+    'course_aware': False,
+    'course_navigation': True,
+    'new_tab': True,
+    'frame_width': 640,
+    'frame_height': 360,
+    'assignments': {
+        'addvideo': '/assignment/addvideo/',
+        'getvideo': '/assignment/getvideo/'
+
+    }
+}
+
+PYLTI_CONFIG = {
+    'consumers': {
+        'azerty': {
+            'secret': 'azerty'
+        }
+    }
+}
+LTI_PROPERTY_LIST_EX = [
+    'custom_canvas_user_login_id',
+    'ext_user_username',
+    'context_title',
+    'lis_course_offering_sourcedid',
+    'custom_canvas_api_domain',
+    'custom_video'
+]
+LTI_PROPERTY_USER_USERNAME = 'ext_user_username'

@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'rest_framework',
     'rest_framework.authtoken',
+    'lti_provider',
     # Applications locales
     'pods',
     'core',
@@ -149,6 +150,14 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'core.populatedCASbackend.PopulatedCASBackend'
 )
+
+##
+# Authentication backend : add lti backend if use
+#
+if 'LTI_ENABLED' in globals() and LTI_ENABLED:
+    AUTHENTICATION_BACKENDS = list(AUTHENTICATION_BACKENDS)
+    AUTHENTICATION_BACKENDS.append('lti_provider.auth.LTIBackend')
+    AUTHENTICATION_BACKENDS = tuple(AUTHENTICATION_BACKENDS)
 
 
 ##
