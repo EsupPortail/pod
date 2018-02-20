@@ -41,13 +41,14 @@ from elasticsearch import Elasticsearch
 # django-taggit
 from taggit.managers import TaggableManager, _TaggableManager, TaggableRel
 from django.core.exceptions import ValidationError
-from core.models import Video, get_storage_path, EncodingType
+from core.models import Video, get_storage_path, EncodingType, get_media_guard
 import base64
 import logging
 from django.forms.formsets import ORDERING_FIELD_NAME
 logger = logging.getLogger(__name__)
 import unicodedata
 import json
+import os
 
 H5P_ENABLED = getattr(settings, 'H5P_ENABLED', False)
 if H5P_ENABLED:
@@ -56,6 +57,7 @@ if H5P_ENABLED:
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 REMOVE_VIDEO_FILE_SOURCE_ON_DELETE = getattr(
     settings, 'REMOVE_VIDEO_FILE_SOURCE_ON_DELETE', True)
+ENCODE_M3U8 = getattr(settings, 'ENCODE_M3U8', False)
 
 
 # gloabl function to remove accent, use in tags
@@ -361,20 +363,14 @@ class Pod(Video):
             'encodingType__output_height', flat=True).distinct()
         return all_encoding_type
 
-    def get_encoding_240(self):
-        encoding_240 = self.encodingpods_set.filter(
-            encodingType__output_height=240)
-        return encoding_240
+    def get_min_encoding(self):
+        encoding_min = EncodingPods.objects.filter(video=self, encodingFormat="video/mp4").first()
+        return encoding_min
 
-    def get_MP4_240_URL(self):
-        encoding_240 = EncodingPods.objects.get(
-            video=self, encodingType__output_height=240, encodingFormat="video/mp4")
-        return encoding_240.encodingFile.url
-
-    def get_MP4_480_URL(self):
-        encoding_480 = EncodingPods.objects.get(
-            video=self, encodingType__output_height=480, encodingFormat="video/mp4")
-        return encoding_480.encodingFile.url
+    def get_MP4_360_URL(self):
+        encoding_360 = EncodingPods.objects.get(
+            video=self, encodingType__output_height=360, encodingFormat="video/mp4")
+        return encoding_360.encodingFile.url
 
     def get_MP4_720_URL(self):
         encoding_720 = EncodingPods.objects.get(
@@ -403,8 +399,11 @@ class Pod(Video):
     def is_interactive(self):
         return True if H5P_ENABLED and h5p_contents.objects.filter(slug=slugify(self.title)).count() > 0 else False
 
+    def is_hls_supported(self):
+        return True if ENCODE_M3U8 and EncodingPods.objects.filter(video=self, encodingFormat="application/x-mpegURL").count() > 0 else False
+
     def get_iframe_admin_integration(self):
-        iframe_url = '<iframe src="%s?is_iframe=true&size=240" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % self.get_full_url()
+        iframe_url = '<iframe src="%s?is_iframe=true&size=360" width="320" height="180" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % self.get_full_url()
         return iframe_url
 
     def get_dublin_core(self):
@@ -446,7 +445,7 @@ class Pod(Video):
             "disciplines": list(self.discipline.all().values('title', 'slug')),
             "channels": list(self.channel.all().values('title', 'slug')),
             "themes": list(self.theme.all().values('title', 'slug')),
-            "contributors": list(self.contributorpods_set.values_list('name', 'role')),
+            "contributors": list(self.contributorpods_set.values('name', 'role')),
             "chapters": list(self.chapterpods_set.values('title', 'slug')),
             "enrichments": list(self.enrichpods_set.values('title', 'slug')),
             "overlays": list(self.overlaypods_set.values('title', 'slug')),
@@ -533,6 +532,18 @@ def pod_files_removal(sender, instance, using, **kwargs):
         # Original file removal
         instance.video.delete()
 
+    if ENCODE_M3U8:
+        # M3U8 and TS files removal
+        media_guard_hash = get_media_guard(instance.owner.username, instance.id)
+        path = os.path.join(settings.MEDIA_ROOT, 'videos', instance.owner.username, media_guard_hash, "%s" % instance.id)
+        list_files = os.listdir(path)
+        for file in list_files:
+            if file.endswith('.ts') or file.endswith('.m3u8'):
+                os.remove(os.path.join(path, file))
+            if file.startswith('segment_'):
+                os.remove(os.path.join(path, file))
+
+
 
 @receiver(post_delete)  # instead of @receiver(post_save, sender=Rebel)
 def update_es_index(sender, instance=None, created=False, **kwargs):
@@ -561,7 +572,8 @@ class EncodingPods(models.Model):
         ("video/mp4", 'video/mp4'),
         ("video/webm", 'video/webm'),
         ("audio/mp3", "audio/mp3"),
-        ("audio/wav", "audio/wav")
+        ("audio/wav", "audio/wav"),
+        ("application/x-mpegURL", "application/x-mpegURL"),
     )
     encodingFormat = models.CharField(
         _('Format'), max_length=12, choices=FORMAT_CHOICES, default="video/mp4")
@@ -778,14 +790,14 @@ class DocPods(models.Model):
 @python_2_unicode_compatible
 class OverlayPods(models.Model):
     POSITION_CHOICES = (
-        ('top-left', _('top-left')),
-        ('top', _('top')),
-        ('top-right', _('top-right')),
-        ('right', _('right')),
-        ('bottom-right', _('bottom-right')),
-        ('bottom', _('bottom')),
-        ('bottom-left', _('bottom-left')),
-        ('left', _('left')),
+        ('top-left', _(u'top-left')),
+        ('top', _(u'top')),
+        ('top-right', _(u'top-right')),
+        ('right', _(u'right')),
+        ('bottom-right', _(u'bottom-right')),
+        ('bottom', _(u'bottom')),
+        ('bottom-left', _(u'bottom-left')),
+        ('left', _(u'left')),
     )
 
     video = models.ForeignKey(Pod, verbose_name=_('video'))
@@ -1315,3 +1327,74 @@ class Rssfeed(models.Model):
 
     def __str__(self):
         return self.title
+
+##################################### PLAYLIST ###########################
+
+@python_2_unicode_compatible
+class Playlist(models.Model):
+    title = models.CharField(_('Title'), max_length=100, unique=True)
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
+    description = RichTextField(
+        _('Description'), config_name='complete', blank=True)
+    visible = models.BooleanField(
+        verbose_name=_('Visible'),
+        help_text=_(
+            u'If checked, the playlist page becomes accessible from the user\'s card'),
+        default=False)
+    owner = models.ForeignKey(User, related_name='playlist_owner', verbose_name=_('Owner'),
+        blank=True)
+
+    
+    class Meta:
+        ordering = ['title']
+        verbose_name = _('Playlist')
+        verbose_name_plural = _('Playlists')
+
+    def __unicode__(self):
+        return self.title
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Playlist, self).save(*args, **kwargs)
+
+    def get_videos(self):
+        return PlaylistVideo.objects.filter(playlist=self)
+
+    def get_videos_list(self):
+        return PlaylistVideo.objects.filter(playlist=self).values_list('video', flat=True)
+
+
+@python_2_unicode_compatible
+class PlaylistVideo(models.Model):
+    playlist = models.ForeignKey(Playlist, verbose_name=_('playlist'))
+    video = models.ForeignKey(Pod, verbose_name=_('video'))
+    position = models.PositiveSmallIntegerField(
+        _('Position'), default=0,
+        help_text=_(u'Position of the video in a playlist.'))
+
+    class Meta:
+        ordering = ['position']
+
+    def __unicode__(self):
+        return u"Video:%s - Playlist:%s - Position:%s" % (self.video.title, self.playlist.title, self.position)
+
+    def __str__(self):
+        return "%s - %s - %s" % (self.video.title, self.playlist.title, self.position)
+
+    def get_position(self, playlist):
+        return PlaylistVideo.objects.filter(playlist=playlist).latest('position').position
+
+    def is_last(self, playlist):
+        return self == PlaylistVideo.objects.filter(playlist=playlist).order_by('-position')[0]
+
+    def reordering(self, playlist):
+        next_list = PlaylistVideo.objects.filter(playlist=playlist, position__gte=self.position)
+        for nextvideo in next_list:
+            nextvideo.position = nextvideo.position -1
+            nextvideo.save()

@@ -46,7 +46,7 @@ voir http://www.gnu.org/licenses/
                         id="player_video"
                         class="video-js vjs-default-skin"
                         controls
-                        preload="auto"
+                        preload="metadata"
                         width="100%"
                         height="400"
                         {% if video.thumbnail %}
@@ -56,7 +56,12 @@ voir http://www.gnu.org/licenses/
                             poster="{% static DEFAULT_IMG %}"
                             data-setup='{"poster":"{% static DEFAULT_IMG %}","playbackRates":[0.5, 1, 1.5, 2]}'
                         {% endif %}
-                        {% if request.GET.autoplay %}autoplay{% endif %}
+                        {% if USE_PRIVATE_VIDEO and video.is_draft %}
+                        data-m3u8="/get_video_m3u8_private/{{ video.slug }}/{{ csrf_token }}"
+                        {% else %}
+                        data-m3u8="/get_video_m3u8/{{ video.slug }}/{{ csrf_token }}"
+                        {% endif %}
+                        {% if request.GET.autoplay or request.GET.playlist %}autoplay{% endif %}
                     >
                         {% for track in video.trackpods_set.all %}
                             <track
@@ -68,25 +73,27 @@ voir http://www.gnu.org/licenses/
                             >
                         {% endfor %}
 
+                        <!--DEPRECATED-->
                         {% for encoding in video.encodingpods_set.all %}
-                            {% if not video.is_draft %}
-                            <source
-                                src="/get_video_encoding/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
-                                type="{{ encoding.encodingFormat }}"
-                                label="{{ encoding.encodingType.output_height }}p"
-                                res="{{ encoding.encodingType.output_height }}"
-                            >
-                            {% else %}
-                            	{% if USE_PRIVATE_VIDEO %}
-		                            <source
-		                                src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
-		                                type="{{ encoding.encodingFormat }}"
+                            {%if encoding.encodingFormat != 'application/x-mpegURL' and encoding.encodingFormat != 'audio/mp3'%}
+                                {% if USE_PRIVATE_VIDEO and video.is_draft %}
+                                    <source
+                                        src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
+                                        type="{{ encoding.encodingFormat }}"
                                         label="{{ encoding.encodingType.output_height }}p"
-		                                res="{{ encoding.encodingType.output_height }}"
-		                            />
-                            	{% endif %}
+                                        res="{{ encoding.encodingType.output_height }}"
+                                    />
+                                {% else %}
+                                    <source
+                                        src="/get_video_encoding/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
+                                        type="{{ encoding.encodingFormat }}"
+                                        label="{{ encoding.encodingType.output_height }}"
+                                        res="{{ encoding.encodingType.output_height }}"
+                                    />
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
+                        <!--END DEPRECATED-->
                     </video>
                 {% endif %}
                 {% if mediatype == 'audio' %}
@@ -168,6 +175,10 @@ voir http://www.gnu.org/licenses/
         </ul>
     {% endif %}
     {% if video.chapterpods_set.all %}
+        <div class="chapters-list inactive" role="menu">
+            <p>Chapters</p>
+            <ol id="chapters-list"></ol>
+        </div>
         <ul id="chapters">
             {% for chap in video.chapterpods_set.all %}
                 <li data-start="{{ chap.time }}"

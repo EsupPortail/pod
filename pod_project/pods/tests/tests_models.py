@@ -35,6 +35,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import date, timedelta
 import os
 from django.db.models import Count
+
+RSS = getattr(settings, 'RSS', False)
+
 # Create your tests here.
 """
     test the channel
@@ -855,6 +858,122 @@ class NotesTestCase(TestCase):
         print(
             "   --->  test_delete_object of NotesTestCase : OK !")
 
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class PlaylistTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        Playlist.objects.create(title='test1', owner=remi)
+        Playlist.objects.create(title='test2', owner=remi, description='test', visible=True)
+        print(" ----> SetUp of PlaylistTestCase : OK !")
+
+    """
+        test all attributs when a playlist have been save with the minimum of attributs
+    """
+    def test_Playlist_null_attributs(self):
+        playlist = Playlist.objects.get(id=1)
+        remi = User.objects.get(id=1)
+        self.assertEqual(playlist.title, 'test1')
+        self.assertEqual(playlist.slug, slugify('test1'))
+        self.assertEqual(playlist.description, '')
+        self.assertEqual(playlist.visible, False)
+        self.assertEqual(playlist.owner, remi)
+        print(
+            "   ----> test_Playlist_null_attributs of PlaylistTestCase : OK !")
+
+    """
+        test all attributs when a playlist have many attributs
+    """
+    def test_Playlist_with_attributs(self):
+        playlist = Playlist.objects.get(id=2)
+        remi = User.objects.get(id=1)
+        self.assertEqual(playlist.title, 'test2')
+        self.assertEqual(playlist.slug, slugify('test2'))
+        self.assertEqual(playlist.description, 'test')
+        self.assertEqual(playlist.visible, True)
+        self.assertEqual(playlist.owner, remi)
+        print(
+            "   ----> test_Playlist_with_attributs of PlaylistTestCase : OK !")
+
+    """
+        test delete object
+    """
+    def test_delete_object(self):
+        Playlist.objects.get(id=1).delete()
+        self.assertEqual(Playlist.objects.all().count(), 1)
+        Playlist.objects.get(id=2).delete()
+        self.assertEqual(Playlist.objects.all().count(), 0)
+        print(
+            "   ----> test_delete_object of PlaylistTestCase : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class PlaylistVideoTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        remi = User.objects.create_user("Remi")
+        playlist = Playlist.objects.create(title='test1', owner=remi)
+        other_type = Type.objects.get(id=1)
+        pod = Pod.objects.create(
+            type=other_type,  title="Video1", slug="tralala", owner=remi)
+        pod2 = Pod.objects.create(
+            type=other_type, title="Video2", slug="tralala2", owner=remi)
+        PlaylistVideo.objects.create(playlist=playlist, video=pod)
+        PlaylistVideo.objects.create(playlist=playlist, video=pod2, position=1)
+        print(" ----> setUp of PlaylistVideoTestCase : OK !")
+
+    def test_attributs(self):
+        pod = Pod.objects.get(id=1)
+        pod2 = Pod.objects.get(id=2)
+        video = PlaylistVideo.objects.get(id=1)
+        video2 = PlaylistVideo.objects.get(id=2)
+        playlist = Playlist.objects.get(id=1)
+        self.assertEqual(video.playlist, playlist)
+        self.assertEqual(video.video, pod)
+        self.assertEqual(video.position, 0)
+        self.assertEqual(video2.playlist, playlist)
+        self.assertEqual(video2.video, pod2)
+        self.assertEqual(video2.position, 1)
+        print(
+            "   ----> test_attributs of PlaylistVideoTestCase : OK !")
+
+    """
+        test delete object
+    """
+    def test_delete_object(self):
+        playlist = Playlist.objects.get(id=1)
+        PlaylistVideo.objects.get(id=1).delete()
+        self.assertEqual(PlaylistVideo.objects.all().count(), 1)
+        video = PlaylistVideo.objects.get(id=2)
+        video.reordering(playlist)
+        self.assertEqual(PlaylistVideo.objects.get(id=2).position, 0)
+        PlaylistVideo.objects.get(id=2).delete()
+        self.assertEqual(PlaylistVideo.objects.all().count(), 0)
+        print(
+            "   ----> test_delete_object of PlaylistVideoTestCase : OK !")
+
+
 """
 	test the MediaCourses
 """
@@ -1133,7 +1252,7 @@ class RSSTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        if settings.RSS:
+        if RSS:
             user = User.objects.create(
                 username='remi', password='12345', is_active=True, is_staff=True)
             other_type = Type.objects.get(id=1)
@@ -1149,7 +1268,7 @@ class RSSTestCase(TestCase):
     """
 
     def test_Rssfeed_null_attribut(self):
-        if settings.RSS:
+        if RSS:
             date = datetime.today()
             user = User.objects.get(username='remi')
             rssfeed = Rssfeed.objects.get(id=1)
@@ -1172,7 +1291,7 @@ class RSSTestCase(TestCase):
     """
 
     def test_Rssfeed_with_attributs(self):
-        if settings.RSS:
+        if RSS:
             date = datetime.today()
             user = User.objects.get(username='remi')
             rssfeed = Rssfeed.objects.get(id=2)
@@ -1194,7 +1313,7 @@ class RSSTestCase(TestCase):
     """
 
     def test_delete_object(self):
-        if settings.RSS:
+        if RSS:
             Rssfeed.objects.get(id=1).delete()
             Rssfeed.objects.get(id=2).delete()
             self.assertEquals(Rssfeed.objects.all().count(), 0)

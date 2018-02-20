@@ -75,8 +75,6 @@ voir http://www.gnu.org/licenses/
 			default_disp: '50/50',
 			list_disp: {
 		        '50/50': '50/50',
-		        '30/70': '30/70',
-		        '70/30': '70/30',
 		        '100/20': 'Pip video',
 		        '20/100': 'Pip media',
 		        '100/0': 'only video',

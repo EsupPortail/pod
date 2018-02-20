@@ -40,6 +40,8 @@ urlpatterns = [
         name='owner_videos_list'),
     url(r'^favorites_videos_list/', 'pods.views.favorites_videos_list',
         name='favorites_videos_list'),
+    url(r'^playlists_videos_list/', 'pods.views.playlists_videos_list',
+        name='playlists_videos_list'),
 
     # TEXT EDITOR
     url(r'^ckeditor/', include('ckeditor.urls')),
@@ -81,6 +83,8 @@ urlpatterns = [
         'pods.views.video_add_favorite', name='video_add_favorite'),
     url(r'^video_add_report/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_add_report', name='video_add_report'),
+    url(r'^video_add_playlist/(?P<slug>[\-\d\w]+)/$',
+        'pods.views.video_add_playlist', name='video_add_playlist'),
     url(r'^video_completion/(?P<slug>[\-\d\w]+)/$',
         'pods.views.video_completion', name='video_completion'),
     url(r'^video_completion_contributor/(?P<slug>[\-\d\w]+)/$',
@@ -104,6 +108,9 @@ urlpatterns = [
     url(r'^get_video_encoding/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
         'pods.views.get_video_encoding',
         name='get_video_encoding'),
+    url(r'^get_video_m3u8/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/$',
+        'pods.views.get_video_m3u8',
+        name='get_video_m3u8'),
 ]
 
 
@@ -115,32 +122,46 @@ urlpatterns = [
 #
 #
 
+# All optional control variables should be inserted below. Default value to False.
+H5P_ENABLED = getattr(settings, 'H5P_ENABLED', False)
+OEMBED = getattr(settings, 'OEMBED', False)
+USE_PRIVATE_VIDEO = getattr(settings, 'USE_PRIVATE_VIDEO', False)
+RSS = getattr(settings, 'RSS', False)
+ATOM_HD = getattr(settings, 'ATOM_HD', False)
+ATOM_SD = getattr(settings, 'ATOM_SD', False)
+
+
 ##
 # Private video feature pattern
 #
-if settings.USE_PRIVATE_VIDEO:
+if USE_PRIVATE_VIDEO:
     urlpatterns += [
         url(r'^get_video_encoding_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/(?P<size>[\-\d]+)/(?P<type>[\-\d\w]+)/(?P<ext>[\-\d\w]+)/$',
             'pods.views.get_video_encoding_private',
             name='get_video_encoding_private'),
         url(r'^video_priv/(?P<id>[\-\d]+)/(?P<slug>[\-\d\w]+)/$',
             'pods.views.video_priv', name='video_priv'),
+        url(r'^get_video_m3u8_private/(?P<slug>[\-\d\w]+)/(?P<csrftoken>[\-\d\w]+)/$',
+            'pods.views.get_video_m3u8_private',
+            name='get_video_m3u8_private'),
     ]
 
 ##
 # H5P feature patterns
 #
-if settings.H5P_ENABLED:
+if H5P_ENABLED:
     urlpatterns += [
         url(r'^video_interactive/(?P<slug>[\-\d\w]+)/$',
             'pods.views.video_interactive', name='video_interactive'),
+        url(r'^h5p/login/', 'core.views.core_login', name='h5p_login'),
+        url(r'^h5p/logout/', 'core.views.core_logout', name='h5p_logout'),
         url(r'^h5p/', include('h5pp.urls')),
     ]
 
 ##
 # RSS /ATOM feature patterns
 #
-if settings.RSS:
+if RSS:
     # RSS Feed
     urlpatterns += [
         url(r'^rss/select/(?P<qparam>[^\/]+)/$',
@@ -154,18 +175,39 @@ if settings.ATOM_AUDIO:
             AudiocastFeed(), name = 'audiocast'),
     ]
 """
-if settings.ATOM_HD:
+if ATOM_HD:
     # ATOM HD Feed
     urlpatterns += [
         url(r'^rss/hd/(?P<qparam>[^\/]+)/$',
             PodcastHdFeed(), name='podcast_hd'),
     ]
-if settings.ATOM_SD:
+if ATOM_SD:
     # ATOM SD Feed
     urlpatterns += [
         url(r'^rss/sd/(?P<qparam>[^\/]+)/$',
             PodcastSdFeed(), name='podcast_sd'),
     ]
+
+##
+# OEMBED feature patterns
+#
+if OEMBED:
+    # OEMBED href
+    urlpatterns += [
+        url(r'^oembed/$',
+            'pods.views.video_oembed', name='video_oembed'),
+    ]
+
+##
+# LTI feature patterns
+#
+if getattr(settings, 'LTI_ENABLED', False):
+    # LTI href
+    urlpatterns += [
+        url(r'^lti/', include('lti_provider.urls')),
+        url(r'^assignment/(?P<activity>[\-\d\w]+)/', LTIAssignmentView.as_view()),
+    ]
+
 
 #
 #       End of optional feature patterns

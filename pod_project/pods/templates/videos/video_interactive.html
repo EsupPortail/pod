@@ -54,6 +54,7 @@ voir http://www.gnu.org/licenses/
             $('#ieditor').contents().find('.h5p-editor-iframe').contents().find('.h5p-add-file').length > 0 && editorReady == false)
         {
             editor();
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-chooser.h5p-quality.h5p-show li').first().click()
             $('#load-message').hide();
             $('.loader').hide();
             $("#ieditor").fadeIn('slow');
@@ -130,11 +131,8 @@ voir http://www.gnu.org/licenses/
         $('#ieditor').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
         {% if not interactive.h5p %}
             {% for encoding in video.get_all_encoding_height %}
-                {% if encoding == 240 %}
-            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_240_URL }}');
-            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
-                {% elif encoding == 480 %}
-            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_480_URL }}');
+                {% if encoding == 360 %}
+            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_360_URL }}');
             $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
                 {% elif encoding == 720 %}
             $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('http://{{ request.get_host }}{{ video.get_MP4_720_URL }}');
@@ -239,9 +237,9 @@ voir http://www.gnu.org/licenses/
         </div>
     {% endif %}
     {% if video.is_interactive %}
-        <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}&is_iframe=true" style="background:white;display:none;" height="990px" width="100%" frameBorder="0"></iframe>
+        <iframe id="ieditor" src="{% url "h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}&is_iframe=true" style="display:none;" height="985px" width="100%" frameBorder="0"></iframe>
     {% else %}
-        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}&is_iframe=true" style="background:white;display:none" height="990px" width="100%" frameBorder="0"></iframe>
+        <iframe id="ieditor" src="{% url "h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}&is_iframe=true" style="display:none" height="985px" width="100%" frameBorder="0"></iframe>
     {% endif %}
     {% if not request.GET.is_iframe%}
         <div class="save-button" align="center" style="display:none;">

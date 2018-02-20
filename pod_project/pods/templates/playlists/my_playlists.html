@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% load i18n  %}
+
+{% block bootstrap3_title %}
+	{% if playlist_form %}
+		{% trans "My playlists" %}
+	{% else %}
+		{% trans "Playlists" %} : {{owner}}
+	{% endif %}
+{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<style>
+	#accordeon li,
+	#accordeon div { list-style: none; }
+</style>
+<script>
+$(window).load(function(){
+    $('li.contenuTitre').css('display','none');
+    $('#form_playlist').css('display','none');
+
+    if($('#id_title').val() != "") {
+    	$('#form_playlist').css('display','inline-block');
+    	$('#form_playlist').find('.panel-title').html("{% trans 'Edit playlist' %}");
+    	$('#add_playlist').css('display', 'none');
+    }
+  // On déclare des variables
+    var accordion_head = $('#accordeon li a.title');
+    var accordion_body = $('#accordeon li.contenuTitre');
+    var form_new = $('#add_playlist');
+    var form_cancel = $('#cancel_playlist');
+    var modify_order = $('a#modify-order');
+
+    // when click on .titre
+    accordion_head.on('click', function(event) {
+        event.preventDefault();
+        // On vérifie la présence de la classe "active"
+        if ($(this).attr('class') != 'title active'){
+            $(this).parent().next().slideToggle('normal');
+            $(this).addClass('active');
+            var text = $(this).context.text;
+            var name_section = "\"" + text.replace(/\s/g,'') + "\"";
+            $(this).attr('title', '{% trans "Hide" %} '+ name_section);
+            $(this).children().removeClass('glyphicon glyphicon-chevron-down');
+            $(this).children().addClass('glyphicon glyphicon-chevron-up');
+
+        }else if($(this).attr('class') == 'title active'){
+            $(this).parent().next().slideUp('normal');
+            $(this).removeClass('active');
+            var text = $(this).context.text;
+            var name_section = "\"" + text.replace(/\s/g,'') + "\"";
+            $(this).attr('title', '{% trans "Display" %} '+ name_section);
+            $(this).children().removeClass('glyphicon glyphicon-chevron-up');
+            $(this).children().addClass('glyphicon glyphicon-chevron-down')
+        }
+    });
+
+    // Display the new/modify playlist form
+    form_new.on('click', function(event) {
+    	$('#form_playlist').css('display', 'inline-block');
+    	$(this).css('display', 'none');
+    });
+
+    // Reset and exit the new/modify playlist form
+    form_cancel.on('click', function(event) {
+    	$('#form_playlist').css('display', 'none');
+    	$('form#form_playlist')[0].reset();
+    	$('form#form_playlist').find('#id_description').empty();
+    	$('form#form_playlist').find('#id_title').prop('defaultValue', "");
+    	$('#form_playlist').find('.panel-title').html("{% trans 'New playlist' %}");
+    	$('#add_playlist').css('display', 'inline-block');
+    });
+    modify_order.on('click', function(event) {
+    	var parent = $(this).closest('table');
+    	var playsize = $(parent).find('td#video-position').length;
+    	var html = '';
+    	var select = $(parent).find('td#video-position').children('select');
+   		var number = 0;
+   		var playlist_order = {};
+   		var bad_order = false;
+
+   		// Exit edit position mode
+    	if($(select).length != 0) {
+    		// Check if numbers are not equal
+    		var selected_order = [];
+    		$(select).each(function(index, object) {
+    			if(!selected_order.includes($(object).val())) {
+    				selected_order.push($(object).val());
+    			}else{
+    				show_messages('Order numbers must be different.', 'danger');
+    				bad_order = true;
+    			}
+    		});
+    		if (bad_order) { return false; }
+
+    		// Collect the new order
+    		$(parent).find('td#video-position').each(function(index, object) {
+    			$(object).html($(object).children('select').val());
+    			var id = $(parent).find('td#video-id')[index].innerHTML;
+    			var order = $(object).html();
+    			playlist_order[id] = order;
+    		});
+    		var playlist = ($(parent).parent().find('h3').text()).match(/[^-]*/i)
+
+    		// Post new order
+    		$.ajax({
+    			type: "POST",
+    			url: "{% url 'playlists_videos_list' %}",
+    			data: { order: JSON.stringify(playlist_order), playlist: JSON.stringify(playlist)},
+    			success: function (data) {
+    				show_messages(data.msg);
+    				location.reload();
+    			}
+    		});
+    		return false;
+    	}
+    	// Edit position mode
+    	$(parent).find('td#video-position').each(function(index, td) {
+    		html = '<select class="form-control" id="select_position">'
+    		number = $(td).html();
+    		for (i = 1; i < playsize + 1; i++){
+    			html = html.concat('<option>'+i+'</option>');
+    		}
+    		html = html.concat('</select>');
+    		$(td).html(html);
+    		$(td).children('select').val(number);
+    		html = '';
+    	});
+    });
+
+    // Display new playlist form if user don't have any playlists
+    if($('#table_playlists').length === 0) {
+    	$('#add_playlist').click();
+    }
+
+});
+</script>
+{% endblock bootstrap3_extra_head %}
+
+{% block article_title %}
+	{% if playlist_form %}
+		{% trans "My playlists" %}
+	{% else %}
+		{% trans "Playlist" %} : {{ owner }}
+	{% endif %}
+{% endblock %}
+
+{% block mainToolbar %}{% endblock mainToolbar %}
+{% block article %}
+<div id="accordeon">
+	{% for playlist in playlists %}
+	{% if playlist.visible or playlist.owner == request.user %}
+	<li style="margin-bottom:10px;">
+		<a id="playlist_title"  class="title" href="#" title="{{ playlist.title }}">{{ playlist.title }}<span class="glyphicon glyphicon-chevron-down"></span></a>
+	</li>
+	<li class="contenuTitre" >
+		<span class="playlist_videos">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">{{ playlist.title }}- {{playlist.get_videos.count}} video(s)<span class="pull-right">{% if playlist.visible %}{% trans 'Visible' %}{% endif %}</span></h3>
+				</div>
+				<table class="table table-striped table-condensed scroll" id="table_playlists">
+					<thead>
+						<tr>
+							<th><a href="#" id="modify-order"><span class="glyphicon glyphicon-pencil"></span></a>{% trans 'Position' %}</th>
+							<th>{% trans 'Title' %}</th>
+							<th>{% trans 'Owner' %}</th>
+							<th>{% trans 'Thumbnail' %}</th>
+							{% if playlist.owner == request.user %}<th>{% trans 'Delete' %}</th>{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for element in playlist.get_videos %}
+						<tr>
+							<td id="video-position">{{ element.position }}</td>
+							<td><a href="{{ element.video.get_full_url }}">{{ element.video.title }}</a></td>
+							<td>{{ element.video.owner.username }}</td>
+							<td><img src="{{ element.video.get_thumbnail_url }}" class="playlist_img img-responsive img-thumbnail" alt="{% trans 'Thumbnail' %}"></td>
+							{% if playlist.owner == request.user %}
+							<td>
+								<form class="remove_video" action="{% url 'video_add_playlist' slug=element.video.slug %}" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="remove" value="remove">
+									<input type="hidden" name="playlist" value="{{playlist.slug}}">
+									<input type="submit" title="{% trans 'Delete from playlist' %}" value="{% trans 'delete' %}" class="bn btn-danger btn-sm" />
+								</form>
+							</td>
+							<td id="video-id" style="display:none;">{{ element.video.id }}</td>
+							{% endif %}
+						</tr>
+						{% endfor %}
+						{% if playlist.get_videos.count == 0 %}
+						<tr>
+							<td>{% trans 'This playlist is empty' %}</td>
+						</tr>
+						{% endif %}
+						{% if playlist.owner == request.user %}
+							<tr>
+								<form class="form_edit" action="{% url 'playlists_videos_list' %}" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="action" value="modify">
+									<input type="hidden" name="id" value="{{playlist.id}}">
+									<input type="submit" title="{% trans 'Edit the playlist' %}" value="{% trans 'Edit the playlist' %}" id="edit_playlist" class="btn btn-info btn-sm">
+								</form>
+							</tr>
+							<tr>
+								<form class="form_delete" action="{% url 'playlists_videos_list' %}" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="action" value="delete">
+									<input type="hidden" name="id" value="{{playlist.id}}">
+									<input type="submit" title="{% trans 'Delete the playlist' %}" value="{% trans 'Delete the playlist' %}" id="delete_playlist" class="btn btn-danger btn-sm">
+								</form>
+							</tr>
+						{% endif %}
+						{% if playlist.get_videos.count != 0 %}
+						<tr>
+							<form class="form_launch" action="{% url 'video' slug=playlist.get_videos.0.video.slug %}?" method="get">
+								<input type="hidden" name="playlist" value="{{playlist.slug}}">
+								<input type="hidden" name="autoplay" value="true">
+								<input type="hidden" name="interactive" value="false">
+								<input type="submit" title="{% trans 'Launch the playlist' %}" value="{% trans 'Launch the playlist' %}" id="launch_playlist" class="btn btn-info btn-sm">
+							</form>
+						</tr>
+						{% endif %}
+						<tr>
+							<div class="well">{% trans 'Description' %} : {{ playlist.description }}</div>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</span>
+	</li>
+	{% endif %}
+	{% endfor %}
+	{% if playlist_form %}
+	<input id="add_playlist" class="btn btn-default" value="{% trans 'Add a new playlist' %}" title="{% trans 'Add a new playlist' %}" />
+	<div class="panel panel-primary" id="form_playlist">
+		<div class="panel-heading">
+			<h3 class="panel-title">{% trans 'New playlist' %}</h3>
+		</div>
+			{% include 'playlists/playlist_form.html' %}
+	</div>
+	{% endif %}
+</div></div>
+<aside class="col-sm-3 panel panel-info">
+	<div class="widget">
+		<h4>
+			<span class="glyphicon glyphicon-info-sign"></span>
+			{% trans 'Information' %}
+		</h4>
+		{% if request.user == playlists.first.owner %}
+		<p>{% trans 'Your playlists can be shared to users who are at least authenticated on the site.' %}</p>
+		<p>{% trans 'Users will only be able to see your playlists listed as "visible".' %}</p>
+		<input maxlength="250" value="{{request.get_host}}:/{% url 'playlists_videos_list' %}?owner={{playlists.first.owner.username}}" type="text" id="playlist_share" />
+		{% else %}
+		<p>{% trans "You are currently on another user's playlists page. Only his playlists that he indicated as 'visible' are displayed here." %}</p>
+		{% endif %}
+	</div>
+</aside>
+{% endblock article %}
+{% block box %}{% endblock %}		

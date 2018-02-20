@@ -1,0 +1,47 @@
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure.
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load i18n list staticfiles %}
+{% load thumbnail %}
+
+<div id="playlistList" class="row">
+	{% for playlist in playlists %}
+		{% if playlist.get_videos.count > 0 %}
+			<div class="playlist-thumb video-thumb col-xs-6 col-md-4">
+	            <a
+	                title="{{ playlist.title }}"
+	                href="{% url 'video' slug=playlist.get_videos.0.video.slug %}?playlist={{playlist.slug}}&autoplay=true&interactive=false"
+	            >
+	            	<div class="media-body">
+	            		<h5 class="media-heading">{{ playlist.title|truncatechars:36 }}</h5>
+	            	</div>
+	            	<div class="media-bottom">
+			            <img
+		                    src="{% thumbnail playlist.get_videos.0.video.thumbnail 245x120 crop upscale subject_location=playlist.get_videos.0.video.thumbnail.subject_location %}"
+		                    alt="{{ pvideo.video.title }}"
+		                    class="media-object playlist-preview"
+		                />
+		            </div>
+		        </a>
+		        <span class="playlist-length">{{playlist.get_videos.count}} video(s) <p>{{playlist.owner.username}}</p></span>
+		    </div>
+		{% endif %}
+	{% endfor %}
+</div>

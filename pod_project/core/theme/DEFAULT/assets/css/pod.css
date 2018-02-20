@@ -281,6 +281,24 @@ aside .form-group.show-all .more {
   right: 15px;
   z-index: 1;
 }
+.playlist-preview {
+  width: 100px;
+  border-left: 6px solid #3f9ec2;
+  border-radius: 5px;
+}
+.playlist-length {
+  position: relative;
+  bottom: 40px;
+  left: 20px;
+  color: white;
+}
+.playlist-length p {
+  font-size: 85%;
+  font-style: italic;
+}
+.playlist-thumb {
+  width: 25%;
+}
 /*******************************************************************************
 
         Player
@@ -537,12 +555,6 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
   right: 0;
   position: absolute;
   background-color: #ffe800;
-  background: -moz-linear-gradient(top, #ffe800 0%, #a69700 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffe800), color-stop(100%, #a69700));
-  background: -webkit-linear-gradient(top, #ffe800 0%, #a69700 100%);
-  background: -o-linear-gradient(top, #ffe800 0%, #a69700 100%);
-  background: -ms-linear-gradient(top, #ffe800 0%, #a69700 100%);
-  background: linear-gradient(to bottom, #ffe800 0%, #a69700 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffe800',endColorstr='#a69700',GradientType=0);
   opacity: .8;
 }
@@ -551,6 +563,16 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
 }
 .video-js {
   font-size: 10px !important;
+}
+.video-js button {
+  height: 100%;
+}
+.video-js button:focus {
+  outline: none;
+}
+.vjs-chap-menu-title,
+.vjs-disp-menu-title {
+  border-bottom: 1px solid;
 }
 .video-js .vjs-title {
   position: absolute;
@@ -698,4 +720,39 @@ ul li.vjs-menu-title.vjs-disp-menu-title:hover {
   color: #fff;
   background-color: #f8af19;
   border-color: #f8af19;
+}
+/*******************************************************************************
+
+        Playlist
+*/
+#playlist_videos .panel-heading {
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 4px 15px;
+}
+#table_playlists tr,
+#table_playlists th {
+  text-align: center;
+}
+#edit_playlist,
+#delete_playlist,
+#launch_playlist {
+  margin: 10px;
+}
+#add_playlist,
+#form_playlist .panel-heading {
+  margin-bottom: 10px;
+}
+#form_playlist.panel.panel-primary {
+  padding: 10px;
+}
+#playlist_share {
+  padding: 2px;
+  border: 1px solid #bbb;
+  width: 260px;
+}
+.playlist_img {
+  width: 80px;
+  height: 40px;
 }

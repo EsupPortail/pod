@@ -48,6 +48,7 @@ VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
 DEFAULT_OVERVIEW_OUT_SIZE_HEIGHT = 64
 DEBUG = getattr(settings, 'DEBUG', True)
 ENCODE_WEBM = getattr(settings, 'ENCODE_WEBM', True)
+ENCODE_M3U8 = getattr(settings, 'ENCODE_M3U8', True)
 ENCODE_WAV = getattr(settings, 'ENCODE_WAV', True)
 
 ENCODE_VIDEO_CMD = getattr(settings, 'ENCODE_VIDEO_CMD',
@@ -56,13 +57,16 @@ ADD_THUMBNAILS_CMD = getattr(settings, 'ADD_THUMBNAILS_CMD',
                              "%(ffmpeg)s -i \"%(src)s\" -vf fps=\"fps=1/%(thumbnail)s,scale=%(scale)s\" -an -vsync 0 -threads 0 -f image2 -y %(out)s_%(num)s.png")
 ADD_OVERVIEW_CMD = getattr(settings, 'ADD_OVERVIEW_CMD',
                            "%(ffmpeg)s -i \"%(src)s\" -vf \"thumbnail=%(thumbnail)s,scale=%(scale)s,tile=100x1:nb_frames=100:padding=0:margin=0\" -an -vsync 0 -threads 0 -y %(out)s")
-ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ar %(ar)s -ac 2 -b:a %(ba)s -movflags faststart -y %(out)s")
+ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ac 2 -b:a %(ba)s %(out)s")
 ENCODE_WEBM_CMD = getattr(settings, 'ENCODE_WEBM_CMD',
                           "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s")
+ENCODE_M3U8_CMD = getattr(settings, 'ENCODE_M3U8_CMD',
+                          "%(ffmpeg)s -i %(src)s -hls_time 9 -hls_base_url %(path)s -hls_flags single_file -hls_segment_filename %(filename)s -hls_playlist_type vod %(out)s")
 ENCODE_MP3_CMD = getattr(settings, 'ENCODE_MP3_CMD',
                          "%(ffmpeg)s -i %(src)s -vn -ar %(ar)s -ab %(ab)s -f mp3 -threads 0 -y %(out)s")
 ENCODE_WAV_CMD = getattr(settings, 'ENCODE_WAV_CMD',
                          "%(ffmpeg)s -i %(src)s -ar %(ar)s -ab %(ab)s -f wav -threads 0 -y %(out)s")
+
 
 log = logging.getLogger(__name__)
 
@@ -258,43 +262,49 @@ def encode_video(video_to_encode):
                 add_overview(VIDEO_ID, in_width, in_height, nb_frames)
 
             list_encod_video = EncodingType.objects.filter(mediatype='video').order_by(
-                'output_height')  # .exclude(output_height=1080).exclude(output_height=720).exclude(output_height=480)
+                'output_height')  # .exclude(output_height=1080).exclude(output_height=720)
             for encod_video in list_encod_video:
-                bufsize = encod_video.bitrate_video
-                try:
-                    int_bufsize = int(
-                        re.search("(\d+)k", bufsize, re.I).groups()[0])
-                    bufsize = "%sk" % (int_bufsize * 2)
-                except:
-                    pass
-                if in_height >= encod_video.output_height or encod_video == list_encod_video.first():
-                    video = Pod.objects.get(id=VIDEO_ID)
-                    media_guard_hash = get_media_guard(
-                        video.owner.username, video.id)
-                    videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                                 "video_%s_%s.mp4" % (video.id, encod_video.output_height))
-                    videourl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                            "video_%s_%s.mp4" % (video.id, encod_video.output_height))
-                    encode_mp4(VIDEO_ID, in_width, in_height, bufsize,
-                               in_audio_rate, encod_video, videofilename, videourl)
-                    if ENCODE_WEBM and os.access(videofilename, os.F_OK):
-                        encode_webm(VIDEO_ID, videofilename,
-                                    encod_video, bufsize)
-        else:
-            list_encod_audio = EncodingType.objects.filter(mediatype='audio')
-            for encod_audio in list_encod_audio:
-                video = Pod.objects.get(id=VIDEO_ID)
-                media_guard_hash = get_media_guard(
-                    video.owner.username, video.id)
-                audiofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                             "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
-                audiourl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
-                                        "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
-                encode_mp3(
-                    VIDEO_ID, audiofilename, audiourl, encod_audio, in_audio_rate)
-                if ENCODE_WAV and os.access(audiofilename, os.F_OK):
-                    encode_wav(VIDEO_ID, audiofilename,
-                               in_audio_rate, encod_audio)
+                if not encod_video.output_height in [240, 480]:
+                    bufsize = encod_video.bitrate_video
+                    try:
+                        int_bufsize = int(
+                            re.search("(\d+)k", bufsize, re.I).groups()[0])
+                        bufsize = "%sk" % (int_bufsize * 2)
+                    except:
+                        pass
+                    if in_height >= encod_video.output_height or encod_video == list_encod_video.first():
+                        video = Pod.objects.get(id=VIDEO_ID)
+                        media_guard_hash = get_media_guard(
+                            video.owner.username, video.id)
+                        videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                     "video_%s_%s.mp4" % (video.id, encod_video.output_height))
+                        videourl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                "video_%s_%s.mp4" % (video.id, encod_video.output_height))
+                        encode_mp4(VIDEO_ID, in_width, in_height, bufsize,
+                                   in_audio_rate, encod_video, videofilename, videourl)
+                        if ENCODE_WEBM and os.access(videofilename, os.F_OK):
+                            encode_webm(VIDEO_ID, videofilename,
+                                        encod_video, bufsize)
+                        if ENCODE_M3U8 and os.access(videofilename, os.F_OK): 
+                            encode_m3u8(VIDEO_ID, videofilename,
+                                        encod_video, bufsize)
+            if ENCODE_M3U8:
+                create_main_m3u8(VIDEO_ID, list_encod_video)
+        # FOR AUDIO
+        list_encod_audio = EncodingType.objects.filter(mediatype='audio')
+        for encod_audio in list_encod_audio:
+            video = Pod.objects.get(id=VIDEO_ID)
+            media_guard_hash = get_media_guard(
+                video.owner.username, video.id)
+            audiofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                         "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
+            audiourl = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                    "audio_%s_%s.mp3" % (video.id, encod_audio.output_height))
+            encode_mp3(
+                VIDEO_ID, audiofilename, audiourl, encod_audio, in_audio_rate)
+            if ENCODE_WAV and os.access(audiofilename, os.F_OK):
+                encode_wav(VIDEO_ID, audiofilename,
+                           in_audio_rate, encod_audio)
         video = None
         video = Pod.objects.get(id=VIDEO_ID)
         video.encoding_status = "DONE at %s" % time.ctime()
@@ -770,6 +780,155 @@ def encode_wav(video_id, audiofilename, in_ar, encod_audio):
 
     f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
                           video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'a+b')
+    f.write(output)
+    output = ""
+    f.close()
+
+def encode_m3u8(video_id, videofilename, encod_video, bufsize):
+    if DEBUG:
+        print "ENCODING M3U8 %s" % encod_video.output_height
+
+    video = Pod.objects.get(id=video_id)
+    video.encoding_status = " ENCODING M3U8 %s" % encod_video.output_height
+    addInfoVideo(video, "\nSTART ENCOD_VIDEO M3U8 %s %s" %
+        (encod_video.output_height, time.ctime()))
+    video.save()
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
+    m3u8filename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                "video_%s_%s.m3u8" % (video.id, encod_video.output_height))
+    m3u8url = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                           "video_%s_%s.m3u8" % (video.id, encod_video.output_height))
+    videodirname = os.path.join(settings.MEDIA_URL, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id) + '/'
+    videorootname = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id)
+
+    # Create fragmented mp4
+    com = ENCODE_M3U8_CMD % {
+        'ffmpeg': FFMPEG,
+        'src': videofilename,
+        'path': videodirname,
+        'filename': "%s/segment_%s.mp4" % (videorootname, encod_video.output_height),
+        'out': m3u8filename
+    }
+    if DEBUG:
+        print "%s" % com
+    ffmpegresult = commands.getoutput(com)
+
+    video = None
+    video = Pod.objects.get(id=video_id)
+    addInfoVideo(video, "\nEND ENCOD_VIDEO M3U8 %s %s" %
+                 (encod_video.output_height, time.ctime()))
+    output = "\n\n END ENCOD_VIDEO M3U8 %s  \n" % encod_video.output_height
+    output += 80 * "~"
+    output += "\n"
+    output += ffmpegresult
+    output += "\n"
+    output += 80 * "~"
+    if DEBUG:
+        print "END ENCOD_VIDEO M3U8 %s %s" % (encod_video.output_height, time.ctime())
+    if os.access(m3u8filename, os.F_OK):  #outfile exists
+        if (os.stat(m3u8filename).st_size == 0):
+            # There was a error cause the outfile size is zero
+            # We remove the file so that it does not cause confusion
+            os.remove(m3u8filename)
+            msg = "ERROR ENCODING M3U8 %s Output size is 0" % encod_video.output_height
+            output += msg
+            log.error(msg)
+            addInfoVideo(video, msg)
+            send_email(msg, video)
+        else:
+            # There does not seem to be errors, follow the rest of the procedures
+            video = None
+            video = Pod.objects.get(id=video_id)
+            ep, created = EncodingPods.objects.get_or_create(
+                video=video, encodingType=encod_video, encodingFormat="application/x-mpegURL")
+            ep.encodingFile = m3u8url
+            ep.save()
+            video.save()
+
+    f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
+                            video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'a+b')
+    f.write(output)
+    output = ""
+    f.close()
+
+def create_main_m3u8(video_id, list_encod_video):
+    video = Pod.objects.get(id=video_id)
+    if DEBUG:
+        print "CREATE MAIN M3U8 FILE %s" % video.slug
+
+    video.encoding_status = " CREATE MAIN M3U8 FILE %s %s" % (video.slug, time.ctime())
+    video.save()
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
+    m3u8filename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+        "video_%s_master.m3u8" % video.id)
+    m3u8url = os.path.join(VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+        "video_%s_master.m3u8" % video.id)
+
+    # Create master playlist and replace path
+    master = open(m3u8filename, 'w+')
+    master.write("#EXTM3U\n\n")
+    ffmproberesult = ''
+    for encoding_type in list_encod_video:
+        if not encoding_type.output_height in [240, 480]:
+
+            videodirname = os.path.join(settings.MEDIA_URL, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id)
+            videofilename = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                    "video_%s_%s.mp4" % (video.id, encoding_type.output_height))
+            videom3u8 = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                    "video_%s_%s.m3u8" % (video.id, encoding_type.output_height))
+            videom4s = os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, video.owner.username, media_guard_hash, "%s" % video.id,
+                                                    "video_%s_%s.m4s" % (video.id, encoding_type.output_height))
+
+            # Replace path in individual m3u8 files
+            if os.path.isfile(videom3u8):
+                with open(videom3u8) as main:
+                    datatoReplace = main.read()
+                    datatoReplace = datatoReplace.replace('/var/pod', '')
+                    with open(videom3u8, 'w+') as newmain:
+                        newmain.write(datatoReplace)
+
+            # Append individual m3u8 files in master playlist
+            if os.path.isfile(videom3u8):
+                com = "%s -v error -select_streams v:0 -show_entries stream=bit_rate -of default=noprint_wrappers=1:nokey=1 %s" % (FFPROBE, videofilename)
+                ffmproberesult = commands.getoutput(com)
+                master.write('#EXT-X-STREAM-INF:BANDWIDTH=%s,CODECS="avc1.42c00d,mp4a.40.2"\n%s/video_%s_%s.m3u8\n' %
+                    (ffmproberesult, videodirname, video.id, encoding_type.output_height))
+
+            # Keep only 360p video in mp4 non-fragmented.
+            if os.path.isfile(videofilename) and encoding_type.output_height != 360:
+                os.remove(videofilename)
+                EncodingPods.objects.get(video=video, encodingType=encoding_type, encodingFormat='video/mp4').delete()
+
+    master.close()
+
+    if DEBUG:
+        print "%s" % com
+    video = None
+    video = Pod.objects.get(id=video_id)
+    addInfoVideo(video, "\nEND CREATE FILE M3U8 %s %s" %
+        (video.slug, time.ctime()))
+    output = "\n\n END CREATE FILE M3U8 %s  \n" % video.slug
+    output += 80 * "~"
+    output += "\n"
+    output += ffmproberesult
+    output += "\n"
+    output += 80 * "~"
+    if DEBUG:
+        print "END CREATE FILE M3U8 %s %s" % (video.slug, time.ctime())
+    if os.access(m3u8filename, os.F_OK): #outfile exists
+        if (os.stat(m3u8filename).st_size == 0):
+            # There was a error cause the outfile size is zero
+            # We remove the file so that it does not cause confusion
+            os.remove(m3u8filename)
+            msg = "ERROR CREATE FILE M3U8 %s Output size is 0" % video.slug
+            output += msg
+            log.error(msg)
+            addInfoVideo(video, msg)
+            send_email(msg, video)
+        # There does not seem to be errors, follow the rest of the procedures
+
+    f = open(os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR,
+                            video.owner.username, media_guard_hash, "%s" % video.id, "encode.log"), 'a+b')
     f.write(output)
     output = ""
     f.close()

@@ -13,9 +13,11 @@ django-templatetag-sugar==1.0
 django-simple-captcha==0.4.5
 djangorestframework==3.3.3
 django-filter==0.13.0
+django-lti-provider==0.3.3
+django-auth-mixins==1.0.1
 markdown==2.6.6
 easy-thumbnails==2.3
-elasticsearch==2.3.0
+elasticsearch==6.1.1
 MySQL-python==1.2.5
 pbr==0.10.8
 Pillow==3.3.0
@@ -33,4 +35,4 @@ virtualenvwrapper==4.3.2
 coverage==3.7.1
 sqlparse==0.2.1
 celery==3.1.24
-git+git://github.com/drclockwork/H5PP@0.1.8#egg=H5PP
+git+https://github.com/drclockwork/H5PP@0.1.9#egg=H5PP

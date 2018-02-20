@@ -42,6 +42,10 @@ from django.template.loader import render_to_string
 from django.utils.http import urlquote
 from django.utils.html import strip_tags
 
+from django.views.generic.base import TemplateView
+from lti_provider.mixins import LTIAuthMixin
+from auth_mixins import LoginRequiredMixin
+
 from pods.models import Pod
 
 from django.conf import settings
@@ -249,7 +253,7 @@ def contact_us(request):
     else:
         if request.user.is_authenticated():
             if owner and video:
-                video = Pod.objects.get(id=video)
+                video = get_object_or_404(Pod, id=video)
                 subject = '[' + settings.TITLE_SITE + \
                     '] %s %s' % (_('Password request for : '), video.title)
                 form = ContactUsModelForm(request, initial={"name": request.user.get_full_name(
@@ -259,7 +263,12 @@ def contact_us(request):
                 ), "email": request.user.email, "url_referrer": request.META.get('HTTP_REFERER', request.build_absolute_uri("/"))})
         else:
             if owner and video:
-                video = Pod.objects.get(id=video)
+                try:
+                    video = Pod.objects.get(id=video)
+                except:
+                    messages.add_message(
+                        request, messages.ERROR, _(u'The video id is not valid. Redirect to Contact Us form.'))
+                    return HttpResponseRedirect(reverse('contact_us'))
                 subject = '[' + settings.TITLE_SITE + \
                     '] %s %s' % (_('Password request for : '), video.title)
                 form = ContactUsModelForm(request, initial={"subject": subject, "url_referrer": request.META.get(
@@ -285,3 +294,29 @@ def contact_us(request):
 def status(request):
     """ simple status page who returns a code 200 """
     return HttpResponse(status=200)
+
+class LTIAssignmentView(LTIAuthMixin, LoginRequiredMixin, TemplateView):
+
+    template_name = 'lti_provider/assignment.html'
+
+
+    def get_context_data(self, **kwargs):
+        activity = kwargs.get("activity")
+        url = ""
+        if activity == 'addvideo':
+            url = url = "http://localhost:8000/video_edit/?is_iframe=true"
+        if activity == 'getvideo':
+            if self.request.session.get("custom_video"):
+                try:
+                    video = Pod.objects.get(id=self.request.session.get("custom_video"))
+                    url = "http:"+video.get_full_url()+"?is_iframe=true"
+                except Exception as e:
+                    print e
+                    messages.add_message(
+                    request, messages.ERROR, _(u'The video id is not valid.'))
+        return {
+            'iframe_url': url,
+            'is_student': self.lti.lis_result_sourcedid(self.request),
+            'course_title': self.lti.course_title(self.request),
+            'number': 1
+        }

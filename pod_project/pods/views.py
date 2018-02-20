@@ -15,6 +15,7 @@ from django.http import HttpResponseForbidden
 from django.http import HttpResponse
 from django.http import StreamingHttpResponse
 from django.template import RequestContext
+from django.template.defaultfilters import slugify
 from pods.forms import ChannelForm
 from pods.forms import ThemeForm
 from pods.forms import PodForm
@@ -28,6 +29,7 @@ from pods.forms import NotesForm
 from pods.forms import MediacoursesForm
 from pods.forms import EnrichPodsForm
 from pods.forms import SearchForm
+from pods.forms import PlaylistForm
 from pods.models import *
 from pods.utils_rssfeed import MySelectFeed
 from django.contrib import messages
@@ -64,6 +66,11 @@ if H5P_ENABLED:
 USE_PRIVATE_VIDEO = getattr(settings, 'USE_PRIVATE_VIDEO', False)
 if USE_PRIVATE_VIDEO:
     from core.models import get_media_guard
+EMAIL_ON_ENCODING_COMPLETION = getattr(settings, 'EMAIL_ON_ENCODING_COMPLETION', False)
+RSS = getattr(settings, 'RSS', False)
+ATOM_HD = getattr(settings, 'ATOM_HD', False)
+ATOM_SD = getattr(settings, 'ATOM_SD', False)
+
 
 DEFAULT_PER_PAGE = 12
 VIDEOS = Pod.objects.filter(is_draft=False, encodingpods__gt=0).distinct()
@@ -241,6 +248,7 @@ def channel_edit(request, slug_c):
                               {'form': channel_form, 'formset': formset,
                                   "referer": referer},
                               context_instance=RequestContext(request))
+
 
 
 def types(request):
@@ -486,7 +494,7 @@ def videos(request):
     if request.is_ajax():
         some_data_to_dump = {
             'json_toolbar': render_to_string('maintoolbar.html',
-                                             {'videos': videos, 'param': param}),
+                                             {'videos': videos, 'param': param, 'RSS': RSS, 'ATOM_HD': ATOM_HD, 'ATOM_SD': ATOM_SD}),
             'json_videols': render_to_string('videos/videos_list.html',
                                              {'videos': videos, 'types': type, 'owners': list_owner,
                                                  'disciplines': discipline, 'param': param},
@@ -516,6 +524,7 @@ def video(request, slug, slug_c=None, slug_t=None):
     show_report = getattr(settings, 'SHOW_REPORT', False)
     param = None
     channel = None
+    playlists = None
     if slug_c:
         channel = get_object_or_404(Channel, slug=slug_c)
         param = "slug_c=%s" % (str(slug_c),)
@@ -531,10 +540,10 @@ def video(request, slug, slug_c=None, slug_t=None):
             score = None
             h5p = None
             if video.is_interactive():
-                h5p = h5p_contents.objects.get(slug=slugify(video.title))
+                h5p = h5p_contents.objects.get(slug=slug[find(slug, "-")+1:])
                 if request.GET.get('is_iframe') and request.GET.get('interactive'):
                     if request.GET['interactive'] == 'true':
-                        return HttpResponseRedirect('/h5p/embed/?contentId=%d' % h5p.content_id)
+                        return HttpResponseRedirect('/h5p/content/?contentId=%d&is_iframe=true' % h5p.content_id)
                 if request.user == video.owner or request.user.is_superuser:
                     score = getUserScore(h5p.content_id)
                 else:
@@ -618,27 +627,73 @@ def video(request, slug, slug_c=None, slug_t=None):
                 )
 
     if request.user.is_authenticated():
+        playlists = {
+            'owner': Playlist.objects.filter(owner=request.user),
+            'video': PlaylistVideo.objects.filter(video=video, playlist__visible=True)
+        }
+        playlist = None
         note, created = Notes.objects.get_or_create(
             video=video, user=request.user)
         notes_form = NotesForm(instance=note)
+
+        if request.GET.get('playlist'):
+            info = Playlist.objects.get(slug=request.GET['playlist'])
+            videos = PlaylistVideo.objects.filter(playlist=info)
+            playlist = {
+                'info': info,
+                'videos': videos
+            }
+            if not request.user == playlist['info'].owner and not playlist['info'].visible:
+                messages.add_message(
+                    request, messages.ERROR, _(u'You don\'t have access to this playlist.'))
+                return render_to_response(
+                    'videos/video.html',
+                    {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
+                        'notes_form': notes_form, 'show_report': show_report, 'hash_id': hash_id, 'playlists': playlists},
+                    context_instance=RequestContext(request)
+                )
+
         if request.GET.get('action') and request.GET.get('action') == "download":
             return download_video(video, request.GET)
         else:
             return render_to_response(
                 'videos/video.html',
                 {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
-                    'notes_form': notes_form, 'show_report': show_report, 'hash_id': hash_id},
+                    'notes_form': notes_form, 'show_report': show_report, 'hash_id': hash_id, 'playlists': playlists, 'playlist': playlist},
                 context_instance=RequestContext(request)
             )
     if request.GET.get('action') and request.GET.get('action') == "download":
         return download_video(video, request.GET)
-    else:
+
+    if request.GET.get('playlist'):
+        info = Playlist.objects.get(slug=request.GET['playlist'])
+        videos = PlaylistVideo.objects.filter(playlist=info)
+        playlist = {
+            'info': info,
+            'videos': videos
+        }
+        if not playlist['info'].visible:
+            messages.add_message(
+                request, messages.ERROR, _(u'You don\'t have access to this playlist.'))
+            return render_to_response(
+                'videos/video.html',
+                {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
+                    'show_report': show_report},
+                context_instance=RequestContext(request)
+            )
         return render_to_response(
             'videos/video.html',
-            {'video': video, 'channel': channel, 'param': param,
-                'theme': theme, 'interactive': interactive, 'show_report': show_report},
+            {'video': video, 'channel': channel, 'param': param, 'theme': theme, 'interactive': interactive,
+                'show_report': show_report, 'playlist': playlist},
             context_instance=RequestContext(request)
-        )
+            )
+
+    return render_to_response(
+        'videos/video.html',
+        {'video': video, 'channel': channel, 'param': param,
+            'theme': theme, 'interactive': interactive, 'show_report': show_report},
+        context_instance=RequestContext(request)
+    )
 
 
 @csrf_protect
@@ -762,16 +817,21 @@ def video_priv(request, id, slug, slug_c=None, slug_t=None):
 
 
 def download_video(video, get_request):
-    format = "video/mp4" if "video" in video.get_mediatype() else "audio/mp3"
+    format = "video/mp4" if "video" in get_request.get('type') else "audio/mp3"
     resolution = get_request.get(
         'resolution') if get_request.get('resolution') else 240
-    filename = EncodingPods.objects.get(
-        video=video, encodingType__output_height=resolution, encodingFormat=format).encodingFile.path
-    wrapper = FileWrapper(file(filename))
-    response = HttpResponse(wrapper, content_type=format)
-    response['Content-Length'] = os.path.getsize(filename)
-    response['Content-Disposition'] = 'attachment; filename="%s_%s.%s"' % (
-        video.slug, resolution, format.split("/")[1])
+
+    if int(resolution) in video.get_all_encoding_height():
+        filename = EncodingPods.objects.get(
+            video=video, encodingType__output_height=resolution, encodingFormat=format).encodingFile.path
+        wrapper = FileWrapper(file(filename))
+        response = HttpResponse(wrapper, content_type=format)
+        response['Content-Length'] = os.path.getsize(filename)
+        response['Content-Disposition'] = 'attachment; filename="%s_%s.%s"' % (
+            video.slug, resolution, format.split("/")[1])
+    else:
+        raise PermissionDenied
+
     return response
 
 
@@ -794,7 +854,7 @@ def video_add_favorite(request, slug):
         return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot acces this page.'))
+            request, messages.ERROR, _(u'You cannot access this page.'))
         raise PermissionDenied
 
 
@@ -868,8 +928,139 @@ def video_add_report(request, slug):
         return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot acces this page.'))
+            request, messages.ERROR, _(u'You cannot access this page.'))
         raise PermissionDenied
+
+
+@login_required
+@csrf_protect
+def video_add_playlist(request, slug):
+    video = get_object_or_404(Pod, slug=slug)
+    if request.POST and request.POST.get('playlist'):
+        playlist = get_object_or_404(Playlist, slug=slugify(request.POST['playlist']))
+        if not request.POST.get('remove'):
+            if video.password or video.is_draft:
+                messages.add_message(
+                    request, messages.ERROR, _(u'You can not add a video with a password or in draft mode.'))
+                raise PermissionDenied
+
+            msg = _(u'The video has been added to your playlist.')
+            new = PlaylistVideo.objects.create(playlist=playlist, video=video)
+            new.position = new.get_position(playlist) + 1
+            new.save()
+            if request.is_ajax():
+                some_data_to_dump = {'msg': "%s" % msg}
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+        else:
+            msg = _(u'The video has been deleted from your playlist.')
+            deleted = PlaylistVideo.objects.get(playlist=playlist, video=video)
+            if not deleted.is_last(playlist):
+                deleted.reordering(playlist)
+            deleted.delete()
+            if request.is_ajax():
+                some_data_to_dump = {'msg': "%s" % msg}
+                data = json.dumps(some_data_to_dump)
+                return HttpResponse(data, content_type='application/json')
+
+        messages.add_message(request, messages.INFO, msg)
+        return HttpResponseRedirect(reverse('pods.views.playlists_videos_list'))
+    else:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot access this page.'))
+        raise PermissionDenied
+
+@login_required
+@csrf_protect
+def playlists_videos_list(request):
+    if request.POST:
+        playlists = Playlist.objects.filter(owner=request.user)
+        # new
+        if request.POST.get('action') and request.POST['action'] == 'new':
+            playlist_form = PlaylistForm(request.POST)
+            return render_to_response("playlists/my_playlists.html",
+                                        {'playlist_form': playlist_form,
+                                            'playlists': playlists},
+                                        context_instance=RequestContext(request))
+
+        # save
+        if request.POST.get('action') and request.POST['action'] == 'save':
+            playlist_form = None
+            if request.POST.get('playlist_id') and request.POST.get('playlist_id') != "None":
+                playlist = get_object_or_404(
+                    Playlist, id=request.POST.get('playlist_id'))
+                playlist_form = PlaylistForm(request.POST, instance=playlist)
+            else:
+                playlist_form = PlaylistForm(request.POST)
+
+            if playlist_form.is_valid():
+                playlist_form.save()
+                playlist_form = PlaylistForm(initial={"owner": request.user})
+                return render_to_response("playlists/my_playlists.html",
+                                          {'playlist_form': playlist_form,
+                                            'playlists': playlists},
+                                          context_instance=RequestContext(request))
+            else:
+                playlist_form = PlaylistForm(initial={"owner": request.user})
+                return render_to_response("playlists/my_playlists.html",
+                                          {'playlist_form': playlist_form,
+                                            'playlists': playlists},
+                                          context_instance=RequestContext(request))
+        # modify
+        if request.POST.get('action') and request.POST['action'] == 'modify':
+            playlist = get_object_or_404(Playlist, id=request.POST['id'])
+            playlist_form = PlaylistForm(instance=playlist)
+            return render_to_response("playlists/my_playlists.html",
+                                        {'playlist_form': playlist_form,
+                                            'playlists': playlists},
+                                        context_instance=RequestContext(request))
+        # delete
+        if request.POST.get('action') and request.POST['action'] == 'delete':
+            playlist = get_object_or_404(Playlist, id=request.POST['id'])
+            playlist_delete = playlist.delete()
+            playlistVideo = PlaylistVideo.objects.filter(playlist=playlist_delete).delete()
+            playlist_form = PlaylistForm(initial={"owner": request.user})
+            return render_to_response("playlists/my_playlists.html",
+                                      {'playlist_form': playlist_form,
+                                        'playlists': playlists},
+                                      context_instance=RequestContext(request))
+
+        # position
+        if request.POST.get('order') and request.is_ajax():
+            msg = _(u'The order of the playlist has changed.')
+            new_order = json.loads(request.POST['order'])
+            playlist_title = json.loads(request.POST['playlist'])[0]
+            playlist = Playlist.objects.get(title=playlist_title)
+            for video_id, order_num in new_order.iteritems():
+                video_info = Pod.objects.get(id=video_id)
+                video_update = PlaylistVideo.objects.get(playlist=playlist, video=video_info)
+                video_update.position = order_num
+                video_update.save()
+
+            some_data_to_dump = {'msg': "%s" % msg}
+            data = json.dumps(some_data_to_dump)
+            return HttpResponse(data, content_type='application/json')
+
+    if request.GET.get('owner'):
+        user = User.objects.get(username=request.GET['owner'])
+        playlists = Playlist.objects.filter(owner=user, visible=True)
+        if playlists.count() == 0:
+            messages.add_message(
+                request, messages.ERROR, _(u'No playlists available for this user : %s') % request.GET['owner'])
+            raise PermissionDenied
+
+        return render_to_response("playlists/my_playlists.html",
+                                  {'playlists': playlists,
+                                  'owner': user},
+                                  context_instance=RequestContext(request))
+
+    playlist_form = PlaylistForm(initial={"owner": request.user})
+    playlists = Playlist.objects.filter(owner=request.user)
+    return render_to_response("playlists/my_playlists.html",
+                              {'playlist_form': playlist_form,
+                                'playlists': playlists},
+                              context_instance=RequestContext(request))
+
 
 
 @login_required
@@ -890,7 +1081,7 @@ def video_notes(request, slug):
             return HttpResponseRedirect(reverse('pods.views.video', args=(video.slug,)))
     else:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot acces this page.'))
+            request, messages.ERROR, _(u'You cannot access this page.'))
         raise PermissionDenied
 
 
@@ -918,7 +1109,7 @@ def video_edit(request, slug=None):
             interactive = True
             video = get_object_or_404(Pod, slug=slug)
             if video.is_interactive():
-                h5p = h5p_contents.objects.get(slug=slugify(video.title))
+                h5p = h5p_contents.objects.get(slug=slug[find(slug, "-")+1:])
 
 
         video = get_object_or_404(Pod, slug=slug)
@@ -954,7 +1145,7 @@ def video_edit(request, slug=None):
                 vid.owner = request.user
 
             if request.FILES:
-                if settings.EMAIL_ON_ENCODING_COMPLETION and request.user.email:
+                if EMAIL_ON_ENCODING_COMPLETION and request.user.email:
                     from django.utils.translation import get_language
                     vid.set_encoding_user_email_data(
                         request.user.email,
@@ -965,6 +1156,13 @@ def video_edit(request, slug=None):
                         )
                     )
                 vid.to_encode = True
+
+            if PlaylistVideo.objects.filter(video=vid).exists() and (video_form.cleaned_data['is_draft'] or video_form.cleaned_data['password']):
+                videoplaylist = PlaylistVideo.objects.filter(video=vid)
+                for videoplay in videoplaylist:
+                    if not videoplay.is_last(videoplay.playlist):
+                        videoplay.reordering(videoplay.playlist)
+                videoplaylist.delete();
 
             # Optional : Update interactive
             if H5P_ENABLED and h5p:
@@ -1544,6 +1742,8 @@ def video_completion_overlay(request, slug):
                     data = json.dumps(some_data_to_dump)
                     return HttpResponse(data, content_type='application/json')
                 else:
+                    messages.add_message(
+                        request, messages.ERROR, _(u'One or more errors have been found in the form.'))
                     return render_to_response("videos/video_completion.html",
                                               {
                                                   'video': video,
@@ -1903,6 +2103,11 @@ def video_delete(request, slug):
         print obj
     """
     if request.method == "POST":
+        videoplaylist = PlaylistVideo.objects.filter(video=video)
+        if videoplaylist.count() > 0:
+            for vid in videoplaylist:
+                if not vid.is_last(vid.playlist):
+                    vid.reordering(vid.playlist)
         video.delete()
         messages.add_message(
             request, messages.INFO, _(u'The video has been deleted.'))
@@ -1974,6 +2179,35 @@ def get_video_encoding_private(request, slug, csrftoken, size, type, ext):
                                      encodingFormat="%s/%s" % (type, ext), video=video, encodingType__output_height=size)
     return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, encodingpods.encodingFile.url))
 
+def get_video_m3u8(request, slug, csrftoken):
+    video = get_object_or_404(Pod, slug=slug)
+    if video.is_draft:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+        else:
+            if request.user == video.owner or request.is_superuser:
+                pass
+            else:
+                messages.add_message(
+                    request, messages.ERROR, _(u'You cannot watch this video.'))
+                raise PermissionDenied
+    if video.is_restricted:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
+    m3u8filename = os.path.join(settings.MEDIA_URL, 'videos' , video.owner.username, media_guard_hash, "%s" % video.id,
+        "video_%s_master.m3u8" % video.id)
+    return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, m3u8filename))
+
+def get_video_m3u8_private(request, slug, csrftoken):
+    video = get_object_or_404(Pod, slug=slug)
+    if video.is_restricted:
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('account_login') + '?next=%s' % urlquote(request.get_full_path()))
+    media_guard_hash = get_media_guard(video.owner.username, video.id)
+    m3u8filename = os.path.join(settings.MEDIA_URL, 'videos' , video.owner.username, media_guard_hash, "%s" % video.id,
+        "video_%s_master.m3u8" % video.id)
+    return HttpResponseRedirect("%s%s" % (settings.FMS_ROOT_URL, m3u8filename))
 
 def autocomplete(request):
     suggestions = [entry.object.title for entry in res]
@@ -2021,11 +2255,14 @@ def search_videos(request):
     filter_query = ""
 
     if len(selected_facets) > 0 or start_date or end_date:
-        filter_search = {"and": []}
+        filter_search = []
         for facet in selected_facets:
-            term = facet.split(":")[0]
-            value = facet.split(":")[1]
-            filter_search["and"].append({
+            try:
+                term = facet.split(":")[0]
+                value = facet.split(":")[1]
+            except:
+                continue
+            filter_search.append({
                 "term": {
                     "%s" % term: "%s" % value
                 }
@@ -2040,7 +2277,7 @@ def search_videos(request):
                 filter_date_search["range"]["date_added"][
                     "lte"] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
 
-            filter_search["and"].append(filter_date_search)
+            filter_search.append(filter_date_search)
 
     # Query
     query = {"match_all": {}}
@@ -2048,6 +2285,7 @@ def search_videos(request):
         query = {
             "multi_match": {
                 "query":    "%s" % search_word,
+                "operator": "and",
                 "fields": ["_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1",
                            "contributors^0.6", "chapters.title^0.5", "enrichments.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6"
                            ]
@@ -2061,9 +2299,9 @@ def search_videos(request):
         "query": {},
         "aggs": {},
         "highlight": {
-            "pre_tags": ["<strong>"],
-            "post_tags": ["</strong>"],
-            "fields": {"title": {}}
+            "pre_tags": ["<mark>"],
+            "post_tags": ["</mark>"],
+            "fields": {"title": {"force_source":"true"}}
         }
     }
 
@@ -2085,11 +2323,11 @@ def search_videos(request):
     }
 
     if filter_search != {}:
-        bodysearch["query"]["function_score"]["query"] = {"filtered": {}}
+        bodysearch["query"]["function_score"]["query"] = {"bool": {}}
         bodysearch["query"]["function_score"][
-            "query"]["filtered"]["query"] = query
+            "query"]["bool"]["must"] = query
         bodysearch["query"]["function_score"]["query"][
-            "filtered"]["filter"] = filter_search
+            "bool"]["filter"] = filter_search
     else:
         bodysearch["query"]["function_score"]["query"] = query
 
@@ -2097,13 +2335,13 @@ def search_videos(request):
 
     for attr in aggsAttrs:
         bodysearch["aggs"][attr.replace(".", "_")] = {
-            "terms": {"field": attr + ".raw", "size": 5, "order": {"_count": "asc"}}}
+            "terms": {"field": attr + ".raw", "size": 5, "order": {"_count": "desc"}}}
 
     # add cursus and main_lang 'cursus', 'main_lang',
     bodysearch["aggs"]['cursus'] = {
-        "terms": {"field": "cursus", "size": 5, "order": {"_count": "asc"}}}
+        "terms": {"field": "cursus", "size": 5, "order": {"_count": "desc"}}}
     bodysearch["aggs"]['main_lang'] = {
-        "terms": {"field": "main_lang", "size": 5, "order": {"_count": "asc"}}}
+        "terms": {"field": "main_lang", "size": 5, "order": {"_count": "desc"}}}
 
     if settings.DEBUG:
         print json.dumps(bodysearch, indent=4)
@@ -2115,8 +2353,11 @@ def search_videos(request):
 
     remove_selected_facet = ""
     for facet in selected_facets:
-        term = facet.split(":")[0]
-        value = facet.split(":")[1]
+        try:
+            term = facet.split(":")[0]
+            value = facet.split(":")[1]
+        except:
+            continue
         agg_term = term.replace(".raw", "")
         if result["aggregations"].get(agg_term):
             del result["aggregations"][agg_term]
@@ -2296,3 +2537,91 @@ def liveSlide(request):  # affichage des slides en direct
     else:
         return HttpResponse("pas de fichier")
     """
+
+
+def video_oembed(request):
+    format = request.GET.get('format')
+    if format and format !="json":
+        HttpResponse.status_code = '501'
+        return HttpResponse(_(u'You are not authorized to view this resource'))
+    url = request.GET.get('url')
+    if not(url):
+        HttpResponse.status_code = '404'
+        return HttpResponse(_(u'The requested address was not found on this server.'))
+    is_video = False
+    video_position = url.find("/video/")
+    is_video_private = False
+    video_priv_position = url.find("/video_priv/")
+    if video_position>0:
+        is_video = True
+    if video_priv_position>0:
+        is_video_private = True
+    if is_video:
+        start = url.find('/video/') + 7
+        end = url.find('/', start)
+        slug = url[int(start):int(end)]
+        try:
+            id = int(slug[:find(slug, "-")])
+        except ValueError:
+            raise SuspiciousOperation('Invalid video id')
+        video = get_object_or_404(Pod, id=id)
+        if video.is_draft:
+            HttpResponse.status_code = '401'
+            return HttpResponse(_(u'You are not authorized to view this resource'))
+        if video.is_restricted:
+            HttpResponse.status_code = '401'
+            return HttpResponse(_(u'You are not authorized to view this resource'))
+    if is_video_private:
+        start = url.find('/video_priv/') + 12
+        stop1 = url.find('/', start)
+        id = int(url[int(start):int(stop1)])
+        stop2 = url.find('/', stop1+1)
+        slug = url[int(stop1+1):int(stop2)]
+        video = get_object_or_404(Pod, id=id)
+        hash_id = get_media_guard(video.owner.username, video.id)
+        if hash_id != slug:
+            HttpResponse.status_code = '401'
+            return HttpResponse("nok : key is not valid")
+
+    if video.get_mediatype()[0] == 'audio':
+        type = 'rich'
+        thumbnail_url =  settings.STATIC_URL  + settings.DEFAULT_IMG
+        thumbnail_width = 256
+        thumbnail_height = 144
+    else :
+        type = video.get_mediatype()[0]
+        thumbnail_url = video.thumbnail.url
+        thumbnail_width = video.thumbnail.width
+        thumbnail_height = video.thumbnail.height
+
+    height = 360
+    width = 640
+    if request.GET.get('maxheight'):
+        height = min(360,int(request.GET.get('maxheight')))
+    if request.GET.get('maxwidth'):
+        width = min(640,int(request.GET.get('maxwidth')))
+
+    if is_video_private:
+        code_integration = '<iframe src="//' + request.META.get('HTTP_HOST') + '/video_priv/' + str(id) + '/' + slug + '/' + '?is_iframe=true" width="' + str(width) + '" height="' + str(height) + '" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>'
+    else:
+        code_integration = '<iframe src="//' + request.META.get('HTTP_HOST') + '/video/' + slug + '?is_iframe=true" width="' + str(width) + '" height="' + str(height) + '" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>'
+    protocole="http://"
+    if request.is_secure():
+        protocole="https://"
+    some_data_to_dump = {
+        'version' : "1.0",
+        'provider_name' : settings.TITLE_SITE,
+        "provider_url" : protocole + request.META.get('HTTP_HOST') + '/',
+        "type" : type,
+        "title" : video.title,
+        "author_url" :  protocole + request.META.get('HTTP_HOST') + "/videos/?owner=" + video.owner.username,
+        "author_name" : video.owner.first_name + " " + video.owner.last_name,
+        "width" : width,
+        "height" : height,
+        "html" : code_integration,
+        "thumbnail_url" : protocole + request.META.get('HTTP_HOST') + thumbnail_url,
+        "thumbnail_width" : thumbnail_width,
+        "thumbnail_height"  : thumbnail_height,
+    }
+    data = json.dumps(some_data_to_dump)
+    return HttpResponse(data, content_type='application/json')

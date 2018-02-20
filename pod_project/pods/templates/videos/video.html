@@ -46,37 +46,64 @@ voir http://www.gnu.org/licenses/
 }
 </style>
 {% endif %}
-
 <script>
-    $(document).on('submit', 'form#video_report_form', function (event) {
-        $('form').show();
-        $('form#video_report_form').hide();
-        event.preventDefault();
-        if(expiration_date_second > 5) {
-            var comment = $(this).find('#commentreport').val();
-            var jqxhr = $.post( $(this).attr("action"), {"comment":comment });
-            jqxhr.done(function(data){
-                if(data.msg) {
-                    show_messages(data.msg, 'info');
-                    $("#button_video_report").attr('disabled','disabled');
-                    $("#mark-as-report").attr('style','color: #ee7d19');
-                } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", 'danger', true);
-                }
-            });
-            jqxhr.fail(function($xhr) {
-                var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}", 'danger');
-            });
-            $('form#video_report_form').show();
-            $('#modal_report_form').modal('hide');
-            $(this).find('#commentreport').val("");
-        } else {
-            alert(expiredsession);
-            location.reload();
-        }
-        return false;
-    });
+$(document).on('submit', 'form#video_report_form', function (event) {
+    $('form').show();
+    $('form#video_report_form').hide();
+    event.preventDefault();
+    if(expiration_date_second > 5) {
+        var comment = $(this).find('#commentreport').val();
+        var jqxhr = $.post( $(this).attr("action"), {"comment":comment });
+        jqxhr.done(function(data){
+            if(data.msg) {
+                show_messages(data.msg, 'info');
+                $("#button_video_report").attr('disabled','disabled');
+                $("#mark-as-report").attr('style','color: #ee7d19');
+            } else {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", 'danger', true);
+            }
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}", 'danger');
+        });
+        $('form#video_report_form').show();
+        $('#modal_report_form').modal('hide');
+        $(this).find('#commentreport').val("");
+    } else {
+        alert(expiredsession);
+        location.reload();
+    }
+    return false;
+});
+
+$(document).on('submit', 'form#video_playlist_form', function (event) {
+    $('form').show();
+    $('form#video_playlist_form').hide();
+    event.preventDefault();
+    if(expiration_date_second > 5) {
+        var playlist = $(this).find('#playlist_name.list-group-item.active').contents()[0].data;
+        var jqxhr = $.post( $(this).attr("action"), {"playlist":playlist });
+        jqxhr.done(function(data){
+            if(data.msg) {
+                show_messages(data.msg, 'info');
+                location.reload();
+            } else {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %} ", 'danger', true);
+            }
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status + " : " + $xhr.statusText;
+            show_messages("{% trans 'Error sending information.' %} " + "("+data+")<br/>"+"{% trans 'No data could be given.' %}", 'danger');
+        });
+        $('form#video_playlist_form').show();
+        $('#modal_playlist_form').modal('hide');
+    } else {
+        alert(expiredsession);
+        location.reload();
+    }
+    return false;
+});
 
 $(document).on('click', '#button_video_favorite', function (event) {
     event.preventDefault();
@@ -244,10 +271,25 @@ $(document).on('change', '#showinteractive', function() {
     <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
+{% block link_alternate %}
+	{% if OEMBED %}
+		{% if not video.is_draft %}
+		<link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}" />
+		{%else%}
+			{% if USE_PRIVATE_VIDEO %}
+			<link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}" />
+			{% endif %}
+		{% endif %}
+	{% endif %}
+{% endblock %}
+
 {% block mainToolbar %}{% endblock mainToolbar %}
 
 {% block bootstrap3_content %}
     <article id="page-video" class="container{% if request.GET.is_iframe %} embed{% endif %}" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+    {% if playlist %}
+        {% include 'playlists/playlist_body.html' %}
+    {% endif %}
     {% if not request.GET.is_iframe %}
         <ol class="breadcrumb">
         {% block breadcrumbs %}
@@ -297,7 +339,7 @@ $(document).on('change', '#showinteractive', function() {
         <meta itemprop="duration" content="{{ video.duration }}" />
         <meta itemprop="thumbnailUrl" content="{{ video.thumbnail.url }}" />
         <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
-        <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" />
+        <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=360" />
 
         {% if H5P_ENABLED and video.is_interactive %}
         <div id="h5pcontent">
@@ -356,6 +398,23 @@ $(document).on('change', '#showinteractive', function() {
                     </form>
                         {%endif%}
                     {%endif%}
+                    {% if not video.is_draft and not video.password %}
+                    <form method="post" action="{% url 'video_add_playlist' slug=video.slug %}" style="display:inline-block;">
+                        {% csrf_token %}
+                            <button type="submit" class="btn btn-default" id="button_video_playlist" title="{% trans 'Add this video to one of your playlists.' %}" >
+                                <span id="play" class="glyphicon glyphicon-play"></span>
+                                <span class="sr-only">{% trans 'Add to your playlist.' %}</span>
+                            </button>
+                        <noscript>
+                            <div class="list-group">
+                            {% for playlist in playlists %}
+                                <a href="#" class="list-group-item">{{ playlist.title }}</a>
+                            {% endfor %}
+                            </div>
+                            <input type="submit" value="{% trans 'Send' %}" />
+                        </noscript>
+                    </form>
+                    {% endif %}
                 {% else %}
                     <button class="btn btn-link" id="button_video_favorite">
                         <span class="glyphicon glyphicon-star"></span>
@@ -520,6 +579,18 @@ $(document).on('change', '#showinteractive', function() {
                             <br />
                             {% endfor %}
                         {% endif %}
+                        {% if playlists.video %}
+                            <li class="list-group-item">
+                                {% trans 'Playlists' %} :
+                                <ul>
+                                {% for element in playlists.video %}
+                                    <a href="{{ element.video.get_full_url }}?playlist={{ element.playlist.slug }}&autoplay=true">
+                                        <li><strong>{{ element.playlist.title }}</strong> ({{element.playlist.owner.username }})</li>
+                                    </a>
+                                {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
                         </ul>
                     </div>
                     <!-- /TAB meta -->
@@ -527,28 +598,29 @@ $(document).on('change', '#showinteractive', function() {
                     <div id="downloads" class="tab-pane fade container-fluid">
                         <div class="list-group">
                         {% if video.allow_downloading %}
-                            {% trans 'Download the video'%} :
-
                             {% with mediatype=video.get_mediatype|first %}
                                 {% if mediatype == 'video' %}
+                                    <label>{% trans 'Video file(s)' %} : </label>
                                     {% for encoding in video.encodingpods_set.all %}
                                         {% if encoding.encodingFormat == "video/mp4" %}
-                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}" title="{{ video.slug }}" class="list-group-item" >
-                                {{ video.slug }}_{{ encoding.encodingType.output_height }}.mp4
+                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}&type=video" title="{{ video.slug }}" class="list-group-item" >
+                                {{ video.slug }}_{{ encoding.encodingType.output_height }}
+                                <span class="label label-info">{{ encoding.encodingFormat }}</span>
                                 <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
                             </a>
                                         {%endif%}
                                     {% endfor %}
-                                {%else%}
+                                {%endif%}
+                                    <label>{% trans 'Audio file(s)' %} : </label>
                                     {% for encoding in video.encodingpods_set.all %}
                                         {% if encoding.encodingFormat == "audio/mp3" %}
-                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}" title="{{ video.slug }}" class="list-group-item" >
-                                {{ video.slug }}.mp3
+                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}&type=audio" title="{{ video.slug }}" class="list-group-item" >
+                                {{ video.slug }}
+                                <span class="label label-info">{{ encoding.encodingFormat }}</span>
                                 <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
                             </a>
                                         {%endif%}
                                     {%endfor%}
-                                {%endif%}
                             {%endwith%}
 
                         {% endif %}
@@ -578,7 +650,7 @@ $(document).on('change', '#showinteractive', function() {
                                 <div class="form-group col-sm-8">
                                     <label for="txtintegration">
                                         {% trans 'Copy the content of this text box and paste it in the page' %}
-                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" size="240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
                                     </label>
                                 </div>
                                 <div class="form-group col-sm-4">
@@ -586,9 +658,9 @@ $(document).on('change', '#showinteractive', function() {
                                         {% trans 'Video size' %}
                                         <select id="integration_size" class="form-control">
                                         {% for enc in video.get_all_encoding_height %}
-                                            {% if enc == 240 %}<option value="240" data-width="640" data-height="360">240p</option>{% endif %}
-                                            {% if enc == 480 %}<option value="480" data-width="854" data-height="480">480p</option>{% endif %}
+                                            {% if enc == 360 %}<option value="360" data-width="640" data-height="360">360p</option>{% endif %}
                                             {% if enc == 720 %}<option value="720" data-width="1280" data-height="720">720p</option>{% endif %}
+                                            {% if enc == 1080 %}<option value="1080" data-width="2560" data-height="1080">1080p</option>{% endif %}
                                         {% endfor %}
                                         </select>
                                     </label>
@@ -668,7 +740,7 @@ $(document).on('change', '#showinteractive', function() {
                                 <div class="form-group col-sm-8">
                                     <label for="txtintegration">
                                         {% trans 'Copy the content of this text box and paste it in the page' %}
-                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}/video_priv/{{ video.id }}/{{ hash_id }}/?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                                        <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="//{{ request.META.HTTP_HOST }}/video_priv/{{ video.id }}/{{ hash_id }}/?is_iframe=true&amp;size=360" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
                                     </label>
                                 </div>
                                 <div class="form-group col-sm-4">
@@ -676,9 +748,9 @@ $(document).on('change', '#showinteractive', function() {
                                         {% trans 'Video size' %}
                                         <select id="integration_size" class="form-control">
                                         {% for enc in video.get_all_encoding_height %}
-                                            {% if enc == 240 %}<option value="240" data-width="640" data-height="360">240p</option>{% endif %}
-                                            {% if enc == 480 %}<option value="480" data-width="854" data-height="480">480p</option>{% endif %}
+                                            {% if enc == 360 %}<option value="360" data-width="640" data-height="360">360p</option>{% endif %}
                                             {% if enc == 720 %}<option value="720" data-width="1280" data-height="720">720p</option>{% endif %}
+                                            {% if enc == 1080 %}<option value="1080" data-width="2560" data-height="1080">1080p</option>{% endif %}
                                         {% endfor %}
                                         </select>
                                     </label>

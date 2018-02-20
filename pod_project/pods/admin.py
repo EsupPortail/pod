@@ -20,28 +20,24 @@ avec ce programme. Si ce n'est pas le cas,
 voir http://www.gnu.org/licenses/
 """
 from django.contrib import admin
-from pods.models import *
-# from django import forms
-from django.utils.translation import ugettext_lazy as _
-# from django.contrib.admin import widgets
-
-from modeltranslation.admin import TranslationAdmin
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
+from django.utils.translation import ugettext_lazy as _
+from modeltranslation.admin import TranslationAdmin
+from pods.models import *
 
-from django.contrib.auth.models import User
+
 # Ordering user by username !
 User._meta.ordering = ["username"]
-
 
 def url_to_edit_object(obj):
     url = reverse(
         'admin:%s_%s_change' % (obj._meta.app_label, obj._meta.model_name), args=[obj.id])
     return format_html('<a href="{}">{}</a>', url, obj.__unicode__())
 
-
+# Categories admin panel
 class ChannelAdmin(TranslationAdmin):
-
     def get_owners(self, obj):
         owners = []
         for owner in obj.owners.all():
@@ -52,14 +48,13 @@ class ChannelAdmin(TranslationAdmin):
 
     get_owners.allow_tags = True
     get_owners.short_description = _('Owners')
+
     list_display = ('title', 'get_owners', 'visible',)
     prepopulated_fields = {'slug': ('title',)}
     filter_horizontal = ('owners', 'users',)
     list_editable = ('visible', )
-
-
+    ordering = ('title',)
 admin.site.register(Channel, ChannelAdmin)
-
 
 class ThemeAdmin(admin.ModelAdmin):
     list_display = ('title', 'channel')
@@ -68,52 +63,71 @@ class ThemeAdmin(admin.ModelAdmin):
     ordering = ('channel', 'title')
 admin.site.register(Theme, ThemeAdmin)
 
-
 class TypeAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('title',)}
 admin.site.register(Type, TypeAdmin)
-
 
 class DisciplineAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('title',)}
 admin.site.register(Discipline, DisciplineAdmin)
 
 
+# Pod admin panel
+# Inlines
 class EncodingPodsInline(admin.TabularInline):
     model = EncodingPods
     extra = 0
-
 
 class ContributorPodsInline(admin.TabularInline):
     model = ContributorPods
     extra = 0
 
-
 class TrackPodsInline(admin.TabularInline):
     model = TrackPods
     extra = 0
-
 
 class DocPodsInline(admin.TabularInline):
     model = DocPods
     extra = 0
 
-
 class OverlayPodsInLine(admin.TabularInline):
     model = OverlayPods
     extra = 0
-
 
 class ChapterPodsInline(admin.TabularInline):
     model = ChapterPods
     extra = 0
 
-
 class EnrichPodsInline(admin.TabularInline):
     model = EnrichPods
     extra = 0
 
+class PlaylistAdmin(admin.ModelAdmin):
+    def get_owner_by_name(self, obj):
+        owner = obj.owner
+        url = url_to_edit_object(owner)
+        return u'%s %s (%s)' % (owner.first_name, owner.last_name, url)
 
+    get_owner_by_name.allow_tags = True
+    get_owner_by_name.short_description = _('Owner')
+
+    list_display = ('id', 'title', 'owner', 'visible')
+    list_display_links = ('title',)
+    list_editable = ('visible',)
+    search_fields = ['id', 'title', 'owner__username', 'owner__first_name', 'owner__last_name']
+
+admin.site.register(Playlist, PlaylistAdmin)
+
+class PlaylistVideoAdmin(admin.ModelAdmin):
+    list_display = ('video', 'playlist', 'position')
+    list_display_links = ('video',)
+
+admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
+
+
+# Pod admin panel
+# Main
+# Have search function by owner
 class PodAdmin(admin.ModelAdmin):
 
     def get_owner_by_name(self, obj):
@@ -159,51 +173,62 @@ class PodAdmin(admin.ModelAdmin):
             item.to_encode = True
             item.save()
     encode_video.short_description = _('Encode selected')
-
-
 admin.site.register(Pod, PodAdmin)
 
 
+# Encoding admin panel
 class EncodingPodsAdmin(admin.ModelAdmin):
     list_display = ('video', 'encodingType', 'encodingFile', 'encodingFormat')
     list_display_links = ('video',)
     list_filter = ('encodingFormat', 'encodingType__output_height')
     list_editable = ('encodingFormat', )
-
 admin.site.register(EncodingPods, EncodingPodsAdmin)
 
+
+# Notes admin panel
+# Have search function by id
+class NotesAdmin(admin.ModelAdmin):
+    list_display = ('id', 'video', 'user')
+    list_display_links = ('video',)
+    search_fields = ['id']
+admin.site.register(Notes, NotesAdmin)
+
+
+# Basic admin panel
 admin.site.register(ContributorPods)
 admin.site.register(TrackPods)
 admin.site.register(DocPods)
 admin.site.register(OverlayPods)
 admin.site.register(ChapterPods)
 admin.site.register(EnrichPods)
-admin.site.register(Notes)
-
-# recorder
 
 
+# Recorder admin panel
+# Mediacourses
 class MediacoursesAdmin(admin.ModelAdmin):
     list_display = ('title', 'user', 'mediapath', 'started', 'date_added')
     list_display_links = ('title',)
     list_filter = ('user',)
     #list_editable = ('status', 'slide' )
-
 admin.site.register(Mediacourses, MediacoursesAdmin)
+
+
+# Basic admin panel
 admin.site.register(Building)
 
 
+# Recorder admin panel
+# Main
 class RecorderAdmin(admin.ModelAdmin):
     list_display = ('name', 'adress_ip', 'building',
                     'status', 'slide', 'is_restricted')
     list_display_links = ('name',)
     list_filter = ('building',)
     list_editable = ('status', 'slide', 'is_restricted')
-
 admin.site.register(Recorder, RecorderAdmin)
 
 
-# Report Video
+# Report Video admin panel
 class ReportAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'video', 'comment', 'answer',
                     'date_added', 'get_iframe_url_to_video')
@@ -212,9 +237,8 @@ class ReportAdmin(admin.ModelAdmin):
 admin.site.register(ReportVideo, ReportAdmin)
 
 
-# RSS Feed
+# RSS Feed admin panel
 class RssfeedAdmin(admin.ModelAdmin):
-
     def get_owner_by_name(self, obj):
         owner = obj.owner
         url = url_to_edit_object(owner)
