@@ -540,6 +540,8 @@ def pod_files_removal(sender, instance, using, **kwargs):
         for file in list_files:
             if file.endswith('.ts') or file.endswith('.m3u8'):
                 os.remove(os.path.join(path, file))
+            if file.startswith('segment_'):
+                os.remove(os.path.join(path, file))
 
 
 
