@@ -12,7 +12,7 @@ from settings_local import *
 ##
 # Version of the application
 #
-VERSION = '1.7.2'
+VERSION = '1.8.0'
 
 
 ##
