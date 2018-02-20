@@ -867,6 +867,7 @@ def create_main_m3u8(video_id, list_encod_video):
     # Create master playlist and replace path
     master = open(m3u8filename, 'w+')
     master.write("#EXTM3U\n\n")
+    ffmproberesult = ''
     for encoding_type in list_encod_video:
         if not encoding_type.output_height in [240, 480]:
 

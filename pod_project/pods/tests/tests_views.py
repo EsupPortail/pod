@@ -691,7 +691,6 @@ class Video_add_favoriteTestView(TestCase):
         self.assertEqual(login, True)
         response = self.client.get('/video_add_favorite/%s/' % pod.slug)
         self.assertEqual(response.status_code, 403)
-        print(response.content)
         self.assertTrue("You cannot access this page." in response.content)
 
     def test_delete_favorite(self):
