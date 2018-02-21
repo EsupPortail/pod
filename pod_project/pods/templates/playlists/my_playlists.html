@@ -251,7 +251,7 @@ $(window).load(function(){
 		{% if request.user == playlists.first.owner %}
 		<p>{% trans 'Your playlists can be shared to users who are at least authenticated on the site.' %}</p>
 		<p>{% trans 'Users will only be able to see your playlists listed as "visible".' %}</p>
-		<input maxlength="250" value="{{request.get_host}}:/{% url 'playlists_videos_list' %}?owner={{playlists.first.owner.username}}" type="text" id="playlist_share" />
+		<input maxlength="250" value="{% if request.is_secure %}https://{%else%}http://{%endif%}{{request.get_host}}{% url 'playlists_videos_list' %}?owner={{playlists.first.owner.username}}" type="text" id="playlist_share" />
 		{% else %}
 		<p>{% trans "You are currently on another user's playlists page. Only his playlists that he indicated as 'visible' are displayed here." %}</p>
 		{% endif %}

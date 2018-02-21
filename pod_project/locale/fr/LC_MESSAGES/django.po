@@ -2415,17 +2415,17 @@ msgstr "Lancer la playlist"
 msgid ""
 "Your playlists can be shared to users who are at least authenticated on the "
 "site."
-msgstr ""
+msgstr "Vos playlists ne peuvent être partagées qu'avec des utilisateurs authentifiés"
 
 #: pods/templates/playlists/my_playlists.html:284
 msgid "Users will only be able to see your playlists listed as \"visible\"."
-msgstr ""
+msgstr "Les utilisateurs ne verront que vos playlists affichées comme \"visibles\"."
 
 #: pods/templates/playlists/my_playlists.html:287
 msgid ""
 "You are currently on another user's playlists page. Only his playlists that "
 "he indicated as 'visible' are displayed here."
-msgstr ""
+msgstr "Vous êtes sur la page des playlists d'un autre utilisateur. Seuls ses playlists visibles sont affichées."
 
 #: pods/templates/playlists/playlist_body.html:46
 #: pods/templates/playlists/playlist_body.html:48
