@@ -901,8 +901,6 @@ def create_main_m3u8(video_id, list_encod_video):
 
     master.close()
 
-    if DEBUG:
-        print "%s" % com
     video = None
     video = Pod.objects.get(id=video_id)
     addInfoVideo(video, "\nEND CREATE FILE M3U8 %s %s" %

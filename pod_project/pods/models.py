@@ -576,7 +576,7 @@ class EncodingPods(models.Model):
         ("application/x-mpegURL", "application/x-mpegURL"),
     )
     encodingFormat = models.CharField(
-        _('Format'), max_length=12, choices=FORMAT_CHOICES, default="video/mp4")
+        _('Format'), max_length=22, choices=FORMAT_CHOICES, default="video/mp4")
 
     @property
     def owner(self):

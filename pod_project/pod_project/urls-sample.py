@@ -4,6 +4,8 @@ from django.conf import settings
 from django.views.generic import RedirectView
 from django.contrib import admin
 from pods.utils_itunesfeed import PodcastHdFeed, PodcastSdFeed, MySelectFeed
+from core.views import LTIAssignmentView
+
 # from pods.utils_itunesfeed import AudiocastFeed
 
 admin.autodiscover()
