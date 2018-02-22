@@ -822,7 +822,7 @@ def download_video(video, get_request):
     else:
         raise PermissionDenied
 
-    resolution = 240 if not video.is_hls_supported() else 360
+    resolution = 240 if not video.is_hls_supported() and format == "video/mp4" else 360
 
     if int(resolution) in video.get_all_encoding_height().exclude(encodingFormat='application/x-mpegURL'):
         filename = EncodingPods.objects.get(
