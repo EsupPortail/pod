@@ -819,12 +819,12 @@ def video_priv(request, id, slug, slug_c=None, slug_t=None):
 def download_video(video, get_request):
     if 'type' in get_request:
         format = "video/mp4" if "video" in get_request.get('type') else "audio/mp3"
-        resolution = get_request.get(
-            'resolution') if get_request.get('resolution') else 360
     else:
         raise PermissionDenied
 
-    if int(resolution) in video.get_all_encoding_height():
+    resolution = 240 if not video.is_hls_supported() else 360
+
+    if int(resolution) in video.get_all_encoding_height().exclude(encodingFormat='application/x-mpegURL'):
         filename = EncodingPods.objects.get(
             video=video, encodingType__output_height=resolution, encodingFormat=format).encodingFile.path
         wrapper = FileWrapper(file(filename))
