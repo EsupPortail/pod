@@ -7,7 +7,8 @@
       "output_height": 240,
       "name": "240",
       "mediatype": "video",
-      "bitrate_video":"300k"
+      "bitrate_video":"300k",
+      "support_hls": false
     }
   },
   {
@@ -18,7 +19,8 @@
       "output_height": 360,
       "name": "360",
       "mediatype": "video",
-      "bitrate_video":"1000k"
+      "bitrate_video":"1000k",
+      "support_hls": true
     }
   },
   {
@@ -29,7 +31,8 @@
       "output_height": 480,
       "name": "480",
       "mediatype": "video",
-      "bitrate_video": "600k"
+      "bitrate_video": "600k",
+      "support_hls": false
     }
   },
   {
@@ -40,7 +43,8 @@
       "output_height": 720,
       "name": "720",
       "mediatype": "video",
-      "bitrate_video":"2000k"
+      "bitrate_video":"2000k",
+      "support_hls": true
     }
   },
   {
@@ -51,7 +55,8 @@
       "output_height": 1080,
       "name": "1080",
       "mediatype": "video",
-      "bitrate_video":"3000k"
+      "bitrate_video":"3000k",
+      "support_hls": true
     }
   },
   {
