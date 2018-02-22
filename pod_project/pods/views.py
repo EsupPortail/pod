@@ -2590,9 +2590,14 @@ def video_oembed(request):
         thumbnail_height = 144
     else :
         type = video.get_mediatype()[0]
-        thumbnail_url = video.thumbnail.url
-        thumbnail_width = video.thumbnail.width
-        thumbnail_height = video.thumbnail.height
+        try:
+            thumbnail_url = video.thumbnail.url
+            thumbnail_width = video.thumbnail.width
+            thumbnail_height = video.thumbnail.height
+        except:
+            thumbnail_url = settings.STATIC_URL + settings.DEFAULT_IMG
+            thumbnail_width = 256
+            thumbnail_height = 144
 
     height = 360
     width = 640
