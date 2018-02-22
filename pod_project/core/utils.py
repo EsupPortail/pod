@@ -57,7 +57,7 @@ ADD_THUMBNAILS_CMD = getattr(settings, 'ADD_THUMBNAILS_CMD',
                              "%(ffmpeg)s -i \"%(src)s\" -vf fps=\"fps=1/%(thumbnail)s,scale=%(scale)s\" -an -vsync 0 -threads 0 -f image2 -y %(out)s_%(num)s.png")
 ADD_OVERVIEW_CMD = getattr(settings, 'ADD_OVERVIEW_CMD',
                            "%(ffmpeg)s -i \"%(src)s\" -vf \"thumbnail=%(thumbnail)s,scale=%(scale)s,tile=100x1:nb_frames=100:padding=0:margin=0\" -an -vsync 0 -threads 0 -y %(out)s")
-ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ac 2 -b:a %(ba)s %(out)s")
+ENCODE_MP4_CMD = getattr(settings, 'ENCODE_MP4_CMD', "%(ffmpeg)s -i %(src)s -codec:v libx264 -profile:v high -pix_fmt yuv420p -preset faster -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -vf scale=%(scale)s -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads 0 -codec:a aac -strict -2 -ac 2 -b:a %(ba)s -y %(out)s")
 ENCODE_WEBM_CMD = getattr(settings, 'ENCODE_WEBM_CMD',
                           "%(ffmpeg)s -i %(src)s -codec:v libvpx -quality realtime -cpu-used 3 -b:v %(bv)s -maxrate %(bv)s -bufsize %(bufsize)s -qmin 10 -qmax 42 -threads 4 -codec:a libvorbis -y %(out)s")
 ENCODE_M3U8_CMD = getattr(settings, 'ENCODE_M3U8_CMD',
