@@ -75,7 +75,7 @@ voir http://www.gnu.org/licenses/
 
                         <!--DEPRECATED-->
                         {% if not video.is_hls_supported %}
-                            {% for encoding in video.encodingpods_set.all %}
+                            {% for encoding in video.get_all_encoding_video %}
                                 {% if USE_PRIVATE_VIDEO and video.is_draft %}
                                     <source
                                         src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"

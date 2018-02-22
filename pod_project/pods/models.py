@@ -363,6 +363,11 @@ class Pod(Video):
             'encodingType__output_height', flat=True).distinct()
         return all_encoding_type
 
+    def get_all_encoding_video(self):
+        exclude = ['audio/mp3', 'audio/wav', 'application/x-mpegURL']
+        all_encoding_video = self.encodingpods_set.exclude(encodingFormat__in=exclude)
+        return all_encoding_video
+
     def get_min_encoding(self):
         encoding_min = EncodingPods.objects.filter(video=self, encodingFormat="video/mp4").first()
         return encoding_min
