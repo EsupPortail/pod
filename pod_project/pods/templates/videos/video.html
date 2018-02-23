@@ -603,22 +603,22 @@ $(document).on('change', '#showinteractive', function() {
                                     <label>{% trans 'Video file(s)' %} : </label>
                                     {% for encoding in video.encodingpods_set.all %}
                                         {% if encoding.encodingFormat == "video/mp4" %}
-                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}&type=video" title="{{ video.slug }}" class="list-group-item" >
-                                {{ video.slug }}_{{ encoding.encodingType.output_height }}
-                                <span class="label label-info">{{ encoding.encodingFormat }}</span>
-                                <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
-                            </a>
-                                        {%endif%}
+                                            <a href="{{video.get_absolute_url}}?action=download&type=video" title="{{ video.slug }}" class="list-group-item" >
+                                                {{ video.slug }}_{{ encoding.encodingType.output_height }}
+                                                <span class="label label-info">{{ encoding.encodingFormat }}</span>
+                                                <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
+                                            </a>
+                                        {% endif %}
                                     {% endfor %}
                                 {%endif%}
                                     <label>{% trans 'Audio file(s)' %} : </label>
                                     {% for encoding in video.encodingpods_set.all %}
                                         {% if encoding.encodingFormat == "audio/mp3" %}
-                            <a href="{{video.get_absolute_url}}?action=download&resolution={{ encoding.encodingType.output_height }}&type=audio" title="{{ video.slug }}" class="list-group-item" >
-                                {{ video.slug }}
-                                <span class="label label-info">{{ encoding.encodingFormat }}</span>
-                                <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
-                            </a>
+                                            <a href="{{video.get_absolute_url}}?action=download&type=audio" title="{{ video.slug }}" class="list-group-item" >
+                                                {{ video.slug }}
+                                                <span class="label label-info">{{ encoding.encodingFormat }}</span>
+                                                <span class="label label-primary">{{ encoding.encodingFile.size|filesizeformat }}</span>
+                                            </a>
                                         {%endif%}
                                     {%endfor%}
                             {%endwith%}

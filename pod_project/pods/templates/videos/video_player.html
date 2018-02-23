@@ -74,8 +74,8 @@ voir http://www.gnu.org/licenses/
                         {% endfor %}
 
                         <!--DEPRECATED-->
-                        {% for encoding in video.encodingpods_set.all %}
-                            {%if encoding.encodingFormat != 'application/x-mpegURL' and encoding.encodingFormat != 'audio/mp3'%}
+                        {% if not video.is_hls_supported %}
+                            {% for encoding in video.get_all_encoding_video %}
                                 {% if USE_PRIVATE_VIDEO and video.is_draft %}
                                     <source
                                         src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
@@ -87,12 +87,28 @@ voir http://www.gnu.org/licenses/
                                     <source
                                         src="/get_video_encoding/{{ video.slug }}/{{ csrf_token }}/{{ encoding.encodingType.output_height }}/{{ encoding.encodingFormat }}"
                                         type="{{ encoding.encodingFormat }}"
-                                        label="{{ encoding.encodingType.output_height }}"
+                                        label="{{ encoding.encodingType.output_height }}p"
                                         res="{{ encoding.encodingType.output_height }}"
                                     />
                                 {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {% if USE_PRIVATE_VIDEO and video.is_draft %}
+                                <source
+                                    src="/get_video_encoding_private/{{ video.slug }}/{{ csrf_token }}/360/video/mp4"
+                                    type="video/mp4"
+                                    label="360p"
+                                    res="360"
+                                />
+                            {% else %}
+                                <source
+                                    src="/get_video_encoding/{{ video.slug }}/{{ csrf_token }}/360/video/mp4"
+                                    type="video/mp4"
+                                    label="360p"
+                                    res="360"
+                                />
                             {% endif %}
-                        {% endfor %}
+                        {% endif %}
                         <!--END DEPRECATED-->
                     </video>
                 {% endif %}

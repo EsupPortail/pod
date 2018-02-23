@@ -57,7 +57,7 @@ var oldFormat = null; // DEPRECATED
 $(document).ready(function() {
     if ('MediaSource' in window) {
         $('video').each(function() {
-            oldFormat = $(this).children('source').length > 1;
+            oldFormat = $(this).children('source').attr('res') != 360;
             if (!oldFormat) {
                 $(this).children('source').remove();
                 var player = videojs(this);

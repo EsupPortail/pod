@@ -817,11 +817,14 @@ def video_priv(request, id, slug, slug_c=None, slug_t=None):
 
 
 def download_video(video, get_request):
-    format = "video/mp4" if "video" in get_request.get('type') else "audio/mp3"
-    resolution = get_request.get(
-        'resolution') if get_request.get('resolution') else 240
+    if 'type' in get_request:
+        format = "video/mp4" if "video" in get_request.get('type') else "audio/mp3"
+    else:
+        raise PermissionDenied
 
-    if int(resolution) in video.get_all_encoding_height():
+    resolution = 240 if not video.is_hls_supported() and format == "video/mp4" else 360
+
+    if int(resolution) in video.get_all_encoding_height().exclude(encodingFormat='application/x-mpegURL'):
         filename = EncodingPods.objects.get(
             video=video, encodingType__output_height=resolution, encodingFormat=format).encodingFile.path
         wrapper = FileWrapper(file(filename))
@@ -2590,9 +2593,14 @@ def video_oembed(request):
         thumbnail_height = 144
     else :
         type = video.get_mediatype()[0]
-        thumbnail_url = video.thumbnail.url
-        thumbnail_width = video.thumbnail.width
-        thumbnail_height = video.thumbnail.height
+        try:
+            thumbnail_url = video.thumbnail.url
+            thumbnail_width = video.thumbnail.width
+            thumbnail_height = video.thumbnail.height
+        except:
+            thumbnail_url = settings.STATIC_URL + settings.DEFAULT_IMG
+            thumbnail_width = 256
+            thumbnail_height = 144
 
     height = 360
     width = 640
