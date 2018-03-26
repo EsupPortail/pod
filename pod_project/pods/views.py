@@ -2114,7 +2114,7 @@ def video_delete(request, slug):
         video.delete()
         messages.add_message(
             request, messages.INFO, _(u'The video has been deleted.'))
-        return HttpResponseRedirect(reverse('pods.views.videos'))
+        return HttpResponseRedirect(reverse('pods.views.owner_videos_list'))
 
     return render_to_response("videos/video_delete.html",
                               {"video": video},
