@@ -1,12 +1,15 @@
 # Pod, plateforme de gestion de video --> nouvelle version https://github.com/EsupPortail/Esup-Pod
 
----
+------
 📌 **Attention**
 
 Ce dépôt est obsolète et aucun travail supplémentaire ne sera effectué à ce sujet.
+
 Nous vous recommandons de ne plus utiliser cette version de l'application mais celle disponible à cette adresse : https://github.com/EsupPortail/Esup-Pod
+
 Plus d'informations : https://www.esup-portail.org/wiki/display/ES/esup-pod 
---
+
+------
 
 # Presentation
 
